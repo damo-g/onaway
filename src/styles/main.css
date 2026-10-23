@@ -1,0 +1,175 @@
+@import "tailwindcss";
+@import "lenis/dist/lenis.css";
+
+/* ---------- Fonts (self-hosted, OFL) ---------- */
+@font-face {
+  font-family: "Instrument Sans";
+  src: url("/fonts/InstrumentSans-Variable.woff2") format("woff2-variations"),
+       url("/fonts/InstrumentSans-Variable.woff2") format("woff2");
+  font-weight: 400 700;
+  font-stretch: 75% 100%;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Overpass Mono";
+  src: url("/fonts/OverpassMono-Variable.woff2") format("woff2-variations"),
+       url("/fonts/OverpassMono-Variable.woff2") format("woff2");
+  font-weight: 300 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* ---------- Design tokens: the only values allowed ---------- */
+@theme {
+  /* Colour */
+  --color-*: initial;
+  --color-paper: #F7F2E7;
+  --color-carbon: #202521;
+  --color-yellow: #E4BB3F;
+  --color-rust: #A9503E;
+  --color-camel: #B49A78;
+  /* Hairlines: carbon 20% on paper, paper 14% on carbon */
+  --color-line: color-mix(in srgb, var(--color-carbon) 20%, transparent);
+  --color-line-dark: color-mix(in srgb, var(--color-paper) 14%, transparent);
+
+  /* Type faces */
+  --font-*: initial;
+  --font-sans: "Instrument Sans", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "Overpass Mono", ui-monospace, monospace;
+  --font-stretch-semicondensed: 87.5%;
+
+  /* Type scale */
+  --text-*: initial;
+  --text-display: 110px;
+  --text-display--line-height: 0.9;
+  --text-display--letter-spacing: -0.01em;
+  --text-display--font-weight: 650;
+  --text-h1: 68px;
+  --text-h1--line-height: 0.92;
+  --text-h1--letter-spacing: -0.01em;
+  --text-h1--font-weight: 650;
+  --text-h2: 42px;
+  --text-h2--line-height: 1.05;
+  --text-h2--letter-spacing: -0.01em;
+  --text-h2--font-weight: 600;
+  --text-h3: 26px;
+  --text-h3--line-height: 1.1;
+  --text-h3--font-weight: 600;
+  --text-lead: 20px;
+  --text-lead--line-height: 1.45;
+  --text-body: 16px;
+  --text-body--line-height: 1.5;
+  --text-small: 14px;
+  --text-small--line-height: 1.5;
+  --text-label: 12px;
+  --text-label--line-height: 1.4;
+  --text-label--letter-spacing: 0.12em;
+  --text-label--font-weight: 600;
+
+  /* Spacing: 8 · 13 · 21 · 34 · 55 · 89 · 144, nothing else (p-21, gap-34, mt-144 …) */
+  --spacing-*: initial;
+  --spacing-0: 0px;
+  --spacing-8: 8px;
+  --spacing-13: 13px;
+  --spacing-21: 21px;
+  --spacing-34: 34px;
+  --spacing-55: 55px;
+  --spacing-89: 89px;
+  --spacing-144: 144px;
+
+  /* Breakpoints: mobile < 768 ≤ tablet < 1024 ≤ desktop; 1280 / 1512 are check frames */
+  --breakpoint-*: initial;
+  --breakpoint-md: 768px;
+  --breakpoint-lg: 1024px;
+  --breakpoint-xl: 1280px;
+  --breakpoint-frame: 1512px;
+
+  /* Frame: design artboard 1512 × 860, fold at 860 */
+  --container-frame: 1512px;
+  --height-fold: 860px;
+
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* ---------- Grid: 4 / 8 / 12 columns ---------- */
+@layer base {
+  :root {
+    --grid-cols: 4;
+    --grid-margin: 20px;
+    --grid-gutter: 16px;
+  }
+  @media (width >= 768px) {
+    :root { --grid-cols: 8; --grid-margin: 40px; --grid-gutter: 20px; }
+  }
+  @media (width >= 1024px) {
+    :root { --grid-cols: 12; --grid-margin: 20px; --grid-gutter: 24px; }
+  }
+
+  html {
+    background: var(--color-paper);
+    color: var(--color-carbon);
+  }
+  body {
+    font-family: var(--font-sans);
+    font-stretch: var(--font-stretch-semicondensed);
+    font-size: var(--text-body);
+    line-height: var(--text-body--line-height);
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+  [x-cloak] { display: none !important; }
+  :focus-visible {
+    outline: 2px solid var(--color-carbon);
+    outline-offset: 3px;
+  }
+  .bg-carbon :focus-visible {
+    outline-color: var(--color-paper);
+  }
+}
+
+/* Page grid: max frame width, side margins, token columns and gutters */
+@utility grid-site {
+  display: grid;
+  grid-template-columns: repeat(var(--grid-cols), minmax(0, 1fr));
+  column-gap: var(--grid-gutter);
+  padding-inline: var(--grid-margin);
+  max-width: var(--container-frame);
+  margin-inline: auto;
+}
+
+/* Mono label: 12, caps, ~0.12em tracking */
+@utility label {
+  font-family: var(--font-mono);
+  font-size: var(--text-label);
+  line-height: var(--text-label--line-height);
+  letter-spacing: var(--text-label--letter-spacing);
+  font-weight: var(--text-label--font-weight);
+  font-stretch: normal;
+  text-transform: uppercase;
+}
+
+/* ---------- Components ---------- */
+@layer components {
+  .grid-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 100;
+    pointer-events: none;
+  }
+  .grid-overlay > div {
+    height: 100%;
+  }
+  .grid-overlay i {
+    background: color-mix(in srgb, var(--color-rust) 10%, transparent);
+    box-shadow: inset 1px 0 color-mix(in srgb, var(--color-rust) 35%, transparent),
+                inset -1px 0 color-mix(in srgb, var(--color-rust) 35%, transparent);
+  }
+  .grid-overlay i:nth-child(n + 5) { display: none; }
+  @media (width >= 768px) {
+    .grid-overlay i:nth-child(-n + 8) { display: block; }
+  }
+  @media (width >= 1024px) {
+    .grid-overlay i:nth-child(n) { display: block; }
+  }
+}

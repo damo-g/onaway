@@ -1,0 +1,24 @@
+{
+  "name": "onaway",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "shots": "node scripts/screenshot.mjs"
+  },
+  "devDependencies": {
+    "@tailwindcss/vite": "^4.3.3",
+    "playwright": "^1.64.1",
+    "tailwindcss": "^4.3.3",
+    "vite": "^8.3.5",
+    "vite-plugin-handlebars": "^2.0.3"
+  },
+  "dependencies": {
+    "alpinejs": "^3.17.5",
+    "gsap": "^3.15.0",
+    "lenis": "^1.3.27"
+  }
+}
