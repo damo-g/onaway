@@ -279,7 +279,7 @@
     letter-spacing: var(--tracking-nav);
   }
   .nav-menu-btn {
-    margin-left: auto;
+    order: 1; /* after the buttons: far right */
     align-self: stretch;
     display: grid;
     place-items: center;
@@ -289,13 +289,14 @@
   .nav-menu-btn svg { width: var(--spacing-21); }
   /* Buttons sit outside the padded row: full bar height, flush right (inset only in hero state A) */
   .nav-actions {
+    margin-left: auto;
     align-self: stretch;
     display: flex;
     align-items: center;
     margin-right: var(--quote-inset, 0px);
   }
   .nav-call {
-    display: flex;
+    display: none; /* phones: the number lives in the menu */
     align-items: center;
     justify-content: center;
     gap: var(--spacing-13);
@@ -346,7 +347,7 @@
     font-weight: 600;
   }
   @media (width >= 768px) {
-    .nav-call { padding-inline: var(--spacing-21); }
+    .nav-call { display: flex; padding-inline: var(--spacing-21); }
     .nav-call-number { display: inline; }
     .nav-quote { gap: var(--spacing-34); padding-inline: var(--spacing-21); font-size: var(--text-button); }
     .nav-quote-arrow { display: inline; }
@@ -405,6 +406,9 @@
     top: calc(var(--nav-h) + var(--spacing-34));
     padding-inline: var(--grid-margin);
     text-align: center;
+  }
+  @media (width >= 1280px) {
+    .hero__content { top: calc(var(--nav-h) + var(--spacing-55) + var(--spacing-21)); }
   }
   .hero__title span { display: block; }
   .hero__services {
@@ -479,8 +483,9 @@
     --s-htxt: var(--color-paper);
   }
 
-  /* The section pins under the fixed navbar, so the header clears it */
-  .services__head { position: relative; z-index: 3; padding-top: calc(var(--nav-h) + var(--spacing-34)); row-gap: var(--spacing-21); align-items: end; }
+  /* The section pins just under the fixed navbar, so the header only needs its own breathing room */
+  .services__head { position: relative; z-index: 3; padding-top: var(--spacing-34); row-gap: var(--spacing-21); align-items: end; }
+  @media (width >= 768px) { .services__head { padding-top: var(--spacing-55); } }
   .services__intro { max-width: 34ch; color: var(--svc-sub); }
 
   /* Backdrop plate: the beam the signs hang from. Fades in at its top edge, then out on scroll. */
@@ -492,13 +497,13 @@
     justify-content: center;
     pointer-events: none;
   }
-  .services__plate picture { flex: none; width: max(100%, 900px); }
+  .services__plate picture { flex: none; width: var(--plate-w, max(100%, 900px)); }
   .services__plate img {
     display: block;
     width: 100%;
     height: auto;
-    /* Top fades in to the beam; the bottom melts into the section colour where a tall section outruns the plate */
-    mask-image: linear-gradient(180deg, transparent, var(--color-carbon) 5.5%, var(--color-carbon) 80%, transparent);
+    /* Top fades in to the beam (the plate is sized by services.js to reach the bottom of the stage) */
+    mask-image: linear-gradient(180deg, transparent, var(--color-carbon) 5.5%);
   }
   .services__rods { position: absolute; inset: 0; pointer-events: none; }
   .services__rods span { position: absolute; width: 5px; border-radius: 2px; background: var(--color-carbon); }
@@ -523,6 +528,7 @@
   .sign__fact { grid-column: 2 / -1; color: var(--s-txt); }
   .sign__arrow { grid-row: 1; grid-column: 3; font-size: var(--text-h3); line-height: 1; }
   .sign + .sign, li + li .sign { border-top: 1px solid var(--s-rule); }
+  @media (width < 768px) { .sign__fact { display: none; } }
 
   /* Scripted: the scrub owns geometry (positions and sizes are set inline from the R2-E numbers) */
   .services.is-scripted .services__plate { display: flex; }

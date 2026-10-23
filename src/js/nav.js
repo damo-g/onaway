@@ -13,10 +13,11 @@ export function initNav() {
   const hero = document.querySelector('[data-section="hero"]');
 
   if (hero) {
-    // Only the start matters: past the hero stays true to the bottom of the page
+    // Past the hero as soon as it starts to leave (after its pin), so nothing from it slides under a
+    // clear bar. Only the start matters: past stays true to the bottom of the page.
     ScrollTrigger.create({
       trigger: hero,
-      start: () => `bottom top+=${docked()}`,
+      start: 'bottom bottom',
       invalidateOnRefresh: true,
       onEnter: () => nav.setAttribute('data-past', ''),
       onLeaveBack: () => nav.removeAttribute('data-past'),

@@ -63,18 +63,23 @@ export function init(el) {
     const iconRight = opt('icon', 'left') === 'right';
     const under = !wide || opt('description', 'column') === 'under';
 
-    // Plate never narrower than 900 so the beam keeps its weight; its beam sits 55 under the header
-    // (34 on phones), the faded top of the plate tucking up behind the header
+    // Pinned under the navbar, so the stage you see is the viewport minus the bar
+    const view = window.innerHeight - px('--nav-h');
+
+    // The beam sits 55 under the header (34 on phones), the faded top of the plate tucked behind it.
+    // The plate is never narrower than the screen or 900 (so the beam keeps its weight) and is wide
+    // enough that it reaches the bottom of the stage; its sides crop.
     const headBottom = head.offsetTop + head.offsetHeight;
-    const plateW = Math.max(W, 900);
+    const beamTop = headBottom + (mobile ? 34 : 55);
+    const plateW = Math.max(W, 900, ((view - beamTop) * PLATE.w) / (PLATE.h - PLATE.beamTop));
     const plateH = (plateW * PLATE.h) / PLATE.w;
-    const beamTop = headBottom + 34;
     const plateTop = beamTop - plateH * (PLATE.beamTop / PLATE.h);
     const beamBottom = plateTop + plateH * (PLATE.beamBottom / PLATE.h);
     el.style.setProperty('--plate-top', `${plateTop}px`);
+    el.style.setProperty('--plate-w', `${plateW}px`);
 
     // Start: hanging signs, centred, scaled from the 1512 frame, and shrunk if needed so the
-    // bottom sign always clears the fold by 34 while pinned
+    // bottom sign always clears the bottom of the stage by 34 while pinned
     const hang = (k) => {
       const kk = Math.max(k, 0.6);
       let y = beamBottom;
@@ -90,7 +95,7 @@ export function init(el) {
     const w0 = Math.min(W * (mobile ? 1 : wide ? 0.595 : 0.75), W - 2 * margin, 1035);
     let k = w0 / 900;
     let start = hang(k);
-    const room = window.innerHeight - 34 - beamBottom;
+    const room = view - 34 - beamBottom;
     const used = start[2].y + start[2].h - beamBottom;
     if (used > room && room > 0) {
       k *= room / used;
@@ -111,8 +116,9 @@ export function init(el) {
     // Wide: its own column; tablet: the right-hand three columns; phones: under the description
     const factX = wide ? (iconRight ? colX(7) : colX(8)) : colX(cols - 3);
     const descW = under ? (mobile ? W - nameX - margin - 34 : colX(cols - 3) - nameX - gutter) : colX(iconRight ? 6 : 7) - descX - gutter;
-    const pitch = mobile ? 3 : 5;
-    const factBelow = mobile; // phones stack name, description and fact
+    const pitch = 5;
+    const noFact = mobile; // phones show name and description only
+    const nameGap = mobile ? 0 : 8; // tighter on phones (the description's line height gives the air)
 
     // Dot-matrix size follows the screen; description height at its end width decides the stack
     signs.forEach((s) => s.fact.querySelectorAll('[data-dm]').forEach((d) => (d.dataset.pitch = pitch)));
@@ -132,10 +138,11 @@ export function init(el) {
     });
     const factH = signs.map((s) => shown(s.fact, () => s.fact.offsetHeight));
 
-    const height = Math.max(start[2].y + start[2].h + 89, rowsTop + 3 * rowH + 89);
+    // At least the stage, so no paper shows under the plate while pinned
+    const height = Math.max(start[2].y + start[2].h + 89, rowsTop + 3 * rowH + 89, view);
     el.style.height = `${height}px`;
 
-    g = { W, margin, beamBottom, start, end, tileEnd, nameEnd, arrowEnd, nameX, descX, descW, factX, descH, factH, under, factBelow, iconRight, arrangement };
+    g = { W, margin, beamBottom, start, end, tileEnd, nameEnd, arrowEnd, nameX, descX, descW, factX, descH, factH, under, noFact, nameGap, iconRight, arrangement, view };
     drawRods();
   }
 
@@ -198,7 +205,7 @@ export function init(el) {
 
       const nx = g.iconRight ? L(34, g.nameX, p) : tx + ts + L(28, g.nameX - g.margin - g.tileEnd, p);
       // Stacked layouts lift the name so name, description (and fact on phones) sit centred as a block
-      const stack = g.under ? fs + 8 + g.descH[i] + (g.factBelow ? 13 + g.factH[i] : 0) : fs;
+      const stack = g.under ? fs + g.nameGap + g.descH[i] : fs;
       const nameTop = g.under ? (h - L(fs, stack, c)) / 2 : (h - fs) / 2;
       Object.assign(s.name.style, { left: `${nx}px`, top: `${nameTop}px`, fontSize: `${fs}px` });
 
@@ -206,10 +213,9 @@ export function init(el) {
       Object.assign(s.arrow.style, { right: `${arR}px`, top: `${(h - af) / 2}px`, fontSize: `${af}px` });
 
       const show = c > 0.01 ? 'block' : 'none';
-      const descTop = g.under ? nameTop + fs + 8 : h / 2 - g.descH[i] / 2;
+      const descTop = g.under ? nameTop + fs + g.nameGap : h / 2 - g.descH[i] / 2;
       Object.assign(s.desc.style, { left: `${g.under ? nx : g.descX}px`, top: `${descTop}px`, opacity: c, display: show });
-      const factTop = g.factBelow ? descTop + g.descH[i] + 13 : h / 2 - g.factH[i] / 2;
-      Object.assign(s.fact.style, { left: `${g.factBelow ? nx : g.factX}px`, top: `${factTop}px`, opacity: c, display: show });
+      Object.assign(s.fact.style, { left: `${g.factX}px`, top: `${h / 2 - g.factH[i] / 2}px`, opacity: c, display: g.noFact ? 'none' : show });
 
       const idle = t <= 0.02 || t >= 0.999;
       s.a.classList.toggle('is-live', idle);
@@ -253,5 +259,7 @@ export function init(el) {
     });
   }
 
-  pinScrub(el, LENGTH, render, { smooth: 0.6 });
+  // Pins with its top under the navbar, not behind it
+  const navH = () => parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--nav-h'));
+  pinScrub(el, LENGTH, render, { smooth: 0.6, offset: navH });
 }

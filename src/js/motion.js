@@ -49,9 +49,10 @@ export function onEnterOnce(el, fn, { start = 'top 80%' } = {}) {
  * Pins el for `length` px of scroll (a number, or a function re-read on resize)
  * and calls fn(progress 0→1) as it scrubs.
  * `smooth` is the scrub catch-up in seconds (true = locked to the scroll).
+ * `offset` (px, or a function re-read on resize) pins el that far below the top, e.g. under the navbar.
  * Under reduced motion there is no pin: fn(1) renders the end state.
  */
-export function pinScrub(el, length, fn, { smooth = true } = {}) {
+export function pinScrub(el, length, fn, { smooth = true, offset = 0 } = {}) {
   if (prefersReducedMotion()) {
     fn(1);
     return null;
@@ -62,7 +63,7 @@ export function pinScrub(el, length, fn, { smooth = true } = {}) {
   fn(0);
   const trigger = ScrollTrigger.create({
     trigger: el,
-    start: 'top top',
+    start: () => `top top+=${typeof offset === 'function' ? offset() : offset}`,
     end: () => `+=${typeof length === 'function' ? length() : length}`,
     pin: true,
     animation: scene,
