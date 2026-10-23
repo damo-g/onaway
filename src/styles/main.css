@@ -867,7 +867,8 @@
   .gta[data-map="grid"] .gmap :is(.mn, .rvg, .hwg, .hwl) { display: none; }
 
   /* Panel: the map's title block */
-  .gta__panel { display: flex; flex-direction: column; gap: var(--spacing-21); background: var(--color-paper); }
+  /* Full bleed: the map spans the screen; the panel keeps to the page margin */
+  .gta__panel { display: flex; flex-direction: column; gap: var(--spacing-21); padding-inline: var(--grid-margin); background: var(--color-paper); }
   .gta__sentence { font-size: var(--text-h2); line-height: 0.98; font-weight: 600; letter-spacing: -0.02em; }
   .gta__slot { position: relative; display: inline-block; padding-inline: 0.04em; }
   .gta__place { position: relative; z-index: 1; display: inline-block; transition: color 0.3s; }
@@ -910,14 +911,14 @@
   .gta__result.is-in { animation: tk-write 0.6s cubic-bezier(0.4, 0, 0.2, 1) both; }
   .gta__mark { display: none; }
 
-  /* Desktop: the map fills an inset plate (1472 × 820 at the 1512 frame) and the panel overlays it */
+  /* Desktop: the map runs full width and the panel overlays it, inset by the page margin */
   @media (width >= 1024px) {
     .gta__stage { display: block; }
     .gta__plate { height: clamp(400px, calc(100svh - 2 * var(--grid-margin)), 560px); } /* a supporting section: 400–560 */
     .gta__panel {
       position: absolute;
-      left: var(--spacing-21);
-      top: var(--spacing-21);
+      left: var(--grid-margin);
+      top: var(--grid-margin);
       z-index: 3;
       width: min(600px, 55%);
       padding: var(--spacing-21) var(--spacing-34);
@@ -925,8 +926,8 @@
     .gta__sentence { font-size: var(--text-h1); } /* h1 so the title block fits the 560 plate */
     .gta__mark {
       position: absolute;
-      right: var(--spacing-21);
-      top: var(--spacing-21);
+      right: var(--grid-margin);
+      top: var(--grid-margin);
       z-index: 3;
       display: flex;
       align-items: center;
@@ -938,9 +939,9 @@
     /* Split: sentence on paper at the left, map bleeding right */
     .gta[data-layout="split"] .gta__stage { display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); column-gap: var(--grid-gutter); }
     .gta[data-layout="split"] .gta__plate { grid-column: 2; grid-row: 1; }
-    .gta[data-layout="split"] .gta__panel { position: static; grid-column: 1; grid-row: 1; width: auto; padding: var(--spacing-89) 0 0; background: none; }
+    .gta[data-layout="split"] .gta__panel { position: static; grid-column: 1; grid-row: 1; width: auto; padding: var(--spacing-89) 0 0 var(--grid-margin); background: none; }
     /* Caption: map full, sentence in a title band at the foot */
-    .gta[data-layout="caption"] .gta__panel { top: auto; right: var(--spacing-21); bottom: var(--spacing-21); width: auto; display: grid; grid-template-columns: 1fr minmax(0, 480px); column-gap: var(--spacing-89); }
+    .gta[data-layout="caption"] .gta__panel { top: auto; right: var(--grid-margin); bottom: var(--grid-margin); width: auto; display: grid; grid-template-columns: 1fr minmax(0, 480px); column-gap: var(--spacing-89); }
     .gta[data-layout="caption"] :is(.gta__kick, .gta__sentence) { grid-column: 1 / -1; }
     .gta[data-layout="caption"] .gta__sentence { font-size: var(--text-h1); white-space: nowrap; }
     .gta[data-layout="caption"] .gta__sentence br { display: none; }
