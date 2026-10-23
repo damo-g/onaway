@@ -46,7 +46,8 @@ export function onEnterOnce(el, fn, { start = 'top 80%' } = {}) {
 }
 
 /**
- * Pins el for `length` px of scroll and calls fn(progress 0→1) as it scrubs.
+ * Pins el for `length` px of scroll (a number, or a function re-read on resize)
+ * and calls fn(progress 0→1) as it scrubs.
  * Under reduced motion there is no pin: fn(1) renders the end state.
  */
 export function pinScrub(el, length, fn) {
@@ -58,10 +59,12 @@ export function pinScrub(el, length, fn) {
   const trigger = ScrollTrigger.create({
     trigger: el,
     start: 'top top',
-    end: `+=${length}`,
+    end: () => `+=${typeof length === 'function' ? length() : length}`,
     pin: true,
     scrub: true,
+    invalidateOnRefresh: true,
     onUpdate: (self) => fn(self.progress),
+    onRefresh: (self) => fn(self.progress),
   });
   addReplay(el, () =>
     window.lenis

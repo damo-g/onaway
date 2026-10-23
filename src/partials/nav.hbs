@@ -1,22 +1,28 @@
 <a href="#main" class="sr-only focus:not-sr-only focus:fixed focus:top-8 focus:left-8 focus:z-50 focus:bg-carbon focus:text-paper focus:p-13">Skip to content</a>
-<header class="site-nav" x-data="{ open: false }" @keydown.escape="open = false">
+{{!-- Fixed navbar. On the homepage the hero drives its docking (src/js/sections/hero.js); src/js/nav.js handles the rest of the page. --}}
+<header class="site-nav" data-options="nav" x-data="{ open: false }" @keydown.escape="open = false">
   <div class="nav-bar">
-    {{!-- Stand-in PNG until the wordmark SVG arrives. The hero docks into this bar later. --}}
     <a href="/" class="nav-logo" aria-label="Onaway home">
-      <img src="/images/wordmark-carbon.png" alt="ONAWAY" width="1461" height="285">
+      <svg viewBox="0 0 298.46 56" aria-hidden="true" focusable="false"><g fill="currentColor"><path d="M196.69,44.37l.06-43.47,9.63-.07.04,54.21-8.7-.12c-10.36-1.37-18.27-11.39-21.73-21.23-4.62,12.64-15.16,23.72-29.92,21.15l.05-53.97h9.77s.02,43.53.02,43.53c13.61-7.97,15.46-28.6,15.44-43.55l9.62.05c-.07,14.47,1.24,36.62,15.7,43.49Z"/><path d="M96.96,55l-9.88.07c.25-16.28-7.33-32.52-20.96-42.1l-.04,42.09h-10.04s0-53.72,0-53.72c2.7-.06,5.89-.55,8.13.26,9.66,3.48,16.46,10.43,22.41,18.55l.17-18.92h10.23s-.01,53.78-.01,53.78Z"/><path d="M242.16,40.09l-21.98-.02v15s-10.2-.03-10.2-.03l.33-36.59C210.41,7.49,219.9.25,230.71,0c11.18-.25,20.63,7.17,21.4,18.47l.34,36.44-10.29.2v-15.03ZM242.19,31.71l-.11-13.15c-1.14-6.11-6.28-10.71-12.84-9.46-4.82.92-8.88,5.34-8.94,10.25l-.16,12.4,22.05-.03Z"/><path d="M132.66,40.03l-21.77-.02-.06,15.06-10.17-.03.32-36.6C101.06,7.52,110.94.16,121.73.11c11.38-.06,20.85,8.06,20.9,19.34l.14,35.62-10.16.04.04-15.06ZM132.62,31.86l-.07-11.97c-.02-4.32-2.92-8.42-7-9.96-3.49-1.31-7.02-.7-10.05,1.45-2.26,1.6-4.52,4.75-4.55,8.11l-.09,12.38h21.76Z"/><path d="M49.53,42.32c-4.82,8.84-13.63,13.72-23.26,13.68-9.78-.04-18.52-5.37-23.02-14.21C-.84,33.77-1.07,24.22,2.56,16.01,6.8,6.41,15.9.51,26.29.41s19.82,5.57,24.12,15.1c3.81,8.43,3.67,18.48-.88,26.81ZM39.21,40.32c4.26-7.28,4.2-16.31.62-23.62-2.65-5.4-8.18-8.46-13.9-8.2-5.79.26-10.6,3.56-13.05,8.97-3.31,7.32-3.22,16.16.95,23.16,2.73,4.59,7.82,7.19,12.97,7.15,4.88-.04,9.67-2.74,12.42-7.45Z"/><polygon points="298.46 .89 278.97 31.68 278.94 55.07 267.75 55.14 267.69 31.73 248.23 .9 260.49 .78 273.39 21.63 286.27 .77 298.46 .89"/></g></svg>
     </a>
-    <nav aria-label="Primary" class="nav-links hidden lg:flex">
-      <a href="/#services">Services <span class="font-normal" aria-hidden="true">+</span></a>
+    <nav aria-label="Primary" class="nav-links">
+      <a href="/#services">Services <svg class="nav-plus" viewBox="0 0 14 14" aria-hidden="true"><path d="M7 0v14M0 7h14" stroke="currentColor" stroke-width="1.5"/></svg></a>
       <a href="/about/">About</a>
       <a href="/faq/">Help</a>
     </nav>
-    <a href="/fr/" class="nav-fr hidden lg:block" lang="fr" hreflang="fr" aria-label="Français">FR</a>
-    <a href="/quote/" class="nav-quote">Get a free quote <span aria-hidden="true">↗</span></a>
-    <button type="button" class="nav-menu-btn lg:hidden" aria-controls="nav-menu" :aria-expanded="open.toString()" aria-expanded="false" @click="open = !open">
-      <span x-text="open ? 'Close' : 'Menu'">Menu</span>
+    <a href="/fr/" class="nav-fr" lang="fr" hreflang="fr" aria-label="Français">FR</a>
+    <button type="button" class="nav-menu-btn" aria-controls="nav-menu" :aria-expanded="open.toString()" aria-expanded="false" @click="open = !open">
+      <span class="sr-only" x-text="open ? 'Close menu' : 'Menu'">Menu</span>
+      <svg viewBox="0 0 22 14" aria-hidden="true" x-show="!open"><path d="M0 1h22M0 7h22M0 13h22" stroke="currentColor" stroke-width="2"/></svg>
+      <svg viewBox="0 0 22 14" aria-hidden="true" x-show="open" x-cloak><path d="M4 0l14 14M18 0L4 14" stroke="currentColor" stroke-width="2"/></svg>
     </button>
+    <a href="tel:+13477772380" class="nav-call" aria-label="Call +1 347 777 2380">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6.6 3.5 9 3l1.6 4.2-2 1.4a12 12 0 0 0 6.8 6.8l1.4-2L21 15l-.5 2.4A3 3 0 0 1 17.6 20 14.6 14.6 0 0 1 4 6.4a3 3 0 0 1 2.6-2.9Z" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/></svg>
+      <span class="nav-call-number" aria-hidden="true">+1 347 777 2380</span>
+    </a>
+    <a href="/quote/" class="nav-quote">Get a free quote <span class="nav-quote-arrow" aria-hidden="true">↗</span></a>
   </div>
-  <div id="nav-menu" class="nav-menu lg:hidden" x-show="open" x-cloak @click.outside="open = false">
+  <div id="nav-menu" class="nav-menu" x-show="open" x-cloak @click.outside="open = false">
     <a href="/#services" @click="open = false">Services <span aria-hidden="true">+</span></a>
     <a href="/about/">About <span aria-hidden="true">→</span></a>
     <a href="/faq/">Help <span aria-hidden="true">→</span></a>

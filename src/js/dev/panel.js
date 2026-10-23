@@ -53,8 +53,12 @@ function resolveState(params) {
   return next;
 }
 
+// Sections register under their data-section id; global parts (the navbar) under data-options.
+const optionTarget = (id) => document.querySelector(`[data-section="${id}"], [data-options="${id}"]`);
+const globalIds = () => [...registry.keys()].filter((id) => optionTarget(id)?.matches('[data-options]'));
+
 function applySection(id) {
-  const el = document.querySelector(`[data-section="${id}"]`);
+  const el = optionTarget(id);
   if (!el) return;
   for (const [opt, value] of Object.entries(state[id])) el.dataset[opt] = value;
   el.dispatchEvent(new CustomEvent('section:options', { detail: { ...state[id] } }));
@@ -217,20 +221,22 @@ function render(force = false) {
   const reduced = document.documentElement.dataset.motion === 'reduce';
   const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' })[c]);
 
-  const optionsHtml = options
-    ? Object.entries(options).map(([opt, values]) => `
-        <div class="opt" role="group" aria-label="${esc(opt)}">
+  const optionGroups = (gid) => Object.entries(registry.get(gid)).map(([opt, values]) => `
+        <div class="opt" role="group" aria-label="${esc(`${gid} ${opt}`)}">
           <div class="opt-name">${esc(opt)}</div>
           <div class="row">${values.map((v, i) => `
-            <button type="button" class="chip" data-act="opt" data-id="${esc(id)}" data-opt="${esc(opt)}" data-value="${esc(v)}"
-              aria-pressed="${state[id][opt] === v}">${esc(v)}${i === 0 ? '<span class="lock">LOCKED</span>' : ''}</button>`).join('')}
+            <button type="button" class="chip" data-act="opt" data-id="${esc(gid)}" data-opt="${esc(opt)}" data-value="${esc(v)}"
+              aria-pressed="${state[gid][opt] === v}">${esc(v)}${i === 0 ? '<span class="lock">LOCKED</span>' : ''}</button>`).join('')}
           </div>
-        </div>`).join('')
-    : '<p class="muted">No options registered for this section.</p>';
+        </div>`).join('');
+
+  const optionsHtml = options ? optionGroups(id) : '<p class="muted">No options registered for this section.</p>';
+  const globalsHtml = globalIds().map((gid) => `<h3>Global · ${esc(gid)}</h3>${optionGroups(gid)}`).join('');
 
   ui.pop.innerHTML = `
     <h2>Section · ${esc(id ?? 'none')}</h2>
     ${optionsHtml}
+    ${globalsHtml}
     <h3>Tools</h3>
     <div class="row">
       <button type="button" class="chip" data-act="grid" aria-pressed="${gridOn}">Grid overlay<kbd>G</kbd></button>
