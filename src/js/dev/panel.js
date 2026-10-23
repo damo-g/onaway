@@ -68,7 +68,7 @@ function applySection(id) {
   const el = optionTarget(id);
   if (!el) return;
   for (const [opt, value] of Object.entries(state[id])) el.dataset[opt] = value;
-  el.dispatchEvent(new CustomEvent('section:options', { detail: { ...state[id] } }));
+  el.dispatchEvent(new CustomEvent('section:options', { bubbles: true, detail: { ...state[id] } }));
 }
 
 function setOption(id, opt, value) {

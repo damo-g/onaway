@@ -25,18 +25,24 @@ export function initNav() {
     nav.setAttribute('data-past', '');
   }
 
-  const dark = new Set();
-  document.querySelectorAll('[data-nav-theme="dark"]').forEach((section) => {
+  // Track which sections sit under the navbar; the dark flag is read live, so a section can change
+  // its environment (dev panel) without rebuilding triggers.
+  const under = new Set();
+  const update = () => {
+    nav.dataset.theme = [...under].some((s) => s.dataset.navTheme === 'dark') ? 'dark' : 'light';
+  };
+  document.querySelectorAll('[data-section]').forEach((section) => {
     ScrollTrigger.create({
       trigger: section,
       start: () => `top top+=${docked() / 2}`,
       end: () => `bottom top+=${docked() / 2}`,
       invalidateOnRefresh: true,
       onToggle: (self) => {
-        if (self.isActive) dark.add(section);
-        else dark.delete(section);
-        nav.dataset.theme = dark.size ? 'dark' : 'light';
+        if (self.isActive) under.add(section);
+        else under.delete(section);
+        update();
       },
     });
   });
+  if (import.meta.env.DEV) document.addEventListener('section:options', update);
 }

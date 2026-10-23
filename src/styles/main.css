@@ -441,6 +441,123 @@
   .hero.is-scripted .hero__lede { display: flex; }
   html.js .hero:not(.is-ready) { visibility: hidden; animation: hero-reveal 0s 2s forwards; }
   html.js body:has(.hero:not(.is-ready)) .site-nav { visibility: hidden; animation: hero-reveal 0s 2s forwards; }
+  /* ---------- Services (R2-E) ---------- */
+  /* Options (dev panel): data-env el01 (locked, light) | el02 | ed03 | ed04 (dark), data-signs dark (locked) | light. */
+  .services {
+    --svc-bg: var(--color-paper);
+    --svc-fg: var(--color-carbon);
+    --svc-sub: color-mix(in srgb, var(--color-carbon) 78%, transparent);
+    /* Dark signs (locked) */
+    --s-txt: var(--color-paper);
+    --s-sub: color-mix(in srgb, var(--color-paper) 78%, transparent);
+    --s-face: var(--color-carbon);
+    --s-edge: color-mix(in srgb, var(--color-paper) 22%, transparent);
+    --s-tile: color-mix(in srgb, var(--color-paper) 7%, var(--color-carbon));
+    --s-glyph: var(--color-paper);
+    --s-rule: color-mix(in srgb, var(--color-paper) 18%, transparent);
+    --s-hbg: var(--color-paper);
+    --s-htxt: var(--color-carbon);
+    position: relative;
+    overflow: hidden;
+    background: var(--svc-bg);
+    color: var(--svc-fg);
+  }
+  .services[data-env^="ed"] {
+    --svc-bg: var(--color-carbon);
+    --svc-fg: var(--color-paper);
+    --svc-sub: color-mix(in srgb, var(--color-paper) 78%, transparent);
+  }
+  .services[data-signs="light"] {
+    --s-txt: var(--color-carbon);
+    --s-sub: color-mix(in srgb, var(--color-carbon) 78%, transparent);
+    --s-face: var(--color-paper);
+    --s-edge: transparent;
+    --s-tile: color-mix(in srgb, var(--color-carbon) 5%, var(--color-paper));
+    --s-glyph: var(--color-carbon);
+    --s-rule: color-mix(in srgb, var(--color-carbon) 18%, transparent);
+    --s-hbg: var(--color-carbon);
+    --s-htxt: var(--color-paper);
+  }
+
+  /* The section pins under the fixed navbar, so the header clears it */
+  .services__head { position: relative; z-index: 3; padding-top: calc(var(--nav-h) + var(--spacing-34)); row-gap: var(--spacing-21); align-items: end; }
+  .services__intro { max-width: 34ch; color: var(--svc-sub); }
+
+  /* Backdrop plate: the beam the signs hang from. Fades in at its top edge, then out on scroll. */
+  .services__plate {
+    position: absolute;
+    inset-inline: 0;
+    top: var(--plate-top, 0px);
+    display: none;
+    justify-content: center;
+    pointer-events: none;
+  }
+  .services__plate picture { flex: none; width: max(100%, 900px); }
+  .services__plate img {
+    display: block;
+    width: 100%;
+    height: auto;
+    /* Top fades in to the beam; the bottom melts into the section colour where a tall section outruns the plate */
+    mask-image: linear-gradient(180deg, transparent, var(--color-carbon) 5.5%, var(--color-carbon) 80%, transparent);
+  }
+  .services__rods { position: absolute; inset: 0; pointer-events: none; }
+  .services__rods span { position: absolute; width: 5px; border-radius: 2px; background: var(--color-carbon); }
+
+  /* Board without JS (also the reduced-motion fallback if the script fails): plain rows */
+  .services__board { position: relative; margin-top: var(--spacing-89); padding-bottom: var(--spacing-89); }
+  .sign {
+    position: relative;
+    display: grid;
+    grid-template-columns: var(--spacing-55) 1fr auto;
+    column-gap: var(--spacing-21);
+    align-items: center;
+    padding: var(--spacing-21) var(--grid-margin);
+    background: var(--s-face);
+    color: var(--s-txt);
+  }
+  .sign__housing, .sign__face, .sign__rule { display: none; }
+  .sign__tile { display: grid; place-items: center; aspect-ratio: 1; background: var(--s-tile); color: var(--s-glyph); }
+  .sign__tile svg { width: 68%; height: 68%; }
+  .sign__name { font-size: var(--text-h3); line-height: 1; font-weight: 600; white-space: nowrap; }
+  .sign__desc { grid-column: 2 / -1; font-size: var(--text-small); line-height: 1.5; color: var(--s-sub); }
+  .sign__fact { grid-column: 2 / -1; color: var(--s-txt); }
+  .sign__arrow { grid-row: 1; grid-column: 3; font-size: var(--text-h3); line-height: 1; }
+  .sign + .sign, li + li .sign { border-top: 1px solid var(--s-rule); }
+
+  /* Scripted: the scrub owns geometry (positions and sizes are set inline from the R2-E numbers) */
+  .services.is-scripted .services__plate { display: flex; }
+  .services.is-scripted .services__board { position: absolute; inset: 0; margin: 0; padding: 0; }
+  .services.is-scripted .sign {
+    position: absolute;
+    display: block;
+    padding: 0;
+    background: none;
+    border: 0;
+    transition: translate 0.2s var(--ease-out);
+  }
+  .services.is-scripted .sign__housing,
+  .services.is-scripted .sign__face,
+  .services.is-scripted .sign__rule { display: block; position: absolute; }
+  .services.is-scripted .sign__housing { inset: 0; background: var(--color-carbon); }
+  .services.is-scripted .sign__face { background: var(--s-face); transition: background-color 0.2s; }
+  .services.is-scripted .sign__rule { inset: auto 0 0; height: 1px; background: var(--s-rule); }
+  .services.is-scripted .sign__tile,
+  .services.is-scripted .sign__name,
+  .services.is-scripted .sign__desc,
+  .services.is-scripted .sign__fact,
+  .services.is-scripted .sign__arrow { position: absolute; }
+  .services.is-scripted .sign__tile { transition: background-color 0.2s; }
+  .services.is-scripted .sign__desc { line-height: 1.5; }
+
+  /* Hover is live at rest (start and end), paused mid-morph; the face inverts, and lifts 3px at the start */
+  .services .sign.is-live:hover,
+  .services .sign.is-live:focus-visible {
+    --s-txt: var(--s-htxt); --s-sub: var(--s-htxt); --s-face: var(--s-hbg); --s-tile: var(--s-hbg); --s-glyph: var(--s-htxt);
+    outline-offset: -4px;
+  }
+  .services .sign.is-lift:hover,
+  .services .sign.is-lift:focus-visible { translate: 0 -3px; }
+  .services.is-scripted .sign:not(.is-live) { pointer-events: none; }
 }
 
 @keyframes hero-reveal { to { visibility: visible; } }

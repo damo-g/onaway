@@ -1,2 +1,52 @@
-{{!-- 02 Services · R2-E Station Signs. Empty until branch section/02-services. --}}
-{{#> section id="services" label="Services"}}{{/section}}
+{{!-- 02 Services · R2-E Station Signs to Board (pinned). Without JS the list is the end-state board;
+     src/js/sections/services.js hangs the signs from the beam and scrubs them into the rows. --}}
+{{#> section id="services" variant="bleed" class="services" label="Services"}}
+  <div class="services__plate" aria-hidden="true">
+    {{picture "el01" alt="" sizes="(width >= 900px) 100vw, 900px"}}
+    {{#if dev}}
+    <template data-env="el02">{{picture "el02" alt="" sizes="(width >= 900px) 100vw, 900px"}}</template>
+    <template data-env="ed03">{{picture "ed03" alt="" sizes="(width >= 900px) 100vw, 900px"}}</template>
+    <template data-env="ed04">{{picture "ed04" alt="" sizes="(width >= 900px) 100vw, 900px"}}</template>
+    {{/if}}
+  </div>
+
+  <header class="services__head grid-site">
+    <h2 class="services__title text-h2 lg:text-h1 uppercase col-span-full lg:col-span-7">What we take<br class="hidden lg:inline"> off your plate.</h2>
+    <p class="services__intro text-lead col-span-full lg:col-span-5">Three services, one crew standard. Pick one to see what's included and book a window.</p>
+  </header>
+
+  <div class="services__rods" aria-hidden="true"></div>
+
+  <ul class="services__board" role="list">
+    <li>
+      <a class="sign" href="/cleaning/">
+        <span class="sign__housing" aria-hidden="true"></span><span class="sign__face" aria-hidden="true"></span><span class="sign__rule" aria-hidden="true"></span>
+        <span class="sign__tile" aria-hidden="true"><svg viewBox="0 0 96 96"><g fill="currentColor"><path d="M30 14h34a8 8 0 0 1 8 8v4a4 4 0 0 1-4 4H54v8H40V30H30a4 4 0 0 1-4-4v-8a4 4 0 0 1 4-4z"/><path d="M72 16h8v8h-8z"/><path d="M40 30h10l-6 16h-6z"/><path d="M36 40h22v4c8 4 12 10 12 18v20a6 6 0 0 1-6 6H32a6 6 0 0 1-6-6V62c0-8 4-14 10-18z"/></g><rect x="34" y="60" width="28" height="14" rx="2" style="fill:var(--s-tile)"/></svg></span>
+        <span class="sign__name">Cleaning</span>
+        <span class="sign__desc">Homes and workplaces, once or on a schedule</span>
+        <span class="sign__fact"><span data-dm="2 HR QUOTE" data-pitch="5"></span></span>
+        <span class="sign__arrow" aria-hidden="true">→</span>
+      </a>
+    </li>
+    <li>
+      <a class="sign" href="/moving/">
+        <span class="sign__housing" aria-hidden="true"></span><span class="sign__face" aria-hidden="true"></span><span class="sign__rule" aria-hidden="true"></span>
+        <span class="sign__tile" aria-hidden="true"><svg viewBox="0 0 96 96"><g transform="translate(8 2) rotate(-14 40 80)"><g fill="currentColor"><path d="M22 8h20a5 5 0 0 1 5 5v4H40v-1h-6v48h44a5 5 0 0 1 5 5v5a5 5 0 0 1-5 5H31a6 6 0 0 1-6-6V16h-3a4 4 0 0 1 0-8z"/><path d="M40 16h7v8a4 4 0 0 1-4 4h-3z"/><circle cx="36" cy="82" r="11"/></g><circle cx="36" cy="82" r="4" style="fill:var(--s-tile)"/></g></svg></span>
+        <span class="sign__name">Moving</span>
+        <span class="sign__desc">Homes and offices, one room to a full floor</span>
+        <span class="sign__fact"><span data-dm="WE WRAP IT" data-pitch="5"></span></span>
+        <span class="sign__arrow" aria-hidden="true">→</span>
+      </a>
+    </li>
+    <li>
+      <a class="sign" href="/delivery/">
+        <span class="sign__housing" aria-hidden="true"></span><span class="sign__face" aria-hidden="true"></span><span class="sign__rule" aria-hidden="true"></span>
+        <span class="sign__tile" aria-hidden="true"><svg viewBox="0 0 96 96"><g fill="currentColor"><path d="M14 18h68a3 3 0 0 1 3 3v9H11v-9a3 3 0 0 1 3-3z"/><path d="M16 34h64v44a5 5 0 0 1-5 5H21a5 5 0 0 1-5-5z"/></g><rect x="43" y="18" width="10" height="34" style="fill:var(--s-tile)"/><rect x="28" y="62" width="18" height="5" rx="1" style="fill:var(--s-tile)"/></svg></span>
+        <span class="sign__name">Delivery</span>
+        <span class="sign__desc">Single items to full loads, same-day or scheduled</span>
+        <span class="sign__fact"><span data-dm="GTA-WIDE" data-pitch="5"></span></span>
+        <span class="sign__arrow" aria-hidden="true">→</span>
+      </a>
+    </li>
+  </ul>
+{{/section}}

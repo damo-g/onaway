@@ -29,6 +29,9 @@ Desktop 1512 × 860 · 12 columns · mocks drawn on a 20 margin (Brand Guide say
 - After the hero the navbar sits on paper (locked); the clear alternative switches its text colour over dark sections. Buttons keep their fills.
 - Hero at rest uses the section image's copy and layout: centred "Steady hands / at your door", description "Cleaning, Moving & Delivery for homes and businesses across the GTA" (h3 size), three service cards on the 4/4/4 split.
 - Hero mobile: same pinned scrub with a shorter bar (89 → 72), headline at h1, cards stacked.
+- Services (R2-E) backdrops: **EL-01** (light, locked) plus review alternatives EL-02 (light, two windows), ED-03 and ED-04 (dark). Sources are the 2304 × 1856 plates; the beam sits at the same height in all four.
+- Services header clears the fixed navbar (nav height + 34). The beam sits 34 under the header and the hanging signs shrink if needed so the bottom sign always clears the fold by 34 while pinned.
+- Favicon: the W symbol on a transparent background, Carbon, switching to Ticket Paper in dark browser themes.
 
 ## Post-build
 - GT-09 map: replace hand-drawn mock with OpenStreetMap vector data in MapLibre GL, styled to tokens, flyTo on match, credit © OpenStreetMap contributors.

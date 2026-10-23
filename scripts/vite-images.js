@@ -94,6 +94,16 @@ export function images({ src, cache: cacheRoot, widths = [768, 1280, 1920, 2560]
     },
     configureServer(server) {
       start();
+      // New or edited source images: rescan, re-encode what changed, reload the page
+      server.watcher.add(src);
+      const onChange = (file) => {
+        if (!resolve(file).startsWith(resolve(src))) return;
+        meta.clear();
+        scanned = ready = undefined;
+        start();
+        scanned.then(() => server.ws.send({ type: 'full-reload' }));
+      };
+      ['add', 'change', 'unlink'].forEach((evt) => server.watcher.on(evt, onChange));
       server.middlewares.use(BASE, async (req, res, next) => {
         const file = decodeURIComponent(req.url.split('?')[0]).replace(/^\/+/, '');
         if (!/^[\w-]+\.(avif|webp)$/.test(file)) return next();
