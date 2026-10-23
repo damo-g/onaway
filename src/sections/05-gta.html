@@ -1,2 +1,25 @@
-{{!-- 05 Across the GTA · GT-09 We'll Be There. Empty until branch section/05-gta. --}}
-{{#> section id="gta" label="Across the GTA"}}{{/section}}
+{{!-- 05 Across the GTA · GT-09 We'll Be There. The sentence and the map move together: an idle tour once,
+     then the postal-code check flies the map to your place. src/js/sections/gta.js. --}}
+{{#> section id="gta" class="gta" label="Across the GTA"}}
+  <div class="gta__stage col-span-full">
+    <div class="gta__plate">
+      {{> gta-map}}
+    </div>
+
+    <div class="gta__panel">
+      <p class="gta__kick label">Across the GTA</p>
+      <h2 class="gta__sentence">We’ll be in <br><span class="gta__slot is-idle"><span class="gta__hl" aria-hidden="true"></span><span class="gta__place">the GTA</span></span> <br>on your date.</h2>
+      <p class="gta__lead text-lead">The City of Toronto and the four regions around it. The same crew and the same promises, wherever you are.</p>
+      <form class="gta__check" novalidate>
+        <label class="label" for="gta-postcode">Do we cover you?</label>
+        <div class="gta__row">
+          <input id="gta-postcode" name="postcode" maxlength="7" placeholder="Postal code, e.g. M6K 1A1" autocomplete="postal-code" spellcheck="false">
+          <button type="submit">Check <span aria-hidden="true">→</span></button>
+        </div>
+        <p class="gta__result" aria-live="polite"></p>
+      </form>
+    </div>
+
+    <p class="gta__mark label" aria-hidden="true"><i></i>Where we’ll be</p>
+  </div>
+{{/section}}

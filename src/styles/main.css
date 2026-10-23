@@ -97,6 +97,7 @@
   --spacing-nav: var(--nav-h);
   --text-button: 18px;
   --text-numeral: 56px; /* TS-02 step numbers */
+  --text-sentence: 76px; /* GT-09 sentence */
   --tracking-nav: 0.02em;
   --tracking-mono: 0.06em;
 
@@ -822,6 +823,141 @@
   .promises.is-armed :is(*, *::before, *::after) { animation-play-state: paused; }
   .promises.is-armed.is-go :is(*, *::before, *::after) { animation-play-state: running; }
   .promises.is-armed.is-go .carousel.is-paused .carousel__bar.is-on i { animation-play-state: paused; }
+  /* ---------- Across the GTA (GT-09 We'll Be There) ---------- */
+  /* Options (dev panel): data-tone light (locked) | dark · data-map drawn (locked) | grid · data-idle tour (locked) | still
+     · data-zoom place (locked) | area · data-check on (locked) | off · data-layout overlay (locked) | split | caption */
+  .gta {
+    --map-land: color-mix(in srgb, var(--color-carbon) 2%, var(--color-paper));
+    --map-lake: color-mix(in srgb, var(--color-camel) 28%, var(--color-paper));
+    --map-ink: var(--color-carbon);
+    --map-halo: var(--map-land);
+  }
+  .gta[data-tone="dark"] {
+    --map-land: var(--color-carbon);
+    --map-lake: color-mix(in srgb, var(--color-paper) 6%, var(--color-carbon));
+    --map-ink: var(--color-paper);
+  }
+  .gta__stage { position: relative; display: flex; flex-direction: column; gap: var(--spacing-34); }
+  .gta__plate { position: relative; height: 480px; overflow: hidden; background: var(--map-land); }
+  .gmap { position: absolute; inset: 0; width: 100%; height: 100%; }
+
+  /* Map layers (from the mock: tint, minor streets, rivers, concessions, boundaries, highways, shore, labels) */
+  .gmap .lake { fill: var(--map-lake); }
+  .gmap .landf { fill: var(--map-land); }
+  #gmap-zoom { transition: transform 1.6s cubic-bezier(0.6, 0, 0.15, 1); transform-box: view-box; transform-origin: 0 0; }
+  .gmap .rd { fill: none; stroke: color-mix(in srgb, var(--map-ink) 42%, transparent); stroke-width: 1; }
+  .gmap .mn path { fill: none; stroke: color-mix(in srgb, var(--map-ink) 13%, transparent); stroke-width: 0.6; }
+  .gmap .rv { fill: none; stroke: var(--color-camel); stroke-width: 5; stroke-opacity: 0.5; stroke-linecap: round; }
+  .gmap .hw { fill: none; stroke: color-mix(in srgb, var(--map-ink) 75%, transparent); stroke-width: 5; stroke-linecap: round; }
+  .gmap .hwc { fill: none; stroke: var(--map-land); stroke-width: 1.6; stroke-linecap: round; }
+  .gmap .bd { fill: none; stroke: color-mix(in srgb, var(--map-ink) 45%, transparent); stroke-dasharray: 2 6; }
+  .gmap .sh { fill: none; stroke: var(--map-ink); stroke-width: 1.6; }
+  .gmap .rf { fill: var(--color-yellow); opacity: 0; transition: opacity 0.8s; }
+  .gmap .rf.is-hit { opacity: 0.22; }
+  .gta[data-tone="dark"] .gmap .rf.is-hit { opacity: 0.16; }
+  .gmap text { font-family: var(--font-mono); }
+  .gmap .rn { font-size: 9px; letter-spacing: 0.12em; fill: color-mix(in srgb, var(--map-ink) 50%, transparent); }
+  .gmap .hwt { font-size: 10px; font-weight: 600; letter-spacing: 0.08em; fill: var(--map-ink); paint-order: stroke; stroke: var(--map-halo); stroke-width: 3px; }
+  .gmap .rl { font-size: 16px; font-weight: 600; letter-spacing: 0.4em; fill: color-mix(in srgb, var(--map-ink) 28%, transparent); }
+  .gmap .lk { font-size: 12px; letter-spacing: 0.4em; fill: color-mix(in srgb, var(--map-ink) 40%, transparent); }
+  .gmap .pl circle { fill: var(--map-ink); }
+  .gmap .pl text { font-family: var(--font-sans); font-stretch: 87.5%; font-size: 13px; fill: color-mix(in srgb, var(--map-ink) 75%, transparent); paint-order: stroke; stroke: var(--map-halo); stroke-width: 3px; transition: fill 0.4s; }
+  .gmap .pl.is-on text { fill: var(--map-ink); font-weight: 600; }
+  #gmap-pin { opacity: 0; transition: transform 1.6s cubic-bezier(0.6, 0, 0.15, 1), opacity 0.5s; }
+  .gmap__pin { fill: var(--color-yellow); stroke: var(--color-carbon); stroke-width: 1.5; }
+  .gta[data-map="grid"] .gmap :is(.mn, .rvg, .hwg, .hwl) { display: none; }
+
+  /* Panel: the map's title block */
+  .gta__panel { display: flex; flex-direction: column; gap: var(--spacing-21); background: var(--color-paper); }
+  .gta__sentence { font-size: var(--text-h2); line-height: 0.98; font-weight: 600; letter-spacing: -0.02em; }
+  .gta__slot { position: relative; display: inline-block; padding-inline: 0.04em; }
+  .gta__place { position: relative; z-index: 1; display: inline-block; transition: color 0.3s; }
+  .gta__slot.is-idle .gta__place { color: color-mix(in srgb, var(--color-carbon) 42%, transparent); }
+  .gta__place.is-typing { animation: tk-write 0.6s cubic-bezier(0.4, 0, 0.2, 1) both; }
+  .gta__hl { position: absolute; inset: 0.52em 0 0.04em; background: var(--color-yellow); transform: scaleX(0); transform-origin: 0 0; transition: transform 0.7s cubic-bezier(0.4, 0, 0.2, 1); }
+  .gta__slot.is-lit .gta__hl { transform: scaleX(1); }
+  .gta__lead { max-width: 40ch; color: color-mix(in srgb, var(--color-carbon) 78%, transparent); }
+  .gta__check { display: flex; flex-direction: column; gap: var(--spacing-13); }
+  .gta[data-check="off"] .gta__check { display: none; }
+  .gta__row { display: flex; height: var(--spacing-55); }
+  .gta__row input {
+    flex: 1;
+    min-width: 0;
+    padding-inline: var(--spacing-21);
+    border-bottom: 1.5px solid var(--color-carbon);
+    background: color-mix(in srgb, var(--color-carbon) 5%, var(--color-paper));
+    font-size: var(--text-body);
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+  }
+  .gta__row input::placeholder { text-transform: none; letter-spacing: 0; color: color-mix(in srgb, var(--color-carbon) 50%, transparent); }
+  .gta__row input:focus-visible { outline: 0; box-shadow: inset 0 0 0 2px var(--color-carbon); }
+  .gta__row button {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-13);
+    padding-inline: var(--spacing-21);
+    background: var(--color-carbon);
+    color: var(--color-paper);
+    font-size: var(--text-body);
+    font-weight: 600;
+    cursor: pointer;
+  }
+  .gta__row button span { transition: transform 0.3s; }
+  .gta__row button:hover span { transform: translateX(4px); }
+  .gta__row button:focus-visible { outline-color: var(--color-carbon); outline-offset: 2px; }
+  .gta__result { min-height: calc(var(--text-body) * 1.45 * 2); font-size: var(--text-body); line-height: 1.45; color: color-mix(in srgb, var(--color-carbon) 80%, transparent); }
+  .gta__result b { color: var(--color-carbon); font-weight: 600; }
+  .gta__result.is-in { animation: tk-write 0.6s cubic-bezier(0.4, 0, 0.2, 1) both; }
+  .gta__mark { display: none; }
+
+  /* Desktop: the map fills an inset plate (1472 × 820 at the 1512 frame) and the panel overlays it */
+  @media (width >= 1024px) {
+    .gta__stage { display: block; }
+    .gta__plate { height: min(820px, calc(100svh - 2 * var(--grid-margin))); }
+    .gta__panel {
+      position: absolute;
+      left: var(--spacing-21);
+      top: var(--spacing-21);
+      z-index: 3;
+      width: min(600px, 45%);
+      padding: var(--spacing-34) var(--spacing-34) var(--spacing-21);
+    }
+    .gta__sentence { font-size: var(--text-sentence); }
+    .gta__mark {
+      position: absolute;
+      right: var(--spacing-21);
+      top: var(--spacing-21);
+      z-index: 3;
+      display: flex;
+      align-items: center;
+      gap: var(--spacing-13);
+      padding: var(--spacing-8) var(--spacing-13);
+      background: var(--color-paper);
+    }
+    .gta__mark i { width: var(--spacing-13); height: var(--spacing-13); background: var(--color-yellow); border: 1px solid var(--color-carbon); }
+    /* Split: sentence on paper at the left, map bleeding right */
+    .gta[data-layout="split"] .gta__stage { display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); column-gap: var(--grid-gutter); }
+    .gta[data-layout="split"] .gta__plate { grid-column: 2; grid-row: 1; }
+    .gta[data-layout="split"] .gta__panel { position: static; grid-column: 1; grid-row: 1; width: auto; padding: var(--spacing-89) 0 0; background: none; }
+    /* Caption: map full, sentence in a title band at the foot */
+    .gta[data-layout="caption"] .gta__panel { top: auto; right: var(--spacing-21); bottom: var(--spacing-21); width: auto; display: grid; grid-template-columns: 1fr minmax(0, 480px); column-gap: var(--spacing-89); }
+    .gta[data-layout="caption"] :is(.gta__kick, .gta__sentence) { grid-column: 1 / -1; }
+    .gta[data-layout="caption"] .gta__sentence { font-size: var(--text-h1); white-space: nowrap; }
+    .gta[data-layout="caption"] .gta__sentence br { display: none; }
+  }
+
+  /* Entrance: the plate fades in, the panel writes in (gta.js arms on entry). Reduced motion never arms it. */
+  .gta.is-armed .gta__plate { animation: tk-fade 1s ease both; }
+  .gta.is-armed :is(.gta__kick, .gta__sentence, .gta__lead, .gta__check) { animation: tk-write 0.7s cubic-bezier(0.4, 0, 0.2, 1) both; }
+  .gta.is-armed .gta__kick { animation-delay: 0.1s; }
+  .gta.is-armed .gta__sentence { animation-delay: 0.3s; }
+  .gta.is-armed .gta__lead { animation-delay: 0.7s; }
+  .gta.is-armed .gta__check { animation-delay: 0.9s; }
+  .gta.is-armed :is(.gta__plate, .gta__kick, .gta__sentence, .gta__lead, .gta__check) { animation-play-state: paused; }
+  .gta.is-armed.is-go :is(.gta__plate, .gta__kick, .gta__sentence, .gta__lead, .gta__check) { animation-play-state: running; }
+  .gta.is-static #gmap-zoom,
+  .gta.is-static #gmap-pin { transition: none; }
 }
 
 @keyframes hero-reveal { to { visibility: visible; } }
