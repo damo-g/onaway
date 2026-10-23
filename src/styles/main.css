@@ -761,11 +761,12 @@
   }
   /* Desktop: the copy starts well below the image top (as in the mock) and the credentials sit at its foot */
   @media (width >= 1024px) {
-    .promises__copy { padding-top: calc(var(--spacing-89) + var(--spacing-34)); padding-bottom: var(--spacing-55); }
+    .promises__copy { padding-block: var(--spacing-34); }
     .promises__cred { margin-top: auto; }
+    .promises .carousel { align-self: center; } /* the smaller image sits centred against the copy */
   }
 
-  /* Carousel: 602 × 820 at the 1512 frame (columns 8–12), never taller than the screen */
+  /* Carousel: 4 columns (9–12) at the mock's 602 × 820 proportion, never taller than the screen */
   .carousel {
     position: relative;
     overflow: hidden;
