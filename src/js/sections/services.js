@@ -141,6 +141,9 @@ export function init(el) {
     // At least the stage, so no paper shows under the plate while pinned
     const height = Math.max(start[2].y + start[2].h + 89, rowsTop + 3 * rowH + 89, view);
     el.style.height = `${height}px`;
+    // Paper left under the board once it's done (the section fills the screen while pinned); the next
+    // section tops this up so the gap after the board stays consistent
+    document.documentElement.style.setProperty('--services-tail', `${height - (rowsTop + 3 * rowH)}px`);
 
     g = { W, margin, beamBottom, start, end, tileEnd, nameEnd, arrowEnd, nameX, descX, descW, factX, descH, factH, under, noFact, nameGap, iconRight, arrangement, view };
     drawRods();

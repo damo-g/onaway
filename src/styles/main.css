@@ -570,7 +570,9 @@
   /* ---------- Steps (TS-02 Journey Ticket) ---------- */
   /* Options (dev panel): data-ticket stamps (locked) | stamp | pin | notch · data-symbol centre (locked) | foot
      · data-animation write (locked) | across | unroll. */
-  .steps { padding-top: var(--spacing-55); } /* follows the R2-E board, which keeps 89 below itself: 144 between */
+  /* Generous, consistent air after the R2-E board: section gap + 89 in all, counting the paper the
+     board already leaves under itself (--services-tail, set by services.js) */
+  .steps { padding-top: max(var(--spacing-55), calc(var(--section-gap) + var(--spacing-89) - var(--services-tail, var(--spacing-89)))); }
   .steps .section__grid { row-gap: var(--spacing-55); align-items: start; }
   .steps__intro { display: flex; flex-direction: column; gap: var(--spacing-34); }
   .steps__lead { max-width: 30ch; color: color-mix(in srgb, var(--color-carbon) 78%, transparent); }
