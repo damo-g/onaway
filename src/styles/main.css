@@ -97,6 +97,7 @@
   --spacing-nav: var(--nav-h);
   --text-button: 18px;
   --text-numeral: 56px; /* TS-02 step numbers */
+  --text-sentence: 60px; /* QC-02 quote sentence */
   --tracking-nav: 0.02em;
   --tracking-mono: 0.06em;
 
@@ -958,6 +959,186 @@
   .gta.is-armed.is-go :is(.gta__plate, .gta__kick, .gta__sentence, .gta__lead, .gta__check) { animation-play-state: running; }
   .gta.is-static #gmap-zoom,
   .gta.is-static #gmap-pin { transition: none; }
+  /* ---------- Quote (QC-02 Say It in a Sentence) ---------- */
+  /* Options (dev panel): data-colour dark (locked) | light | yellow · data-marks xo (locked) | box | cross | street
+     · data-ask 3 (locked: service, area, when) | 2 | 1 */
+  .qc {
+    --qc-bg: var(--color-carbon);
+    --qc-fg: var(--color-paper);
+    --qc-mut: color-mix(in srgb, var(--color-paper) 60%, transparent);
+    --qc-line: color-mix(in srgb, var(--color-paper) 32%, transparent);
+    --qc-hl: color-mix(in srgb, var(--color-yellow) 50%, transparent);
+    --qc-cta-bg: var(--color-yellow);
+    --qc-cta-fg: var(--color-carbon);
+    --qc-pop-bg: var(--color-paper);
+    --qc-pop-fg: var(--color-carbon);
+    overflow: hidden;
+    background: var(--qc-bg);
+    color: var(--qc-fg);
+    transition: background-color 0.5s, color 0.5s;
+  }
+  .qc[data-colour="light"] {
+    --qc-bg: var(--color-paper);
+    --qc-fg: var(--color-carbon);
+    --qc-mut: color-mix(in srgb, var(--color-carbon) 60%, transparent);
+    --qc-line: color-mix(in srgb, var(--color-carbon) 30%, transparent);
+    --qc-pop-bg: var(--color-carbon);
+    --qc-pop-fg: var(--color-paper);
+  }
+  .qc[data-colour="yellow"] {
+    --qc-bg: var(--color-yellow);
+    --qc-fg: var(--color-carbon);
+    --qc-mut: color-mix(in srgb, var(--color-carbon) 66%, transparent);
+    --qc-line: color-mix(in srgb, var(--color-carbon) 40%, transparent);
+    --qc-hl: color-mix(in srgb, var(--color-paper) 70%, transparent);
+    --qc-cta-bg: var(--color-carbon);
+    --qc-cta-fg: var(--color-paper);
+    --qc-pop-bg: var(--color-carbon);
+    --qc-pop-fg: var(--color-paper);
+  }
+
+  /* Route background: faint, faded towards the centre where the sentence sits */
+  .qc__bg {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    color: var(--qc-line);
+    opacity: 0.8;
+    mask-image: radial-gradient(ellipse 52% 46% at 50% 50%, color-mix(in srgb, var(--color-carbon) 25%, transparent), var(--color-carbon) 92%);
+  }
+  .qc-route { width: 100%; height: 100%; display: block; }
+  .qc-route * { stroke: currentColor; }
+  .qc-route .rs { display: none; }
+  .qc:not([data-marks]) .qc-route .rs[data-rs="xo"],
+  .qc[data-marks="xo"] .qc-route .rs[data-rs="xo"],
+  .qc[data-marks="box"] .qc-route .rs[data-rs="box"],
+  .qc[data-marks="cross"] .qc-route .rs[data-rs="cross"],
+  .qc[data-marks="street"] .qc-route .rs[data-rs="street"] { display: inline; }
+  .qc-route .rt { stroke-dasharray: 1; stroke-dashoffset: 0; }
+  .qc-route .fl { animation: qc-flow 3s linear infinite; }
+  .qc-route .st .bx { fill: var(--qc-bg); stroke-width: 1.2; }
+  .qc-route .st .ex { fill: none; stroke-width: 1.2; }
+  .qc-route .mv rect { fill: currentColor; stroke: none; opacity: 0.9; }
+
+  /* Centre poster */
+  .qc__body { position: relative; z-index: 1; display: flex; flex-direction: column; align-items: center; text-align: center; }
+  .qc__title { margin-bottom: var(--spacing-34); }
+  .qc__title,
+  .qc__sentence { color: var(--qc-fg); }
+  .qc__form { display: flex; flex-direction: column; align-items: center; }
+  .qc__sentence { font-size: var(--text-h2); line-height: 1.18; font-weight: 600; letter-spacing: -0.02em; max-width: 1100px; }
+  .qc[data-ask="1"] :is(.qc__ask-area, .qc__ask-when),
+  .qc[data-ask="2"] .qc__ask-when { display: none; }
+
+  /* Blanks: underlined buttons; a filled blank gets the 45% highlighter */
+  .qc-blank {
+    position: relative;
+    isolation: isolate;
+    display: inline-block;
+    padding-inline: 0.05em;
+    border-bottom: 4px solid var(--qc-fg);
+    line-height: 1;
+    font: inherit;
+    color: var(--qc-fg);
+    cursor: pointer;
+  }
+  .qc-blank__hl { position: absolute; inset: auto 0 0.05em; height: 0.34em; z-index: -1; background: var(--qc-hl); transform: scaleX(0); transform-origin: 0 0; transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1); }
+  .qc-blank.is-set .qc-blank__hl { transform: scaleX(1); }
+  .qc-blank.is-empty .qc-blank__text { color: var(--qc-mut); }
+  .qc-blank__caret { margin-left: 0.12em; font-size: 0.4em; vertical-align: 0.45em; opacity: 0.6; }
+  .qc-blank:focus-visible { outline: 2px solid var(--qc-fg); outline-offset: 6px; }
+  /* Guide: the next empty blank breathes its underline */
+  .qc-blank.is-next { animation: qc-nudge 1.8s ease-in-out infinite; }
+
+  /* Pickers */
+  .qc-pop {
+    position: absolute;
+    z-index: 20;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    min-width: 300px;
+    padding: var(--spacing-8);
+    background: var(--qc-pop-bg);
+    color: var(--qc-pop-fg);
+    text-align: left;
+  }
+  .qc-pop[hidden] { display: none; }
+  .qc-pop > button,
+  .qc-pop__results button {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-13);
+    padding: var(--spacing-8) var(--spacing-13);
+    font-size: var(--text-h3);
+    line-height: 1.2;
+    font-weight: 600;
+    text-align: left;
+    cursor: pointer;
+  }
+  .qc-pop > button svg { width: var(--spacing-34); height: var(--spacing-34); flex: none; }
+  .qc-pop > button:hover,
+  .qc-pop > button:focus-visible,
+  .qc-pop__results button:hover,
+  .qc-pop__results button:focus-visible,
+  .qc-pop__results button.is-first { background: color-mix(in srgb, var(--qc-pop-fg) 10%, transparent); outline: 0; }
+  .qc-pop--area { width: min(420px, calc(100vw - 2 * var(--grid-margin))); padding: var(--spacing-13); gap: var(--spacing-8); }
+  .qc-pop__input { height: var(--spacing-55); padding-inline: var(--spacing-8); border-bottom: 1.5px solid currentColor; font-size: var(--text-lead); color: inherit; }
+  .qc-pop__input::placeholder { color: currentColor; opacity: 0.5; }
+  .qc-pop__input:focus-visible { outline: 0; box-shadow: 0 1.5px 0 currentColor; }
+  .qc-pop__results { display: flex; flex-direction: column; gap: 2px; min-height: var(--spacing-21); }
+  .qc-pop__results button { font-size: var(--text-lead); }
+  .qc-pop__results i { width: var(--spacing-13); height: var(--spacing-13); flex: none; background: var(--color-yellow); }
+  .qc-pop__results small { margin-left: auto; font-family: var(--font-mono); font-size: var(--text-label); letter-spacing: var(--text-label--letter-spacing); font-weight: 500; font-stretch: normal; text-transform: uppercase; opacity: 0.7; }
+  .qc-pop__msg { padding: var(--spacing-8); font-size: var(--text-small); line-height: 1.45; opacity: 0.75; }
+  .qc-pop__hint { padding-inline: var(--spacing-8); font-family: var(--font-mono); font-size: var(--text-label); letter-spacing: var(--text-label--letter-spacing); text-transform: uppercase; opacity: 0.6; }
+
+  /* Button: 76 tall, yellow at 70% while waiting; its label says the missing step */
+  .qc__foot { margin-top: var(--spacing-55); }
+  .qc__ready { display: flex; flex-direction: column; align-items: center; gap: var(--spacing-21); }
+  .qc__cta {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--spacing-34);
+    height: 76px;
+    padding-inline: var(--spacing-34);
+    background: var(--qc-cta-bg);
+    color: var(--qc-cta-fg);
+    font-size: var(--text-h3);
+    font-weight: 600;
+    cursor: pointer;
+    transition: opacity 0.4s, transform 0.3s;
+  }
+  .qc__cta[aria-disabled="true"] { opacity: 0.7; cursor: not-allowed; }
+  .qc__cta.is-ready { animation: qc-ready 0.5s cubic-bezier(0.3, 0.7, 0.3, 1); }
+  .qc__cta-arrow { transition: transform 0.3s; }
+  .qc__cta:not([aria-disabled="true"]):hover .qc__cta-arrow { transform: translateX(5px); }
+  .qc__cta:focus-visible { outline: 2px solid var(--qc-fg); outline-offset: 4px; }
+  .qc__note { max-width: 52ch; font-size: var(--text-small); line-height: 1.5; color: var(--qc-mut); }
+  .qc__note b { color: var(--qc-fg); font-weight: 600; }
+  .qc__done { max-width: 560px; }
+  .qc__done-title { margin-bottom: var(--spacing-8); font-size: var(--text-h3); line-height: 1.1; font-weight: 600; }
+  .qc__meta { position: absolute; left: 50%; bottom: var(--spacing-55); translate: -50% 0; white-space: nowrap; color: var(--qc-mut); }
+  .qc { padding-bottom: calc(var(--section-gap) + var(--spacing-34)); }
+
+  @media (width < 768px) {
+    .qc__sentence { font-size: var(--text-h3); }
+    .qc__meta { white-space: normal; width: calc(100% - 2 * var(--grid-margin)); text-align: center; bottom: var(--spacing-34); }
+  }
+  @media (width >= 1024px) {
+    .qc__sentence { font-size: var(--text-sentence); }
+  }
+
+  /* Entrance: the route draws in once on entry (quote.js arms it). Reduced motion: no drawing, drift or square. */
+  .qc.is-armed .qc-route .rt { animation: qc-draw 3.2s cubic-bezier(0.4, 0, 0.2, 1) 0.2s both; animation-play-state: paused; }
+  .qc.is-armed.is-go .qc-route .rt { animation-play-state: running; }
+  @media (prefers-reduced-motion: reduce) {
+    .qc-route .fl, .qc-blank.is-next { animation: none; }
+    .qc-route .mv { display: none; }
+  }
+  html[data-motion="reduce"] .qc-route .fl,
+  html[data-motion="reduce"] .qc-blank.is-next { animation: none; }
+  html[data-motion="reduce"] .qc-route .mv { display: none; }
 }
 
 @keyframes hero-reveal { to { visibility: visible; } }
@@ -968,4 +1149,8 @@
 @keyframes pr-rule { from { transform: scaleX(0); } to { transform: scaleX(1); } }
 @keyframes pr-zoom { from { scale: 1.06; } to { scale: 1; } }
 @keyframes car-fill { from { transform: scaleX(0); } to { transform: scaleX(1); } }
+@keyframes qc-flow { from { stroke-dashoffset: 0; } to { stroke-dashoffset: -22; } }
+@keyframes qc-draw { from { stroke-dashoffset: 1; } to { stroke-dashoffset: 0; } }
+@keyframes qc-nudge { 0%, 100% { border-bottom-color: var(--qc-fg); } 50% { border-bottom-color: var(--color-yellow); } }
+@keyframes qc-ready { 0% { scale: 0.98; } 60% { scale: 1.02; } 100% { scale: 1; } }
 @keyframes tk-head { from { left: 0; opacity: 1; } 95% { opacity: 1; } to { left: 100%; opacity: 0; } }

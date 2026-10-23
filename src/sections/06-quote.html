@@ -1,2 +1,63 @@
-{{!-- 06 Quote · QC-02 Say It in a Sentence. Empty until branch section/06-quote. --}}
-{{#> section id="quote" label="Get a free quote" variant="inset"}}{{/section}}
+{{!-- 06 Quote · QC-02 Say It in a Sentence (centre poster, dark inset panel). Each blank opens a picker;
+     the button says what's missing. src/js/sections/quote.js. Area pre-fills from the GTA check (05). --}}
+{{#> section id="quote" variant="inset" class="qc" label="Get a free quote"}}
+  <div class="qc__bg" aria-hidden="true">{{> quote-route}}</div>
+
+  <div class="qc__body col-span-full">
+    <h2 class="qc__title text-h1 lg:text-display uppercase">Get a free quote.</h2>
+
+    <form class="qc__form" action="/quote/" method="get" novalidate>
+      <p class="qc__sentence" role="group" aria-label="Quote starter">
+        I need
+        <button type="button" class="qc-blank is-empty" data-blank="service" aria-haspopup="dialog" aria-expanded="false" aria-controls="qc-pop-service"><span class="qc-blank__hl" aria-hidden="true"></span><span class="qc-blank__text">a hand</span><span class="qc-blank__caret" aria-hidden="true">▾</span></button><span class="qc__ask-area"> in
+        <button type="button" class="qc-blank is-empty" data-blank="area" aria-haspopup="dialog" aria-expanded="false" aria-controls="qc-pop-area"><span class="qc-blank__hl" aria-hidden="true"></span><span class="qc-blank__text">your area</span><span class="qc-blank__caret" aria-hidden="true">▾</span></button></span><span class="qc__ask-when"><br>
+        <button type="button" class="qc-blank is-empty" data-blank="when" aria-haspopup="dialog" aria-expanded="false" aria-controls="qc-pop-when"><span class="qc-blank__hl" aria-hidden="true"></span><span class="qc-blank__text">sometime soon</span><span class="qc-blank__caret" aria-hidden="true">▾</span></button></span>.
+      </p>
+
+      <input type="hidden" name="service">
+      <input type="hidden" name="area">
+      <input type="hidden" name="when">
+
+      <div class="qc-pop" id="qc-pop-service" role="dialog" aria-label="Choose a service" hidden>
+        <button type="button" data-value="moving">
+          <svg viewBox="0 0 96 96" aria-hidden="true"><g transform="translate(8 2) rotate(-14 40 80)"><g fill="currentColor"><path d="M22 8h20a5 5 0 0 1 5 5v4H40v-1h-6v48h44a5 5 0 0 1 5 5v5a5 5 0 0 1-5 5H31a6 6 0 0 1-6-6V16h-3a4 4 0 0 1 0-8z"/><path d="M40 16h7v8a4 4 0 0 1-4 4h-3z"/><circle cx="36" cy="82" r="11"/></g><circle cx="36" cy="82" r="4" style="fill:var(--qc-pop-bg)"/></g></svg>
+          Moving
+        </button>
+        <button type="button" data-value="cleaning">
+          <svg viewBox="0 0 96 96" aria-hidden="true"><g fill="currentColor"><path d="M30 14h34a8 8 0 0 1 8 8v4a4 4 0 0 1-4 4H54v8H40V30H30a4 4 0 0 1-4-4v-8a4 4 0 0 1 4-4z"/><path d="M72 16h8v8h-8z"/><path d="M40 30h10l-6 16h-6z"/><path d="M36 40h22v4c8 4 12 10 12 18v20a6 6 0 0 1-6 6H32a6 6 0 0 1-6-6V62c0-8 4-14 10-18z"/></g><rect x="34" y="60" width="28" height="14" rx="2" style="fill:var(--qc-pop-bg)"/></svg>
+          Cleaning
+        </button>
+        <button type="button" data-value="delivery">
+          <svg viewBox="0 0 96 96" aria-hidden="true"><g fill="currentColor"><path d="M14 18h68a3 3 0 0 1 3 3v9H11v-9a3 3 0 0 1 3-3z"/><path d="M16 34h64v44a5 5 0 0 1-5 5H21a5 5 0 0 1-5-5z"/></g><rect x="43" y="18" width="10" height="34" style="fill:var(--qc-pop-bg)"/><rect x="28" y="62" width="18" height="5" rx="1" style="fill:var(--qc-pop-bg)"/></svg>
+          Delivery
+        </button>
+      </div>
+
+      <div class="qc-pop qc-pop--area" id="qc-pop-area" role="dialog" aria-label="Your area" hidden>
+        <input class="qc-pop__input" type="text" placeholder="Postal code (L5B 1A1) or town" aria-label="Postal code or town" autocomplete="postal-code" spellcheck="false">
+        <div class="qc-pop__results" aria-live="polite"></div>
+        <span class="qc-pop__hint">We tag the area as you type · Enter to choose</span>
+      </div>
+
+      <div class="qc-pop" id="qc-pop-when" role="dialog" aria-label="When do you need it?" hidden>
+        <button type="button" data-value="this week">This week</button>
+        <button type="button" data-value="next week">Next week</button>
+        <button type="button" data-value="later">Later</button>
+        <button type="button" data-value="not sure yet">Not sure yet</button>
+      </div>
+
+      <div class="qc__foot">
+        <div class="qc__ready">
+          <button type="submit" class="qc__cta" aria-disabled="true"><span class="qc__cta-label">Pick a service to start</span> <span class="qc__cta-arrow" aria-hidden="true">→</span></button>
+          <p class="qc__note">Next: your name and number. Your quote arrives in writing <b data-quote-by>within 2 hours</b>.</p>
+        </div>
+        <div class="qc__done" hidden>
+          <h3 class="qc__done-title">Got it. One more page.</h3>
+          <p class="qc__note">Your name and how to reach you, then your quote arrives in writing <b data-quote-by>within 2 hours</b>.</p>
+        </div>
+      </div>
+    </form>
+  </div>
+
+  <p class="qc__meta label">Two taps to start · No account · No call needed</p>
+{{/section}}
