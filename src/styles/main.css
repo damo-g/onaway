@@ -1022,11 +1022,11 @@
 
   /* Centre poster */
   .qc__body { position: relative; z-index: 1; display: flex; flex-direction: column; align-items: center; text-align: center; }
-  .qc__title { margin-bottom: var(--spacing-34); }
+  .qc__title { margin-bottom: var(--spacing-21); }
   .qc__title,
   .qc__sentence { color: var(--qc-fg); }
   .qc__form { display: flex; flex-direction: column; align-items: center; }
-  .qc__sentence { font-size: var(--text-h2); line-height: 1.18; font-weight: 600; letter-spacing: -0.02em; max-width: 1100px; }
+  .qc__sentence { font-size: var(--text-h2); line-height: 1.1; font-weight: 600; letter-spacing: -0.02em; max-width: 1100px; }
   .qc[data-ask="1"] :is(.qc__ask-area, .qc__ask-when),
   .qc[data-ask="2"] .qc__ask-when { display: none; }
 
@@ -1094,8 +1094,8 @@
   .qc-pop__hint { padding-inline: var(--spacing-8); font-family: var(--font-mono); font-size: var(--text-label); letter-spacing: var(--text-label--letter-spacing); text-transform: uppercase; opacity: 0.6; }
 
   /* Button: 76 tall, yellow at 70% while waiting; its label says the missing step */
-  .qc__foot { margin-top: var(--spacing-55); }
-  .qc__ready { display: flex; flex-direction: column; align-items: center; gap: var(--spacing-21); }
+  .qc__foot { margin-top: var(--spacing-34); }
+  .qc__ready { display: flex; flex-direction: column; align-items: center; gap: var(--spacing-13); }
   .qc__cta {
     display: inline-flex;
     align-items: center;
@@ -1114,16 +1114,19 @@
   .qc__cta-arrow { transition: transform 0.3s; }
   .qc__cta:not([aria-disabled="true"]):hover .qc__cta-arrow { transform: translateX(5px); }
   .qc__cta:focus-visible { outline: 2px solid var(--qc-fg); outline-offset: 4px; }
-  .qc__note { max-width: 52ch; font-size: var(--text-small); line-height: 1.5; color: var(--qc-mut); }
+  .qc__note { max-width: 64ch; font-size: var(--text-small); line-height: 1.5; color: var(--qc-mut); }
   .qc__note b { color: var(--qc-fg); font-weight: 600; }
   .qc__done { max-width: 560px; }
   .qc__done-title { margin-bottom: var(--spacing-8); font-size: var(--text-h3); line-height: 1.1; font-weight: 600; }
-  .qc__meta { position: absolute; left: 50%; bottom: var(--spacing-55); translate: -50% 0; white-space: nowrap; color: var(--qc-mut); }
-  .qc { padding-bottom: calc(var(--section-gap) + var(--spacing-34)); }
+  .qc__meta { position: absolute; left: 50%; bottom: var(--spacing-34); translate: -50% 0; white-space: nowrap; color: var(--qc-mut); }
+  /* Tight, editorial: 89 top and bottom (55 on phones), the meta line inside the bottom padding */
+  .qc { padding-block: var(--spacing-55); }
+  @media (width >= 768px) { .qc { padding-block: var(--spacing-89); } }
 
   @media (width < 768px) {
     .qc__sentence { font-size: var(--text-h3); }
-    .qc__meta { white-space: normal; width: calc(100% - 2 * var(--grid-margin)); text-align: center; bottom: var(--spacing-34); }
+    .qc__meta { white-space: normal; width: calc(100% - 2 * var(--grid-margin)); text-align: center; bottom: var(--spacing-21); }
+    .qc { padding-bottom: var(--spacing-89); }
   }
   @media (width >= 1024px) {
     .qc__sentence { font-size: var(--text-sentence); }
