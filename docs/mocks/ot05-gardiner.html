@@ -1,0 +1,88 @@
+<title>OT-05 On the Way · Locked</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wdth,wght@75..100,400..700&family=Overpass+Mono:wght@400;500;600&display=swap">
+<link rel="stylesheet" href="shared.css"><style>
+.top .tools{flex-wrap:wrap;gap:8px;justify-content:flex-end}
+.stage{width:1512px;height:860px;background:var(--paper);color:var(--carbon);overflow:hidden}
+.gridov{padding:0 20px!important;column-gap:20px!important}
+.h2{font-family:var(--display);font-stretch:87.5%;font-weight:650;text-transform:uppercase;font-size:68px;line-height:.92;letter-spacing:-.01em;margin:0}
+.lead{font-family:var(--body);font-stretch:87.5%;font-size:20px;line-height:1.45;margin:0;max-width:30ch;color:rgba(32,37,33,.78)}
+.t3{font-family:var(--display);font-stretch:87.5%;font-weight:600;font-size:26px;line-height:1.1;margin:0}
+.cp{font-family:var(--body);font-stretch:87.5%;font-size:17px;line-height:1.5;margin:0;color:rgba(32,37,33,.72)}
+.cred{font-family:var(--mono);font-size:12px;letter-spacing:.14em;font-weight:600;margin:0}
+.lab{font-family:var(--mono);font-size:12px;letter-spacing:.12em;font-weight:600;margin:0;display:block}
+.lc{position:absolute;left:20px;top:144px;display:flex;flex-direction:column;gap:34px;align-items:flex-start}
+.pl{display:flex;flex-direction:column}
+.pr{position:relative;display:grid;grid-template-columns:300px 1fr;column-gap:21px;padding:26px 0 29px}
+.pr::before{content:"";position:absolute;left:0;right:0;top:0;height:1px;background:rgba(32,37,33,.26);transform-origin:0 0}
+.pl.end::after{content:"";height:1px;background:rgba(32,37,33,.26);transform-origin:0 0}
+@keyframes wr{from{clip-path:inset(0 100% 0 0)}to{clip-path:inset(0 0 0 0)}}
+@keyframes fi{from{opacity:0}to{opacity:1}}
+@keyframes rule{from{transform:scaleX(0)}to{transform:scaleX(1)}}
+.go .w{animation:wr .7s cubic-bezier(.4,0,.2,1) var(--d,0s) both}
+.go .f{animation:fi .6s ease var(--d,0s) both}
+.go .pr::before,.go .pl.end::after{animation:rule .8s cubic-bezier(.4,0,.2,1) var(--r,0s) both}
+.go .pr:nth-child(1){--r:.2s}.go .pr:nth-child(2){--r:.4s}.go .pr:nth-child(3){--r:.6s}.go .pl.end::after{--r:.8s}
+.go .pr:nth-child(1)>:first-child{--d:.6s}.go .pr:nth-child(1)>:last-child{--d:.75s}
+.go .pr:nth-child(2)>:first-child{--d:1.1s}.go .pr:nth-child(2)>:last-child{--d:1.25s}
+.go .pr:nth-child(3)>:first-child{--d:1.6s}.go .pr:nth-child(3)>:last-child{--d:1.75s}
+.go .cred{--d:2.2s}
+@media (prefers-reduced-motion:reduce){.stage *,.stage *::before,.stage *::after{animation:none!important}}
+.cmp td{text-align:left!important;white-space:normal!important}
+
+.ot5 .car{position:absolute;left:890px;top:20px;width:602px;height:820px;overflow:hidden}
+.ot5 .trk{display:flex;height:100%;transition:transform 1.1s cubic-bezier(.6,0,.2,1)}
+.ot5 .sl{flex:0 0 100%;height:100%;margin:0;position:relative}
+.ot5 .sl img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.ot5 .cl{position:absolute;left:21px;bottom:47px;background:var(--paper);padding:8px 13px;transition:opacity .4s}
+.ot5 .cl.off{opacity:0}
+.ot5 .bars{position:absolute;left:21px;right:21px;bottom:21px;display:flex;gap:8px}
+.ot5 .bar{flex:1;height:13px;padding:5px 0;border:0;background:none;cursor:pointer}
+.ot5 .bar::before{content:"";display:block;height:3px;background:rgba(247,242,231,.4)}
+.ot5 .bar i{display:block;height:3px;margin-top:-3px;background:var(--paper);transform:scaleX(0);transform-origin:0 0}
+.ot5 .bar.done i{transform:scaleX(1)}
+.ot5 .bar.on i{animation:fill6 6s linear forwards}.ot5 .car.pz .bar.on i{animation-play-state:paused}
+.ot5 .bar.last.on i{animation:none;transform:scaleX(1)}
+@keyframes fill6{from{transform:scaleX(0)}to{transform:scaleX(1)}}
+.ot5 .lc{width:780px}.ot5 .pl{width:806px}
+.ot5 .cred{position:absolute;left:20px;top:770px}
+@keyframes rv{from{clip-path:inset(0 100% 0 0)}to{clip-path:inset(0 0 0 0)}}
+@keyframes zo{from{transform:scale(1.06)}to{transform:none}}
+.go .ot5 .car{animation:rv 1.2s cubic-bezier(.6,0,.2,1) both}
+.go .ot5 .sl:first-child img{animation:zo 2.4s cubic-bezier(.2,.6,.2,1) both}
+@media (prefers-reduced-motion:reduce){.ot5 .trk{transition:none}.ot5 .bar.on i{animation:none;transform:scaleX(1)}}
+</style>
+<div class="top"><div><div class="id">ONAWAY · Home · section 04 · On time &amp; in writing · round 1 · OT-05</div><h1>OT-05 · On the Way · Locked</h1></div><div class="tools"><button class="tbtn" id="replay">Replay</button><button class="tbtn" id="gridBtn" aria-pressed="false">Grid (G)</button></div></div>
+<div class="wrap"><div class="stage" data-img="a"><div class="ot5"><div class="car" aria-roledescription="carousel"><div class="trk"><figure class="sl"><img src="assets/ot5c.jpg" alt="An empty, freshly cleaned Toronto condo unit, keys on the counter and a cleaning caddy by the wall" style="object-position:50% 60%"></figure><figure class="sl"><img src="assets/ot5g.jpg" alt="A wrapped armchair waiting by an open, padded condo service elevator" style="object-position:60% 60%"></figure><figure class="sl"><img src="assets/ot5f.jpg" alt="Boxes on a hand truck beside a condo concierge desk, the truck outside" style="object-position:55% 60%"></figure><figure class="sl"><img src="assets/ot5g3.jpg" alt="Two movers carefully carrying a blanket-wrapped armchair into a condo service elevator" style="object-position:50% 60%"></figure></div><div class="cl"><span class="lab" id="clab">CLEANING</span></div><div class="bars"><button class="bar" data-i="0" aria-label="Show image 1 of 4"><i></i></button><button class="bar" data-i="1" aria-label="Show image 2 of 4"><i></i></button><button class="bar" data-i="2" aria-label="Show image 3 of 4"><i></i></button><button class="bar last" data-i="3" aria-label="Show image 4 of 4"><i></i></button></div></div><div class="lc"><h2 class="h2">On time &amp;<br>in writing.</h2><p class="lead">A plan, a time and a crew that knows the city.</p><div class="pl end "><div class="pr"><h3 class="t3 w">Your window, in writing.</h3><p class="cp w">Your arrival window is set when you book and printed on your quote.</p></div><div class="pr"><h3 class="t3 w">A price that holds.</h3><p class="cp w">The quote you approve is the bill you pay. No extras on the day.</p></div><div class="pr"><h3 class="t3 w">We know the buildings.</h3><p class="cp w">Elevator bookings, loading docks, access rules. Sorted before we arrive.</p></div></div></div><p class="cred w">LICENSED · INSURED · LOCAL</p></div><script>(function(){const st=document.querySelector('.stage'),car=document.querySelector('.car'),trk=document.querySelector('.trk'),
+bars=[...document.querySelectorAll('.bar')],cl=document.querySelector('.cl'),lab=document.getElementById('clab'),L=['CLEANING', 'MOVING', 'DELIVERY', ''],N=L.length,D=6000,START=2600;
+let i=0,t=null,left=D,t0=0,paused=false,vis=true;
+const reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
+function show(n){i=n;trk.style.transform='translateX('+(-i*100)+'%)';if(L[i]){lab.textContent=L[i];cl.classList.remove('off');}else cl.classList.add('off');
+ bars.forEach((b,k)=>{b.classList.toggle('on',k===i);b.classList.toggle('done',k<i);const e=b.querySelector('i');e.style.animation='none';void e.offsetWidth;e.style.animation='';});
+ clearTimeout(t);left=D;if(i<N-1)arm();}
+function arm(){clearTimeout(t);if(paused||!vis||i>=N-1)return;t0=Date.now();t=setTimeout(()=>show(i+1),left);}
+function hold(){clearTimeout(t);left-=Date.now()-t0;car.classList.add('pz');}
+function resume(){car.classList.remove('pz');arm();}
+car.addEventListener('mouseenter',()=>{paused=true;hold();});car.addEventListener('mouseleave',()=>{paused=false;resume();});
+new IntersectionObserver(e=>{vis=e[0].isIntersecting;vis?resume():hold();},{threshold:.4}).observe(car);
+bars.forEach(b=>b.addEventListener('click',()=>show(+b.dataset.i)));
+function start(){clearTimeout(t);i=0;trk.style.transform='translateX(0)';bars.forEach(b=>b.classList.remove('on','done'));lab.textContent=L[0];cl.classList.remove('off');if(reduce){bars[0].classList.add('on');return;}t=setTimeout(()=>show(0),START);}
+document.getElementById('replay').addEventListener('click',()=>setTimeout(start,0));setTimeout(start,400);
+})();</script><div class="gridov"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div></div></div>
+<div class="spec">
+<section><h2>Idea</h2><p>Locked for section 04. The promise ledger on the left, and on the right a four-image carousel that shows the promises being kept across every service: cleaning (a move-out unit handed back clean), moving (the padded service elevator), delivery (the concierge desk), and it stops on the crew carrying a chair with care. The carousel waits until the promises have written in, plays once at 6 seconds a slide, pauses on hover and when off screen, and ends on the crew with no tag, so the last thing you see is people, not a service label. OT-03 Marked Statements is the fallback.</p></section>
+<section><h2>Scores</h2><table class="cmp"><tbody><tr><td><b>Fit with the copy · 9</b></td><td>"Your window, in writing" and "A price that holds" are promises about paperwork, which no photo can show; the images carry the third promise and the lead ("a crew that knows the city"). Service elevator, concierge and a handed-back unit are all "we know the buildings" moments, so the left and right sides tell one story.</td></tr><tr><td><b>Page rhythm · 9.5</b></td><td>The first time the homepage shows the service happening. The hero and section 02 set the place, section 03 is an object; this is the first time we show the crew at work.</td></tr><tr><td><b>Motion · 9</b></td><td>One thing at a time: the ledger writes in, then the carousel starts. It plays once and stops, so it never competes with scrolling or the next section.</td></tr><tr><td><b>Brand · 9.5</b></td><td>Ends on the crew: the caregiver side, shown rather than claimed.</td></tr></tbody></table></section>
+<section><h2>Overall</h2><div class="score">95<small> / 100</small></div></section>
+<section><h2>Figma build notes</h2><ul><li>Image: 602 × 820 at x 890 (column 8), y 20. Slides C1 → G2 → F2 → G3, 6s each, sliding over 1.1s so the story reads left to right.</li><li>Label: Label 12 in a Ticket Paper chip, bottom-left (21 in, 47 up): CLEANING, MOVING, DELIVERY. No label on the crew slide; the chip fades out.</li><li>Progress: four 3px bars, 8px apart, 21px from the edges, Ticket Paper on 40% Ticket Paper. Each bar jumps to its slide.</li><li>Behaviour: starts 2.6s after the section enters (after the ledger writes in); pauses on hover and when less than 40% is on screen; plays once and stops on G3. Reduced motion: no slide movement, first image shown, bars still clickable.</li><li>Left: H2 and Lead, then the ledger at 806 wide (title column 300, H3 26, Body 17). Credentials Label 12 at y 770.</li><li>Assets: C1 caddy colours toned; D1 not used; grade all four to OV-01 before export and add the matching film grain.</li></ul></section>
+</div><script>(function(){
+const wrap=document.querySelector('.wrap'),stage=document.querySelector('.stage');
+function fit(){const s=Math.min(1,wrap.clientWidth/1512);stage.style.transform='scale('+s+')';wrap.style.height=(860*s)+'px';}addEventListener('resize',fit);fit();
+const go=()=>{stage.classList.remove('go');void stage.offsetWidth;stage.classList.add('go');};
+document.getElementById('replay').addEventListener('click',go);
+const g=document.getElementById('gridBtn'),ov=document.querySelector('.gridov');
+const tog=()=>{const on=document.body.classList.toggle('show-grid');g.setAttribute('aria-pressed',on);};
+g.addEventListener('click',tog);addEventListener('keydown',e=>{if(e.key==='g'||e.key==='G')tog();});
+document.querySelectorAll('.tg').forEach(t=>t.querySelectorAll('button').forEach(b=>b.addEventListener('click',()=>{stage.dataset[t.dataset.k]=b.dataset.v;t.querySelectorAll('button').forEach(x=>x.setAttribute('aria-pressed',x===b));go();})));
+setTimeout(go,400);
+})();</script>

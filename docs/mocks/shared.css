@@ -1,0 +1,104 @@
+/* ONAWAY hero study — shared system
+   Layout: a fixed 1512 x 980 desktop frame (MacBook Pro 14), scaled to fit; 860px line = browser fold.
+   12 cols · 64 margin · 24 gutter · col 93.33. Spacing 8·13·21·34·55·89·144. */
+:root{
+  /* brand (fixed inside the frame, both themes) */
+  --paper:#F7F2E7; --carbon:#202521; --yellow:#E4BB3F; --rust:#A9503E; --camel:#B49A78;
+  --paper-2:#EFE7D6; --rule:rgba(32,37,33,.22); --rule-strong:#202521;
+  /* page chrome around the frame */
+  --bg:#E9E3D6; --fg:#202521; --muted:#5d625c; --line:rgba(32,37,33,.18); --card:#F7F2E7;
+  --display:"Instrument Sans", "Arial Narrow", Arial, sans-serif;
+  --body:"Instrument Sans", Arial, sans-serif;
+  --mono:"Overpass Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+}
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){ --bg:#151816; --fg:#ECE6D8; --muted:#a9ab9f; --line:rgba(236,230,216,.16); --card:#1d211e; color-scheme:dark } }
+:root[data-theme="dark"]{ --bg:#151816; --fg:#ECE6D8; --muted:#a9ab9f; --line:rgba(236,230,216,.16); --card:#1d211e; color-scheme:dark }
+
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--fg);font-family:var(--body);margin:0;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:21px 89px}
+
+/* ---------- chrome ---------- */
+.top{max-width:1512px;margin:0 auto 13px;display:flex;flex-wrap:wrap;gap:8px 21px;align-items:baseline;justify-content:space-between}
+.top .id{font-family:var(--mono);font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.top h1{font-family:var(--display);font-stretch:87.5%;font-weight:650;font-size:26px;margin:0;letter-spacing:-.01em}
+.top .tools{display:flex;gap:8px}
+.tbtn{font-family:var(--mono);font-size:12px;letter-spacing:.06em;text-transform:uppercase;background:transparent;color:var(--fg);border:1px solid var(--line);padding:8px 13px;cursor:pointer}
+.tbtn[aria-pressed="true"]{background:var(--fg);color:var(--bg)}
+.tbtn:focus-visible{outline:2px solid var(--rust);outline-offset:2px}
+
+.wrap{max-width:1512px;margin:0 auto;overflow:hidden;position:relative;box-shadow:0 0 0 1px var(--line)}
+.stage{width:1512px;height:980px;position:relative;transform-origin:0 0;background:var(--paper);color:var(--carbon);overflow:hidden;font-family:var(--body)}
+.fold{position:absolute;left:0;right:0;top:860px;height:120px;z-index:60;pointer-events:none;
+  background:repeating-linear-gradient(-45deg,rgba(32,37,33,.06) 0 6px,transparent 6px 13px);border-top:1px dashed var(--rust)}
+.fold span{position:absolute;right:13px;top:6px;font-family:var(--mono);font-size:11px;letter-spacing:.08em;color:var(--rust);background:var(--paper);padding:2px 6px}
+
+/* grid overlay */
+.gridov{position:absolute;inset:0;z-index:70;pointer-events:none;display:none;padding:0 64px;grid-template-columns:repeat(12,1fr);column-gap:24px}
+.show-grid .gridov{display:grid}
+.gridov i{background:rgba(169,80,62,.10);border-left:1px solid rgba(169,80,62,.35);border-right:1px solid rgba(169,80,62,.35)}
+
+/* ---------- in-frame primitives ---------- */
+.g{display:grid;grid-template-columns:repeat(12,1fr);column-gap:24px;padding:0 64px}
+.lab{font-family:var(--mono);font-size:12px;letter-spacing:.08em;text-transform:uppercase;line-height:1.4}
+.disp{font-family:var(--display);font-stretch:87.5%;font-weight:650;text-transform:uppercase;font-size:110px;line-height:.9;letter-spacing:-.012em;margin:0;text-wrap:balance}
+.h1{font-family:var(--display);font-stretch:87.5%;font-weight:650;text-transform:uppercase;font-size:68px;line-height:.92;letter-spacing:-.01em;margin:0}
+.h3{font-family:var(--display);font-stretch:87.5%;font-weight:600;font-size:26px;line-height:1.05;margin:0}
+.lead{font-size:20px;line-height:1.4;font-stretch:87.5%;margin:0;max-width:32ch}
+.small{font-size:14px;line-height:1.45;font-stretch:87.5%;margin:0}
+.rust{color:var(--rust)}
+
+/* header */
+.hdr{position:absolute;left:0;right:0;top:0;height:72px;z-index:40;display:flex;align-items:center;gap:34px;padding:0 0 0 64px}
+.hdr .nav{display:flex;gap:34px;font-size:16px;font-weight:500;font-stretch:87.5%}
+.hdr .nav span{display:inline-flex;gap:6px;align-items:baseline}
+.hdr .right{margin-left:auto;display:flex;align-items:stretch;height:100%}
+.hdr .right > *{display:flex;align-items:center;padding:0 21px;font-size:16px;font-weight:500;font-stretch:87.5%}
+.hdr .fr{font-family:var(--mono);font-size:12px;letter-spacing:.08em}
+.hdr .tel{font-family:var(--mono);font-size:13px;letter-spacing:.04em;border-left:1px solid var(--rule)}
+.hdr .q{background:var(--yellow);color:var(--carbon);font-weight:600;padding:0 34px;gap:8px}
+.hdr.line{border-bottom:1px solid var(--rule)}
+
+/* buttons */
+.ctas{display:flex;gap:13px;align-items:center}
+.btn{height:55px;padding:0 21px;display:inline-flex;align-items:center;gap:13px;font-family:var(--body);font-stretch:87.5%;font-size:17px;font-weight:600;border:0;color:var(--carbon)}
+.btn.y{background:var(--yellow)}
+.btn.o{background:transparent;box-shadow:inset 0 0 0 1px var(--carbon)}
+.btn.o.inv{color:var(--paper);box-shadow:inset 0 0 0 1px var(--paper)}
+.btn .ar{font-weight:500}
+.micro{font-family:var(--mono);font-size:12px;letter-spacing:.02em;color:rgba(32,37,33,.72);margin-top:13px}
+
+/* sign tile (WL-20 / SW-01): word -> arrow | icon tile */
+.tile{display:grid;grid-template-columns:1fr 89px;height:89px;background:var(--paper);box-shadow:inset 0 0 0 1px var(--carbon)}
+.tile .w{display:flex;align-items:center;justify-content:space-between;padding:0 21px;border-right:1px solid var(--carbon)}
+.tile .w b{font-family:var(--display);font-stretch:87.5%;font-weight:600;font-size:26px}
+.tile .w small{display:block;font-family:var(--mono);font-size:11px;letter-spacing:.08em;text-transform:uppercase;opacity:.7;margin-bottom:4px}
+.tile .w .ar{font-size:26px}
+.tile .ic{display:grid;place-items:center;background:var(--paper-2);overflow:hidden}
+.tile .ic img{width:76px;height:auto;max-width:none}
+
+/* roundel */
+.rd{width:34px;height:34px;border-radius:50%;display:grid;place-items:center;font-family:var(--mono);font-size:12px;font-weight:600;background:var(--carbon);color:var(--paper)}
+.rd.r{background:var(--rust)} .rd.ring{background:var(--paper);box-shadow:inset 0 0 0 2px var(--carbon);color:var(--carbon)}
+
+/* grain overlay for illustration surfaces (one grain recipe) */
+.grain{position:absolute;inset:0;pointer-events:none;mix-blend-mode:multiply;opacity:.35;
+  background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='180' height='180'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 .13  0 0 0 0 .14  0 0 0 0 .13  0 0 0 .55 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>")}
+
+/* dot matrix (rendered by shared.js into <svg>) */
+.dm svg{display:block}
+
+/* ---------- spec sheet below the frame ---------- */
+.spec{max-width:1512px;margin:34px auto 0;display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,340px),1fr));gap:34px 55px}
+.spec section{min-width:0}
+.spec h2{font-family:var(--mono);font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);font-weight:500;margin:0 0 13px;padding-bottom:8px;border-bottom:1px solid var(--line)}
+.spec p,.spec li{font-size:15px;line-height:1.55;margin:0 0 8px;max-width:62ch}
+.spec ul{margin:0;padding-left:18px}
+.spec table{width:100%;border-collapse:collapse;font-size:14px;font-variant-numeric:tabular-nums}
+.spec td,.spec th{padding:8px 0;border-bottom:1px solid var(--line);text-align:left;vertical-align:top}
+.spec td:last-child,.spec th:last-child{text-align:right;white-space:nowrap}
+.spec tfoot td{font-weight:700;font-size:16px;border-bottom:0}
+.score{font-family:var(--display);font-stretch:87.5%;font-weight:650;font-size:55px;line-height:1}
+.score small{font-size:20px;color:var(--muted);font-weight:500}
+.pass{display:inline-block;font-family:var(--mono);font-size:11px;letter-spacing:.08em;text-transform:uppercase;padding:4px 8px;margin-left:8px;vertical-align:middle;border:1px solid currentColor}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}

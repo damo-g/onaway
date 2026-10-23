@@ -1,0 +1,122 @@
+<title>TS-02 Journey Ticket</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wdth,wght@75..100,400..700&family=Overpass+Mono:wght@400;500;600&display=swap">
+<link rel="stylesheet" href="shared.css"><style>
+.top .tools{flex-wrap:wrap;gap:8px;justify-content:flex-end;max-width:1150px}.tg{display:inline-flex}.tg .tbtn+.tbtn{border-left:0}
+.tl0{font-family:var(--mono);font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);align-self:center;margin-right:8px}
+.stage{width:1512px;height:860px;background:var(--paper);color:var(--carbon)}
+.gridov{padding:0 20px!important;column-gap:20px!important}
+.h2{font-family:var(--display);font-stretch:87.5%;font-weight:650;text-transform:uppercase;font-size:68px;line-height:.92;letter-spacing:-.01em;margin:0}
+.lead{font-family:var(--body);font-stretch:87.5%;font-size:20px;line-height:1.45;margin:0;max-width:30ch;color:rgba(32,37,33,.78)}
+.lc{position:absolute;left:20px;top:144px;display:flex;flex-direction:column;gap:34px}
+.t3{font-family:var(--display);font-stretch:87.5%;font-weight:600;font-size:28px;line-height:1.08;margin:0}
+.cp{font-family:var(--body);font-stretch:87.5%;font-size:17px;line-height:1.5;margin:0;color:rgba(32,37,33,.72)}
+/* ticket */
+.tkw{position:absolute;left:580px;top:144px;width:872px;height:500px}
+.tki{position:absolute;inset:0}
+.tk{position:absolute;left:0;top:0;width:720px;height:500px;background:#EFE7D6;display:grid;grid-template-columns:56px 1fr}
+.stub{position:relative;display:flex;align-items:center;justify-content:center}
+.stage[data-sym="foot"] .stub{align-items:flex-end;padding-bottom:34px}.stub img{width:24px;height:auto;opacity:.6}
+.flds{display:grid;grid-template-columns:repeat(3,1fr)}
+.fd{padding:48px 26px;display:flex;flex-direction:column;gap:13px;border-left:1px solid rgba(32,37,33,.12)}
+.fd:first-child{border-left:0}
+.n{font-family:var(--display);font-stretch:87.5%;font-weight:500;font-size:56px;line-height:1;letter-spacing:-.02em;margin-bottom:21px}
+.stamp{position:absolute;right:30px;bottom:30px;width:118px;height:118px;border-radius:50%;box-shadow:inset 0 0 0 2px #A9503E,inset 0 0 0 7px #EFE7D6,inset 0 0 0 8px #A9503E;color:#A9503E;display:grid;place-items:center;text-align:center;transform:rotate(-10deg);font-family:var(--mono);font-size:11px;letter-spacing:.12em;line-height:1.7;font-weight:600}
+.sl{position:absolute;top:0;bottom:0;left:56px;width:0}
+.tear{position:absolute;left:720px;top:0;width:152px;height:500px;background:var(--yellow);color:#202521;text-decoration:none;display:flex;flex-direction:column;justify-content:space-between;padding:34px 22px 30px 26px;transform-origin:0 100%;transition:transform .5s cubic-bezier(.25,.8,.25,1)}
+.tear b{font-family:var(--display);font-stretch:87.5%;font-weight:600;font-size:28px;line-height:1.05}
+.tear .ar{font-size:28px;transition:transform .3s}
+.tear:hover,.tear:focus-visible,.tkw.torn .tear{transform:translate(6px,2px) rotate(2deg);outline:0}
+.tear:hover .ar{transform:translateX(5px)}
+/* seam: matching bites on both pieces, so the gap shows a real perforated edge */
+.tk{-webkit-mask:var(--mb);mask:var(--mb);-webkit-mask-composite:source-in;mask-composite:intersect}
+.tear{-webkit-mask:var(--mt);mask:var(--mt);-webkit-mask-composite:source-in;mask-composite:intersect}
+.stage{--seamR:radial-gradient(circle var(--br,4px) at 100% 50%,transparent 96%,#000 100%) right/100% var(--bp,13px) repeat-y;
+       --seamL:radial-gradient(circle var(--br,4px) at 0 50%,transparent 96%,#000 100%) left/100% var(--bp,13px) repeat-y;
+       --mb:var(--seamR);--mt:var(--seamL)}
+/* 1 Pinhole (SW-05/06, quiet) */
+.stage[data-ts="pin"]{--br:2px;--bp:9px}
+.stage[data-ts="pin"] .stub{background:#E7DDC9}
+.stage[data-ts="pin"] .sl{border-left:2px dotted rgba(32,37,33,.28)}
+.stage[data-ts="pin"] .tk{border-radius:4px 0 0 4px}.stage[data-ts="pin"] .tear{border-radius:0 4px 4px 0}
+/* 2 Notched */
+.stage[data-ts="notch"] .sl{border-left:1.5px dashed rgba(32,37,33,.32)}
+.stage[data-ts="notch"] .sl::before,.stage[data-ts="notch"] .sl::after{content:"";position:absolute;left:-13px;width:26px;height:26px;border-radius:50%;background:var(--paper)}
+.stage[data-ts="notch"] .sl::before{top:-13px}.stage[data-ts="notch"] .sl::after{bottom:-13px}
+.stage[data-ts="notch"] .tk{border-radius:6px 0 0 6px}.stage[data-ts="notch"] .tear{border-radius:0 6px 6px 0}
+/* 3 Stamp edge (SW-02/04): every edge perforated */
+.stage[data-ts="stamp"]{--br:5px;--bp:15px}
+.stage[data-ts="stamps"]{--br:3px;--bp:10px}
+.stage[data-ts^="stamp"]{
+  --eT:radial-gradient(circle var(--br) at 50% 0,transparent 96%,#000 100%) top/var(--bp) 100% repeat-x;
+  --eB:radial-gradient(circle var(--br) at 50% 100%,transparent 96%,#000 100%) bottom/var(--bp) 100% repeat-x;
+  --eL:radial-gradient(circle var(--br) at 0 50%,transparent 96%,#000 100%) left/100% var(--bp) repeat-y;
+  --eR:radial-gradient(circle var(--br) at 100% 50%,transparent 96%,#000 100%) right/100% var(--bp) repeat-y;
+  --mb:var(--eT),var(--eB),var(--eL),var(--seamR);--mt:var(--eT),var(--eB),var(--seamL),var(--eR)}
+.stage[data-ts="stamp"] .sl{border-left:1px solid rgba(32,37,33,.18)}
+.stage[data-ts="stamp"] .stub{background:#E7DDC9}
+.stage[data-ts="stamps"] .stub{background:#EAE1CF}
+/* animations: write-in, then three print techniques that hand over to it */
+@keyframes wr{from{clip-path:inset(0 100% 0 0)}to{clip-path:inset(0 0 0 0)}}
+@keyframes fi{from{opacity:0}to{opacity:1}}
+@keyframes stp{0%{opacity:0;transform:rotate(-10deg) scale(1.3)}65%{opacity:1;transform:rotate(-10deg) scale(.96)}100%{opacity:1;transform:rotate(-10deg) scale(1)}}
+@keyframes headx{from{left:0;opacity:1}95%{opacity:1}to{left:100%;opacity:0}}
+@keyframes unroll{from{clip-path:inset(0 100% 0 0)}to{clip-path:inset(0 0 0 0)}}
+.tkw.go .stamp{animation:stp .5s cubic-bezier(.3,.7,.3,1) calc(var(--wd) + 1.9s) both}
+.tkw.go.w .n{animation:fi .4s ease both}.tkw.go.w .t3,.tkw.go.w .cp{animation:wr .7s cubic-bezier(.4,0,.2,1) both}
+.tkw.go.w .fd:nth-child(1) .n{animation-delay:var(--wd)}.tkw.go.w .fd:nth-child(1) .t3{animation-delay:calc(var(--wd) + .15s)}.tkw.go.w .fd:nth-child(1) .cp{animation-delay:calc(var(--wd) + .35s)}
+.tkw.go.w .fd:nth-child(2) .n{animation-delay:calc(var(--wd) + .6s)}.tkw.go.w .fd:nth-child(2) .t3{animation-delay:calc(var(--wd) + .75s)}.tkw.go.w .fd:nth-child(2) .cp{animation-delay:calc(var(--wd) + .95s)}
+.tkw.go.w .fd:nth-child(3) .n{animation-delay:calc(var(--wd) + 1.2s)}.tkw.go.w .fd:nth-child(3) .t3{animation-delay:calc(var(--wd) + 1.35s)}.tkw.go.w .fd:nth-child(3) .cp{animation-delay:calc(var(--wd) + 1.55s)}
+.tkw.go.w .tear b,.tkw.go.w .tear .ar{animation:fi .4s ease calc(var(--wd) + 2.2s) both}
+.a-write{--wd:0s}
+.a-across{--wd:0s}.a-across.go .tki{animation:unroll 1.8s steps(30,end) both}
+.a-across .head{position:absolute;top:-6px;bottom:-6px;width:2px;background:rgba(32,37,33,.45);animation:headx 1.8s steps(30,end) both}
+.a-across.go .stamp{animation-delay:2s}
+.a-unroll{--wd:.9s}.a-unroll.go .tki{animation:unroll 1s cubic-bezier(.5,0,.2,1) both}
+.head{display:none}.a-across .head{display:block}
+@media (prefers-reduced-motion:reduce){.tkw *,.tkw{animation:none!important}}
+.cmp td{text-align:left!important;white-space:normal!important}</style>
+<div class="top"><div><div class="id">ONAWAY · Home · section 03 · Three steps · round 4 · TS-02</div><h1>TS-02 · Journey Ticket</h1></div><div class="tools"><span class="tg" data-k="ts"><span class="tl0">Ticket style</span><button class="tbtn" data-v="stamps" aria-pressed="true">Stamp · subtle</button><button class="tbtn" data-v="stamp" aria-pressed="false">Stamp edge</button><button class="tbtn" data-v="pin" aria-pressed="false">Pinhole</button><button class="tbtn" data-v="notch" aria-pressed="false">Notched</button></span><span class="tg" data-k="sym"><span class="tl0">Symbol</span><button class="tbtn" data-v="mid" aria-pressed="true">Centre</button><button class="tbtn" data-v="foot" aria-pressed="false">Foot</button></span><span class="tg" data-k="anim"><span class="tl0">Animation</span><button class="tbtn" data-v="write" aria-pressed="true">Write-in</button><button class="tbtn" data-v="across" aria-pressed="false">Print across</button><button class="tbtn" data-v="unroll" aria-pressed="false">Unroll + write</button></span><button class="tbtn" id="replay">Replay</button><button class="tbtn" id="all">Play all three</button><button class="tbtn" id="tearBtn">Tear the stub</button><button class="tbtn" id="gridBtn" aria-pressed="false">Grid (G)</button></div></div>
+<div class="wrap"><div class="stage" data-ts="stamps" data-sym="mid" data-anim="write"><div class="lc"><h2 class="h2">Three steps.<br>No surprises.</h2><p class="lead">From first message to a locked date. You always know what happens next, and what it costs.</p></div>
+<div class="tkw" id="tkw"><div class="tki"><div class="tk"><div class="stub"><img src="assets/sym.png" alt="ONAWAY"></div><div class="flds"><div class="fd"><span class="n">01</span><h3 class="t3">Tell us the job.</h3><p class="cp">The space, the date, what you need.</p></div><div class="fd"><span class="n">02</span><h3 class="t3">Get it in writing.</h3><p class="cp">Crew, time and every cost, within 2 hours.</p></div><div class="fd"><span class="n">03</span><h3 class="t3">Lock your date.</h3><p class="cp">We confirm your crew and arrival window.</p></div></div><span class="sl"></span><span class="stamp">YOUR DATE<br>LOCKED</span></div>
+<a class="tear" href="#"><b>Get a<br>free<br>quote</b><span class="ar">→</span></a></div><span class="head"></span></div></div></div>
+<div class="spec">
+<section><h2>What changed in round 4</h2><ul>
+<li><b>Stamp · subtle:</b> the stamp edge kept, but the bites drop from 5px every 15px to 3px every 10px, and the stub tint is lighter. It still reads as a stamp, closer to a fine perforation than a postage-stamp scallop. Now the default.</li>
+<li><b>Symbol</b> toggle: Centre (default) or Foot.</li>
+<li><b>Horizontal motion only:</b> Feed and Line print are gone, since the ticket is sideways. Print across replaces them: a print head runs left to right in small steps, the same direction the ticket reads and tears.</li>
+<li>Punched is removed; it wasn't in your shortlist.</li></ul></section>
+<section><h2>Ticket styles</h2><table class="cmp"><tbody>
+<tr><td><b>Stamp · subtle · 9.5</b></td><td>The charm of SW-02/04 at SW-05/06 volume. The edge only shows itself up close, which suits a section between two busy ones. My pick.</td></tr>
+<tr><td><b>Stamp edge · 9</b></td><td>The full scallop. Most ownable, a touch loud next to R2-E.</td></tr>
+<tr><td><b>Pinhole · 9</b></td><td>Quietest. Only the tear lines are perforated.</td></tr>
+<tr><td><b>Notched · 8</b></td><td>Instantly a ticket, but the most expected.</td></tr></tbody></table></section>
+<section><h2>Symbol</h2><table class="cmp"><tbody>
+<tr><td><b>Centre · 9</b></td><td>Sits on the ticket's middle line, so it balances the three columns and lines up with the notches. Reads as the ticket's seal.</td></tr>
+<tr><td><b>Foot · 8.5</b></td><td>Reads as a printed issuer mark. Quieter, but leaves the stub looking empty above it.</td></tr></tbody></table></section>
+<section><h2>Animations (all left to right)</h2><table class="cmp"><tbody>
+<tr><td><b>Write-in · 9.5</b></td><td>Your pick. Each field writes in left to right, then the stamp lands.</td></tr>
+<tr><td><b>Print across · 8.5</b></td><td>A print head crosses the ticket in 30 steps. More mechanical; good if you want an "issued" feeling.</td></tr>
+<tr><td><b>Unroll + write · 8</b></td><td>The ticket unrolls from the stub, then writes in.</td></tr></tbody></table></section>
+<section><h2>Score</h2><div class="score">95<small> / 100</small></div><p>Stamp · subtle, symbol centred, Write-in. Up from 94: a more ownable edge at the same restraint, and motion that follows the ticket's direction.</p></section>
+<section><h2>Figma build notes</h2><ul>
+<li>Ticket: x 580, y 144. Body 720 × 500 (stub 56 + three fields), tear-off 152 × 500, Station Yellow.</li>
+<li>Stamp · subtle: 3px radius bites every 10px on all outer edges and both sides of the seam. Stamp edge: 5px every 15px. Stub fill #EAE1CF.</li>
+<li>Symbol: 24px, 60% Carbon, centred in the stub (or 34px from the bottom for Foot).</li>
+<li>Tear on hover: translate 6, 2 and rotate 2° around the bottom-left corner, 500ms.</li>
+<li>Write-in: each title and line reveals left to right over 700ms, fields 600ms apart, stamp at 1.9s. Once, on entry; reduced motion shows the end state.</li></ul></section>
+</div><script src="r2.js"></script><script>(function(){
+const wrap=document.querySelector('.wrap'),stage=document.querySelector('.stage');
+function fit(){const s=Math.min(1,wrap.clientWidth/1512);stage.style.transform='scale('+s+')';wrap.style.height=(860*s)+'px';}addEventListener('resize',fit);fit();
+const w=document.getElementById('tkw');let tm=[];
+const W={write:1,across:0,unroll:1};
+const run=a=>{w.className='tkw';void w.offsetWidth;w.className='tkw go a-'+a+(W[a]?' w':'');};
+const go=()=>{tm.forEach(clearTimeout);run(stage.dataset.anim);};
+document.querySelectorAll('.tg').forEach(g=>g.querySelectorAll('button').forEach(b=>b.addEventListener('click',()=>{stage.dataset[g.dataset.k]=b.dataset.v;g.querySelectorAll('button').forEach(x=>x.setAttribute('aria-pressed',x===b));if(g.dataset.k==='anim')go();})));
+document.getElementById('replay').addEventListener('click',go);
+document.getElementById('all').addEventListener('click',()=>{tm.forEach(clearTimeout);['write','across','unroll'].forEach((a,i)=>tm.push(setTimeout(()=>{stage.dataset.anim=a;document.querySelectorAll('.tg[data-k="anim"] button').forEach(x=>x.setAttribute('aria-pressed',x.dataset.v===a));run(a);},i*4200)));});
+const tb=document.getElementById('tearBtn');tb.addEventListener('click',()=>{w.classList.toggle('torn');tb.setAttribute('aria-pressed',w.classList.contains('torn'));});
+document.querySelectorAll('a[href="#"]').forEach(a=>a.addEventListener('click',e=>e.preventDefault()));
+setTimeout(go,400);
+})();</script>

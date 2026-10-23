@@ -1,0 +1,182 @@
+<title>HF-01 Hero Flow</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wdth,wght@75..100,400..700&family=Overpass+Mono:wght@400;500;600&display=swap">
+<link rel="stylesheet" href="shared.css">
+<style>
+.top{align-items:flex-end}.top .tools{flex-wrap:wrap;justify-content:flex-end;gap:8px;max-width:1150px}
+.tg{display:inline-flex}.tg .tbtn+.tbtn{border-left:0}
+.tl0{font-family:var(--mono);font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);align-self:center;margin-right:8px}
+body[data-mode="pinned"] .past-only,body[data-mode="past"] .pin-only{opacity:.35;pointer-events:none}
+.stage{width:1512px;height:860px;background:var(--paper)}
+.gridov{padding:0 20px!important;column-gap:20px!important}
+#ph{position:absolute;overflow:hidden;background:#cfc8bb}
+#ph img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:50% 0;transform-origin:50% 30%}
+#ph .grain{opacity:.16}
+.chip{position:absolute;display:inline-flex;gap:13px;background:rgba(247,242,231,.92);padding:7px 11px;font-family:var(--mono);font-size:13px;letter-spacing:.06em;text-transform:uppercase;white-space:nowrap;z-index:4}
+.r{color:var(--rust)}
+#dA{position:absolute;left:20px;top:666px;font-family:var(--body);font-stretch:87.5%;font-size:21px;line-height:1.35;margin:0;white-space:nowrap;z-index:9}
+#bar{position:absolute;left:0;width:1512px;z-index:10}
+#bar .bg{position:absolute;inset:0;background:var(--paper)}
+#bar .hl{position:absolute;left:0;right:0;bottom:0;height:1px;background:var(--carbon)}
+#wm{position:absolute;left:20px;max-width:none}
+#nav{position:absolute;display:flex;gap:34px;font-family:var(--body);font-stretch:87.5%;font-weight:500;font-size:16px;text-transform:uppercase;letter-spacing:.02em;white-space:nowrap}
+#nav span{display:inline-flex;gap:8px;align-items:center}
+#fr{position:absolute;left:1150px;font-family:var(--mono);font-size:14px;letter-spacing:.06em;text-decoration:underline;text-underline-offset:4px}
+#qt{position:absolute;width:260px;background:var(--yellow);display:flex;align-items:center;justify-content:space-between;padding:0 24px;font-family:var(--body);font-stretch:87.5%;font-size:18px;font-weight:600;text-transform:uppercase}
+.ln{display:block;font-family:var(--display);font-stretch:87.5%;font-weight:650;text-transform:uppercase;font-size:100px;line-height:.9;letter-spacing:-.015em;color:var(--carbon);white-space:nowrap}
+#h1{position:absolute;left:20px;top:124px;z-index:7}
+#dB{position:absolute;left:20px;font-family:var(--body);font-stretch:87.5%;font-size:21px;line-height:1.35;margin:0;white-space:nowrap;z-index:7}
+.st{position:absolute;height:56px;width:477px;display:flex;align-items:center;gap:13px;padding:0 20px;background:var(--paper);color:var(--carbon);text-decoration:none;z-index:8;transition:background .2s,color .2s}
+.st .pi{display:grid;place-items:center;color:var(--carbon);--tile:var(--paper)}
+.st .o{font-family:var(--display);font-stretch:87.5%;font-weight:600;font-size:22px}
+.st .ar{margin-left:auto;font-size:20px}
+.st:hover,.st:focus-visible{background:var(--carbon);color:var(--paper);outline:0}.st:hover .pi,.st:focus-visible .pi{color:var(--paper);--tile:var(--carbon)}
+/* scroll-past */
+#past{position:absolute;inset:0;z-index:6}
+#past .ln{position:absolute;left:20px}
+#lane{position:absolute;left:0;width:1512px;height:330px;overflow:hidden}
+#lane > div{position:absolute;inset:0;display:none}
+#pr{position:absolute;left:1015px;width:477px;margin:0;font-family:var(--body);font-stretch:87.5%;font-size:21px;line-height:1.4}
+/* roll */
+#fx-roll .it{position:absolute;left:20px;top:0;font-family:var(--display);font-stretch:87.5%;font-weight:650;text-transform:uppercase;line-height:1;white-space:nowrap;color:var(--carbon);transition:transform .7s cubic-bezier(.2,.7,.2,1),opacity .7s,font-size .7s}
+/* ticker */
+#fx-ticker .band{position:absolute;left:0;right:0;top:150px;height:76px;overflow:hidden;
+ background:linear-gradient(180deg,#d9d2c4 0%,#efe8da 22%,#f7f2e7 50%,#efe8da 78%,#d9d2c4 100%);
+ -webkit-mask-image:linear-gradient(90deg,transparent,#000 9%,#000 91%,transparent);mask-image:linear-gradient(90deg,transparent,#000 9%,#000 91%,transparent)}
+#fx-ticker .band::before,#fx-ticker .band::after{content:"";position:absolute;left:0;right:0;height:1px;background:rgba(32,37,33,.18);z-index:2}
+#fx-ticker .band::before{top:0}#fx-ticker .band::after{bottom:0}
+#fx-ticker .trk{position:absolute;top:0;bottom:0;display:flex;align-items:center;gap:96px;white-space:nowrap;font-family:var(--mono);font-size:16px;letter-spacing:.14em;text-transform:uppercase;color:var(--rust);animation:tick 38s linear infinite;padding-left:96px}
+@keyframes tick{to{transform:translateX(-50%)}}
+/* flap */
+#fx-flap .row{position:absolute;left:20px;top:0;display:flex;gap:5px}
+.fl{width:62px;height:100px;background:var(--carbon);color:var(--paper);border-radius:4px;display:grid;place-items:center;font-family:var(--display);font-stretch:87.5%;font-weight:650;font-size:74px;line-height:1;position:relative;overflow:hidden}
+.fl::after{content:"";position:absolute;left:0;right:0;top:50%;height:1px;background:rgba(247,242,231,.18)}
+.fl.blank{background:#2c312d}
+.fl.go{animation:flip .26s ease-in-out}
+@keyframes flip{0%{transform:scaleY(1)}50%{transform:scaleY(.06)}100%{transform:scaleY(1)}}
+/* drum */
+#fx-drum .win{position:absolute;left:0;top:0;width:1100px;height:330px;perspective:900px;overflow:hidden;
+ -webkit-mask-image:linear-gradient(180deg,transparent,#000 30%,#000 70%,transparent);mask-image:linear-gradient(180deg,transparent,#000 30%,#000 70%,transparent)}
+#fx-drum .cyl{position:absolute;left:20px;top:165px;transform-style:preserve-3d;transition:transform .9s cubic-bezier(.3,.6,.2,1)}
+#fx-drum .it{position:absolute;left:0;top:0;font-family:var(--display);font-stretch:87.5%;font-weight:650;text-transform:uppercase;font-size:100px;line-height:1;white-space:nowrap;color:var(--carbon);backface-visibility:hidden;transform-origin:0 50%}
+.scrubber{max-width:1512px;margin:13px auto 0;display:flex;gap:13px;align-items:center;flex-wrap:wrap}
+.scrubber input{flex:1;min-width:200px;accent-color:var(--rust)}
+.marks{font-family:var(--mono);font-size:12px;color:var(--muted);letter-spacing:.06em}
+.phase{min-width:190px;text-align:center;font-family:var(--mono);font-size:12px;letter-spacing:.08em;background:var(--carbon);color:var(--paper);padding:6px 10px}
+.cmp td{text-align:left!important;white-space:normal!important}
+</style>
+<div class="top"><div><div class="id">ONAWAY · Home hero · scroll flow v4 · 1512 × 860</div><h1>HF-01 · Hero Flow</h1></div><div class="tools"><span class="tg " data-k="mode"><span class="tl0">Hero</span><button class="tbtn" data-v="pinned" aria-pressed="true">Pinned image</button><button class="tbtn" data-v="past" aria-pressed="false">Scroll-past image</button></span><span class="tg " data-k="w"><span class="tl0">Weather</span><button class="tbtn" data-v="ov01" aria-pressed="true">Overcast</button><button class="tbtn" data-v="tb05" aria-pressed="false">Autumn sun</button></span><span class="tg " data-k="hdr"><span class="tl0">Navbar once docked</span><button class="tbtn" data-v="clear" aria-pressed="true">Clear</button><button class="tbtn" data-v="solid" aria-pressed="false">Solid</button></span><span class="tg pin-only" data-k="zoom"><span class="tl0">Image zoom</span><button class="tbtn" data-v="125" aria-pressed="true">1.00 → 1.25</button><button class="tbtn" data-v="104" aria-pressed="false">1.00 → 1.04</button><button class="tbtn" data-v="off" aria-pressed="false">Off</button></span><span class="tg past-only" data-k="fx"><span class="tl0">Places</span><button class="tbtn" data-v="flap" aria-pressed="true">Split-flap</button><button class="tbtn" data-v="roll" aria-pressed="false">Roll</button><button class="tbtn" data-v="ticker" aria-pressed="false">Ticker band</button><button class="tbtn" data-v="drum" aria-pressed="false">Drum</button></span><span class="tg past-only" data-k="copy"><span class="tl0">Sub copy</span><button class="tbtn" data-v="quote" aria-pressed="true">Quote promise</button><button class="tbtn" data-v="crew" aria-pressed="false">One crew</button><button class="tbtn" data-v="span" aria-pressed="false">Oakville to Pickering</button></span><button class="tbtn" id="gridBtn" aria-pressed="false">Grid (G)</button></div></div>
+<div class="wrap"><div class="stage">
+<div id="ph"><img id="img" src="assets/ov01.jpg" alt="Painted aerial of Toronto's western waterfront"><div class="grain"></div></div>
+<span class="chip" id="chip"><span class="r">The GTA</span><span>43.65°N 79.38°W</span></span>
+<div id="h1"><span class="ln" id="l1">Steady hands</span><span class="ln" id="l2">at your door</span></div>
+<p id="dB">Cleaning, moving and delivery for homes and businesses across the <span class="r">GTA</span>.</p>
+<a class="st" href="#"><span class="pi"><svg viewBox="0 0 96 96" width="26" height="26" aria-hidden="true"><g fill="currentColor"><path d="M30 14h34a8 8 0 0 1 8 8v4a4 4 0 0 1-4 4H54v8H40V30H30a4 4 0 0 1-4-4v-8a4 4 0 0 1 4-4z"/><path d="M72 16h8v8h-8z"/><path d="M40 30h10l-6 16h-6z"/><path d="M36 40h22v4c8 4 12 10 12 18v20a6 6 0 0 1-6 6H32a6 6 0 0 1-6-6V62c0-8 4-14 10-18z"/></g><rect x="34" y="60" width="28" height="14" rx="2" style="fill:var(--tile,#EFE7D6)"/></svg></span><span class="o">Cleaning</span><span class="ar">→</span></a><a class="st" href="#"><span class="pi"><svg viewBox="0 0 96 96" width="26" height="26" aria-hidden="true"><g transform="translate(8 2) rotate(-14 40 80)"><g fill="currentColor"><path d="M22 8h20a5 5 0 0 1 5 5v4H40v-1h-6v48h44a5 5 0 0 1 5 5v5a5 5 0 0 1-5 5H31a6 6 0 0 1-6-6V16h-3a4 4 0 0 1 0-8z"/><path d="M40 16h7v8a4 4 0 0 1-4 4h-3z"/><circle cx="36" cy="82" r="11"/></g><circle cx="36" cy="82" r="4" style="fill:var(--tile,#EFE7D6)"/></g></svg></span><span class="o">Moving</span><span class="ar">→</span></a><a class="st" href="#"><span class="pi"><svg viewBox="0 0 96 96" width="26" height="26" aria-hidden="true"><g fill="currentColor"><path d="M14 18h68a3 3 0 0 1 3 3v9H11v-9a3 3 0 0 1 3-3z"/><path d="M16 34h64v44a5 5 0 0 1-5 5H21a5 5 0 0 1-5-5z"/></g><rect x="43" y="18" width="10" height="34" style="fill:var(--tile,#EFE7D6)"/><rect x="28" y="62" width="18" height="5" rx="1" style="fill:var(--tile,#EFE7D6)"/></svg></span><span class="o">Delivery</span><span class="ar">→</span></a>
+<div id="past"><span class="ln" id="p1">Steady hands</span><span class="ln" id="p2">at your door in</span>
+  <div id="lane">
+    <div id="fx-roll"><span class="it">Toronto</span><span class="it">North York</span><span class="it">Scarborough</span><span class="it">Etobicoke</span><span class="it">East York</span><span class="it">York</span><span class="it">Mississauga</span><span class="it">Brampton</span><span class="it">Vaughan</span><span class="it">Markham</span><span class="it">Richmond Hill</span><span class="it">Oakville</span><span class="it">Pickering</span></div>
+    <div id="fx-ticker"><div class="band"><div class="trk"><span>Toronto</span><span>North York</span><span>Scarborough</span><span>Etobicoke</span><span>East York</span><span>York</span><span>Mississauga</span><span>Brampton</span><span>Vaughan</span><span>Markham</span><span>Richmond Hill</span><span>Oakville</span><span>Pickering</span><span>Toronto</span><span>North York</span><span>Scarborough</span><span>Etobicoke</span><span>East York</span><span>York</span><span>Mississauga</span><span>Brampton</span><span>Vaughan</span><span>Markham</span><span>Richmond Hill</span><span>Oakville</span><span>Pickering</span></div></div></div>
+    <div id="fx-flap"><div class="row"></div></div>
+    <div id="fx-drum"><div class="win"><div class="cyl"><span class="it">Toronto</span><span class="it">North York</span><span class="it">Scarborough</span><span class="it">Etobicoke</span><span class="it">East York</span><span class="it">York</span><span class="it">Mississauga</span><span class="it">Brampton</span><span class="it">Vaughan</span><span class="it">Markham</span><span class="it">Richmond Hill</span><span class="it">Oakville</span><span class="it">Pickering</span></div></div></div>
+  </div>
+  <p id="pr"></p></div>
+<p id="dA">Cleaning, moving and delivery for homes and businesses across the <span class="r">GTA</span>.</p>
+<header id="bar"><span class="bg" id="bbg"></span><span class="hl" id="bhl"></span>
+  <img id="wm" src="assets/wm-carbon.png" alt="ONAWAY">
+  <nav id="nav"><span>Services <b style="font-weight:400">+</b></span><span>About</span><span>Help</span></nav>
+  <span id="fr">FR</span><span id="qt">Get a free quote <span>↗</span></span></header>
+</div></div>
+<div class="scrubber"><button class="tbtn" id="play">Play scroll</button><span class="marks">A</span><input type="range" id="t" min="0" max="1000" value="0" aria-label="Scroll position"><span class="marks">C</span><span class="phase" id="phase">A → DOCKING</span></div>
+<div class="spec">
+  <section><h2>What changed</h2><ul>
+  <li><b>Both:</b> the navbar sits flush on the fold in A, the nav links are centred on the page in every state, and the logo always settles at 80%.</li>
+  <li><b>Pinned:</b> zoom defaults to 1.00 → 1.25. The descriptor is gone before the navbar reaches it. The GTA tag disappears the moment the navbar crosses it, and the service cards now arrive straight after docking, alongside the headline, instead of after it.</li>
+  <li><b>Scroll-past:</b> the headline block hangs a fixed 78px under the navbar the whole way up, so it never peeks out in A and the gap to ONAWAY never changes. The coordinates and the "Next" line are gone. Places change on their own every 2.6 seconds once you arrive.</li></ul></section>
+  <section><h2>Place effects, ranked</h2><table class="cmp"><tbody>
+  <tr><td><b>Split-flap · 9</b></td><td>Completes the sentence on a departure board: "at your door in" then the place flips in, tile by tile. The most on-brand of the four and the easiest to scan. Risk: if it flips too often it becomes a toy; keep it at 2.5–3 s.</td></tr>
+  <tr><td><b>Ticker band · 8.5</b></td><td>Your earlier aesthetic: a curved band of place names drifting past. Ambient and calm, and it never asks to be read. It doesn't complete the sentence, so the headline drops "in".</td></tr>
+  <tr><td><b>Roll · 8</b></td><td>The previous list, now automatic. Clear, but the stack of faded names below is the busiest of the four.</td></tr>
+  <tr><td><b>Drum · 7.5</b></td><td>A 3D cylinder. Striking, but the tilted words are hard to read and it leans toward a tech demo.</td></tr></tbody></table></section>
+  <section><h2>Sub copy</h2><table class="cmp"><tbody>
+  <tr><td><b>Quote promise</b></td><td>"Free written quote within 2 hours, no obligation." Concrete, true, and it points at the one action on the page. My pick.</td></tr>
+  <tr><td><b>One crew</b></td><td>"One local crew for all three, booked with one call." Warm and differentiating, but only if it's operationally true.</td></tr>
+  <tr><td><b>Oakville to Pickering</b></td><td>Turns coverage into real places. Strong next to the split-flap, though it repeats the place idea.</td></tr></tbody></table></section>
+  <section><h2>Scores and the path to 10</h2><table class="cmp"><tbody>
+  <tr><td><b>Pinned · 9.5</b></td><td>Promise on the city, services in early, one clean docking move.</td></tr>
+  <tr><td><b>Scroll-past + split-flap · 9</b></td><td>Calmer and more editorial; holds back because the weather lives only in the opening plate and R2-E also opens on big type.</td></tr></tbody></table>
+  <p>Neither is a 10 in a mock. What gets there: (1) tune the scroll budget on a real trackpad so the pin never feels stuck; (2) set the real Instrument Sans SemiCondensed and the Display/Text logo cuts; (3) for pinned, finish the six weather plates so the hero is true on the day; (4) for scroll-past, open R2-E straight on its signs so two type-led screens don't stack.</p></section>
+</div><script>(function(){
+const $=id=>document.getElementById(id), stage=document.querySelector('.stage'), wrap=document.querySelector('.wrap');
+function fit(){const s=Math.min(1,wrap.clientWidth/1512);stage.style.transform='scale('+s+')';stage.style.transformOrigin='0 0';wrap.style.height=(860*s)+'px';}
+addEventListener('resize',fit);fit();
+const ov=document.createElement('div');ov.className='gridov';ov.innerHTML='<i></i>'.repeat(12);stage.appendChild(ov);
+const gb=$('gridBtn');const tgl=()=>{const on=!stage.classList.contains('show-grid');stage.classList.toggle('show-grid',on);gb.setAttribute('aria-pressed',on);};
+gb.addEventListener('click',tgl);addEventListener('keydown',e=>{if((e.key==='g'||e.key==='G')&&e.target.tagName!=='INPUT')tgl();});
+const cl=v=>Math.max(0,Math.min(1,v)), L=(a,b,t)=>a+(b-a)*t, eo=v=>1-Math.pow(1-v,3), eio=v=>v<.5?4*v*v*v:1-Math.pow(-2*v+2,3)/2;
+const PLACES=["Toronto", "North York", "Scarborough", "Etobicoke", "East York", "York", "Mississauga", "Brampton", "Vaughan", "Markham", "Richmond Hill", "Oakville", "Pickering"], COPY={"quote": "Cleaning, moving and delivery for homes and businesses across the <span class=\"r\">GTA</span>. Free written quote within 2 hours, no obligation.", "crew": "Cleaning, moving and delivery for homes and businesses across the <span class=\"r\">GTA</span>. One local crew for all three, booked with one call.", "span": "Cleaning, moving and delivery for homes and businesses, from Oakville to Pickering and up to Richmond Hill."};
+const S={mode:'pinned',w:'ov01',hdr:'clear',zoom:'125',fx:'flap',copy:'quote'};
+const WM=1461/285, TRAVEL=710, BAR0=710, GAP=78;
+function box(el,x,y,w,h){el.style.left=x+'px';el.style.top=y+'px';if(w!=null){el.style.width=w+'px';el.style.height=h+'px';}}
+function draw(t){
+ const past=S.mode==='past';
+ const t1=cl(t/.45), sc=TRAVEL*t1, k=t1, ke=eio(k);
+ let pr; if(past) pr=[20,20-sc,1472,630];
+ else { const px=L(20,0,ke), pb=L(650,860,eo(cl(k*1.6))); pr=[px,px,1512-2*px,pb-px]; }
+ box($('ph'),...pr);
+ const zm=past?0:{'125':.25,'104':.04,off:0}[S.zoom]; $('img').style.transform='scale('+(1+zm*ke)+')';
+ // navbar strip
+ const bh=L(150,72,ke), by=Math.max(0,BAR0-sc); box($('bar'),0,by,1512,bh);
+ const lh=L(110,36,eio(cl(k/.8))), wm=$('wm'); wm.style.height=lh+'px'; wm.style.width=(lh*WM)+'px'; wm.style.top=((bh-lh)/2)+'px';
+ const nav=$('nav'); nav.style.left=(756-nav.offsetWidth/2)+'px'; nav.style.top=(bh/2-11)+'px'; $('fr').style.top=(bh/2-10)+'px';
+ const qh=L(110,72,ke), qi=L(20,0,ke); box($('qt'),1512-260-qi,L(bh-qh-20,0,ke),260,qh);
+ const docked=cl((t-.45)/.06); $('bbg').style.opacity=S.hdr==='clear'?1-docked:1; $('bhl').style.opacity=S.hdr==='clear'?0:cl(k*4-3);
+ $('dA').style.opacity=1-cl(sc/24);
+ // GTA tag: gone once the navbar reaches it
+ const chip=$('chip'); const cx=pr[0]+pr[2]-20-chip.offsetWidth, cyy=pr[1]+pr[3]-20-chip.offsetHeight; chip.style.left=cx+'px'; chip.style.top=cyy+'px';
+ chip.style.opacity=past?1:cl((by-(cyy+chip.offsetHeight)-4)/26);
+ ['h1','dB'].forEach(id=>$(id).style.display=past?'none':''); document.querySelectorAll('.st').forEach(e=>e.style.display=past?'none':''); $('past').style.display=past?'':'none';
+ if(past){
+  const T=by+bh+GAP; $('p1').style.top=T+'px'; $('p2').style.top=(T+90)+'px';
+  $('p2').textContent=S.fx==='ticker'?'at your door':'at your door in';
+  $('lane').style.top=(T+194)+'px';
+  const pr2=$('pr'); pr2.innerHTML=COPY[S.copy]; pr2.style.top=(S.fx==='ticker'?T+110:T+194)+'px';
+  $('phase').textContent=t<.45?'A → DOCKING':'B · ACROSS THE GTA'; return; }
+ const hA=eo(cl((t-.46)/.12)), hB=eo(cl((t-.50)/.12)), dd=eo(cl((t-.54)/.12)), s=cl((t-.52)/.30);
+ $('l1').style.opacity=hA; $('l1').style.transform='translateY('+(24*(1-hA))+'px)';
+ $('l2').style.opacity=hB; $('l2').style.transform='translateY('+(24*(1-hB))+'px)';
+ const dB=$('dB'); dB.style.top=(318+12*(1-dd))+'px'; dB.style.opacity=dd;
+ document.querySelectorAll('.st').forEach((el,i)=>{const p=eo(cl((s-i*.12)/.6)); box(el,[20,517,1015][i],784+28*(1-p)); el.style.opacity=p; el.style.pointerEvents=p>.9?'auto':'none';});
+ $('phase').textContent=t<.45?'A → DOCKING':(t<.8?'B · PROMISE AND SERVICES':'C · AT REST');
+}
+// ---- automatic place effects
+let idx=0; const N=PLACES.length;
+function showFx(){ ['roll','ticker','flap','drum'].forEach(f=>$('fx-'+f).style.display=S.fx===f?'block':'none'); }
+function roll(){ const its=[...document.querySelectorAll('#fx-roll .it')];
+ its.forEach((el,i)=>{const d=(i-idx+N)%N; let y,fs,o;
+  if(d===0){y=0;fs=100;o=1;} else if(d<=3){y=104+(d-1)*56;fs=44;o=.18-(d-1)*.04;} else if(d===N-1){y=-80;fs=44;o=0;} else {y=280;fs=44;o=0;}
+  el.style.transform='translateY('+y+'px)'; el.style.fontSize=fs+'px'; el.style.opacity=o;}); }
+const COLS=13; const row=document.querySelector('#fx-flap .row');
+row.innerHTML='<span class="fl blank"></span>'.repeat(COLS);
+function flap(){ const w=PLACES[idx].toUpperCase().padEnd(COLS,' ');
+ [...row.children].forEach((el,i)=>{ setTimeout(()=>{ el.classList.remove('go'); void el.offsetWidth; el.classList.add('go');
+   setTimeout(()=>{ const ch=w[i]; el.textContent=ch===' '?'':ch; el.classList.toggle('blank',ch===' '); },130); }, i*45); }); }
+function drum(){ const its=[...document.querySelectorAll('#fx-drum .it')], A=34, R=130;
+ its.forEach((el,i)=>{ let d=(i-idx+N)%N; if(d>N/2) d-=N; const ang=d*A; el.style.transform='translateY(-50px) rotateX('+(-ang)+'deg) translateZ('+R+'px)'; el.style.opacity=Math.abs(d)>2?0:(d===0?1:.28);
+   el.style.top='0px'; });
+ document.querySelector('#fx-drum .cyl').style.transform='translateZ(-'+R+'px)'; }
+function tick(){ if(S.fx==='roll')roll(); else if(S.fx==='flap')flap(); else if(S.fx==='drum')drum(); }
+const reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
+setInterval(()=>{ if(S.mode!=='past'||reduce) return; idx=(idx+1)%N; tick(); },2600);
+if(reduce) document.querySelector('#fx-ticker .trk').style.animation='none';
+function setFx(){ showFx(); tick(); }
+document.body.dataset.mode=S.mode;
+document.querySelectorAll('.tg').forEach(g=>g.querySelectorAll('button').forEach(b=>b.addEventListener('click',()=>{S[g.dataset.k]=b.dataset.v;g.querySelectorAll('button').forEach(x=>x.setAttribute('aria-pressed',x===b));
+ if(g.dataset.k==='w') $('img').src='assets/'+S.w+'.jpg'; if(g.dataset.k==='fx') setFx(); if(g.dataset.k==='mode'){document.body.dataset.mode=S.mode; if(S.mode==='past'){r.value=1000;}}
+ draw(+r.value/1000);})));
+const r=$('t'); r.addEventListener('input',()=>draw(r.value/1000));
+document.querySelectorAll('.st').forEach(a=>a.addEventListener('click',e=>e.preventDefault()));
+$('play').addEventListener('click',()=>{const to=r.value>500?0:1, from=r.value/1000; if(reduce){r.value=to*1000;draw(to);return;}
+ const t0=performance.now(), D=4600; (function f(n){const q=cl((n-t0)/D), v=L(from,to,q); r.value=v*1000; draw(v); if(q<1) requestAnimationFrame(f);})(t0);});
+setFx(); addEventListener('load',()=>draw(+r.value/1000)); draw(0);
+})();</script>

@@ -1,0 +1,37 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 440" width="300" height="440">
+  <defs>
+    <linearGradient id="body" x1="0" x2="1">
+      <stop offset="0" stop-color="#FBF7EE"/><stop offset=".35" stop-color="#EFE5D1"/><stop offset=".8" stop-color="#C9B28F"/><stop offset="1" stop-color="#A88D69"/>
+    </linearGradient>
+    <linearGradient id="head" x1="0" x2="1">
+      <stop offset="0" stop-color="#3a403b"/><stop offset=".6" stop-color="#202521"/><stop offset="1" stop-color="#141714"/>
+    </linearGradient>
+    <linearGradient id="lab" x1="0" x2="1">
+      <stop offset="0" stop-color="#c06a56"/><stop offset=".7" stop-color="#A9503E"/><stop offset="1" stop-color="#7e3a2c"/>
+    </linearGradient>
+    <radialGradient id="sh" cx=".5" cy=".5" r=".5"><stop offset="0" stop-color="#202521" stop-opacity=".28"/><stop offset="1" stop-color="#202521" stop-opacity="0"/></radialGradient>
+    <filter id="grain" x="0" y="0" width="100%" height="100%">
+      <feTurbulence type="fractalNoise" baseFrequency="1.1" numOctaves="2" result="n"/>
+      <feColorMatrix in="n" values="0 0 0 0 .12  0 0 0 0 .13  0 0 0 0 .12  0 0 0 .5 0" result="g"/>
+      <feComposite in="g" in2="SourceGraphic" operator="in" result="gi"/>
+      <feBlend in="SourceGraphic" in2="gi" mode="multiply"/>
+    </filter>
+  </defs>
+  <ellipse cx="150" cy="420" rx="110" ry="14" fill="url(#sh)"/>
+  <g filter="url(#grain)">
+    <!-- body -->
+    <path d="M86 170 Q86 140 112 130 L188 130 Q214 140 214 170 L222 392 Q222 412 202 412 L98 412 Q78 412 78 392 Z" fill="url(#body)"/>
+    <!-- label -->
+    <path d="M84 246 L216 246 L219 330 L81 330 Z" fill="url(#lab)"/>
+    <rect x="96" y="270" width="64" height="5" fill="#F7F2E7" opacity=".85"/>
+    <rect x="96" y="284" width="44" height="5" fill="#F7F2E7" opacity=".6"/>
+    <!-- neck -->
+    <rect x="120" y="104" width="60" height="30" rx="4" fill="url(#head)"/>
+    <!-- trigger head -->
+    <path d="M108 104 L108 62 Q108 40 132 38 L232 34 Q248 34 250 48 L252 62 Q252 70 242 72 L196 76 L196 104 Z" fill="url(#head)"/>
+    <path d="M150 76 L176 76 Q170 118 150 132 Q160 104 150 76 Z" fill="#2b302c"/>
+    <rect x="246" y="46" width="14" height="14" rx="2" fill="#2b302c"/>
+    <!-- highlight -->
+    <path d="M100 176 Q102 150 118 144 L120 396 Q104 396 102 384 Z" fill="#fff" opacity=".35"/>
+  </g>
+</svg>

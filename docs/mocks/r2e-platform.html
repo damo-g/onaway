@@ -1,0 +1,123 @@
+<title>R2-E Station Signs to Board</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wdth,wght@75..100,400..700&family=Overpass+Mono:wght@400;500;600&display=swap">
+<link rel="stylesheet" href="shared.css"><link rel="stylesheet" href="r2.css">
+<style>
+.top{align-items:flex-end}.top .tools{flex-wrap:wrap;justify-content:flex-end}
+.tg{display:inline-flex;gap:0;margin-left:8px}.tg .tbtn+.tbtn{border-left:0}
+.stage{background:var(--bg);transition:background .3s}
+.tl0{font-family:var(--mono);font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);align-self:center;margin-right:8px}
+.stage[data-env="dark"]{--bg:#202521;--htx:#F7F2E7;--hsub:rgba(247,242,231,.78)}
+.stage[data-env="light"]{--bg:#F7F2E7;--htx:#202521;--hsub:rgba(32,37,33,.78)}
+#signs[data-sign="dark"]{--txt:#F7F2E7;--sub:rgba(247,242,231,.78);--face:#202521;--edge:rgba(247,242,231,.22);--tile:#2E332F;--glyph:#F7F2E7;--rule:rgba(247,242,231,.18);--hbg:#F7F2E7;--htxt:#202521}
+#signs[data-sign="light"]{--txt:#202521;--sub:rgba(32,37,33,.78);--face:#F7F2E7;--edge:transparent;--tile:#EFE7D6;--glyph:#202521;--rule:rgba(32,37,33,.18);--hbg:#202521;--htxt:#F7F2E7}
+.plate{position:absolute;left:0;width:1512px;height:1218px;object-fit:cover}
+.hd{position:absolute;left:64px;right:64px;top:89px;display:grid;grid-template-columns:7fr 5fr;column-gap:24px;align-items:end;z-index:8;color:var(--htx)}
+.hd h2{font-family:var(--display);font-stretch:87.5%;font-weight:650;text-transform:uppercase;font-size:68px;line-height:.92;margin:0}
+.hd p{font-size:20px;line-height:1.4;font-stretch:87.5%;margin:0;max-width:34ch;color:var(--hsub)}
+.rodx{position:absolute;width:5px;background:#202521;border-radius:2px;z-index:2}
+.sg{position:absolute;color:var(--txt);cursor:pointer;transition:transform .2s ease}
+.sg .fc,.sg .tl{transition:background .2s}
+.sg .hs{position:absolute;inset:0;background:#202521;box-shadow:0 13px 21px -13px rgba(32,37,33,.55),inset 0 0 0 1px var(--edge)}
+.sg .fc{position:absolute;background:var(--face)}
+.sg .rl{position:absolute;left:0;right:0;bottom:0;height:1px;background:var(--rule)}
+.sg .tl{position:absolute;display:grid;place-items:center;background:var(--tile);color:var(--glyph);overflow:hidden}
+.sg .tl svg,.sg .tl img{width:68%;height:68%;object-fit:contain}
+.sg .nm{position:absolute;font-family:var(--display);font-stretch:87.5%;font-weight:600;line-height:1;white-space:nowrap}
+.sg .ar{position:absolute;line-height:1}
+.sg .ds{position:absolute;left:552px;width:360px;font-size:16px;line-height:1.5;font-stretch:87.5%;color:var(--sub)}
+.sg .fx{position:absolute;left:var(--fxl,970px)}
+.sg.live:hover,.sg.live:focus-visible{outline:0;--txt:var(--htxt);--sub:var(--htxt);--face:var(--hbg);--tile:var(--hbg);--glyph:var(--htxt)}
+.sg.live:hover .fx svg{filter:invert(1) hue-rotate(180deg)}
+.sg.lift:hover,.sg.lift:focus-visible{transform:translateY(-3px)}
+.sg .fx .wl{display:block;font-family:var(--mono);font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--sub);margin-bottom:8px}
+.scrub{position:absolute;left:64px;bottom:21px;z-index:65;display:flex;gap:13px;align-items:center;background:#F7F2E7;color:#202521;padding:8px 13px;box-shadow:inset 0 0 0 1px #202521}
+.scrub input{width:260px}
+</style>
+<div class="top">
+  <div><div class="id">ONAWAY · Home · round 2 · R2-E · 1512 × 980</div><h1>R2-E · Station Signs to Board</h1></div>
+  <div class="tools"><span class="tg" data-k="env"><span class="tl0">Environment</span><button class="tbtn" data-v="dark" aria-pressed="true">Dark</button><button class="tbtn" data-v="light">Light</button></span>
+<span class="tg" data-k="sign"><span class="tl0">Signs</span><button class="tbtn" data-v="dark" aria-pressed="true">Dark</button><button class="tbtn" data-v="light">Light</button></span>
+<span class="tg" data-k="arr"><span class="tl0">Arrangement</span><button class="tbtn" data-v="chain" aria-pressed="true">Chained</button><button class="tbtn" data-v="persp">Perspective</button></span>
+<span class="tg" data-k="side"><span class="tl0">Icon</span><button class="tbtn" data-v="left" aria-pressed="true">Left</button><button class="tbtn" data-v="right">Right</button></span>
+<span class="tg" data-k="dir"><span class="tl0">Arrows</span><button class="tbtn" data-v="straight" aria-pressed="true">→ → →</button><button class="tbtn" data-v="angled">↗ → ↘</button></span>
+<span class="tg" data-k="desc"><span class="tl0">Description</span><button class="tbtn" data-v="col" aria-pressed="true">Column</button><button class="tbtn" data-v="under">Under name</button></span>
+<span class="tg" data-k="fact"><span class="tl0">Fact</span><button class="tbtn" data-v="fixed" aria-pressed="true">Fixed</button><button class="tbtn" data-v="window">Next window</button></span><button class="tbtn" id="gridBtn" aria-pressed="false">Grid (G)</button><button class="tbtn" id="foldBtn" aria-pressed="true">Fold line</button></div>
+</div>
+<div class="wrap"><div class="stage">
+
+<img class="plate" id="plate" alt="Painted station canopy beam in front of a softly lit wall">
+<div class="hd"><h2>What we take<br>off your plate.</h2><p>Three services, one crew standard. Pick one to see what's included and book a window.</p></div>
+<div id="rods"></div><div id="signs"></div>
+<div class="scrub"><button class="tbtn" id="play" style="color:#202521;border-color:rgba(32,37,33,.3)">Play scroll</button><label class="lab" for="t">Scroll</label><input type="range" id="t" min="0" max="1000" value="0"></div>
+
+<div class="fold"><span>BROWSER FOLD · 860 PX</span></div>
+</div></div>
+<div class="spec">
+  <section><h2>The idea</h2><p>Section 02. It opens on three station signs hanging from one beam on EL-01 (light environment) or ED-03 (dark environment). On scroll the backdrop fades out; the header and section keep the environment colour, and the signs keep their own colour as they widen into the board rows.</p>
+<p>Every element keeps its side for the whole scroll, whichever icon side is chosen. Only the description and the fact column are new, and they appear in the middle near the end. Use the toggles above to switch environment, sign colour, arrangement and icon side, then press Play or drag the slider.</p></section>
+  <section><h2>What changed from round 1</h2><ul><li>One mode per section: dark stays dark and light stays light; only the backdrop fades.</li><li>Position-locked morph: tile, name and arrow never change sides.</li><li>Pictograms locked: spray bottle, tilted dolly, front-view box.</li><li>Copy updated: Homes and workplaces, once or on a schedule · Homes and offices, one room to a full floor · Single items to full loads, same-day or scheduled. Delivery fact is now GTA-WIDE.</li><li>Hover works from the start (face inverts, sign lifts 3px) and on the end board; it pauses during the morph.</li><li>Arrows toggle: all → or angled ↗ → ↘. Fact toggle: fixed fact or next open window. Description toggle: its own column, or tucked under the service name.</li><li>Environment (header, background, plate) and sign colour are separate toggles, giving four combinations.</li><li>Icon side: left (icon scanned first) or right (word first, arrow, then the icon tile), carried through to the end state.</li><li>Two arrangements, both hanging from the beam: chained (100/93/87%, each sign hangs from the one above) or perspective (100/90/82%, 21px gaps, every sign on its own rods down from the beam, back signs dimmed, shadows lighter and softer toward the back).</li></ul></section>
+  <section><h2>Figma build notes</h2><ul><li>Plates: EL-01 and ED-03 at 1512 wide, plate top at y 233, beam at 300–456 in both arrangements.</li><li>Chained signs: 900 × 104, 840 × 96, 780 × 90, centred. Perspective: 940 × 112, 846 × 100, 770 × 90, 21px gaps, rods 5 / 4 / 3px, depth dimmed to 90% and 82%.</li><li>Icon right: name at x 64 in the end state, description at x 420, fact at x 900, arrow, then the 144 tile inset 64 from the right.</li><li>Sign: Carbon housing 6px, 8px radius. Dark: Carbon face with a 22% Ticket Paper edge. Light: Ticket Paper face. Tile on the left, square, inset 12; name at 38% of sign height; arrow inset 34 on the right.</li><li>End rows match R2-D: 1512 × 166 from y 330; tile 144 at x 64; name 55; description at x 552; fact at x 970; arrow inset 64.</li><li>Scroll over about 800px, pinned: 0–0.55 backdrop fades; 0.12–0.8 signs move; 0.62–1 details fade in. Hover is live at rest (start and end) and paused mid-morph.</li></ul></section>
+  <section><h2>Score</h2><div class="score">90<small> / 100</small><span class="pass">Clears 75</span></div>
+    <table><tbody><tr><td>H1 reads first; hierarchy is clear</td><td>18 / 20</td></tr><tr><td>Follows the brand system</td><td>19 / 20</td></tr><tr><td>Distinct from logistics templates</td><td>15 / 15</td></tr><tr><td>Quote, phone and services above the fold</td><td>16 / 20</td></tr><tr><td>Buildable with assets we have this week</td><td>14 / 15</td></tr><tr><td>Will scale to mobile</td><td>8 / 10</td></tr></tbody></table><p style="margin-top:13px">Risk: the pinned scroll has to release cleanly. Dark environment with light signs is the weakest pairing, because the light faces sit on the brightest part of ED-03. The tilted dolly needs a check at 48px.</p></section>
+</div>
+<script src="r2.js"></script>
+<script>(function(){
+const $=id=>document.getElementById(id), cl=v=>Math.max(0,Math.min(1,v)), ease=v=>v<.5?2*v*v:1-Math.pow(-2*v+2,2)/2, L=(a,b,t)=>a+(b-a)*t;
+const stage=document.querySelector('.stage');
+const S={env:'dark',sign:'dark',arr:'chain',side:'left',dir:'straight',fact:'fixed',desc:'col'};
+const SV=[{n:'Cleaning',k:'clean',dm:'clean',g:'gi-bottle.png',d:'Homes and workplaces, once or on a schedule',f:'2 HR QUOTE',wt:'TUE 8-10',wd:'Tue 20 Oct',a:'↗'},
+ {n:'Moving',k:'move',dm:'dolly',g:'gi-chair.png',d:'Homes and offices, one room to a full floor',f:'WE WRAP IT',wt:'WED 1-3',wd:'Wed 21 Oct',a:'→'},
+ {n:'Delivery',k:'deliver',dm:'deliver',g:'gi-box.png',d:'Single items to full loads, same-day or scheduled',f:'GTA-WIDE',wt:'TODAY 2-4',wd:'Mon 19 Oct',a:'↘'}];
+const TB='style="fill:var(--tile)"';
+const P={
+ clean:'<svg viewBox="0 0 96 96" aria-hidden="true"><g fill="currentColor"><path d="M30 14h34a8 8 0 0 1 8 8v4a4 4 0 0 1-4 4H54v8H40V30H30a4 4 0 0 1-4-4v-8a4 4 0 0 1 4-4z"/><path d="M72 16h8v8h-8z"/><path d="M40 30h10l-6 16h-6z"/><path d="M36 40h22v4c8 4 12 10 12 18v20a6 6 0 0 1-6 6H32a6 6 0 0 1-6-6V62c0-8 4-14 10-18z"/></g><rect x="34" y="60" width="28" height="14" rx="2" '+TB+'/></svg>',
+ move:'<svg viewBox="0 0 96 96" aria-hidden="true"><g transform="translate(8 2) rotate(-14 40 80)"><g fill="currentColor"><path d="M22 8h20a5 5 0 0 1 5 5v4H40v-1h-6v48h44a5 5 0 0 1 5 5v5a5 5 0 0 1-5 5H31a6 6 0 0 1-6-6V16h-3a4 4 0 0 1 0-8z"/><path d="M40 16h7v8a4 4 0 0 1-4 4h-3z"/><circle cx="36" cy="82" r="11"/></g><circle cx="36" cy="82" r="4" '+TB+'/></g></svg>',
+ deliver:'<svg viewBox="0 0 96 96" aria-hidden="true"><g fill="currentColor"><path d="M14 18h68a3 3 0 0 1 3 3v9H11v-9a3 3 0 0 1 3-3z"/><path d="M16 34h64v44a5 5 0 0 1-5 5H21a5 5 0 0 1-5-5z"/></g><rect x="43" y="18" width="10" height="34" '+TB+'/><rect x="28" y="62" width="18" height="5" rx="1" '+TB+'/></svg>'};
+const START={chain:[{x:306,y:500,w:900,h:104,dim:1},{x:336,y:636,w:840,h:96,dim:1},{x:366,y:762,w:780,h:90,dim:1}],
+             persp:[{x:286,y:498,w:940,h:112,dim:1,rod:5},{x:333,y:631,w:846,h:100,dim:.9,rod:4},{x:371,y:752,w:770,h:90,dim:.82,rod:3}]};
+function glyph(s){ return P[s.k]; }
+function build(){
+ stage.dataset.env=S.env; $('signs').dataset.sign=S.sign; $('signs').style.setProperty('--fxl',S.side==='right'?'900px':'970px');
+ const pl=$('plate'); pl.src=S.env==='dark'?'assets/ed03.jpg':'assets/el01.jpg';
+ const top=233, m0=233, m1=300;
+ pl.style.top=top+'px'; const g='linear-gradient(180deg,transparent '+(m0-top)+'px,#000 '+(m1-top)+'px)'; pl.style.webkitMaskImage=pl.style.maskImage=g;
+ const on=S.sign==='dark'?'#F7F2E7':'#202521', off=S.sign==='dark'?'rgba(247,242,231,.12)':'rgba(32,37,33,.10)';
+ $('signs').innerHTML=SV.map((s,i)=>'<a class="sg" href="#" style="z-index:'+(5-i)+'"><span class="hs"></span><span class="fc"></span><span class="rl"></span><span class="tl">'+glyph(s)+'</span><b class="nm">'+s.n+'</b><span class="ds">'+s.d+'</span><span class="fx">'+(S.fact==='window'?'<span class="wl">Next open window · '+s.wd+'</span><span data-dm="'+s.wt+'" data-pitch="5" data-on="'+on+'" data-off="'+off+'"></span>':'<span data-dm="'+s.f+'" data-pitch="5" data-on="'+on+'" data-off="'+off+'"></span>')+'</span><span class="ar">'+(S.dir==='angled'?s.a:'→')+'</span></a>').join('');
+ document.querySelectorAll('.sg').forEach(a=>a.addEventListener('click',e=>e.preventDefault()));
+ const st=START[S.arr]; let r='';
+ if(S.arr==='chain'){ const tops=[456,st[0].y+st[0].h,st[1].y+st[1].h];
+   st.forEach((s,i)=>{ const w=i?st[i].w:st[0].w, x=st[i].x; [0.16,0.84].forEach(f=>r+='<span class="rodx" style="left:'+(x+w*f)+'px;top:'+tops[i]+'px;height:'+(s.y-tops[i])+'px;z-index:'+(4-i)+'"></span>'); }); }
+ else { st.forEach((s,i)=>[i?0.24:0.16,i?0.76:0.84].forEach(f=>r+='<span class="rodx" style="left:'+(s.x+s.w*f)+'px;top:456px;height:'+(s.y-456)+'px;width:'+s.rod+'px;z-index:'+(4-i)+';filter:brightness('+s.dim+')"></span>')); }
+ $('rods').innerHTML=r; window.dmRender&&dmRender(stage); draw(+$('t').value/1000);
+}
+function draw(t){
+ const b=ease(cl(t/.55)), p=ease(cl((t-.12)/.68)), c=ease(cl((t-.62)/.38));
+ $('plate').style.opacity=1-b; document.querySelectorAll('.rodx').forEach(r=>r.style.opacity=1-cl(b*1.7));
+ const st=START[S.arr];
+ document.querySelectorAll('.sg').forEach((el,i)=>{ const s=st[i], e={x:0,y:330+i*166,w:1512,h:166};
+  const x=L(s.x,e.x,p), y=L(s.y,e.y,p), w=L(s.w,e.w,p), h=L(s.h,e.h,p), pad=L(6,0,p), rad=L(8,0,p);
+  Object.assign(el.style,{left:x+'px',top:y+'px',width:w+'px',height:h+'px',filter:'brightness('+L(s.dim,1,p)+')'});
+  const hs=el.querySelector('.hs'); hs.style.borderRadius=rad+'px'; hs.style.opacity=S.sign==='light'?1-p:1; hs.style.boxShadow=p>.98?'none':(S.arr==='persp'?'0 '+(8-i*2)+'px '+(21-i*3)+'px -12px rgba(32,37,33,'+(.26-i*.06)*(1-p)+'),inset 0 0 0 1px var(--edge)':'');
+  const fc=el.querySelector('.fc'); Object.assign(fc.style,{left:pad+'px',top:pad+'px',right:pad+'px',bottom:pad+'px',borderRadius:L(4,0,p)+'px'});
+  el.querySelector('.rl').style.opacity=p;
+  const ts=L(s.h-2*pad-12,144,p), ins=L(12,64,p), fs=L(s.h*.38,55,p), af=L(s.h*.38,42,p);
+  const tl=el.querySelector('.tl'), nm=el.querySelector('.nm'), ar=el.querySelector('.ar');
+  const tx=S.side==='left'?ins:w-ins-ts;
+  Object.assign(tl.style,{left:tx+'px',top:((h-ts)/2)+'px',width:ts+'px',height:ts+'px',borderRadius:L(4,2,p)+'px'});
+  const nx=S.side==='left'?tx+ts+L(28,24,p):L(34,64,p);
+  const un=S.desc==='under', lift=un?17*c:0; Object.assign(nm.style,{left:nx+'px',top:((h-fs)/2-lift)+'px',fontSize:fs+'px'});
+  const arR=S.side==='left'?L(34,64,p):ins+ts+L(28,34,p);
+  Object.assign(ar.style,{right:arR+'px',top:((h-af)/2)+'px',fontSize:af+'px'});
+  const ds=el.querySelector('.ds'); ds.style.left=(un?nx:(S.side==='right'?420:552))+'px'; ds.style.width=(un?440:360)+'px'; ds.style.opacity=c; ds.style.top=(un?((h-fs)/2-lift+fs+12):(h/2-12))+'px'; ds.style.display=c>0.01?'block':'none';
+  const fx=el.querySelector('.fx'); fx.style.opacity=c; fx.style.top=(h/2-(S.fact==='window'?28:18))+'px'; fx.style.display=c>0.01?'block':'none';
+  const idle=t<=.02||t>=.999; el.classList.toggle('live',idle); el.classList.toggle('lift',t<=.02); if(!idle) el.blur(); });
+}
+document.querySelectorAll('.tg').forEach(g=>g.querySelectorAll('button').forEach(b=>b.addEventListener('click',()=>{S[g.dataset.k]=b.dataset.v; g.querySelectorAll('button').forEach(x=>x.setAttribute('aria-pressed',x===b)); build();})));
+const r=$('t'); r.addEventListener('input',()=>draw(r.value/1000));
+const reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
+$('play').addEventListener('click',()=>{const to=r.value>500?0:1, from=r.value/1000; if(reduce){r.value=to*1000;draw(to);return;}
+ const t0=performance.now(), D=2800; (function f(n){const q=cl((n-t0)/D), v=L(from,to,q); r.value=v*1000; draw(v); if(q<1) requestAnimationFrame(f);})(t0);});
+build();
+})();</script>
