@@ -16,11 +16,13 @@
       <svg viewBox="0 0 22 14" aria-hidden="true" x-show="!open"><path d="M0 1h22M0 7h22M0 13h22" stroke="currentColor" stroke-width="2"/></svg>
       <svg viewBox="0 0 22 14" aria-hidden="true" x-show="open" x-cloak><path d="M4 0l14 14M18 0L4 14" stroke="currentColor" stroke-width="2"/></svg>
     </button>
-    <a href="tel:+13477772380" class="nav-call" aria-label="Call +1 347 777 2380">
-      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6.6 3.5 9 3l1.6 4.2-2 1.4a12 12 0 0 0 6.8 6.8l1.4-2L21 15l-.5 2.4A3 3 0 0 1 17.6 20 14.6 14.6 0 0 1 4 6.4a3 3 0 0 1 2.6-2.9Z" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/></svg>
-      <span class="nav-call-number" aria-hidden="true">+1 347 777 2380</span>
-    </a>
-    <a href="/quote/" class="nav-quote">Get a free quote <span class="nav-quote-arrow" aria-hidden="true">↗</span></a>
+    <div class="nav-actions">
+      <a href="tel:+13477772380" class="nav-call" aria-label="Call +1 347 777 2380">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6.6 3.5 9 3l1.6 4.2-2 1.4a12 12 0 0 0 6.8 6.8l1.4-2L21 15l-.5 2.4A3 3 0 0 1 17.6 20 14.6 14.6 0 0 1 4 6.4a3 3 0 0 1 2.6-2.9Z" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/></svg>
+        <span class="nav-call-number" aria-hidden="true">+1 347 777 2380</span>
+      </a>
+      <a href="/quote/" class="nav-quote">Get a free quote <span class="nav-quote-arrow" aria-hidden="true">↗</span></a>
+    </div>
   </div>
   <div id="nav-menu" class="nav-menu" x-show="open" x-cloak @click.outside="open = false">
     <a href="/#services" @click="open = false">Services <span aria-hidden="true">+</span></a>
