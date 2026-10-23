@@ -1,27 +1,7 @@
 {{!-- 04 Promises · OT-05 On the Way. Markup is the end state; src/js/sections/promises.js writes the ledger in
      once on entry, then plays the carousel once (6s a slide), pausing on hover, focus and when off screen. --}}
 {{#> section id="promises" class="promises" label="Our promises"}}
-  <div class="promises__copy col-span-full lg:col-span-5">
-    <h2 class="text-h2 md:text-h1 uppercase">On time &amp;<br>in writing.</h2>
-    <p class="promises__lead text-lead">A plan, a time and a crew that knows the city.</p>
-    <ul class="ledger" role="list">
-      <li class="ledger__row">
-        <h3 class="ledger__title">Your window, in writing.</h3>
-        <p class="ledger__copy">Your arrival window is set when you book and printed on your quote.</p>
-      </li>
-      <li class="ledger__row">
-        <h3 class="ledger__title">A price that holds.</h3>
-        <p class="ledger__copy">The quote you approve is the bill you pay. No extras on the day.</p>
-      </li>
-      <li class="ledger__row">
-        <h3 class="ledger__title">We know the buildings.</h3>
-        <p class="ledger__copy">Elevator bookings, loading docks, access rules. Sorted before we arrive.</p>
-      </li>
-    </ul>
-    <p class="promises__cred label">Licensed · Insured · Local</p>
-  </div>
-
-  <div class="carousel col-span-full md:col-span-6 lg:col-start-9 lg:col-span-4" role="region" aria-roledescription="carousel" aria-label="Our crews at work">
+  <div class="carousel col-span-full md:col-span-6 lg:col-start-1 lg:col-span-4" role="region" aria-roledescription="carousel" aria-label="Our crews at work">
     <div class="carousel__track">
       <figure class="carousel__slide" aria-roledescription="slide" aria-label="1 of 4">
         {{picture "ot5c" alt="An empty, freshly cleaned Toronto condo unit, keys on the counter and a cleaning caddy by the wall" sizes="(width >= 1024px) 32vw, (width >= 768px) 75vw, 100vw" imgClass="carousel__img carousel__img--c"}}
@@ -43,5 +23,25 @@
       <button type="button" class="carousel__bar" aria-label="Show image 3 of 4"><i></i></button>
       <button type="button" class="carousel__bar" aria-label="Show image 4 of 4"><i></i></button>
     </div>
+  </div>
+
+  <div class="promises__copy col-span-full lg:col-start-6 lg:col-span-7">
+    <h2 class="text-h2 md:text-h1 uppercase">On time &amp;<br>in writing.</h2>
+    <p class="promises__lead text-lead">A plan, a time and a crew that knows the city.</p>
+    <ul class="ledger" role="list">
+      <li class="ledger__row">
+        <h3 class="ledger__title">Your window, in writing.</h3>
+        <p class="ledger__copy">Your arrival window is set when you book and printed on your quote.</p>
+      </li>
+      <li class="ledger__row">
+        <h3 class="ledger__title">A price that holds.</h3>
+        <p class="ledger__copy">The quote you approve is the bill you pay. No extras on the day.</p>
+      </li>
+      <li class="ledger__row">
+        <h3 class="ledger__title">We know the buildings.</h3>
+        <p class="ledger__copy">Elevator bookings, loading docks, access rules. Sorted before we arrive.</p>
+      </li>
+    </ul>
+    <p class="promises__cred label">Licensed · Insured · Local</p>
   </div>
 {{/section}}

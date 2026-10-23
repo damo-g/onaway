@@ -97,7 +97,6 @@
   --spacing-nav: var(--nav-h);
   --text-button: 18px;
   --text-numeral: 56px; /* TS-02 step numbers */
-  --text-sentence: 76px; /* GT-09 sentence */
   --tracking-nav: 0.02em;
   --tracking-mono: 0.06em;
 
@@ -767,7 +766,7 @@
     .promises .carousel { align-self: center; } /* the smaller image sits centred against the copy */
   }
 
-  /* Carousel: 4 columns (9–12) at the mock's 602 × 820 proportion, never taller than the screen */
+  /* Carousel: first, on columns 1–4, at the mock's 602 × 820 proportion, never taller than the screen */
   .carousel {
     position: relative;
     overflow: hidden;
@@ -853,8 +852,8 @@
   .gmap .bd { fill: none; stroke: color-mix(in srgb, var(--map-ink) 45%, transparent); stroke-dasharray: 2 6; }
   .gmap .sh { fill: none; stroke: var(--map-ink); stroke-width: 1.6; }
   .gmap .rf { fill: var(--color-yellow); opacity: 0; transition: opacity 0.8s; }
-  .gmap .rf.is-hit { opacity: 0.22; }
-  .gta[data-tone="dark"] .gmap .rf.is-hit { opacity: 0.16; }
+  .gmap .rf.is-hit { opacity: 0.12; }
+  .gta[data-tone="dark"] .gmap .rf.is-hit { opacity: 0.1; }
   .gmap text { font-family: var(--font-mono); }
   .gmap .rn { font-size: 9px; letter-spacing: 0.12em; fill: color-mix(in srgb, var(--map-ink) 50%, transparent); }
   .gmap .hwt { font-size: 10px; font-weight: 600; letter-spacing: 0.08em; fill: var(--map-ink); paint-order: stroke; stroke: var(--map-halo); stroke-width: 3px; }
@@ -906,7 +905,7 @@
   .gta__row button span { transition: transform 0.3s; }
   .gta__row button:hover span { transform: translateX(4px); }
   .gta__row button:focus-visible { outline-color: var(--color-carbon); outline-offset: 2px; }
-  .gta__result { min-height: calc(var(--text-body) * 1.45 * 2); font-size: var(--text-body); line-height: 1.45; color: color-mix(in srgb, var(--color-carbon) 80%, transparent); }
+  .gta__result { min-height: calc(var(--text-body) * 1.45); font-size: var(--text-body); line-height: 1.45; color: color-mix(in srgb, var(--color-carbon) 80%, transparent); }
   .gta__result b { color: var(--color-carbon); font-weight: 600; }
   .gta__result.is-in { animation: tk-write 0.6s cubic-bezier(0.4, 0, 0.2, 1) both; }
   .gta__mark { display: none; }
@@ -914,16 +913,16 @@
   /* Desktop: the map fills an inset plate (1472 × 820 at the 1512 frame) and the panel overlays it */
   @media (width >= 1024px) {
     .gta__stage { display: block; }
-    .gta__plate { height: min(820px, calc(100svh - 2 * var(--grid-margin))); }
+    .gta__plate { height: clamp(400px, calc(100svh - 2 * var(--grid-margin)), 560px); } /* a supporting section: 400–560 */
     .gta__panel {
       position: absolute;
       left: var(--spacing-21);
       top: var(--spacing-21);
       z-index: 3;
-      width: min(600px, 45%);
-      padding: var(--spacing-34) var(--spacing-34) var(--spacing-21);
+      width: min(600px, 55%);
+      padding: var(--spacing-21) var(--spacing-34);
     }
-    .gta__sentence { font-size: var(--text-sentence); }
+    .gta__sentence { font-size: var(--text-h1); } /* h1 so the title block fits the 560 plate */
     .gta__mark {
       position: absolute;
       right: var(--spacing-21);
