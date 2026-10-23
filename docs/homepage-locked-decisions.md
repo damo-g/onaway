@@ -34,6 +34,7 @@ Desktop 1512 × 860 · 12 columns · mocks drawn on a 20 margin (Brand Guide say
 - Favicon: the W symbol on a transparent background, Carbon, switching to Ticket Paper in dark browser themes.
 - Hero state A follows the HF-01 inspiration: the plate ends 144 above the bar on desktop (89 tablet, 55 phone), and the descriptor "Cleaning, Moving & Delivery across the GTA" sits at the foot of that gap, just above the wordmark.
 - Steps (TS-02, round 4): intro on the left 4 columns, ticket on columns 6–12 with a breathing column between (body + 152 tear-off, 500 tall). The section has 233 of top padding (178 on phones) so the copy sits low and airy. Stamp · subtle edge, the symbol (W knocked out of a circle, 60% Carbon) centred in the stub, Write-in once on entry. The tear-off pulls away on hover and links to the quote page. On phones the ticket stands upright: stub on top, steps stacked, tear-off along the bottom seam.
+- Promises (OT-05): copy and ledger on columns 1–7 (copy starts 123 below the image top, credentials at its foot), carousel 602 × 820 on columns 8–12, never taller than the screen. Carousel plays once after the write-in (starts at 2.6s, 6s a slide), pauses on hover, keyboard focus and when under 40% visible; bars jump to a slide; the crew slide has no tag.
 
 ## Post-build
 - GT-09 map: replace hand-drawn mock with OpenStreetMap vector data in MapLibre GL, styled to tokens, flyTo on match, credit © OpenStreetMap contributors.
