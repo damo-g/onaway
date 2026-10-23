@@ -38,7 +38,8 @@ export function init(el) {
       wmA: px('--wm-h-a'),
       wmD: px('--wm-h'),
       btnA: px('--btn-h-a'),
-      callD: px('--call-h'),
+      btnD: px('--btn-h'),
+      insetD: px('--btn-inset'),
       gapA: px('--hero-gap-a'),
       // On mobile the bar's buttons stay flush right in state A; there's no room for an inset
       quoteInsetA: window.matchMedia('(width >= 768px)').matches ? px('--grid-margin') : 0,
@@ -65,9 +66,11 @@ export function init(el) {
     s.setProperty('--nav-y', `${navY}px`);
     s.setProperty('--nav-h', `${L(navA, navD, ke)}px`);
     s.setProperty('--wm-h', `${L(m.wmA, m.wmD, eio(cl(k / 0.8)))}px`);
-    s.setProperty('--quote-h', `${L(m.btnA, navD, ke)}px`);
-    s.setProperty('--quote-inset', `${L(m.quoteInsetA, 0, ke)}px`);
-    s.setProperty('--call-h', `${L(m.btnA, m.callD, ke)}px`);
+    // Call and quote share one height and settle on the docked button size
+    const btn = `${L(m.btnA, m.btnD, ke)}px`;
+    s.setProperty('--quote-h', btn);
+    s.setProperty('--call-h', btn);
+    s.setProperty('--quote-inset', `${L(m.quoteInsetA, m.insetD, ke)}px`);
     const solid = opt('docked', 'clear') === 'solid';
     s.setProperty('--hero-bg', solid ? 1 : 1 - cl((t - DOCK) / 0.06));
     s.setProperty('--hero-line', solid ? cl(k * 4 - 3) : 0);
@@ -118,6 +121,6 @@ export function init(el) {
     });
   }
 
-  pinScrub(el, () => (m.vh - m.navA) / DOCK, render);
+  pinScrub(el, () => (m.vh - m.navA) / DOCK, render, { smooth: 0.6 });
   el.classList.add('is-ready');
 }

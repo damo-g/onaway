@@ -48,23 +48,27 @@ export function onEnterOnce(el, fn, { start = 'top 80%' } = {}) {
 /**
  * Pins el for `length` px of scroll (a number, or a function re-read on resize)
  * and calls fn(progress 0→1) as it scrubs.
+ * `smooth` is the scrub catch-up in seconds (true = locked to the scroll).
  * Under reduced motion there is no pin: fn(1) renders the end state.
  */
-export function pinScrub(el, length, fn) {
+export function pinScrub(el, length, fn, { smooth = true } = {}) {
   if (prefersReducedMotion()) {
     fn(1);
     return null;
   }
+  // The scrub drives a proxy tween, so `smooth` eases the progress fn receives
+  const proxy = { p: 0 };
+  const scene = gsap.to(proxy, { p: 1, ease: 'none', paused: true, onUpdate: () => fn(proxy.p) });
   fn(0);
   const trigger = ScrollTrigger.create({
     trigger: el,
     start: 'top top',
     end: () => `+=${typeof length === 'function' ? length() : length}`,
     pin: true,
-    scrub: true,
+    animation: scene,
+    scrub: smooth,
     invalidateOnRefresh: true,
-    onUpdate: (self) => fn(self.progress),
-    onRefresh: (self) => fn(self.progress),
+    onRefresh: () => fn(proxy.p),
   });
   addReplay(el, () =>
     window.lenis

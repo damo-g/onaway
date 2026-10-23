@@ -110,7 +110,8 @@
 @property --wm-h { syntax: "<length>"; inherits: true; initial-value: 21px; }
 @property --wm-h-a { syntax: "<length>"; inherits: true; initial-value: 21px; }
 @property --btn-h-a { syntax: "<length>"; inherits: true; initial-value: 89px; }
-@property --call-h { syntax: "<length>"; inherits: true; initial-value: 72px; }
+@property --btn-h { syntax: "<length>"; inherits: true; initial-value: 72px; }
+@property --btn-inset { syntax: "<length>"; inherits: true; initial-value: 0px; }
 @property --hero-gap-a { syntax: "<length>"; inherits: true; initial-value: 34px; }
 
 /* ---------- Grid: 12 / 8 / 4 columns, stretch, width auto ---------- */
@@ -122,19 +123,21 @@
     --grid-gutter: var(--grid-margin);
     --section-gap: 89px;
 
-    /* Navbar, from HF-01. Docked: --nav-h, --wm-h, --call-h. State A (bar on the fold): *-a. */
+    /* Navbar, from HF-01. Docked: --nav-h, --wm-h, --btn-h (call and quote share it). State A (bar on the fold): *-a. */
     --nav-h: 72px;
     --nav-h-a: 89px;
     --wm-h: 21px;
     --wm-h-a: 21px;
     --btn-h-a: 89px;
-    --call-h: 72px;
+    --btn-h: 72px;
+    --btn-inset: 0px;
     --hero-gap-a: 55px;
   }
   @media (width >= 768px) {
     :root {
       --grid-cols: 8; --section-gap: 144px;
       --nav-h: 100px; --nav-h-a: 144px; --wm-h: 36px; --wm-h-a: 36px; --btn-h-a: 110px; --hero-gap-a: 55px;
+      --btn-h: 80px; --btn-inset: var(--grid-margin);
     }
   }
   @media (width >= 1024px) {
@@ -143,6 +146,10 @@
       /* Wordmark 110 → 36 at the 1512 frame; smaller screens start smaller so the bar never crowds */
       --nav-h-a: 150px; --wm-h-a: clamp(36px, calc((100vw - 1100px) * 0.267), 110px);
     }
+  }
+
+  @media (width >= 1920px) {
+    :root { --btn-h: 88px; }
   }
 
   /* Pages without the hero start below the fixed navbar */
@@ -221,7 +228,7 @@
   .section--bleed { width: 100%; }
 
   /* ---------- Navbar (fixed; HF-01) ---------- */
-  /* The hero writes --nav-y, --nav-h, --wm-h, --call-h, --quote-h, --quote-inset, --hero-bg, --hero-line
+  /* The hero writes --nav-y, --nav-h, --wm-h, --call-h, --quote-h (both → --btn-h), --quote-inset, --hero-bg, --hero-line
      on the header while it scrubs. nav.js sets data-past (below the hero) and data-theme (over dark sections).
      Options (dev panel): data-after="paper" (locked) | "clear". */
   .site-nav {
@@ -290,7 +297,7 @@
     align-items: center;
     justify-content: center;
     gap: var(--spacing-13);
-    height: var(--call-h);
+    height: var(--call-h, var(--btn-h));
     min-width: var(--spacing-55);
     background: var(--color-carbon);
     color: var(--color-paper);
@@ -306,8 +313,8 @@
     align-items: center;
     justify-content: space-between;
     gap: var(--spacing-21);
-    height: var(--quote-h, var(--nav-h));
-    margin-right: var(--quote-inset, 0px);
+    height: var(--quote-h, var(--btn-h));
+    margin-right: var(--quote-inset, var(--btn-inset));
     padding-inline: var(--spacing-13);
     background: var(--color-yellow);
     color: var(--color-carbon);

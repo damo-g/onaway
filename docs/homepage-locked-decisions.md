@@ -25,7 +25,7 @@ Desktop 1512 × 860 · 12 columns · mocks drawn on a 20 margin (Brand Guide say
 - Retired: QC-03, QC-04 (its poster hierarchy lives on in QC-02), FT-03, FT-04; GT-02, GT-03, GT-05.
 
 ## Decided in the build (October 23)
-- Navbar is fixed and **100px** tall when docked (72 on mobile), with a **Carbon call button** (+1 347 777 2380, placeholder) between FR and the quote button. Nav links are centred in the space between the wordmark and FR.
+- Navbar is fixed and **100px** tall when docked (72 on mobile). The **Carbon call button** and the yellow quote button share one height: **80px**, **88px from 1920 up** (full bar height on mobile), centred in the bar on the page margin. The call button (+1 347 777 2380, placeholder) between FR and the quote button. Nav links are centred in the space between the wordmark and FR.
 - After the hero the navbar sits on paper (locked); the clear alternative switches its text colour over dark sections. Buttons keep their fills.
 - Hero at rest uses the section image's copy and layout: centred "Steady hands / at your door", description "Cleaning, Moving & Delivery for homes and businesses across the GTA" (h3 size), three service cards on the 4/4/4 split.
 - Hero mobile: same pinned scrub with a shorter bar (89 → 72), headline at h1, cards stacked.

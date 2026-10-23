@@ -16,6 +16,11 @@ const store = {
   },
 };
 
+const session = {
+  get() { try { return sessionStorage.getItem(MOTION_KEY) === '1'; } catch { return false; } },
+  set(on) { try { on ? sessionStorage.setItem(MOTION_KEY, '1') : sessionStorage.removeItem(MOTION_KEY); } catch {} },
+};
+
 let registry;
 let state;
 let gridOn;
@@ -26,9 +31,11 @@ export function initPanel() {
   const params = new URLSearchParams(location.search);
 
   // Simulated reduced motion must be set before Lenis and ScrollTrigger init.
+  // It lasts for this tab only (sessionStorage) so it can't silently stick across visits.
+  try { localStorage.removeItem(MOTION_KEY); } catch {}
   const motionParam = params.get('motion');
-  if (motionParam) store.set(MOTION_KEY, motionParam === 'reduce');
-  if (store.get(MOTION_KEY, false)) document.documentElement.dataset.motion = 'reduce';
+  if (motionParam) session.set(motionParam === 'reduce');
+  if (session.get()) document.documentElement.dataset.motion = 'reduce';
 
   state = resolveState(params);
   for (const id of registry.keys()) applySection(id);
@@ -106,7 +113,7 @@ function setGrid(on) {
 }
 
 function toggleReducedMotion() {
-  store.set(MOTION_KEY, document.documentElement.dataset.motion !== 'reduce');
+  session.set(document.documentElement.dataset.motion !== 'reduce');
   const params = new URLSearchParams(location.search);
   params.delete('motion');
   const qs = params.toString();
@@ -140,6 +147,11 @@ const CSS = `
     background: var(--color-carbon); color: var(--color-paper);
     box-shadow: 0 0 0 1px var(--color-line-dark), 0 8px 21px color-mix(in srgb, var(--color-carbon) 30%, transparent);
   }
+  .fab[data-reduced]::after {
+    content: "RM"; position: absolute; top: -8px; right: -8px; padding: 2px 4px;
+    font: 600 10px/1 var(--font-mono); letter-spacing: .06em; background: var(--color-rust); color: var(--color-paper);
+  }
+  .warn { margin: 13px 0 0; padding: 8px 13px; background: color-mix(in srgb, var(--color-rust) 12%, transparent); color: var(--color-carbon); }
   .fab:focus-visible, button:focus-visible { outline: 2px solid var(--color-rust); outline-offset: 3px; }
   .pop {
     position: fixed; inset: auto 21px 76px auto; margin: 0;
@@ -195,6 +207,11 @@ function mount() {
   document.body.append(host);
 
   ui = { root, overlay: root.querySelector('.overlay'), pop: root.querySelector('#pop') };
+  const fab = root.querySelector('.fab');
+  if (document.documentElement.dataset.motion === 'reduce' || window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    fab.setAttribute('data-reduced', '');
+    fab.setAttribute('aria-label', 'Review panel (reduced motion is on)');
+  }
 
   // Fill before it paints (beforetoggle is sync), focus once it's open.
   ui.pop.addEventListener('beforetoggle', (e) => {
@@ -219,6 +236,7 @@ function render(force = false) {
   const id = current?.dataset.section;
   const options = registry.get(id);
   const reduced = document.documentElement.dataset.motion === 'reduce';
+  const systemReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' })[c]);
 
   const optionGroups = (gid) => Object.entries(registry.get(gid)).map(([opt, values]) => `
@@ -240,10 +258,12 @@ function render(force = false) {
     <h3>Tools</h3>
     <div class="row">
       <button type="button" class="chip" data-act="grid" aria-pressed="${gridOn}">Grid overlay<kbd>G</kbd></button>
-      <button type="button" class="chip" data-act="motion" aria-pressed="${reduced}">Reduced motion</button>
+      <button type="button" class="chip" data-act="motion" aria-pressed="${reduced}">Simulate reduced motion</button>
       <button type="button" class="chip" data-act="replay" data-id="${esc(id ?? '')}">Replay section</button>
       <button type="button" class="chip" data-act="reset">Reset options</button>
     </div>
+    ${systemReduced ? '<p class="warn">Your system has reduced motion on, so scroll scenes show their end state. Turn animations on in your OS settings to review motion.</p>' : ''}
+    ${reduced ? '<p class="warn">Simulated reduced motion is on for this tab: scroll scenes show their end state.</p>' : ''}
     <h3>Jump to</h3>
     <div class="row">${sections().map((el) => `
       <button type="button" class="chip" data-act="jump" data-id="${esc(el.dataset.section)}" aria-pressed="${el === current}">${esc(el.dataset.section)}</button>`).join('')}
