@@ -77,33 +77,47 @@
   --spacing-55: 55px;
   --spacing-89: 89px;
   --spacing-144: 144px;
+  /* Grid and section rhythm (fluid, see :root below): px-margin, gap-gutter, mt-section */
+  --spacing-margin: var(--grid-margin);
+  --spacing-gutter: var(--grid-gutter);
+  --spacing-section: var(--section-gap);
 
-  /* Breakpoints: mobile < 768 ≤ tablet < 1024 ≤ desktop; 1280 / 1512 are check frames */
+  /* Breakpoints: mobile < 768 ≤ tablet < 1024 ≤ desktop. 1280 / 1512 are check frames; wide grows the margin */
   --breakpoint-*: initial;
   --breakpoint-md: 768px;
   --breakpoint-lg: 1024px;
   --breakpoint-xl: 1280px;
   --breakpoint-frame: 1512px;
+  --breakpoint-wide: 1920px;
 
   /* Frame: design artboard 1512 × 860, fold at 860 */
-  --container-frame: 1512px;
   --height-fold: 860px;
+
+  /* Component sizes taken from the locked mocks (HF-01 docked navbar) */
+  --height-nav: 72px;
+  --height-wordmark: 36px;
+  --width-quote: 260px;
+  --text-button: 18px;
+  --tracking-nav: 0.02em;
+  --tracking-mono: 0.06em;
 
   --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
 }
 
-/* ---------- Grid: 4 / 8 / 12 columns ---------- */
+/* ---------- Grid: 12 / 8 / 4 columns, stretch, width auto ---------- */
+/* Margin = gutter = 20 up to the 1512 frame, then grows with the screen to 40 (32 at 1920). */
 @layer base {
   :root {
     --grid-cols: 4;
-    --grid-margin: 20px;
-    --grid-gutter: 16px;
+    --grid-margin: clamp(20px, calc(20px + (100vw - 1512px) * 0.0294), 40px);
+    --grid-gutter: var(--grid-margin);
+    --section-gap: 89px;
   }
   @media (width >= 768px) {
-    :root { --grid-cols: 8; --grid-margin: 40px; --grid-gutter: 20px; }
+    :root { --grid-cols: 8; --section-gap: 144px; }
   }
   @media (width >= 1024px) {
-    :root { --grid-cols: 12; --grid-margin: 20px; --grid-gutter: 24px; }
+    :root { --grid-cols: 12; }
   }
 
   html {
@@ -123,19 +137,26 @@
     outline: 2px solid var(--color-carbon);
     outline-offset: 3px;
   }
-  .bg-carbon :focus-visible {
+  .bg-carbon :focus-visible,
+  .bg-rust :focus-visible {
     outline-color: var(--color-paper);
+  }
+
+  /* Reduced motion: real preference, or simulated in dev (html[data-motion="reduce"]) */
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { animation-duration: 0s !important; transition-duration: 0s !important; scroll-behavior: auto !important; }
+  }
+  html[data-motion="reduce"] *, html[data-motion="reduce"] *::before, html[data-motion="reduce"] *::after {
+    animation-duration: 0s !important; transition-duration: 0s !important; scroll-behavior: auto !important;
   }
 }
 
-/* Page grid: max frame width, side margins, token columns and gutters */
+/* Page grid: full width, token columns, fluid margin and gutter */
 @utility grid-site {
   display: grid;
   grid-template-columns: repeat(var(--grid-cols), minmax(0, 1fr));
   column-gap: var(--grid-gutter);
   padding-inline: var(--grid-margin);
-  max-width: var(--container-frame);
-  margin-inline: auto;
 }
 
 /* Mono label: 12, caps, ~0.12em tracking */
@@ -151,25 +172,108 @@
 
 /* ---------- Components ---------- */
 @layer components {
-  .grid-overlay {
-    position: fixed;
-    inset: 0;
-    z-index: 100;
-    pointer-events: none;
+  /* Section shell (src/partials/section.hbs). 144 between sections, 89 on mobile. */
+  .section { position: relative; }
+  .section + .section { margin-top: var(--section-gap); }
+  main > .section:last-child { margin-bottom: var(--section-gap); } /* paper before the footer */
+  .section__grid {
+    display: grid;
+    grid-template-columns: repeat(var(--grid-cols), minmax(0, 1fr));
+    column-gap: var(--grid-gutter);
+    padding-inline: var(--grid-margin);
   }
-  .grid-overlay > div {
+  /* inset: Carbon panel with a paper margin each side (quote). Nothing closer than 34 to its edge. */
+  .section--inset {
+    margin-inline: var(--grid-margin);
+    padding-block: var(--section-gap);
+    background: var(--color-carbon);
+    color: var(--color-paper);
+  }
+  /* bleed: full width, no margin (footer, hero plate). Children place their own grid. */
+  .section--bleed { width: 100%; }
+
+  /* Navbar (HF-01 docked state) */
+  .site-nav { position: relative; z-index: 40; background: var(--color-paper); }
+  .nav-bar {
+    position: relative;
+    display: flex;
+    align-items: center;
+    height: var(--height-nav);
+    padding-left: var(--grid-margin);
+  }
+  .nav-logo img { height: var(--spacing-21); width: auto; }
+  .nav-links {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    translate: -50% -50%;
+    gap: var(--spacing-34);
+    font-weight: 500;
+    font-size: var(--text-body);
+    letter-spacing: var(--tracking-nav);
+    text-transform: uppercase;
+    white-space: nowrap;
+  }
+  .nav-links a { display: inline-flex; align-items: center; gap: var(--spacing-8); }
+  .nav-links a:hover { color: var(--color-rust); }
+  .nav-fr {
+    margin-left: auto;
+    margin-right: var(--spacing-89);
+    font-family: var(--font-mono);
+    font-size: var(--text-small);
+    letter-spacing: var(--tracking-mono);
+    text-decoration: underline;
+    text-underline-offset: 4px;
+  }
+  .nav-quote {
+    margin-left: auto;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--spacing-13);
     height: 100%;
+    padding-inline: var(--spacing-13);
+    background: var(--color-yellow);
+    color: var(--color-carbon);
+    font-size: var(--text-small);
+    font-weight: 600;
+    text-transform: uppercase;
+    white-space: nowrap;
   }
-  .grid-overlay i {
-    background: color-mix(in srgb, var(--color-rust) 10%, transparent);
-    box-shadow: inset 1px 0 color-mix(in srgb, var(--color-rust) 35%, transparent),
-                inset -1px 0 color-mix(in srgb, var(--color-rust) 35%, transparent);
+  .nav-menu-btn {
+    align-self: stretch;
+    padding-inline: var(--grid-margin);
+    font-family: var(--font-mono);
+    font-size: var(--text-label);
+    letter-spacing: var(--text-label--letter-spacing);
+    font-weight: 600;
+    text-transform: uppercase;
+    cursor: pointer;
   }
-  .grid-overlay i:nth-child(n + 5) { display: none; }
-  @media (width >= 768px) {
-    .grid-overlay i:nth-child(-n + 8) { display: block; }
+  .nav-menu {
+    position: absolute;
+    inset-inline: 0;
+    top: 100%;
+    background: var(--color-paper);
+    border-block: 1px solid var(--color-line);
+    padding: var(--spacing-21) var(--grid-margin) var(--spacing-34);
+  }
+  .nav-menu a {
+    display: flex;
+    justify-content: space-between;
+    padding-block: var(--spacing-13);
+    border-bottom: 1px solid var(--color-line);
+    font-size: var(--text-h3);
+    line-height: var(--text-h3--line-height);
+    font-weight: 600;
   }
   @media (width >= 1024px) {
-    .grid-overlay i:nth-child(n) { display: block; }
+    .nav-logo img { height: var(--height-wordmark); }
+    .nav-quote {
+      margin-left: 0;
+      width: var(--width-quote);
+      padding-inline: var(--spacing-21);
+      font-size: var(--text-button);
+    }
   }
 }

@@ -1,7 +1,25 @@
 <a href="#main" class="sr-only focus:not-sr-only focus:fixed focus:top-8 focus:left-8 focus:z-50 focus:bg-carbon focus:text-paper focus:p-13">Skip to content</a>
-<header class="site-nav">
-  <nav aria-label="Primary" class="grid-site items-center py-21">
-    {{!-- Placeholder until section/01-hero: wordmark SVG goes here (never typeset). --}}
-    <a href="/" class="label col-span-2">Onaway home</a>
-  </nav>
+<header class="site-nav" x-data="{ open: false }" @keydown.escape="open = false">
+  <div class="nav-bar">
+    {{!-- Stand-in PNG until the wordmark SVG arrives. The hero docks into this bar later. --}}
+    <a href="/" class="nav-logo" aria-label="Onaway home">
+      <img src="/images/wordmark-carbon.png" alt="ONAWAY" width="1461" height="285">
+    </a>
+    <nav aria-label="Primary" class="nav-links hidden lg:flex">
+      <a href="/#services">Services <span class="font-normal" aria-hidden="true">+</span></a>
+      <a href="/about/">About</a>
+      <a href="/faq/">Help</a>
+    </nav>
+    <a href="/fr/" class="nav-fr hidden lg:block" lang="fr" hreflang="fr" aria-label="Français">FR</a>
+    <a href="/quote/" class="nav-quote">Get a free quote <span aria-hidden="true">↗</span></a>
+    <button type="button" class="nav-menu-btn lg:hidden" aria-controls="nav-menu" :aria-expanded="open.toString()" aria-expanded="false" @click="open = !open">
+      <span x-text="open ? 'Close' : 'Menu'">Menu</span>
+    </button>
+  </div>
+  <div id="nav-menu" class="nav-menu lg:hidden" x-show="open" x-cloak @click.outside="open = false">
+    <a href="/#services" @click="open = false">Services <span aria-hidden="true">+</span></a>
+    <a href="/about/">About <span aria-hidden="true">→</span></a>
+    <a href="/faq/">Help <span aria-hidden="true">→</span></a>
+    <a href="/fr/" lang="fr" hreflang="fr">Français <span aria-hidden="true">→</span></a>
+  </div>
 </header>

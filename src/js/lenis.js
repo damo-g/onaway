@@ -1,12 +1,9 @@
 import Lenis from 'lenis';
-import { gsap } from 'gsap';
-import { ScrollTrigger } from 'gsap/ScrollTrigger';
-
-gsap.registerPlugin(ScrollTrigger);
+import { gsap, ScrollTrigger, prefersReducedMotion } from './motion.js';
 
 // Lenis driven by gsap.ticker and synced to ScrollTrigger. Off under reduced motion.
 export function initLenis() {
-  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return null;
+  if (prefersReducedMotion()) return null;
 
   const lenis = new Lenis();
   lenis.on('scroll', ScrollTrigger.update);
@@ -14,5 +11,3 @@ export function initLenis() {
   gsap.ticker.lagSmoothing(0);
   return lenis;
 }
-
-export { gsap, ScrollTrigger };

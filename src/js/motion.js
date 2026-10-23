@@ -1,0 +1,74 @@
+import { gsap } from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
+
+gsap.registerPlugin(ScrollTrigger);
+
+// Real preference, or simulated from the dev panel (html[data-motion="reduce"]).
+export function prefersReducedMotion() {
+  return (
+    document.documentElement.dataset.motion === 'reduce' ||
+    window.matchMedia('(prefers-reduced-motion: reduce)').matches
+  );
+}
+
+// Replays per section id, used by the dev panel's "replay current section".
+const replays = new Map();
+
+function addReplay(el, fn) {
+  const id = el.closest('[data-section]')?.dataset.section;
+  if (!id) return;
+  if (!replays.has(id)) replays.set(id, []);
+  replays.get(id).push(fn);
+}
+
+export function replaySection(id) {
+  (replays.get(id) ?? []).forEach((fn) => fn());
+}
+
+/**
+ * Plays an entrance once, when el comes into view.
+ * fn(el) may return a GSAP tween/timeline; under reduced motion it is jumped to its end state.
+ */
+export function onEnterOnce(el, fn, { start = 'top 80%' } = {}) {
+  let anim;
+  const play = () => {
+    anim = fn(el);
+    if (prefersReducedMotion()) anim?.progress?.(1);
+  };
+
+  addReplay(el, () => (anim?.restart ? anim.restart() : play()));
+
+  if (prefersReducedMotion()) {
+    play();
+    return null;
+  }
+  return ScrollTrigger.create({ trigger: el, start, once: true, onEnter: play });
+}
+
+/**
+ * Pins el for `length` px of scroll and calls fn(progress 0→1) as it scrubs.
+ * Under reduced motion there is no pin: fn(1) renders the end state.
+ */
+export function pinScrub(el, length, fn) {
+  if (prefersReducedMotion()) {
+    fn(1);
+    return null;
+  }
+  fn(0);
+  const trigger = ScrollTrigger.create({
+    trigger: el,
+    start: 'top top',
+    end: `+=${length}`,
+    pin: true,
+    scrub: true,
+    onUpdate: (self) => fn(self.progress),
+  });
+  addReplay(el, () =>
+    window.lenis
+      ? window.lenis.scrollTo(trigger.start, { immediate: true })
+      : window.scrollTo({ top: trigger.start, behavior: 'instant' }),
+  );
+  return trigger;
+}
+
+export { gsap, ScrollTrigger };

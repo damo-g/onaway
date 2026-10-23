@@ -54,15 +54,17 @@ Arrows are Instrument Sans glyphs: → ↗ ←.
 
 ### Grid
 
-| | Desktop (1512 design, 1280 check) | Tablet | Mobile (390) |
-|---|---|---|---|
-| Columns | 12 | 8 | 4 |
-| Margin | **20** | 40 | 20 |
-| Gutter | 24 | 20 | 16 |
+| | Wide (1512+) | Desktop (1024–1512; 1512 design, 1280 check) | Tablet (768–1023) | Mobile (390) |
+|---|---|---|---|---|
+| Columns | 12 | 12 | 8 | 4 |
+| Margin | 20 → 40, fluid (32 at 1920) | **20** | 20 | 20 |
+| Gutter | same as margin | 20 | 20 | 20 |
+
+Stretch grid, width auto, no max width.
 
 Splits are 7/5 and 8/4. The design artboard is 1512 × 860, with the first fold at 860.
 
-> **Decided: the desktop margin is 20px**, matching the locked mocks. This replaces the Brand Guide's 64px. Airiness comes from the vertical spacing scale and from generous column splits, not from a wide side margin.
+> **Decided (October 23): margin and gutter are both 20px** up to the 1512 frame and grow fluidly to 40px on larger screens. This supersedes the earlier 24 gutter and the 40/16 tablet and mobile values. The 20px margin matches the locked mocks. This replaces the Brand Guide's 64px. Airiness comes from the vertical spacing scale and from generous column splits, not from a wide side margin.
 
 ### Spacing
 

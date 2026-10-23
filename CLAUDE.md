@@ -29,10 +29,10 @@ Static marketing site for ONAWAY: cleaning, moving and delivery across the GTA (
   - Blocks inside a section are 55–89 apart; components use 21–34.
   - Nothing sits closer than 34 to a section edge.
 - **Grid:**
-  - Desktop: 12 columns, **20 margin**, 24 gutter.
-  - Tablet: 8 columns, 40 margin, 20 gutter.
-  - Mobile: 4 columns, 20 margin, 16 gutter.
+  - Stretch grid, width auto: 12 columns on desktop (1024+), 8 on tablet (768–1023), 4 on mobile.
+  - **Margin = gutter = 20** up to the 1512 frame, then both grow with the screen (32 at 1920, capped at 40). Defined once as `--grid-margin` / `--grid-gutter` in `src/styles/main.css`.
   - Splits are 7/5 and 8/4.
+  - Sections use the shell in `src/partials/section.hbs`: default (page grid), `inset` (Carbon panel with a paper margin each side, the quote) or `bleed` (full width, the footer and hero plate).
 - **Frames:** the design artboard is 1512 × 860, with the fold at 860. Check at 1512, 1280, 768 and 390.
 - **Airy is a requirement.** When in doubt, take the next step up the spacing scale.
 
@@ -55,7 +55,9 @@ Leave 144 of paper between the quote and the footer.
 - **Images:** AVIF/WebP with `srcset`, lazy loaded below the fold.
 - **Performance budget:** page JS under 120 KB gzipped, LCP under 2.5s on 4G.
 - **Copy:** use it exactly as in the mocks unless the user changes it. CTA wording is "Get a free quote".
-- **Checking:** before saying a section is done, run the dev server, screenshot it at 1512, 1280 and 390 (Playwright), compare against the section image and the mock, and fix what doesn't match.
+- **Checking:** before saying a section is done, run the dev server, screenshot it at 1512, 1280 and 390 (Playwright, `npm run shots`), plus 1920 for wide screens, compare against the section image and the mock, and fix what doesn't match. Screenshots go to the OS temp folder, never into the repo.
+- **Review panel:** section options live only in the dev review panel; the locked option is the default; nothing from the panel ships in the build. Register options with `registerOptions(id, { option: [locked, ...alternatives] })` from `src/js/options.js`.
+- **Motion:** use `onEnterOnce` and `pinScrub` from `src/js/motion.js`; both jump to the end state under reduced motion.
 - **Commits:** small, named by section, e.g. `hero: pinned scrub`.
 
 ## Commands

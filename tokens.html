@@ -9,35 +9,22 @@
   <link rel="preload" href="/fonts/OverpassMono-Variable.woff2" as="font" type="font/woff2" crossorigin>
   <script type="module" src="/src/js/main.js"></script>
 </head>
-<body
-  x-data="{ grid: false }"
-  @keydown.window="if ($event.key.toLowerCase() === 'g' && !$event.metaKey && !$event.ctrlKey && !$event.altKey && !$event.target.closest('input, textarea, select, [contenteditable]')) grid = !grid"
->
-  <!-- Grid overlay: 12 / 8 / 4, toggled with G -->
-  <div class="grid-overlay" x-show="grid" x-cloak aria-hidden="true">
-    <div class="grid-site">
-      <i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i>
-    </div>
-    <div class="absolute inset-x-0 top-(--height-fold) border-t border-dashed border-rust">
-      <span class="label absolute right-8 top-8 text-rust">Fold · 860</span>
-    </div>
-  </div>
+<body>
+  {{> nav}}
 
-  <header class="grid-site pt-55 md:pt-89">
-    <p class="label col-span-full">Onaway · Step 0</p>
+  <header class="grid-site pt-55 md:pt-89"
+    x-data="{ w: 0, cols: 0, margin: 0, gutter: 0, read() { const s = getComputedStyle($el); this.w = innerWidth; this.cols = s.gridTemplateColumns.split(' ').length; this.margin = parseFloat(s.paddingLeft); this.gutter = parseFloat(s.columnGap); } }"
+    x-init="read()" @resize.window="read()">
+    <p class="label col-span-full">Onaway · Token test</p>
     <h1 class="text-h1 uppercase col-span-full mt-21">Token test</h1>
     <p class="text-lead col-span-full lg:col-span-7 mt-21">
       Every colour, size, space and column the site is allowed to use. Press
-      <kbd class="label border border-line px-8 py-0">G</kbd> to toggle the grid.
+      <kbd class="label border border-line px-8 py-0">G</kbd> or use the review button (bottom right) for the grid overlay.
     </p>
     <div class="col-span-full mt-34 flex flex-wrap items-center gap-21">
-      <button type="button" class="label bg-carbon text-paper px-21 py-13 cursor-pointer" @click="grid = !grid" :aria-pressed="grid.toString()">
-        <span x-text="grid ? 'Hide grid' : 'Show grid'">Show grid</span>
-      </button>
-      <p class="label">
-        <span class="md:hidden">Mobile · 4 cols · 20 margin · 16 gutter</span>
-        <span class="hidden md:inline lg:hidden">Tablet · 8 cols · 40 margin · 20 gutter</span>
-        <span class="hidden lg:inline">Desktop · 12 cols · 20 margin · 24 gutter</span>
+      <button type="button" class="label bg-carbon text-paper px-21 py-13 cursor-pointer" @click="window.dispatchEvent(new Event('dev:grid'))">Toggle grid</button>
+      <p class="label" aria-live="polite">
+        <span x-text="`${w}px · ${cols} cols · ${Math.round(margin * 10) / 10} margin · ${Math.round(gutter * 10) / 10} gutter`"></span>
       </p>
     </div>
   </header>
@@ -48,7 +35,7 @@
       <h2 id="t-colour" class="text-h2 col-span-full">Colour</h2>
       <p class="text-body col-span-full lg:col-span-7 mt-13">Five colours. Mostly paper, then carbon; yellow and rust sparingly. Contrast ratios are against paper unless noted.</p>
 
-      <div class="col-span-full mt-55 grid gap-x-(--grid-gutter) gap-y-55 md:grid-cols-2 lg:grid-cols-5">
+      <div class="col-span-full mt-55 grid gap-x-gutter gap-y-55 md:grid-cols-2 lg:grid-cols-5">
         <article>
           <div class="h-144 bg-paper border border-line flex items-end p-13"><span class="text-h3 text-carbon">Aa</span></div>
           <h3 class="text-h3 mt-21">Paper</h3>
@@ -101,7 +88,7 @@
         </article>
       </div>
 
-      <div class="col-span-full mt-55 grid gap-x-(--grid-gutter) gap-y-21 md:grid-cols-2">
+      <div class="col-span-full mt-55 grid gap-x-gutter gap-y-21 md:grid-cols-2">
         <div class="bg-paper border border-line p-34">
           <p class="label">Hairline on paper · border-line</p>
           <hr class="border-line mt-21">
@@ -119,42 +106,42 @@
       <p class="text-body col-span-full lg:col-span-7 mt-13">Instrument Sans SemiCondensed (font-stretch 87.5%) for everything; Overpass Mono for labels.</p>
 
       <div class="col-span-full mt-55 border-t border-line">
-        <div class="grid lg:grid-cols-12 gap-x-(--grid-gutter) py-34 border-b border-line">
+        <div class="grid lg:grid-cols-12 gap-x-gutter py-34 border-b border-line">
           <p class="label lg:col-span-3">display · 110 / 0.9 · 650 · caps</p>
           <p class="text-display uppercase lg:col-span-9 mt-13 lg:mt-0">On the way</p>
         </div>
-        <div class="grid lg:grid-cols-12 gap-x-(--grid-gutter) py-34 border-b border-line">
+        <div class="grid lg:grid-cols-12 gap-x-gutter py-34 border-b border-line">
           <p class="label lg:col-span-3">h1 · 68 / 0.92 · 650 · caps</p>
           <p class="text-h1 uppercase lg:col-span-9 mt-13 lg:mt-0">Three steps. No surprises.</p>
         </div>
-        <div class="grid lg:grid-cols-12 gap-x-(--grid-gutter) py-34 border-b border-line">
+        <div class="grid lg:grid-cols-12 gap-x-gutter py-34 border-b border-line">
           <p class="label lg:col-span-3">h2 · 42 / 1.05 · 600</p>
           <p class="text-h2 lg:col-span-9 mt-13 lg:mt-0">On time &amp; in writing</p>
         </div>
-        <div class="grid lg:grid-cols-12 gap-x-(--grid-gutter) py-34 border-b border-line">
+        <div class="grid lg:grid-cols-12 gap-x-gutter py-34 border-b border-line">
           <p class="label lg:col-span-3">h3 · 26 / 1.1 · 600</p>
           <p class="text-h3 lg:col-span-9 mt-13 lg:mt-0">We arrive inside the window. →</p>
         </div>
-        <div class="grid lg:grid-cols-12 gap-x-(--grid-gutter) py-34 border-b border-line">
+        <div class="grid lg:grid-cols-12 gap-x-gutter py-34 border-b border-line">
           <p class="label lg:col-span-3">lead · 20 / 1.45 · 400</p>
           <p class="text-lead lg:col-span-6 mt-13 lg:mt-0">Cleaning, moving and delivery for homes and businesses across Toronto, Halton, Peel, York and Durham.</p>
         </div>
-        <div class="grid lg:grid-cols-12 gap-x-(--grid-gutter) py-34 border-b border-line">
+        <div class="grid lg:grid-cols-12 gap-x-gutter py-34 border-b border-line">
           <p class="label lg:col-span-3">body · 16 / 1.5 · 400</p>
           <p class="text-body lg:col-span-6 mt-13 lg:mt-0">We bring a plan to every job and do what we said, when we said. Condo elevator bookings, the Gardiner at five, a third-floor walk-up: we've planned for it. <a href="#t-type" class="text-rust underline underline-offset-4">Rust link ↗</a></p>
         </div>
-        <div class="grid lg:grid-cols-12 gap-x-(--grid-gutter) py-34 border-b border-line">
+        <div class="grid lg:grid-cols-12 gap-x-gutter py-34 border-b border-line">
           <p class="label lg:col-span-3">small · 14 / 1.5 · 400</p>
           <p class="text-small lg:col-span-6 mt-13 lg:mt-0">Quotes in 2 hours. Wrapping included. GTA-wide, locally owned. ← ↑ → ↓ ↖ ↗ ↘ ↙</p>
         </div>
-        <div class="grid lg:grid-cols-12 gap-x-(--grid-gutter) py-34 border-b border-line">
+        <div class="grid lg:grid-cols-12 gap-x-gutter py-34 border-b border-line">
           <p class="label lg:col-span-3">label · 12 · mono 600 · caps · 0.12em</p>
           <p class="label lg:col-span-9 mt-13 lg:mt-0">Arriving 09:30 · Toronto · Stop 03</p>
         </div>
       </div>
 
       <!-- Width and weight axes: proves the variable font is loaded -->
-      <div class="col-span-full mt-55 grid gap-x-(--grid-gutter) gap-y-34 lg:grid-cols-2">
+      <div class="col-span-full mt-55 grid gap-x-gutter gap-y-34 lg:grid-cols-2">
         <div>
           <p class="label">wdth axis · 75 / 87.5 / 100</p>
           <p class="text-h2 font-stretch-condensed mt-13">Steady hands · 75%</p>
@@ -204,7 +191,21 @@
     <!-- Grid -->
     <section class="grid-site mt-89 md:mt-144" aria-labelledby="t-grid">
       <h2 id="t-grid" class="text-h2 col-span-full">Grid</h2>
-      <p class="text-body col-span-full lg:col-span-7 mt-13">12 columns on desktop, 8 on tablet, 4 on mobile. Splits are 7/5 and 8/4.</p>
+      <p class="text-body col-span-full lg:col-span-7 mt-13">Stretch grid, width auto. Margin and gutter are equal: 20 up to the 1512 frame, then they grow with the screen (32 at 1920, 40 from about 2200). Splits are 7/5 and 8/4.</p>
+
+      <div class="col-span-full mt-55 overflow-x-auto">
+        <table class="w-full text-left text-small">
+          <thead class="label">
+            <tr class="border-b border-line"><th class="py-13 pr-21 font-semibold">Screen</th><th class="py-13 pr-21 font-semibold">Width</th><th class="py-13 pr-21 font-semibold">Cols</th><th class="py-13 font-semibold">Margin = gutter</th></tr>
+          </thead>
+          <tbody>
+            <tr class="border-b border-line"><td class="py-13 pr-21">Mobile</td><td class="py-13 pr-21">&lt; 768</td><td class="py-13 pr-21">4</td><td class="py-13">20</td></tr>
+            <tr class="border-b border-line"><td class="py-13 pr-21">Tablet</td><td class="py-13 pr-21">768–1023</td><td class="py-13 pr-21">8</td><td class="py-13">20</td></tr>
+            <tr class="border-b border-line"><td class="py-13 pr-21">Desktop</td><td class="py-13 pr-21">1024–1512</td><td class="py-13 pr-21">12</td><td class="py-13">20</td></tr>
+            <tr class="border-b border-line"><td class="py-13 pr-21">Wide</td><td class="py-13 pr-21">1512 +</td><td class="py-13 pr-21">12</td><td class="py-13">20 → 40, fluid</td></tr>
+          </tbody>
+        </table>
+      </div>
 
       <div class="col-span-full mt-55 grid grid-cols-subgrid gap-y-21">
         <div class="col-span-full lg:col-span-7 bg-carbon text-paper p-21"><p class="label">7</p></div>
@@ -213,10 +214,24 @@
         <div class="col-span-full lg:col-span-4 border border-line p-21"><p class="label">4</p></div>
       </div>
     </section>
+    <!-- Section shell -->
+    <section class="grid-site mt-89 md:mt-144" aria-labelledby="t-shell">
+      <h2 id="t-shell" class="text-h2 col-span-full">Section shell</h2>
+      <p class="text-body col-span-full lg:col-span-7 mt-13">Sections sit 144 apart (89 on mobile). Three variants from <code class="label">src/partials/section.hbs</code>: default (page grid), inset and bleed.</p>
+    </section>
+    <div class="mt-55">
+      {{#> section id="demo-inset" variant="inset" label="Inset demo"}}
+        <p class="label col-span-full text-center">Inset · Carbon panel · paper margin each side (quote)</p>
+        <p class="text-h2 col-span-full text-center mt-21">Say it in a sentence.</p>
+      {{/section}}
+      {{#> section id="demo-bleed" variant="bleed" class="bg-carbon text-paper" label="Bleed demo"}}
+        <div class="grid-site py-89"><p class="label col-span-full">Bleed · full width, no margin (footer, hero plate)</p></div>
+      {{/section}}
+    </div>
   </main>
 
   <footer class="grid-site mt-89 md:mt-144 pb-89">
-    <p class="label col-span-full border-t border-line pt-21">Artboard 1512 × 860 · checks at 1512, 1280, 768, 390</p>
+    <p class="label col-span-full border-t border-line pt-21">Artboard 1512 × 860 · checks at 1512, 1280, 768, 390 · wide check at 1920</p>
   </footer>
 </body>
 </html>

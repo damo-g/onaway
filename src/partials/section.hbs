@@ -1,0 +1,14 @@
+{{!--
+  Section shell. Usage inside a section file:
+    {{#> section id="quote" variant="inset" label="Get a free quote"}} …content… {{/section}}
+  variant: (default) grid with page margins · "inset" Carbon panel with a paper margin each side · "bleed" full width, no grid.
+--}}
+<section id="{{id}}" data-section="{{id}}" class="section{{#if variant}} section--{{variant}}{{/if}}{{#if class}} {{class}}{{/if}}"{{#if label}} aria-label="{{label}}"{{/if}}>
+  {{#if (eq variant "bleed")}}
+  {{> @partial-block}}
+  {{else}}
+  <div class="section__grid">
+    {{> @partial-block}}
+  </div>
+  {{/if}}
+</section>
