@@ -33,6 +33,7 @@ Desktop 1512 × 860 · 12 columns · mocks drawn on a 20 margin (Brand Guide say
 - Services header sits nav height + 55 below whatever is above it (the hero as it scrolls in, the navbar once pinned; + 34 on phones). The section pins at the top, the beam sits 55 under the header (34 on phones), the plate always reaches the bottom of the screen, and the hanging signs shrink if needed so the bottom sign clears the fold by 34. End-state rows are 144 tall with an 89 tile (110 on phones, no dot-matrix fact).
 - Favicon: the W symbol on a transparent background, Carbon, switching to Ticket Paper in dark browser themes.
 - Hero state A follows the HF-01 inspiration: the plate ends 144 above the bar on desktop (89 tablet, 55 phone), and the descriptor "Cleaning, Moving & Delivery across the GTA" sits at the foot of that gap, just above the wordmark.
+- Steps (TS-02, round 4): intro on the left 4 columns, ticket on the right 8 (body + 152 tear-off, 500 tall). Stamp · subtle edge, the symbol (W knocked out of a circle, 60% Carbon) centred in the stub, Write-in once on entry. The tear-off pulls away on hover and links to the quote page. On phones the ticket stands upright: stub on top, steps stacked, tear-off along the bottom seam.
 
 ## Post-build
 - GT-09 map: replace hand-drawn mock with OpenStreetMap vector data in MapLibre GL, styled to tokens, flyTo on match, credit © OpenStreetMap contributors.

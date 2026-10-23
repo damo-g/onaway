@@ -96,6 +96,7 @@
   /* Navbar height as a utility (pt-nav …); the per-breakpoint sizes live in :root below */
   --spacing-nav: var(--nav-h);
   --text-button: 18px;
+  --text-numeral: 56px; /* TS-02 step numbers */
   --tracking-nav: 0.02em;
   --tracking-mono: 0.06em;
 
@@ -566,6 +567,189 @@
   .services .sign.is-lift:hover,
   .services .sign.is-lift:focus-visible { translate: 0 -3px; }
   .services.is-scripted .sign:not(.is-live) { pointer-events: none; }
+  /* ---------- Steps (TS-02 Journey Ticket) ---------- */
+  /* Options (dev panel): data-ticket stamps (locked) | stamp | pin | notch · data-symbol centre (locked) | foot
+     · data-animation write (locked) | across | unroll. */
+  .steps { padding-top: var(--spacing-55); } /* follows the R2-E board, which keeps 89 below itself: 144 between */
+  .steps .section__grid { row-gap: var(--spacing-55); align-items: start; }
+  .steps__intro { display: flex; flex-direction: column; gap: var(--spacing-34); }
+  .steps__lead { max-width: 30ch; color: color-mix(in srgb, var(--color-carbon) 78%, transparent); }
+
+  /* Sizes from TS-02: body 720 × 500 with a 56 stub, tear-off 152, stamp 118 */
+  .ticket {
+    --ticket-h: 500px;
+    --tear-w: 152px;
+    --stub: 56px;
+    --stamp-size: 118px;
+    --ticket-face: color-mix(in srgb, var(--color-carbon) 5%, var(--color-paper));
+    --ticket-stub: color-mix(in srgb, var(--color-carbon) 7%, var(--color-paper));
+    --ticket-rule: color-mix(in srgb, var(--color-carbon) 12%, transparent);
+    /* Perforation: bite radius and pitch (Stamp · subtle) */
+    --br: 3px;
+    --bp: 10px;
+    --cut: var(--color-carbon); /* mask paint: only its alpha matters */
+    --seam-r: radial-gradient(circle var(--br) at 100% 50%, transparent 96%, var(--cut) 100%) right / 100% var(--bp) repeat-y;
+    --seam-l: radial-gradient(circle var(--br) at 0 50%, transparent 96%, var(--cut) 100%) left / 100% var(--bp) repeat-y;
+    --e-t: radial-gradient(circle var(--br) at 50% 0, transparent 96%, var(--cut) 100%) top / var(--bp) 100% repeat-x;
+    --e-b: radial-gradient(circle var(--br) at 50% 100%, transparent 96%, var(--cut) 100%) bottom / var(--bp) 100% repeat-x;
+    --e-l: var(--seam-l);
+    --e-r: var(--seam-r);
+    /* Stamp edges: every outer edge bitten, plus both sides of the seam */
+    --mask-body: var(--e-t), var(--e-b), var(--e-l), var(--seam-r);
+    --mask-tear: var(--e-t), var(--e-b), var(--seam-l), var(--e-r);
+    position: relative;
+  }
+  .ticket__inner { position: relative; display: flex; }
+  .ticket__body {
+    position: relative;
+    flex: 1;
+    min-width: 0;
+    min-height: var(--ticket-h);
+    display: grid;
+    grid-template-columns: var(--stub) 1fr;
+    background: var(--ticket-face);
+    -webkit-mask: var(--mask-body);
+    mask: var(--mask-body);
+    -webkit-mask-composite: source-in;
+    mask-composite: intersect;
+  }
+  .ticket__stub { display: flex; align-items: center; justify-content: center; background: var(--ticket-stub); color: color-mix(in srgb, var(--color-carbon) 60%, transparent); }
+  .ticket__stub svg { width: var(--spacing-21); height: auto; }
+  .steps[data-symbol="foot"] .ticket__stub { align-items: flex-end; padding-bottom: var(--spacing-34); }
+  .ticket__fields { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .ticket__field { display: flex; flex-direction: column; gap: var(--spacing-13); padding: var(--spacing-55) var(--spacing-21); }
+  .ticket__field + .ticket__field { border-left: 1px solid var(--ticket-rule); }
+  .ticket__num { margin-bottom: var(--spacing-21); font-size: var(--text-numeral); line-height: 1; font-weight: 500; letter-spacing: -0.02em; }
+  .ticket__title { font-size: var(--text-h3); line-height: var(--text-h3--line-height); font-weight: 600; }
+  .ticket__copy { font-size: var(--text-body); line-height: var(--text-body--line-height); color: color-mix(in srgb, var(--color-carbon) 72%, transparent); }
+  .ticket__seam { position: absolute; top: 0; bottom: 0; left: var(--stub); width: 0; }
+  .ticket__stamp {
+    position: absolute;
+    right: var(--spacing-34);
+    bottom: var(--spacing-34);
+    width: var(--stamp-size);
+    height: var(--stamp-size);
+    display: grid;
+    place-items: center;
+    border-radius: 50%;
+    box-shadow: inset 0 0 0 2px var(--color-rust), inset 0 0 0 7px var(--ticket-face), inset 0 0 0 8px var(--color-rust);
+    color: var(--color-rust);
+    text-align: center;
+    rotate: -10deg;
+    font-family: var(--font-mono);
+    font-size: var(--text-label);
+    line-height: 1.7;
+    letter-spacing: var(--text-label--letter-spacing);
+    font-weight: 600;
+    font-stretch: normal;
+    text-transform: uppercase;
+  }
+  .ticket__tear {
+    width: var(--tear-w);
+    flex: none;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: var(--spacing-34) var(--spacing-21) var(--spacing-34) var(--spacing-21);
+    background: var(--color-yellow);
+    color: var(--color-carbon);
+    transform-origin: 0 100%;
+    transition: transform 0.5s cubic-bezier(0.25, 0.8, 0.25, 1);
+    -webkit-mask: var(--mask-tear);
+    mask: var(--mask-tear);
+    -webkit-mask-composite: source-in;
+    mask-composite: intersect;
+  }
+  .ticket__tear-label { font-size: var(--text-h3); line-height: 1.05; font-weight: 600; }
+  .ticket__arrow { font-size: var(--text-h3); line-height: 1; transition: transform 0.3s; }
+  /* The real tear-off: the stub pulls away along the perforation */
+  .ticket__tear:hover,
+  .ticket__tear:focus-visible { transform: translate(6px, 2px) rotate(2deg); outline: 0; }
+  .ticket__tear:hover .ticket__arrow { transform: translateX(5px); }
+  .ticket__tear:focus-visible .ticket__tear-label { text-decoration: underline; text-underline-offset: 4px; }
+  .ticket__head { display: none; }
+
+  /* Edge styles */
+  .steps[data-ticket="stamp"] .ticket { --br: 5px; --bp: 15px; }
+  .steps[data-ticket="stamp"] .ticket__seam { border-left: 1px solid color-mix(in srgb, var(--color-carbon) 18%, transparent); }
+  .steps[data-ticket="pin"] .ticket,
+  .steps[data-ticket="notch"] .ticket { --mask-body: var(--seam-r); --mask-tear: var(--seam-l); }
+  .steps[data-ticket="pin"] .ticket { --br: 2px; --bp: 9px; }
+  .steps[data-ticket="pin"] .ticket__seam { border-left: 2px dotted color-mix(in srgb, var(--color-carbon) 28%, transparent); }
+  .steps[data-ticket="pin"] .ticket__body { border-radius: 4px 0 0 4px; }
+  .steps[data-ticket="pin"] .ticket__tear { border-radius: 0 4px 4px 0; }
+  .steps[data-ticket="notch"] .ticket__seam { border-left: 1.5px dashed color-mix(in srgb, var(--color-carbon) 32%, transparent); }
+  .steps[data-ticket="notch"] .ticket__seam::before,
+  .steps[data-ticket="notch"] .ticket__seam::after { content: ""; position: absolute; left: -13px; width: 26px; height: 26px; border-radius: 50%; background: var(--color-paper); }
+  .steps[data-ticket="notch"] .ticket__seam::before { top: -13px; }
+  .steps[data-ticket="notch"] .ticket__seam::after { bottom: -13px; }
+  .steps[data-ticket="notch"] .ticket__body { border-radius: 6px 0 0 6px; }
+  .steps[data-ticket="notch"] .ticket__tear { border-radius: 0 6px 6px 0; }
+
+  /* Phones: the ticket stands up. Stub along the top, steps stacked, tear-off below the seam. */
+  @media (width < 768px) {
+    .ticket {
+      --ticket-h: auto;
+      --seam-b: radial-gradient(circle var(--br) at 50% 100%, transparent 96%, var(--cut) 100%) bottom / var(--bp) 100% repeat-x;
+      --seam-t: radial-gradient(circle var(--br) at 50% 0, transparent 96%, var(--cut) 100%) top / var(--bp) 100% repeat-x;
+      --mask-body: var(--e-l), var(--e-r), var(--e-t), var(--seam-b);
+      --mask-tear: var(--e-l), var(--e-r), var(--seam-t), var(--e-b);
+      --stamp-size: 89px;
+    }
+    .steps[data-ticket="pin"] .ticket,
+    .steps[data-ticket="notch"] .ticket { --mask-body: var(--seam-b); --mask-tear: var(--seam-t); }
+    .ticket__inner { flex-direction: column; }
+    .ticket__body { grid-template-columns: 1fr; grid-template-rows: var(--stub) auto; padding-bottom: var(--spacing-89); }
+    .steps[data-symbol="foot"] .ticket__stub { align-items: center; padding-bottom: 0; }
+    .ticket__fields { grid-template-columns: 1fr; }
+    .ticket__field { padding: var(--spacing-21); gap: var(--spacing-8); }
+    .ticket__field + .ticket__field { border-left: 0; border-top: 1px solid var(--ticket-rule); }
+    .ticket__num { margin-bottom: 0; font-size: var(--text-h2); }
+    .ticket__seam { display: none; }
+    .ticket__stamp { right: var(--spacing-21); bottom: var(--spacing-21); }
+    .ticket__tear { width: auto; flex-direction: row; align-items: center; padding: var(--spacing-21); transform-origin: 0 0; }
+    .ticket__tear-label br { display: none; }
+  }
+
+  /* Write-in: plays once on entry (steps.js adds .is-armed then .is-go). Reduced motion never arms it. */
+  .ticket { --wd: 0s; }
+  .ticket.is-armed .ticket__num { animation: tk-fade 0.4s ease both; }
+  .ticket.is-armed .ticket__title,
+  .ticket.is-armed .ticket__copy { animation: tk-write 0.7s cubic-bezier(0.4, 0, 0.2, 1) both; }
+  .ticket.is-armed .ticket__field:nth-child(1) .ticket__num { animation-delay: var(--wd); }
+  .ticket.is-armed .ticket__field:nth-child(1) .ticket__title { animation-delay: calc(var(--wd) + 0.15s); }
+  .ticket.is-armed .ticket__field:nth-child(1) .ticket__copy { animation-delay: calc(var(--wd) + 0.35s); }
+  .ticket.is-armed .ticket__field:nth-child(2) .ticket__num { animation-delay: calc(var(--wd) + 0.6s); }
+  .ticket.is-armed .ticket__field:nth-child(2) .ticket__title { animation-delay: calc(var(--wd) + 0.75s); }
+  .ticket.is-armed .ticket__field:nth-child(2) .ticket__copy { animation-delay: calc(var(--wd) + 0.95s); }
+  .ticket.is-armed .ticket__field:nth-child(3) .ticket__num { animation-delay: calc(var(--wd) + 1.2s); }
+  .ticket.is-armed .ticket__field:nth-child(3) .ticket__title { animation-delay: calc(var(--wd) + 1.35s); }
+  .ticket.is-armed .ticket__field:nth-child(3) .ticket__copy { animation-delay: calc(var(--wd) + 1.55s); }
+  .ticket.is-armed .ticket__stamp { animation: tk-stamp 0.5s cubic-bezier(0.3, 0.7, 0.3, 1) calc(var(--wd) + 1.9s) both; }
+  .ticket.is-armed .ticket__tear-label,
+  .ticket.is-armed .ticket__arrow { animation: tk-fade 0.4s ease calc(var(--wd) + 2.2s) both; }
+  /* Fallback (Unroll + write): the ticket unrolls from the stub first */
+  .steps[data-animation="unroll"] .ticket { --wd: 0.9s; }
+  .steps[data-animation="unroll"] .ticket.is-armed .ticket__inner { animation: tk-unroll 1s cubic-bezier(0.5, 0, 0.2, 1) both; }
+  /* Print across: a print head crosses in 30 steps; no write-in */
+  .steps[data-animation="across"] .ticket.is-armed .ticket__inner { animation: tk-unroll 1.8s steps(30, end) both; }
+  .steps[data-animation="across"] .ticket.is-armed :is(.ticket__num, .ticket__title, .ticket__copy, .ticket__tear-label, .ticket__arrow) { animation: none; }
+  .steps[data-animation="across"] .ticket.is-armed .ticket__stamp { animation-delay: 2s; }
+  .steps[data-animation="across"] .ticket.is-armed .ticket__head {
+    display: block; position: absolute; top: -6px; bottom: -6px; width: 2px;
+    background: color-mix(in srgb, var(--color-carbon) 45%, transparent);
+    animation: tk-head 1.8s steps(30, end) both;
+  }
+  /* Armed animations wait at their first frame until the ticket is in view */
+  .ticket.is-armed,
+  .ticket.is-armed * { animation-play-state: paused; }
+  .ticket.is-armed.is-go,
+  .ticket.is-armed.is-go * { animation-play-state: running; }
 }
 
 @keyframes hero-reveal { to { visibility: visible; } }
+@keyframes tk-fade { from { opacity: 0; } to { opacity: 1; } }
+@keyframes tk-write { from { clip-path: inset(0 100% 0 0); } to { clip-path: inset(0 0 0 0); } }
+@keyframes tk-stamp { 0% { opacity: 0; scale: 1.3; } 65% { opacity: 1; scale: 0.96; } 100% { opacity: 1; scale: 1; } }
+@keyframes tk-unroll { from { clip-path: inset(0 100% 0 0); } to { clip-path: inset(0 0 0 0); } }
+@keyframes tk-head { from { left: 0; opacity: 1; } 95% { opacity: 1; } to { left: 100%; opacity: 0; } }

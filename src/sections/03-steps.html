@@ -1,2 +1,41 @@
-{{!-- 03 Steps · TS-02 Journey Ticket. Empty until branch section/03-steps. --}}
-{{#> section id="steps" label="Three steps"}}{{/section}}
+{{!-- 03 Steps · TS-02 Journey Ticket. Markup is the end state; src/js/sections/steps.js plays the write-in once on entry. --}}
+{{#> section id="steps" class="steps" label="How it works"}}
+  <div class="steps__intro col-span-full lg:col-span-4">
+    <h2 class="text-h2 md:text-h1 uppercase">Three steps.<br>No surprises.</h2>
+    <p class="steps__lead text-lead">From first message to a locked date. You always know what happens next, and what it costs.</p>
+  </div>
+
+  <div class="ticket col-span-full lg:col-span-8">
+    <div class="ticket__inner">
+      <div class="ticket__body">
+        <div class="ticket__stub" aria-hidden="true">
+          <svg viewBox="0 0 100 100"><circle cx="50" cy="50" r="50" fill="currentColor"/><path transform="translate(28.6 30) scale(.5)" style="fill:var(--ticket-stub)" d="M0,80C.14,77.73-.02,11.64.03,9.23l11.67-1.12s.01,40.19-.1,55.51c20.63-10.95,25.77-37.76,25.47-59.5,2.65-.22,9.1-.87,11.81-1.15-.51,20.26,3.46,45.8,24.97,53.64.05-15.31.05-40.2.07-55.53l11.65-1.08v70.04c-17.66,4.6-35.16-10.2-42.26-25.54-7.02,17.45-23.22,35.59-43.32,35.5Z"/></svg>
+        </div>
+        <ol class="ticket__fields">
+          <li class="ticket__field">
+            <span class="ticket__num">01</span>
+            <h3 class="ticket__title">Tell us the job.</h3>
+            <p class="ticket__copy">The space, the date, what you need.</p>
+          </li>
+          <li class="ticket__field">
+            <span class="ticket__num">02</span>
+            <h3 class="ticket__title">Get it in writing.</h3>
+            <p class="ticket__copy">Crew, time and every cost, within 2 hours.</p>
+          </li>
+          <li class="ticket__field">
+            <span class="ticket__num">03</span>
+            <h3 class="ticket__title">Lock your date.</h3>
+            <p class="ticket__copy">We confirm your crew and arrival window.</p>
+          </li>
+        </ol>
+        <span class="ticket__seam" aria-hidden="true"></span>
+        <span class="ticket__stamp" aria-hidden="true">Your date<br>locked</span>
+      </div>
+      <a class="ticket__tear" href="/quote/">
+        <span class="ticket__tear-label">Get a<br> free<br> quote</span>
+        <span class="ticket__arrow" aria-hidden="true">→</span>
+      </a>
+    </div>
+    <span class="ticket__head" aria-hidden="true"></span>
+  </div>
+{{/section}}
