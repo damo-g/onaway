@@ -30,8 +30,9 @@ Desktop 1512 × 860 · 12 columns · mocks drawn on a 20 margin (Brand Guide say
 - Hero at rest uses the section image's copy and layout: centred "Steady hands / at your door", description "Cleaning, Moving & Delivery for homes and businesses across the GTA" (h3 size), three service cards on the 4/4/4 split.
 - Hero mobile: same pinned scrub with a shorter bar (89 → 72), headline at h1, cards stacked.
 - Services (R2-E) backdrops: **EL-01** (light, locked) plus review alternatives EL-02 (light, two windows), ED-03 and ED-04 (dark). Sources are the 2304 × 1856 plates; the beam sits at the same height in all four.
-- Services header clears the fixed navbar (nav height + 34). The beam sits 34 under the header and the hanging signs shrink if needed so the bottom sign always clears the fold by 34 while pinned.
+- Services header sits nav height + 55 below whatever is above it (the hero as it scrolls in, the navbar once pinned; + 34 on phones). The section pins at the top, the beam sits 55 under the header (34 on phones), the plate always reaches the bottom of the screen, and the hanging signs shrink if needed so the bottom sign clears the fold by 34. End-state rows are 144 tall with an 89 tile (110 on phones, no dot-matrix fact).
 - Favicon: the W symbol on a transparent background, Carbon, switching to Ticket Paper in dark browser themes.
+- Hero state A follows the HF-01 inspiration: the plate ends 144 above the bar on desktop (89 tablet, 55 phone), and the descriptor "Cleaning, Moving & Delivery across the GTA" sits at the foot of that gap, just above the wordmark.
 
 ## Post-build
 - GT-09 map: replace hand-drawn mock with OpenStreetMap vector data in MapLibre GL, styled to tokens, flyTo on match, credit © OpenStreetMap contributors.

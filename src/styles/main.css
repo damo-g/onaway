@@ -133,7 +133,7 @@
   @media (width >= 768px) {
     :root {
       --grid-cols: 8; --section-gap: 144px;
-      --nav-h: 80px; --nav-h-a: 144px; --wm-h: 36px; --wm-h-a: 36px; --btn-h-a: 80px; --hero-gap-a: 55px;
+      --nav-h: 80px; --nav-h-a: 144px; --wm-h: 36px; --wm-h-a: 36px; --btn-h-a: 80px; --hero-gap-a: 89px;
     }
   }
   @media (width >= 1024px) {
@@ -141,6 +141,7 @@
       --grid-cols: 12;
       /* Wordmark 110 → 36 at the 1512 frame; smaller screens start smaller so the bar never crowds */
       --nav-h-a: 150px; --wm-h-a: clamp(36px, calc((100vw - 1100px) * 0.267), 110px);
+      --hero-gap-a: 144px; /* plate ends well above the bar, as in the HF-01 inspiration */
     }
   }
 
@@ -389,7 +390,7 @@
     background: color-mix(in srgb, var(--color-paper) 92%, transparent);
     white-space: nowrap;
   }
-  /* State A descriptor: sits between the plate and the bar on the fold */
+  /* State A descriptor: at the foot of the gap between the plate and the bar, just above the wordmark */
   .hero__lede {
     position: absolute;
     left: var(--grid-margin);
@@ -397,7 +398,8 @@
     bottom: var(--nav-h-a);
     height: var(--hero-gap-a);
     display: none;
-    align-items: center;
+    align-items: flex-end;
+    padding-bottom: var(--spacing-8);
     margin: 0;
   }
   .hero__content {
@@ -483,9 +485,9 @@
     --s-htxt: var(--color-paper);
   }
 
-  /* The section pins just under the fixed navbar, so the header only needs its own breathing room */
-  .services__head { position: relative; z-index: 3; padding-top: var(--spacing-34); row-gap: var(--spacing-21); align-items: end; }
-  @media (width >= 768px) { .services__head { padding-top: var(--spacing-55); } }
+  /* Header sits nav height + 55 below whatever is above it: the hero as it scrolls in, the navbar once pinned */
+  .services__head { position: relative; z-index: 3; padding-top: calc(var(--nav-h) + var(--spacing-34)); row-gap: var(--spacing-21); align-items: end; }
+  @media (width >= 768px) { .services__head { padding-top: calc(var(--nav-h) + var(--spacing-55)); } }
   .services__intro { max-width: 34ch; color: var(--svc-sub); }
 
   /* Backdrop plate: the beam the signs hang from. Fades in at its top edge, then out on scroll. */

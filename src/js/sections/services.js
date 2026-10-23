@@ -63,8 +63,8 @@ export function init(el) {
     const iconRight = opt('icon', 'left') === 'right';
     const under = !wide || opt('description', 'column') === 'under';
 
-    // Pinned under the navbar, so the stage you see is the viewport minus the bar
-    const view = window.innerHeight - px('--nav-h');
+    // Pinned at the top; the header's padding clears the navbar, so the stage is the whole viewport
+    const view = window.innerHeight;
 
     // The beam sits 55 under the header (34 on phones), the faded top of the plate tucked behind it.
     // The plate is never narrower than the screen or 900 (so the beam keeps its weight) and is wide
@@ -103,12 +103,12 @@ export function init(el) {
     }
 
     // End: full-width board rows
-    const rowH = mobile ? 144 : 166;
-    const rowsTop = headBottom + 89;
+    const rowH = mobile ? 110 : 144;
+    const rowsTop = headBottom + (mobile ? 34 : 55);
     const end = start.map((_, i) => ({ x: 0, y: rowsTop + i * rowH, w: W, h: rowH }));
 
     // End-state contents on the grid
-    const tileEnd = mobile ? 55 : wide ? 144 : 89;
+    const tileEnd = mobile ? 55 : 89;
     const nameEnd = mobile ? 26 : wide ? 55 : 42;
     const arrowEnd = mobile ? 26 : 42;
     const nameX = iconRight ? margin : margin + tileEnd + gutter;
@@ -259,7 +259,5 @@ export function init(el) {
     });
   }
 
-  // Pins with its top under the navbar, not behind it
-  const navH = () => parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--nav-h'));
-  pinScrub(el, LENGTH, render, { smooth: 0.6, offset: navH });
+  pinScrub(el, LENGTH, render, { smooth: 0.6 });
 }
