@@ -35,7 +35,7 @@
         <div class="svc-band" aria-hidden="true">
           <span class="svc-band__tile"><svg viewBox="0 0 96 96"><g fill="currentColor"><path d="M30 14h34a8 8 0 0 1 8 8v4a4 4 0 0 1-4 4H54v8H40V30H30a4 4 0 0 1-4-4v-8a4 4 0 0 1 4-4z"/><path d="M72 16h8v8h-8z"/><path d="M40 30h10l-6 16h-6z"/><path d="M36 40h22v4c8 4 12 10 12 18v20a6 6 0 0 1-6 6H32a6 6 0 0 1-6-6V62c0-8 4-14 10-18z"/></g><rect x="34" y="60" width="28" height="14" rx="2" style="fill:var(--band-tile)"/></svg></span>
           <span class="svc-band__name">Cleaning</span>
-          <span class="svc-band__board" data-dm="2 HR QUOTE" data-pitch="3"></span>
+          <span class="svc-band__board" data-dm="2 HR QUOTE" data-facts="2 HR QUOTE|HOMES + WORK|ONCE OR WEEKLY" data-pitch="3"></span>
           <span class="svc-band__arrow">↓</span>
         </div>
         <div class="svc-doors">
@@ -90,10 +90,10 @@
           <button type="button" data-space="work" aria-pressed="true">Workplaces</button>
           <button type="button" data-space="home" aria-pressed="false">Homes</button>
         </div>
-        <button type="button" class="incl__switch" role="switch" aria-checked="false"><span class="incl__track" aria-hidden="true"><b></b></span>Deep clean</button>
+        <button type="button" class="incl__switch" role="switch" aria-checked="false" data-add="deep"><span class="incl__track" aria-hidden="true"><b></b></span>Deep clean</button>
       </div>
       <div class="incl__route col-span-full"></div>
-      <p class="incl__note label col-span-full" hidden>Deep clean adds the <b>+</b> items.</p>
+      <p class="incl__note label col-span-full" data-note="on" hidden>Deep clean adds the <b>+</b> items.</p>
     </section>
 
     {{!-- CH-03b Questions (locked: window 440 · used questions fade · ASK · plain answers · typed with dots and a block caret · "ONAWAY" label · chips only).

@@ -3,6 +3,8 @@ import { prefersReducedMotion } from '../motion.js';
 // CH-03b Questions: the FAQ (already in the HTML) becomes a short message thread. Pick a chip, it's asked,
 // and the answer is typed back character by character after typing dots. The window keeps its height and
 // scrolls inside; if you scroll up to re-read, a "New reply" tab appears instead of pulling you down.
+// Questions and answers are the dl in the page; data-greet overrides the opening line, and the closing
+// line links to the same Help anchor as the heading.
 const GREET = 'Hi. Here’s what people ask us most about a clean. Pick one.';
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 
@@ -17,6 +19,8 @@ export function init(el) {
   const ask = box.querySelector('.qs__ask');
   const newTab = el.querySelector('.qs__new');
   const reduced = prefersReducedMotion();
+  const greet = el.dataset.greet || GREET;
+  const help = el.querySelector('.qs__title a').getAttribute('href');
 
   el.querySelector('.qs__faq').hidden = true;
   win.hidden = false;
@@ -106,7 +110,7 @@ export function init(el) {
     if (![...chips.querySelectorAll('button')].some((x) => !x.classList.contains('is-used'))) {
       const p = document.createElement('p');
       p.className = 'qs__done';
-      p.innerHTML = 'That’s the most asked. More on the <a href="/faq/#cleaning">Help page</a>.';
+      p.innerHTML = `That’s the most asked. More on the <a href="${help}">Help page</a>.`;
       chips.append(p);
     }
     const i = Number(b.dataset.i);
@@ -121,7 +125,7 @@ export function init(el) {
     io.disconnect();
     const k = token;
     const node = reply();
-    queue = (async () => { await dots(node, k, 600); await type(node, GREET, k); })();
+    queue = (async () => { await dots(node, k, 600); await type(node, greet, k); })();
   }, { threshold: 0.4 });
   io.observe(win);
 }

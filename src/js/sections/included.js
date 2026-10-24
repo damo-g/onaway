@@ -1,9 +1,11 @@
 import { prefersReducedMotion } from '../motion.js';
+import { MOVING } from '../data/moving-plan.js';
 
 // WI-01b What's included: five stops in the crew's order, every list visible. Tour: one stop every 3.6s,
 // the line filling toward the next; hovering the route pauses it, clicking a stop holds it there.
-// Lists are drafts for the client to confirm. Deep items (+) show only with Deep clean on.
-const DATA = {
+// Lists are drafts for the client to confirm. + items show only while their add-on is on: Cleaning's
+// Deep clean switch, or Moving's add-on chips (data-plan="moving", lists in src/js/data/moving-plan.js).
+const CLEANING = {
   home: [
     { n: 'Kitchen', t: ['Counters and backsplash wiped', 'Sink and taps cleaned and shined', 'Stovetop and the outside of appliances', 'Cabinet fronts and handles', 'Bins emptied and relined'], d: ['Inside the oven', 'Inside the fridge', 'Inside cabinets and drawers'] },
     { n: 'Bathrooms', t: ['Toilet, tub and shower scrubbed', 'Sink, taps and mirror', 'Counters and cabinet fronts', 'Bins emptied', 'Towels folded or hung'], d: ['Grout and tile detail', 'Exhaust fan cover', 'Inside cabinets'] },
@@ -19,21 +21,31 @@ const DATA = {
     { n: 'Final walkthrough', t: ['The crew lead checks every area against this list', 'Anything missed is done before we leave', 'Lights off, alarm set, doors locked as instructed', 'A note left with what was done'], d: [] },
   ],
 };
+// Cleaning's deep items (d) become + items under the "deep" add-on
+const PLANS = {
+  cleaning: Object.fromEntries(Object.entries(CLEANING).map(([k, v]) => [k, v.map((s) => ({ n: s.n, t: [...s.t, ...s.d.map((t) => ({ add: 'deep', t }))] }))])),
+  moving: MOVING,
+};
 const STEP = 3600;
 const esc = (s) => s.replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' })[c]);
 
 export function init(el) {
   const route = el.querySelector('.incl__route');
   const note = el.querySelector('.incl__note');
-  const sw = el.querySelector('.incl__switch');
+  const DATA = PLANS[el.dataset.plan || 'cleaning'];
   const still = prefersReducedMotion();
-  const S = { space: 'work', deep: false, i: 0, held: false, picked: false };
+  const S = { space: el.querySelector('[data-space][aria-pressed="true"]').dataset.space, on: new Set(), i: 0, held: false, picked: false };
+  const item = (x) => {
+    if (typeof x === 'string') return `<li>${esc(x)}</li>`;
+    const t = x.href ? esc(x.t).replace(esc(x.link), `<a href="${x.href}">${esc(x.link)}</a>`) : esc(x.t);
+    return `<li class="is-add" data-add="${x.add}"${S.on.has(x.add) ? '' : ' hidden'}><i aria-hidden="true">+</i>${t}</li>`;
+  };
   let anim = null;
   let gen = 0;
 
   function build() {
     route.innerHTML = `<div class="incl__line" aria-hidden="true"><b></b></div><ol class="incl__stops">${DATA[S.space]
-      .map((s, i) => `<li class="incl__stop"><button type="button" class="incl__head" data-stop="${i}"><i class="incl__sq" aria-hidden="true"></i><span class="incl__num label">${String(i + 1).padStart(2, '0')}</span><span class="incl__name">${esc(s.n)}</span></button><ul class="incl__list">${s.t.map((x) => `<li>${esc(x)}</li>`).join('')}${s.d.map((x) => `<li class="is-deep"><i aria-hidden="true">+</i>${esc(x)}</li>`).join('')}</ul></li>`)
+      .map((s, i) => `<li class="incl__stop"><button type="button" class="incl__head" data-stop="${i}"><i class="incl__sq" aria-hidden="true"></i><span class="incl__num label">${String(i + 1).padStart(2, '0')}</span><span class="incl__name">${esc(s.n)}</span></button><ul class="incl__list">${s.t.map(item).join('')}</ul></li>`)
       .join('')}</ol>`;
   }
 
@@ -80,12 +92,19 @@ export function init(el) {
       show(0, true);
     }),
   );
-  sw.addEventListener('click', () => {
-    S.deep = !S.deep;
-    sw.setAttribute('aria-checked', String(S.deep));
-    el.classList.toggle('is-deep', S.deep);
-    note.hidden = !S.deep;
-  });
+  // Add-ons are independent; each shows only its own + items. The note shows while any is on
+  // (data-note="on") or until one is (data-note="off"); Moving has none.
+  el.querySelectorAll('[data-add]').forEach((b) =>
+    b.addEventListener('click', () => {
+      const k = b.dataset.add;
+      const on = !S.on.has(k);
+      if (on) S.on.add(k);
+      else S.on.delete(k);
+      b.setAttribute(b.getAttribute('role') === 'switch' ? 'aria-checked' : 'aria-pressed', String(on));
+      route.querySelectorAll(`li[data-add="${k}"]`).forEach((li) => (li.hidden = !on));
+      if (note) note.hidden = (note.dataset.note === 'off') === S.on.size > 0;
+    }),
+  );
 
   build();
   show(0, true);

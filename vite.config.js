@@ -43,6 +43,7 @@ export default defineConfig(({ command }) => ({
         notFound: resolve(root, '404.html'), // served by .htaccess ErrorDocument
         quote: resolve(root, 'quote.html'),
         cleaning: resolve(root, 'cleaning.html'),
+        moving: resolve(root, 'moving.html'),
       },
     },
   },

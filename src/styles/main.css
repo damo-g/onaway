@@ -1606,9 +1606,10 @@
   .svc-door::after { right: 22%; }
   .svc-door__tile { display: grid; place-items: center; width: calc(var(--spacing-89) - var(--spacing-8)); height: calc(var(--spacing-89) - var(--spacing-8)); flex: none; border-radius: 1px; background: var(--door-tile); transition: background-color 0.2s; }
   .svc-door__tile svg { width: var(--spacing-55); height: var(--spacing-55); }
-  .svc-door__text { display: flex; flex-direction: column; gap: var(--spacing-8); min-width: 0; }
+  .svc-door__text { display: flex; flex-direction: column; gap: var(--spacing-8); min-width: 0; flex: 1; }
   .svc-door__name { font-size: var(--text-h2); line-height: 1; font-weight: 600; letter-spacing: -0.01em; white-space: nowrap; }
-  .svc-door__sub { font-size: var(--text-small); line-height: 1.4; color: color-mix(in srgb, currentColor 70%, transparent); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  /* up to two lines, so longer descriptions never push the page sideways */
+  .svc-door__sub { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; font-size: var(--text-small); line-height: 1.4; color: color-mix(in srgb, currentColor 70%, transparent); }
   .svc-door__arrow { margin-left: auto; font-size: var(--text-h3); line-height: 1; }
   .svc-door:is(:hover, :focus-visible) {
     --face: var(--color-carbon);
@@ -1734,9 +1735,18 @@
   .incl__list { margin-top: var(--spacing-21); }
   .incl__list li { padding-block: var(--spacing-8); border-top: 1px solid color-mix(in srgb, var(--color-carbon) 10%, transparent); font-size: var(--text-small); line-height: 1.4; transition: color 0.35s; }
   .incl__stop:not(.is-on) .incl__list li { color: color-mix(in srgb, var(--color-carbon) 85%, transparent); }
-  .incl__list li.is-deep { display: none; font-weight: 500; }
-  .incl__list li.is-deep i { margin-right: var(--spacing-8); font-family: var(--font-mono); font-style: normal; font-weight: 600; }
-  .incl.is-deep .incl__list li.is-deep { display: block; animation: incl-in 0.45s ease both; }
+  .incl__list li.is-add { font-weight: 500; animation: incl-in 0.45s ease both; }
+  .incl__list li.is-add[hidden] { display: none; }
+  .incl__list li.is-add i { margin-right: var(--spacing-8); font-family: var(--font-mono); font-style: normal; font-weight: 600; }
+  .incl__list a { text-decoration: underline; text-underline-offset: 3px; text-decoration-thickness: 1px; }
+  /* Moving: a second control row of add-on chips, right-aligned under the segmented control */
+  .incl__adds { display: flex; align-items: center; justify-content: flex-end; gap: var(--spacing-8); flex-basis: 100%; }
+  .incl__adds .label { margin-right: var(--spacing-8); color: var(--mut); }
+  .incl__adds button { display: inline-flex; align-items: center; gap: var(--spacing-8); flex: none; height: var(--spacing-34); padding-inline: var(--spacing-13); border: 1.5px solid var(--color-line); border-radius: 2px; font-size: var(--text-small); font-weight: 600; white-space: nowrap; cursor: pointer; transition: background-color 0.25s, color 0.25s, border-color 0.25s; }
+  .incl__adds button:hover { border-color: var(--color-carbon); }
+  .incl__adds button i { font-family: var(--font-mono); font-style: normal; transition: rotate 0.25s ease-out; }
+  .incl__adds button[aria-pressed="true"] { background: var(--color-carbon); color: var(--color-paper); border-color: var(--color-carbon); }
+  .incl__adds button[aria-pressed="true"] i { rotate: 45deg; }
   .incl__note b { font-weight: 600; color: var(--color-carbon); }
   .incl__note { color: var(--mut); }
 
@@ -1748,13 +1758,40 @@
     .incl__stops { grid-template-columns: 1fr; row-gap: var(--spacing-34); }
     .incl__sq { position: absolute; left: calc(-1 * var(--spacing-34)); top: var(--spacing-8); }
     .incl__num { margin-top: 0; }
+    /* add-on chips in one row that scrolls sideways */
+    .incl__adds { justify-content: flex-start; overflow-x: auto; scrollbar-width: none; margin-inline: calc(-1 * var(--grid-margin)); padding-inline: var(--grid-margin); }
     /* no timed tour here: every stop reads at full strength */
     .incl__name, .incl__stop:not(.is-on) .incl__list li { color: var(--color-carbon); }
     .incl__sq { background: var(--color-carbon); border-color: var(--color-carbon); }
   }
   @media (prefers-reduced-motion: reduce) {
-    .incl.is-deep .incl__list li.is-deep { animation: none; }
+    .incl__list li.is-add { animation: none; }
   }
+  /* ---------- Moving closing CTA (MV-04b): the CC-02b panel, chips and actions; the street in quiet lines ---------- */
+  .mcta__ground { stroke: color-mix(in srgb, var(--color-paper) 28%, transparent); stroke-width: 1.5; }
+  .mcta__bd { fill: none; stroke: color-mix(in srgb, var(--color-paper) 28%, transparent); stroke-width: 1.5; }
+  .mcta__floor { stroke: color-mix(in srgb, var(--color-paper) 9%, transparent); stroke-width: 1; }
+  .mcta__shaft { stroke: color-mix(in srgb, var(--color-paper) 20%, transparent); stroke-width: 1; stroke-dasharray: 3 4; }
+  .mcta__unit { fill: color-mix(in srgb, var(--color-paper) 7%, transparent); stroke: color-mix(in srgb, var(--color-paper) 55%, transparent); stroke-width: 1.2; transition: fill 0.6s, stroke 0.6s; }
+  .mcta__unit.is-empty { fill: none; stroke: color-mix(in srgb, var(--color-paper) 20%, transparent); }
+  .mcta__new { fill: none; stroke: color-mix(in srgb, var(--color-paper) 20%, transparent); stroke-width: 1.2; transition: fill 0.6s, stroke 0.6s; }
+  .mcta__new.is-on { fill: color-mix(in srgb, var(--color-paper) 7%, transparent); stroke: color-mix(in srgb, var(--color-paper) 55%, transparent); }
+  .mcta__door { fill: var(--color-carbon); stroke: color-mix(in srgb, var(--color-paper) 28%, transparent); stroke-width: 1.2; }
+  .mcta__tag, .mcta__cp { font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.14em; }
+  .mcta__tag { fill: color-mix(in srgb, var(--color-paper) 50%, transparent); }
+  .mcta__tag.is-key { fill: color-mix(in srgb, var(--color-paper) 75%, transparent); }
+  .mcta__cp { fill: color-mix(in srgb, var(--color-paper) 80%, transparent); opacity: 0; transition: opacity 0.6s; }
+  .mcta__cp.is-on { opacity: 1; }
+  .mcta__todo { fill: none; stroke: color-mix(in srgb, var(--color-paper) 26%, transparent); stroke-width: 1.5; stroke-dasharray: 1 6; stroke-linecap: round; }
+  .mcta__done { fill: none; stroke: color-mix(in srgb, var(--color-paper) 50%, transparent); stroke-width: 1.5; }
+  .mcta__stop { fill: var(--color-carbon); stroke: color-mix(in srgb, var(--color-paper) 45%, transparent); stroke-width: 1.5; transition: fill 0.3s; }
+  .mcta__stop.is-on { fill: color-mix(in srgb, var(--color-paper) 50%, transparent); }
+  .mcta__crew { fill: var(--color-yellow); transition: opacity 0.6s; }
+  .mcta__crew.is-gone { opacity: 0; }
+  @media (width < 768px) {
+    .mcta__tag, .mcta__cp { font-size: 13px; }
+  }
+
   /* ---------- Questions (CH-03b) ---------- */
   .qs { --mut: color-mix(in srgb, var(--color-carbon) 62%, transparent); position: relative; row-gap: var(--spacing-55); padding-block: var(--section-gap); }
   .qs::before { content: ""; position: absolute; inset: 0 var(--grid-margin) auto; border-top: 1px solid var(--color-line); }
@@ -1853,6 +1890,8 @@
   @media (width < 768px) {
     .ccta__title { font-size: var(--text-h2); }
     .ccta__rl { font-size: 13px; }
+    /* longer labels (Moving) wrap rather than run off the panel */
+    .ccta__cta { height: auto; min-height: var(--spacing-55); padding-block: var(--spacing-13); white-space: normal; line-height: 1.25; }
   }
   @media (width >= 1024px) {
     .ccta__panel { padding: var(--spacing-89) var(--spacing-55); }
