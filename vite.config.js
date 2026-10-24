@@ -2,6 +2,7 @@ import { resolve } from 'node:path';
 import { defineConfig } from 'vite';
 import tailwindcss from '@tailwindcss/vite';
 import handlebars from 'vite-plugin-handlebars';
+import { existsSync } from 'node:fs';
 import { images } from './scripts/vite-images.js';
 
 const root = import.meta.dirname;
@@ -13,6 +14,17 @@ const img = images({
 export default defineConfig(({ command }) => ({
   plugins: [
     img.plugin,
+    // Dev only: clean URLs like the server's .htaccess (/quote and /quote/ serve quote.html)
+    {
+      name: 'onaway-clean-urls',
+      configureServer(server) {
+        server.middlewares.use((req, res, next) => {
+          const m = req.url.match(/^\/([\w-]+)\/?(\?.*)?$/);
+          if (m && existsSync(resolve(root, `${m[1]}.html`))) req.url = `/${m[1]}.html${m[2] || ''}`;
+          next();
+        });
+      },
+    },
     tailwindcss(),
     handlebars({
       // nav.hbs / footer.hbs / section.hbs → {{> nav}}; sections → {{> [01-hero]}}
@@ -29,6 +41,7 @@ export default defineConfig(({ command }) => ({
       input: {
         main: resolve(root, 'index.html'),
         notFound: resolve(root, '404.html'), // served by .htaccess ErrorDocument
+        quote: resolve(root, 'quote.html'),
       },
     },
   },

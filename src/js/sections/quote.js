@@ -186,12 +186,9 @@ export function init(el) {
       if (next) open(next);
       return;
     }
+    // Continue on the quote page, which picks these answers up
     try { sessionStorage.setItem('onaway:quote', JSON.stringify(values)); } catch {}
-    el.querySelector('.qc__ready').hidden = true;
-    const done = el.querySelector('.qc__done');
-    done.hidden = false;
-    done.setAttribute('tabindex', '-1');
-    done.focus();
+    location.href = '/quote/';
   });
 
   update();

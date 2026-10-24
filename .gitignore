@@ -36,3 +36,4 @@ ft-02/
 # section mock folders dropped in for reference (HF-01, ts-02, …)
 /*-0[0-9]/
 .check.mjs
+qp/

@@ -1,0 +1,283 @@
+<!doctype html>
+<html lang="en-CA">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <script>document.documentElement.classList.add('js')</script>
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <meta name="robots" content="noindex"> <!-- pre-launch: remove at launch (CLAUDE.md "Before launch") -->
+  <title>Get a free quote · Onaway</title>
+  <meta name="description" content="Tell us what you need. Your quote for cleaning, moving or delivery across the GTA arrives in writing within 2 hours.">
+  <link rel="preload" href="/fonts/InstrumentSans-Variable.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="/fonts/OverpassMono-Variable.woff2" as="font" type="font/woff2" crossorigin>
+  <script type="module" src="/src/js/main.js"></script>
+</head>
+<body>
+  {{> nav}}
+
+  <main id="main">
+    {{!-- QP-01 The Ticket. src/js/sections/request.js. Sending is stubbed until the PHP handler is added. --}}
+    <section class="qp" data-section="request" aria-labelledby="qp-title">
+      <header class="qp__head grid-site">
+        <h1 id="qp-title" class="qp__title col-span-full lg:col-span-8 text-h1 lg:text-display uppercase">Get a free quote.</h1>
+        <p class="qp__lead col-span-full lg:col-span-7 text-lead">Tell us what you need. Your quote arrives in writing <b data-q="by">within 2 hours</b>.</p>
+        <p class="qp__after col-span-full lg:col-span-7" hidden>We’re closed for the night (open 8 AM – 8 PM daily). Send it now and it’s first in the morning.</p>
+      </header>
+
+      <div class="qp__body grid-site">
+        <form class="qp__form col-span-full lg:col-span-7" novalidate>
+          <p class="sr-only" aria-live="polite" data-live></p>
+
+          <div class="qp__steps">
+            <!-- 01 The job -->
+            <section class="qstep" data-step="job">
+              <button type="button" class="qstep__head" aria-expanded="false">
+                <span class="qstep__n label">01</span>
+                <h2 class="qstep__title">The job</h2>
+                <span class="qstep__sum"></span>
+                <span class="qstep__edit">Edit</span>
+                <span class="qstep__wait label"></span>
+              </button>
+              <div class="qstep__body">
+                <div class="qrow">
+                  <span class="qlabel" id="l-kind">For a</span>
+                  <div class="qseg" data-f="kind" role="group" aria-labelledby="l-kind">
+                    <button type="button" data-v="home" aria-pressed="true">Home</button>
+                    <button type="button" data-v="business" aria-pressed="false">Business</button>
+                  </div>
+                </div>
+                <div class="qrow" data-req="svc">
+                  <span class="qlabel" id="l-svc">Service</span>
+                  <div class="qtiles" data-f="svc" role="group" aria-labelledby="l-svc">
+                    <button type="button" class="qtile" data-v="clean" aria-pressed="false">
+                      <svg viewBox="0 0 96 96" aria-hidden="true"><g fill="currentColor"><path d="M30 14h34a8 8 0 0 1 8 8v4a4 4 0 0 1-4 4H54v8H40V30H30a4 4 0 0 1-4-4v-8a4 4 0 0 1 4-4z"/><path d="M72 16h8v8h-8z"/><path d="M40 30h10l-6 16h-6z"/><path d="M36 40h22v4c8 4 12 10 12 18v20a6 6 0 0 1-6 6H32a6 6 0 0 1-6-6V62c0-8 4-14 10-18z"/></g><rect x="34" y="60" width="28" height="14" rx="2" style="fill:var(--tile)"/></svg>
+                      <span>Cleaning</span>
+                    </button>
+                    <button type="button" class="qtile" data-v="move" aria-pressed="false">
+                      <svg viewBox="0 0 96 96" aria-hidden="true"><g transform="translate(8 2) rotate(-14 40 80)"><g fill="currentColor"><path d="M22 8h20a5 5 0 0 1 5 5v4H40v-1h-6v48h44a5 5 0 0 1 5 5v5a5 5 0 0 1-5 5H31a6 6 0 0 1-6-6V16h-3a4 4 0 0 1 0-8z"/><path d="M40 16h7v8a4 4 0 0 1-4 4h-3z"/><circle cx="36" cy="82" r="11"/></g><circle cx="36" cy="82" r="4" style="fill:var(--tile)"/></g></svg>
+                      <span>Moving</span>
+                    </button>
+                    <button type="button" class="qtile" data-v="deliver" aria-pressed="false">
+                      <svg viewBox="0 0 96 96" aria-hidden="true"><g fill="currentColor"><path d="M14 18h68a3 3 0 0 1 3 3v9H11v-9a3 3 0 0 1 3-3z"/><path d="M16 34h64v44a5 5 0 0 1-5 5H21a5 5 0 0 1-5-5z"/></g><rect x="43" y="18" width="10" height="34" style="fill:var(--tile)"/><rect x="28" y="62" width="18" height="5" rx="1" style="fill:var(--tile)"/></svg>
+                      <span>Delivery</span>
+                    </button>
+                  </div>
+                  <p class="qerr">Pick one to start.</p>
+                </div>
+                <div class="qrow" data-show="svc:clean,move" data-req="size">
+                  <span class="qlabel">Size of the place</span>
+                  <div class="qopts" data-f="size" data-show="kind:home">
+                    <button type="button" data-v="Studio" aria-pressed="false">Studio</button>
+                    <button type="button" data-v="1–2 bedroom" aria-pressed="false">1–2 bedroom</button>
+                    <button type="button" data-v="3+ bedroom" aria-pressed="false">3+ bedroom</button>
+                    <button type="button" data-v="House" aria-pressed="false">House</button>
+                  </div>
+                  <div class="qopts" data-f="size" data-show="kind:business">
+                    <button type="button" data-v="Under 2,000 sq ft" aria-pressed="false">Under 2,000 sq ft</button>
+                    <button type="button" data-v="2,000–10,000 sq ft" aria-pressed="false">2,000–10,000 sq ft</button>
+                    <button type="button" data-v="Larger" aria-pressed="false">Larger</button>
+                  </div>
+                  <p class="qerr">Pick one to continue.</p>
+                </div>
+                <div class="qrow" data-show="svc:clean" data-req="often">
+                  <span class="qlabel">How often</span>
+                  <div class="qopts" data-f="often">
+                    <button type="button" data-v="One time" aria-pressed="false">One time</button>
+                    <button type="button" data-v="Weekly" aria-pressed="false">Weekly</button>
+                    <button type="button" data-v="Every 2 weeks" aria-pressed="false">Every 2 weeks</button>
+                    <button type="button" data-v="Monthly" aria-pressed="false">Monthly</button>
+                  </div>
+                  <p class="qerr">Pick one to continue.</p>
+                </div>
+                <div class="qrow" data-show="svc:move" data-req="access">
+                  <span class="qlabel">Getting in and out</span>
+                  <div class="qopts" data-f="access">
+                    <button type="button" data-v="Elevator" aria-pressed="false">Elevator</button>
+                    <button type="button" data-v="Stairs only" aria-pressed="false">Stairs only</button>
+                    <button type="button" data-v="Ground floor" aria-pressed="false">Ground floor</button>
+                  </div>
+                  <p class="qerr">Pick one to continue.</p>
+                </div>
+                <div class="qrow" data-show="svc:deliver" data-req="what">
+                  <span class="qlabel">What are we carrying</span>
+                  <div class="qopts" data-f="what">
+                    <button type="button" data-v="One item" aria-pressed="false">One item</button>
+                    <button type="button" data-v="A few items" aria-pressed="false">A few items</button>
+                    <button type="button" data-v="A full load" aria-pressed="false">A full load</button>
+                  </div>
+                  <p class="qerr">Pick one to continue.</p>
+                </div>
+                <div class="qrow" data-show="svc:deliver" data-req="speed">
+                  <span class="qlabel">How soon</span>
+                  <div class="qopts" data-f="speed">
+                    <button type="button" data-v="Same day" aria-pressed="false">Same day</button>
+                    <button type="button" data-v="Scheduled" aria-pressed="false">Scheduled</button>
+                  </div>
+                  <p class="qerr">Pick one to continue.</p>
+                </div>
+              </div>
+            </section>
+
+            <!-- 02 Where and when -->
+            <section class="qstep" data-step="ww">
+              <button type="button" class="qstep__head" aria-expanded="false">
+                <span class="qstep__n label">02</span>
+                <h2 class="qstep__title">Where and when</h2>
+                <span class="qstep__sum"></span>
+                <span class="qstep__edit">Edit</span>
+                <span class="qstep__wait label">Opens after the job</span>
+              </button>
+              <div class="qstep__body">
+                <div class="qrow" data-show="svc:clean">
+                  <div class="qpick" data-f="area">
+                    <label class="qlabel" for="qp-area">Where</label>
+                    <input class="qinput" id="qp-area" placeholder="Postal code or town" autocomplete="postal-code" spellcheck="false">
+                    <div class="qpick__got"><i aria-hidden="true"></i><span class="qpick__name"></span><small class="qpick__tag"></small><button type="button" class="qpick__change">Change</button></div>
+                    <div class="qpick__res"></div>
+                    <p class="qpick__out">Outside our five areas for now. Send it anyway and we’ll tell you straight.</p>
+                    <p class="qerr">We need this to prepare your quote.</p>
+                  </div>
+                </div>
+                <div class="qrow" data-show="svc:move,deliver">
+                  <div class="qft">
+                    <div class="qpick" data-f="from">
+                      <label class="qlabel" for="qp-from">From</label>
+                      <input class="qinput" id="qp-from" placeholder="Postal code or town" autocomplete="postal-code" spellcheck="false">
+                      <div class="qpick__got"><i aria-hidden="true"></i><span class="qpick__name"></span><small class="qpick__tag"></small><button type="button" class="qpick__change">Change</button></div>
+                      <div class="qpick__res"></div>
+                      <p class="qpick__out">Outside our five areas for now. Send it anyway and we’ll tell you straight.</p>
+                      <p class="qerr">We need this to prepare your quote.</p>
+                    </div>
+                    <span class="qft__arrow" aria-hidden="true">→</span>
+                    <div class="qpick" data-f="to">
+                      <label class="qlabel" for="qp-to">To</label>
+                      <input class="qinput" id="qp-to" placeholder="Postal code or town" autocomplete="postal-code" spellcheck="false">
+                      <div class="qpick__got"><i aria-hidden="true"></i><span class="qpick__name"></span><small class="qpick__tag"></small><button type="button" class="qpick__change">Change</button></div>
+                      <div class="qpick__res"></div>
+                      <p class="qpick__out">Outside our five areas for now. Send it anyway and we’ll tell you straight.</p>
+                      <p class="qerr">We need this to prepare your quote.</p>
+                    </div>
+                  </div>
+                </div>
+                <div class="qrow qrow--when" data-req="timing">
+                  <span class="qlabel">When</span>
+                  <div class="qopts" data-f="timing">
+                    <button type="button" data-v="This week" aria-pressed="false">This week</button>
+                    <button type="button" data-v="Next week" aria-pressed="false">Next week</button>
+                    <button type="button" data-v="Pick a date" aria-pressed="false">Pick a date</button>
+                  </div>
+                  <div class="qcal" role="dialog" aria-label="Pick a date" hidden></div>
+                  <label class="qcheck"><input type="checkbox" data-flex> My dates are flexible</label>
+                  <p class="qerr">Pick one to continue.</p>
+                </div>
+              </div>
+            </section>
+
+            <!-- 03 How we reach you -->
+            <section class="qstep" data-step="you">
+              <button type="button" class="qstep__head" aria-expanded="false">
+                <span class="qstep__n label">03</span>
+                <h2 class="qstep__title">How we reach you</h2>
+                <span class="qstep__sum"></span>
+                <span class="qstep__edit">Edit</span>
+                <span class="qstep__wait label">Opens after where and when</span>
+              </button>
+              <div class="qstep__body">
+                <div class="qrow qfield" data-f="name">
+                  <label class="qlabel" for="qp-name">Full name</label>
+                  <div class="qfield__wrap"><input class="qinput" id="qp-name" type="text" autocomplete="name"><span class="qfield__tick label" aria-hidden="true">✓</span></div>
+                  <p class="qerr">We need this to prepare your quote.</p>
+                </div>
+                <div class="qrow qfield" data-f="company" data-show="kind:business">
+                  <label class="qlabel" for="qp-company">Company name <small>Optional</small></label>
+                  <div class="qfield__wrap"><input class="qinput" id="qp-company" type="text" autocomplete="organization"></div>
+                </div>
+                <div class="qtwo">
+                  <div class="qrow qfield" data-f="phone">
+                    <label class="qlabel" for="qp-phone">Phone</label>
+                    <div class="qfield__wrap"><input class="qinput" id="qp-phone" type="tel" autocomplete="tel"><span class="qfield__tick label" aria-hidden="true">✓</span></div>
+                    <span class="qhint">We’ll only call about your quote.</span>
+                    <p class="qerr">Please enter a 10-digit number.</p>
+                  </div>
+                  <div class="qrow qfield" data-f="email">
+                    <label class="qlabel" for="qp-email">Email</label>
+                    <div class="qfield__wrap"><input class="qinput" id="qp-email" type="email" autocomplete="email"><span class="qfield__tick label" aria-hidden="true">✓</span></div>
+                    <span class="qhint">Your quote is sent here.</span>
+                    <p class="qerr">That email doesn’t look right.</p>
+                  </div>
+                </div>
+                <div class="qrow">
+                  <button type="button" class="qaddnote">+ Add a note <small>Optional · the space, a tight staircase, a booked elevator</small></button>
+                  <div class="qnote" hidden>
+                    <label class="qlabel" for="qp-details">Anything we should know <small>Optional</small></label>
+                    <textarea class="qinput qinput--area" id="qp-details" data-details placeholder="The space, the size, a tight staircase, a booked elevator…"></textarea>
+                  </div>
+                </div>
+                <div class="qsend">
+                  <button type="submit" class="qsend__cta">Send my quote request <span aria-hidden="true">→</span></button>
+                  <p class="qsend__note">No obligation. Used only for your quote. <a href="/privacy/">Privacy</a><span class="qsend__need label"></span></p>
+                </div>
+                <p class="qcover label"><i aria-hidden="true"></i><span>We work across the City of Toronto, Peel, York, Durham and Halton.</span></p>
+              </div>
+            </section>
+          </div>
+
+          <div class="qdone" hidden tabindex="-1">
+            <div class="qdone__check" aria-hidden="true">✓</div>
+            <h2 class="qdone__title">Got it.<br>Your request is in.</h2>
+            <p class="qdone__text">Your quote goes to <b data-o="email"></b> <b data-q="by">within 2 hours</b>. Need it sooner? Call <a href="tel:+13477772380">+1 347 777 2380</a>.</p>
+            <p class="qdone__text"><a href="/">Back to home</a></p>
+            <p class="qdone__ref label">Reference <span data-o="ref"></span> · A copy is on its way by email</p>
+          </div>
+        </form>
+
+        <aside class="qp__side col-span-full lg:col-start-9 lg:col-span-4" aria-label="Your request so far">
+          <div class="qp__stick">
+            <div class="qticket">
+              <div class="qticket__body">
+                <div class="qticket__head">
+                  <svg class="qticket__wm" viewBox="0 0 298.46 56" aria-hidden="true"><use href="#qp-wm"/></svg>
+                  <span class="label">Quote request</span>
+                </div>
+                <dl>
+                  <div class="qticket__row" data-step="job"><dt class="label">Service</dt><dd data-t="svc">—</dd></div>
+                  <div class="qticket__row" data-step="job"><dt class="label">For a</dt><dd data-t="kind">—</dd></div>
+                  <div class="qticket__row" data-step="ww"><dt class="label">Where</dt><dd data-t="where">—</dd><dd class="qticket__tag label" data-t="wtag"></dd></div>
+                  <div class="qticket__row" data-step="job"><dt class="label" data-t="placeLabel">The place</dt><dd data-t="place">—</dd></div>
+                  <div class="qticket__row" data-step="ww"><dt class="label">When</dt><dd data-t="when">—</dd></div>
+                  <div class="qticket__row" data-step="you"><dt class="label">Name</dt><dd data-t="who">—</dd></div>
+                  <div class="qticket__row" data-step="you"><dt class="label">Reach</dt><dd data-t="reach">—</dd></div>
+                </dl>
+                <div class="qticket__prog"><i></i></div>
+                <div class="qticket__progl label"><span data-t="pct">0 of 5</span><span>In writing <b data-q="short"></b></span></div>
+              </div>
+              <div class="qticket__stub">
+                <svg viewBox="0 0 100 100" aria-hidden="true"><circle cx="50" cy="50" r="50" fill="currentColor"/><path transform="translate(28.6 30) scale(.5)" style="fill:var(--qt-face)" d="M0,80C.14,77.73-.02,11.64.03,9.23l11.67-1.12s.01,40.19-.1,55.51c20.63-10.95,25.77-37.76,25.47-59.5,2.65-.22,9.1-.87,11.81-1.15-.51,20.26,3.46,45.8,24.97,53.64.05-15.31.05-40.2.07-55.53l11.65-1.08v70.04c-17.66,4.6-35.16-10.2-42.26-25.54-7.02,17.45-23.22,35.59-43.32,35.5Z"/></svg>
+                <span class="qticket__v label qticket__v--open">In writing <b data-q="short"></b></span>
+                <span class="qticket__v label qticket__v--sent">Keep · Ref <b data-o="ref"></b></span>
+              </div>
+              <span class="qticket__stamp label">Received · <b data-q="now"></b></span>
+            </div>
+
+            <div class="qside__block">
+              <h3 class="qside__h">Rather talk to someone?</h3>
+              <a class="qside__call" href="tel:+13477772380">+1 347 777 2380 <small class="label">Call · fastest for same-day</small></a>
+              <a class="qside__mail" href="mailto:hello@onaway.ca">hello@onaway.ca</a>
+            </div>
+            <div class="qside__block qside__hours">
+              <p class="label">Hours</p>
+              <p>Every day, 8 AM – 8 PM.</p>
+              <p>After-hours requests are answered first thing in the morning.</p>
+              <p class="qside__now label"><i aria-hidden="true"></i><span data-q="open"></span></p>
+            </div>
+          </div>
+        </aside>
+      </div>
+
+      <svg width="0" height="0" style="position:absolute" aria-hidden="true"><symbol id="qp-wm" viewBox="0 0 298.46 56"><g fill="currentColor"><path d="M196.69,44.37l.06-43.47,9.63-.07.04,54.21-8.7-.12c-10.36-1.37-18.27-11.39-21.73-21.23-4.62,12.64-15.16,23.72-29.92,21.15l.05-53.97h9.77s.02,43.53.02,43.53c13.61-7.97,15.46-28.6,15.44-43.55l9.62.05c-.07,14.47,1.24,36.62,15.7,43.49Z"/><path d="M96.96,55l-9.88.07c.25-16.28-7.33-32.52-20.96-42.1l-.04,42.09h-10.04s0-53.72,0-53.72c2.7-.06,5.89-.55,8.13.26,9.66,3.48,16.46,10.43,22.41,18.55l.17-18.92h10.23s-.01,53.78-.01,53.78Z"/><path d="M242.16,40.09l-21.98-.02v15s-10.2-.03-10.2-.03l.33-36.59C210.41,7.49,219.9.25,230.71,0c11.18-.25,20.63,7.17,21.4,18.47l.34,36.44-10.29.2v-15.03ZM242.19,31.71l-.11-13.15c-1.14-6.11-6.28-10.71-12.84-9.46-4.82.92-8.88,5.34-8.94,10.25l-.16,12.4,22.05-.03Z"/><path d="M132.66,40.03l-21.77-.02-.06,15.06-10.17-.03.32-36.6C101.06,7.52,110.94.16,121.73.11c11.38-.06,20.85,8.06,20.9,19.34l.14,35.62-10.16.04.04-15.06ZM132.62,31.86l-.07-11.97c-.02-4.32-2.92-8.42-7-9.96-3.49-1.31-7.02-.7-10.05,1.45-2.26,1.6-4.52,4.75-4.55,8.11l-.09,12.38h21.76Z"/><path d="M49.53,42.32c-4.82,8.84-13.63,13.72-23.26,13.68-9.78-.04-18.52-5.37-23.02-14.21C-.84,33.77-1.07,24.22,2.56,16.01,6.8,6.41,15.9.51,26.29.41s19.82,5.57,24.12,15.1c3.81,8.43,3.67,18.48-.88,26.81ZM39.21,40.32c4.26-7.28,4.2-16.31.62-23.62-2.65-5.4-8.18-8.46-13.9-8.2-5.79.26-10.6,3.56-13.05,8.97-3.31,7.32-3.22,16.16.95,23.16,2.73,4.59,7.82,7.19,12.97,7.15,4.88-.04,9.67-2.74,12.42-7.45Z"/><polygon points="298.46 .89 278.97 31.68 278.94 55.07 267.75 55.14 267.69 31.73 248.23 .9 260.49 .78 273.39 21.63 286.27 .77 298.46 .89"/></g></symbol></svg>
+    </section>
+  </main>
+
+  {{> footer}}
+</body>
+</html>
