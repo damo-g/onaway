@@ -275,27 +275,30 @@
   .nav-fr:hover { color: var(--color-rust); }
   .nav-plus { width: var(--spacing-13); height: var(--spacing-13); transition: rotate 0.3s var(--ease-out); }
 
-  /* Services drop: Carbon, rows like the footer columns, Signal hover */
+  /* Services drop: Paper, rows like the footer columns, Signal hover. Opens upward while the bar sits on the fold (hero state A). */
   .nav-drop { position: relative; }
   .nav-drop__btn { display: inline-flex; align-items: center; gap: var(--spacing-8); text-transform: inherit; letter-spacing: inherit; cursor: pointer; transition: color 0.2s; }
   .nav-drop__btn:hover { color: var(--color-rust); }
   .nav-drop__btn[aria-expanded="true"] .nav-plus { rotate: 45deg; }
   .nav-drop__panel {
-    --ft-fg: var(--color-paper);
-    --ft-line: color-mix(in srgb, var(--color-paper) 22%, transparent);
+    --ft-fg: var(--color-carbon);
+    --ft-line: var(--color-line);
     position: absolute;
     top: calc(100% + var(--spacing-21));
     left: calc(-1 * var(--spacing-21));
     width: 360px;
     padding: var(--spacing-21) var(--spacing-21) var(--spacing-13);
-    background: var(--color-carbon);
+    background: var(--color-paper);
+    box-shadow: 0 0 0 1px var(--color-line), 0 13px 34px -21px color-mix(in srgb, var(--color-carbon) 45%, transparent);
     color: var(--ft-fg);
     text-transform: none;
     letter-spacing: normal;
   }
   /* bridge the gap so the pointer can travel from the button into the panel */
   .nav-drop__panel::before { content: ""; position: absolute; inset: calc(-1 * var(--spacing-21)) 0 100%; }
-  .nav-drop__label { display: block; padding-bottom: var(--spacing-13); color: color-mix(in srgb, var(--color-paper) 62%, transparent); }
+  .nav-drop.is-up .nav-drop__panel { top: auto; bottom: calc(100% + var(--spacing-21)); box-shadow: 0 0 0 1px var(--color-line), 0 -13px 34px -21px color-mix(in srgb, var(--color-carbon) 45%, transparent); }
+  .nav-drop.is-up .nav-drop__panel::before { inset: 100% 0 calc(-1 * var(--spacing-21)); }
+  .nav-drop__label { display: block; padding-bottom: var(--spacing-13); color: color-mix(in srgb, var(--color-carbon) 60%, transparent); }
   .nav-fr {
     display: none;
     margin-right: var(--spacing-34);

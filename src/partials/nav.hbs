@@ -7,10 +7,11 @@
     </a>
     <nav aria-label="Primary" class="nav-links">
       {{!-- Services: a Carbon drop styled like the footer columns, with the Signal hover --}}
-      <div class="nav-drop" x-data="{ drop: false, t: null }"
-        @mouseenter="clearTimeout(t); drop = true" @mouseleave="t = setTimeout(() => drop = false, 160)"
+      <div class="nav-drop" x-data="{ drop: false, up: false, t: null, show() { this.up = $el.getBoundingClientRect().top > innerHeight / 2; this.drop = true; } }"
+        :class="{ 'is-up': up }"
+        @mouseenter="clearTimeout(t); show()" @mouseleave="t = setTimeout(() => drop = false, 160)"
         @keydown.escape.stop="drop = false; $refs.dropBtn.focus()" @focusout="if (!$el.contains($event.relatedTarget)) drop = false">
-        <button type="button" class="nav-drop__btn" x-ref="dropBtn" aria-controls="nav-services" :aria-expanded="drop.toString()" aria-expanded="false" @click="drop = !drop">
+        <button type="button" class="nav-drop__btn" x-ref="dropBtn" aria-controls="nav-services" :aria-expanded="drop.toString()" aria-expanded="false" @click="drop ? (drop = false) : show()">
           Services <svg class="nav-plus" viewBox="0 0 14 14" aria-hidden="true"><path d="M7 0v14M0 7h14" stroke="currentColor" stroke-width="1.5"/></svg>
         </button>
         <div id="nav-services" class="nav-drop__panel" x-show="drop" x-cloak x-transition.opacity.duration.200ms @click.outside="drop = false">
