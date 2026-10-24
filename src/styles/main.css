@@ -1634,6 +1634,66 @@
   @media (width >= 768px) {
     .svc-doors { grid-template-columns: 1fr 1fr; }
   }
+  /* ---------- How often (HO-08, locked: Stacked · Dot row · first visit yellow · pick a day) ---------- */
+  .often { --day: 34px; --mut: color-mix(in srgb, var(--color-carbon) 62%, transparent); position: relative; row-gap: var(--spacing-55); padding-block: var(--section-gap); }
+  .often::before { content: ""; position: absolute; inset: 0 var(--grid-margin) auto; border-top: 1px solid var(--color-line); }
+  .often__title { font-size: var(--text-h2); line-height: 1; font-weight: 600; letter-spacing: -0.01em; }
+  .often__title small { display: block; max-width: 30ch; margin-top: var(--spacing-13); font-size: var(--text-body); line-height: 1.5; font-weight: 400; letter-spacing: 0; color: var(--mut); }
+  .often__pick { align-self: end; }
+  .often__tabs { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--spacing-13) var(--grid-gutter); }
+  .often__tab { position: relative; padding-top: var(--spacing-13); border-top: 2px solid color-mix(in srgb, var(--color-carbon) 15%, transparent); font-size: var(--text-body); font-weight: 600; text-align: left; color: var(--mut); cursor: pointer; transition: color 0.3s; }
+  .often__tab::before { content: ""; position: absolute; inset: -2px 0 auto; height: 2px; background: var(--color-carbon); transform: scaleX(0); transform-origin: 0 0; }
+  .often__tab.is-done::before { transform: scaleX(1); transition: transform 0.3s; }
+  .often__tab.is-on { color: var(--color-carbon); }
+  .often__tab.is-on::before { animation: often-fill 3.6s linear both; }
+  .often.is-held .often__tab.is-on::before { animation-play-state: paused; }
+  .often.is-picked .often__tab.is-on::before { animation: none; transform: scaleX(1); }
+  .often__note { margin-top: var(--spacing-13); color: var(--mut); }
+  .often__vis { display: flex; flex-direction: column; align-items: flex-start; gap: var(--spacing-21); min-width: 0; }
+  .often__cap { align-self: stretch; padding-bottom: var(--spacing-13); border-bottom: 1px solid var(--color-line); font-size: var(--text-h3); line-height: 1.15; font-weight: 600; }
+  .often__cap small { display: block; min-height: 1.5em; margin-top: var(--spacing-8); font-size: var(--text-body); font-weight: 400; color: var(--mut); }
+  .often__cap.is-new { animation: tk-fade 0.45s ease both; }
+  .often__box { position: relative; }
+  .often__weeks { position: relative; height: var(--spacing-13); margin-bottom: var(--spacing-8); color: var(--mut); }
+  .often__weeks span { position: absolute; top: 0; white-space: nowrap; }
+  .often__row { display: flex; gap: 3px; }
+  .often__cell:nth-child(7n + 1):not(:first-child) { margin-left: calc(var(--day) * 0.5); }
+  .often__cell {
+    display: flex; align-items: flex-start; justify-content: flex-start;
+    width: var(--day); height: var(--day); flex: none; padding: calc(var(--day) * 0.1);
+    border-radius: 2px; background: color-mix(in srgb, var(--color-carbon) 6%, transparent);
+    font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.04em; font-variant-numeric: tabular-nums; color: var(--mut);
+    cursor: pointer; transition: box-shadow 0.2s;
+  }
+  .often__cell:hover { box-shadow: inset 0 0 0 1.5px var(--color-carbon); }
+  .often__cell em { font-style: normal; display: none; }
+  .often__cell.is-month span { font-weight: 600; color: var(--color-carbon); }
+  .often.is-tiny .often__cell span { display: none; }
+  /* Phones: a 7-across calendar of the same five weeks */
+  .often.is-cal .often__row { display: grid; grid-template-columns: repeat(7, var(--day)); }
+  .often.is-cal .often__cell:nth-child(7n + 1):not(:first-child) { margin-left: 0; }
+  .often.is-cal .often__weeks { display: none; }
+  .often__tok { position: absolute; left: 0; top: 0; width: var(--day); height: var(--day); border-radius: 2px; background: var(--color-carbon); opacity: 0; pointer-events: none; mix-blend-mode: multiply; transition: transform 0.8s cubic-bezier(0.65, 0, 0.2, 1), opacity 0.4s; }
+  .often__tok.is-in { opacity: 1; }
+  .often__tok.is-first { background: var(--color-yellow); }
+  .often__legend { display: flex; gap: var(--spacing-21); color: var(--mut); }
+  .often__legend i { display: inline-block; width: 10px; height: 10px; margin-right: var(--spacing-8); border-radius: 1px; vertical-align: -1px; background: var(--color-carbon); }
+  .often__legend i.is-first { background: var(--color-yellow); }
+  .often__hint { color: var(--mut); }
+  .often.is-picked .often__hint { display: none; }
+  .often__act { display: flex; align-items: center; gap: var(--spacing-21); animation: qp-up 0.4s ease both; }
+  .often__act[hidden] { display: none; }
+  .often__cta { display: inline-flex; align-items: center; gap: var(--spacing-21); height: var(--spacing-55); padding-inline: var(--spacing-21); background: var(--color-yellow); font-size: var(--text-lead); font-weight: 600; }
+  .often__cta span { transition: transform 0.3s; }
+  .often__cta:hover span { transform: translateX(5px); }
+  .often__reset { font-size: var(--text-small); text-decoration: underline; text-underline-offset: 4px; color: var(--mut); cursor: pointer; }
+  @media (width >= 768px) {
+    .often__tabs { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .often__tok { transition: none; }
+    .often__tab.is-on::before { animation: none; transform: scaleX(1); }
+  }
 }
 
 @keyframes hero-reveal { to { visibility: visible; } }
@@ -1654,4 +1714,5 @@
 @keyframes qp-up { from { opacity: 0; translate: 0 13px; } to { opacity: 1; translate: 0 0; } }
 @keyframes qp-arm { from { width: 0; } to { width: 100%; } }
 @keyframes svc-swing { 0% { rotate: -1.2deg; } 60% { rotate: 0.4deg; } 100% { rotate: 0deg; } }
+@keyframes often-fill { from { transform: scaleX(0); } to { transform: scaleX(1); } }
 @keyframes tk-head { from { left: 0; opacity: 1; } 95% { opacity: 1; } to { left: 100%; opacity: 0; } }

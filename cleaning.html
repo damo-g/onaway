@@ -52,6 +52,34 @@
         </div>
       </div>
     </section>
+
+    {{!-- HO-08 How often (locked: Stacked · Dot row L · dates on · first visit yellow · pick a day on · yellow button). src/js/sections/often.js --}}
+    <section class="often grid-site" data-section="often" aria-labelledby="often-title">
+      <h2 id="often-title" class="often__title col-span-full lg:col-span-4">How often.<small>Once, or on a rhythm that suits you.</small></h2>
+      <div class="often__pick col-span-full lg:col-start-6 lg:col-span-7">
+        <div class="often__tabs" role="tablist" aria-label="Rhythms">
+          <button type="button" role="tab" class="often__tab" data-i="0">One time</button>
+          <button type="button" role="tab" class="often__tab" data-i="1">Weekly</button>
+          <button type="button" role="tab" class="often__tab" data-i="2">Every 2 weeks</button>
+          <button type="button" role="tab" class="often__tab" data-i="3">Monthly</button>
+        </div>
+        <p class="often__note label">Recurring visits keep the same day and window.</p>
+      </div>
+      <div class="often__vis col-span-full">
+        <p class="often__cap" aria-live="polite"></p>
+        <div class="often__box">
+          <div class="often__weeks label" aria-hidden="true"></div>
+          <div class="often__row"></div>
+          <span class="often__tok" aria-hidden="true"></span><span class="often__tok" aria-hidden="true"></span><span class="often__tok" aria-hidden="true"></span><span class="often__tok" aria-hidden="true"></span><span class="often__tok" aria-hidden="true"></span>
+        </div>
+        <div class="often__legend label" aria-hidden="true"><span><i class="is-first"></i>First visit</span><span><i></i>Repeat</span></div>
+        <p class="often__hint label">Tap a day to start from it</p>
+        <div class="often__act" hidden>
+          <a class="often__cta" href="/quote/?service=cleaning">Get a free cleaning quote <span aria-hidden="true">→</span></a>
+          <button type="button" class="often__reset">Start over</button>
+        </div>
+      </div>
+    </section>
   </main>
 
   {{> footer}}

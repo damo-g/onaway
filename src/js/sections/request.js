@@ -453,6 +453,15 @@ export function init(el) {
     if (kind) tap('kind', kind);
     const svc = SVC[params.get('service')] || SVC[quote.service];
     if (svc) tap('svc', svc);
+    const often = params.get('often');
+    if (often && svc === 'clean') tap('often', often);
+    const date = params.get('date');
+    if (date && /^\d{4}-\d{2}-\d{2}$/.test(date) && new Date(`${date}T12:00`) >= new Date(new Date().toDateString())) {
+      S.timing = 'Pick a date';
+      S.date = date;
+      el.querySelectorAll('[data-f="timing"] button').forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.v === 'Pick a date')));
+      el.querySelector('[data-f="timing"] [data-v="Pick a date"]').textContent = fmtDate(date, { weekday: 'short', month: 'short', day: 'numeric' });
+    }
     const placeName = quote.area || map?.place;
     const region = regionOf(placeName) || (map?.place === placeName ? map.region : null);
     if (placeName && region) pickers[two() ? 'from' : 'area'].set({ place: placeName, region, code: map?.place === placeName ? map.fsa : '' });
