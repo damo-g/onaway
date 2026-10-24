@@ -1767,6 +1767,31 @@
   @media (prefers-reduced-motion: reduce) {
     .incl__list li.is-add { animation: none; }
   }
+  /* ---------- Moving closing CTA (MV-04b): the CC-02b panel, chips and actions; the street in quiet lines ---------- */
+  .mcta__ground { stroke: color-mix(in srgb, var(--color-paper) 28%, transparent); stroke-width: 1.5; }
+  .mcta__bd { fill: none; stroke: color-mix(in srgb, var(--color-paper) 28%, transparent); stroke-width: 1.5; }
+  .mcta__floor { stroke: color-mix(in srgb, var(--color-paper) 9%, transparent); stroke-width: 1; }
+  .mcta__shaft { stroke: color-mix(in srgb, var(--color-paper) 20%, transparent); stroke-width: 1; stroke-dasharray: 3 4; }
+  .mcta__unit { fill: color-mix(in srgb, var(--color-paper) 7%, transparent); stroke: color-mix(in srgb, var(--color-paper) 55%, transparent); stroke-width: 1.2; transition: fill 0.6s, stroke 0.6s; }
+  .mcta__unit.is-empty { fill: none; stroke: color-mix(in srgb, var(--color-paper) 20%, transparent); }
+  .mcta__new { fill: none; stroke: color-mix(in srgb, var(--color-paper) 20%, transparent); stroke-width: 1.2; transition: fill 0.6s, stroke 0.6s; }
+  .mcta__new.is-on { fill: color-mix(in srgb, var(--color-paper) 7%, transparent); stroke: color-mix(in srgb, var(--color-paper) 55%, transparent); }
+  .mcta__door { fill: var(--color-carbon); stroke: color-mix(in srgb, var(--color-paper) 28%, transparent); stroke-width: 1.2; }
+  .mcta__tag, .mcta__cp { font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.14em; }
+  .mcta__tag { fill: color-mix(in srgb, var(--color-paper) 50%, transparent); }
+  .mcta__tag.is-key { fill: color-mix(in srgb, var(--color-paper) 75%, transparent); }
+  .mcta__cp { fill: color-mix(in srgb, var(--color-paper) 80%, transparent); opacity: 0; transition: opacity 0.6s; }
+  .mcta__cp.is-on { opacity: 1; }
+  .mcta__todo { fill: none; stroke: color-mix(in srgb, var(--color-paper) 26%, transparent); stroke-width: 1.5; stroke-dasharray: 1 6; stroke-linecap: round; }
+  .mcta__done { fill: none; stroke: color-mix(in srgb, var(--color-paper) 50%, transparent); stroke-width: 1.5; }
+  .mcta__stop { fill: var(--color-carbon); stroke: color-mix(in srgb, var(--color-paper) 45%, transparent); stroke-width: 1.5; transition: fill 0.3s; }
+  .mcta__stop.is-on { fill: color-mix(in srgb, var(--color-paper) 50%, transparent); }
+  .mcta__crew { fill: var(--color-yellow); transition: opacity 0.6s; }
+  .mcta__crew.is-gone { opacity: 0; }
+  @media (width < 768px) {
+    .mcta__tag, .mcta__cp { font-size: 13px; }
+  }
+
   /* ---------- Questions (CH-03b) ---------- */
   .qs { --mut: color-mix(in srgb, var(--color-carbon) 62%, transparent); position: relative; row-gap: var(--spacing-55); padding-block: var(--section-gap); }
   .qs::before { content: ""; position: absolute; inset: 0 var(--grid-margin) auto; border-top: 1px solid var(--color-line); }
@@ -1865,6 +1890,8 @@
   @media (width < 768px) {
     .ccta__title { font-size: var(--text-h2); }
     .ccta__rl { font-size: 13px; }
+    /* longer labels (Moving) wrap rather than run off the panel */
+    .ccta__cta { height: auto; min-height: var(--spacing-55); padding-block: var(--spacing-13); white-space: normal; line-height: 1.25; }
   }
   @media (width >= 1024px) {
     .ccta__panel { padding: var(--spacing-89) var(--spacing-55); }
