@@ -97,6 +97,31 @@
       </div>
       <div class="incl__route col-span-full"></div>
     </section>
+
+    {{!-- CH-03b Questions (Cleaning component): the questions and answers are the dl below (drafts for the client to confirm); edit them there.
+         src/js/sections/questions.js --}}
+    <section class="qs grid-site" data-section="questions" data-greet="Hi. Here’s what people ask us most about a delivery. Pick one." aria-labelledby="qs-title">
+      <h2 id="qs-title" class="qs__title col-span-full lg:col-span-4">Questions.<small>What people ask most. More on the <a href="/faq/#delivery">Help page</a>.</small></h2>
+      <div class="qs__panel col-span-full lg:col-start-6 lg:col-span-7">
+        <dl class="qs__faq">
+          <dt>How big can an item be?</dt><dd>If two people can carry it through a standard door, we can deliver it. Anything bigger or heavier, tell us in your quote and we’ll say straight.</dd>
+          <dt>Can you pick up from a store or a Marketplace seller?</dt><dd>Yes. Give us the address and a contact, and we’ll check the item when we collect it.</dd>
+          <dt>What if no one’s home?</dt><dd>Tell us where it’s safe to leave, or who can sign. If there’s nowhere safe, we call you and rebook the window.</dd>
+          <dt>Do you take things upstairs?</dt><dd>Yes, into the room you choose. Tell us about stairs or an elevator in your quote.</dd>
+          <dt>Is it insured on the way?</dt><dd>Yes, from pickup until it’s placed. Your written quote says how.</dd>
+        </dl>
+        <div class="qs__window" hidden>
+          <div class="qs__thread" aria-live="polite" data-lenis-prevent><div class="qs__inner"></div></div>
+          <div class="qs__chips"></div>
+          <form class="qs__box">
+            <input type="text" aria-label="Your question" placeholder="Pick a question above" readonly autocomplete="off">
+            <button type="submit" class="qs__ask">Ask</button>
+          </form>
+          <button type="button" class="qs__new label">↓ New reply</button>
+        </div>
+      </div>
+      <p class="qs__more col-span-full lg:col-start-6 lg:col-span-7"><b>More than a few pieces?</b> A move might suit you better. <a href="/moving/">See moving <span aria-hidden="true">→</span></a></p>
+    </section>
   </main>
 
   {{> footer}}
