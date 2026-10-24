@@ -120,6 +120,32 @@
       </div>
       <p class="qs__more col-span-full lg:col-start-6 lg:col-span-7"><b>Moving out?</b> Pair it with a move-out clean. <a href="/moving/">See moving <span aria-hidden="true">→</span></a></p>
     </section>
+
+    {{!-- CC-02b closing CTA (locked: rooms come clean · dust lifts · 2s a room · coarse dust · crew leaves · labels on).
+         Pick your space; its plan draws, the yellow crew works the rooms in What's included order and each comes clean. src/js/sections/cleancta.js --}}
+    <section class="ccta" data-section="cleancta" data-nav-theme="dark" aria-labelledby="ccta-title">
+      <div class="ccta__panel">
+        <div class="ccta__text">
+          <h2 id="ccta-title" class="ccta__title">Tell us about<br> your space.</h2>
+          <div>
+            <span class="ccta__label label" id="ccta-space">Your space</span>
+            <div class="ccta__chips" role="group" aria-labelledby="ccta-space">
+              <button type="button" data-k="studio" aria-pressed="false">Studio</button>
+              <button type="button" data-k="12" aria-pressed="true">1–2 bedroom</button>
+              <button type="button" data-k="3" aria-pressed="false">3+ bedroom</button>
+              <button type="button" data-k="house" aria-pressed="false">House</button>
+              <button type="button" data-k="work" aria-pressed="false">Workplace</button>
+            </div>
+          </div>
+          <p class="ccta__lead">A written quote <b data-qby>within 2 hours</b>, with every cost on it. No obligation.</p>
+          <div class="ccta__acts">
+            <a class="ccta__cta" href="/quote/?service=cleaning&amp;for=home&amp;size=1-2">Get a quote for your 1–2 bedroom <span aria-hidden="true">→</span></a>
+            <a class="ccta__call" href="tel:+16478771411">Or call +1 647 877 1411</a>
+          </div>
+        </div>
+        <div class="ccta__plan" aria-hidden="true"><svg viewBox="-20 -20 680 500"></svg></div>
+      </div>
+    </section>
   </main>
 
   {{> footer}}

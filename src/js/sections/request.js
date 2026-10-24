@@ -453,6 +453,8 @@ export function init(el) {
     if (kind) tap('kind', kind);
     const svc = SVC[params.get('service')] || SVC[quote.service];
     if (svc) tap('svc', svc);
+    const size = { studio: 'Studio', '1-2': '1–2 bedroom', '3plus': '3+ bedroom', house: 'House' }[params.get('size')];
+    if (size && (svc === 'clean' || svc === 'move')) tap('size', size);
     const often = params.get('often');
     if (often && svc === 'clean') tap('often', often);
     const date = params.get('date');
