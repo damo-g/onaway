@@ -52,6 +52,26 @@
         </div>
       </div>
     </section>
+
+    {{!-- MV-02 From quote to keys: the Cleaning What's included route (WI-01b) with moving stops and three
+         add-on chips. Lists live in src/js/data/moving-plan.js. src/js/sections/included.js --}}
+    <section class="incl grid-site" data-section="included" data-plan="moving" aria-labelledby="incl-title">
+      <h2 id="incl-title" class="incl__title col-span-full lg:col-span-6">From quote to keys.<small>What every move comes with, in the order it happens.</small></h2>
+      <div class="incl__ctl col-span-full lg:col-start-8 lg:col-span-5">
+        <div class="incl__seg" role="group" aria-label="Move">
+          <button type="button" data-space="home" aria-pressed="true">Homes</button>
+          <button type="button" data-space="business" aria-pressed="false">Businesses</button>
+        </div>
+        <div class="incl__adds" role="group" aria-labelledby="incl-adds">
+          <span id="incl-adds" class="label">Add-ons</span>
+          <button type="button" data-add="packing" aria-pressed="false"><i aria-hidden="true">+</i>Packing</button>
+          <button type="button" data-add="boxes" aria-pressed="false"><i aria-hidden="true">+</i>Boxes and supplies</button>
+          <button type="button" data-add="clean" aria-pressed="false"><i aria-hidden="true">+</i>Move-out clean</button>
+        </div>
+      </div>
+      <div class="incl__route col-span-full"></div>
+      <p class="incl__note label col-span-full" data-note="off">Add-ons drop their <b>+</b> items into the step they belong to.</p>
+    </section>
   </main>
 
   {{> footer}}

@@ -1735,9 +1735,18 @@
   .incl__list { margin-top: var(--spacing-21); }
   .incl__list li { padding-block: var(--spacing-8); border-top: 1px solid color-mix(in srgb, var(--color-carbon) 10%, transparent); font-size: var(--text-small); line-height: 1.4; transition: color 0.35s; }
   .incl__stop:not(.is-on) .incl__list li { color: color-mix(in srgb, var(--color-carbon) 85%, transparent); }
-  .incl__list li.is-deep { display: none; font-weight: 500; }
-  .incl__list li.is-deep i { margin-right: var(--spacing-8); font-family: var(--font-mono); font-style: normal; font-weight: 600; }
-  .incl.is-deep .incl__list li.is-deep { display: block; animation: incl-in 0.45s ease both; }
+  .incl__list li.is-add { font-weight: 500; animation: incl-in 0.45s ease both; }
+  .incl__list li.is-add[hidden] { display: none; }
+  .incl__list li.is-add i { margin-right: var(--spacing-8); font-family: var(--font-mono); font-style: normal; font-weight: 600; }
+  .incl__list a { text-decoration: underline; text-underline-offset: 3px; text-decoration-thickness: 1px; }
+  /* Moving: a second control row of add-on chips, right-aligned under the segmented control */
+  .incl__adds { display: flex; align-items: center; justify-content: flex-end; gap: var(--spacing-8); flex-basis: 100%; }
+  .incl__adds .label { margin-right: var(--spacing-8); color: var(--mut); }
+  .incl__adds button { display: inline-flex; align-items: center; gap: var(--spacing-8); flex: none; height: var(--spacing-34); padding-inline: var(--spacing-13); border: 1.5px solid var(--color-line); border-radius: 2px; font-size: var(--text-small); font-weight: 600; white-space: nowrap; cursor: pointer; transition: background-color 0.25s, color 0.25s, border-color 0.25s; }
+  .incl__adds button:hover { border-color: var(--color-carbon); }
+  .incl__adds button i { font-family: var(--font-mono); font-style: normal; transition: rotate 0.25s ease-out; }
+  .incl__adds button[aria-pressed="true"] { background: var(--color-carbon); color: var(--color-paper); border-color: var(--color-carbon); }
+  .incl__adds button[aria-pressed="true"] i { rotate: 45deg; }
   .incl__note b { font-weight: 600; color: var(--color-carbon); }
   .incl__note { color: var(--mut); }
 
@@ -1749,12 +1758,14 @@
     .incl__stops { grid-template-columns: 1fr; row-gap: var(--spacing-34); }
     .incl__sq { position: absolute; left: calc(-1 * var(--spacing-34)); top: var(--spacing-8); }
     .incl__num { margin-top: 0; }
+    /* add-on chips in one row that scrolls sideways */
+    .incl__adds { justify-content: flex-start; overflow-x: auto; scrollbar-width: none; margin-inline: calc(-1 * var(--grid-margin)); padding-inline: var(--grid-margin); }
     /* no timed tour here: every stop reads at full strength */
     .incl__name, .incl__stop:not(.is-on) .incl__list li { color: var(--color-carbon); }
     .incl__sq { background: var(--color-carbon); border-color: var(--color-carbon); }
   }
   @media (prefers-reduced-motion: reduce) {
-    .incl.is-deep .incl__list li.is-deep { animation: none; }
+    .incl__list li.is-add { animation: none; }
   }
   /* ---------- Questions (CH-03b) ---------- */
   .qs { --mut: color-mix(in srgb, var(--color-carbon) 62%, transparent); position: relative; row-gap: var(--spacing-55); padding-block: var(--section-gap); }
