@@ -93,7 +93,7 @@ export function init(el) {
     }),
   );
   // Add-ons are independent; each shows only its own + items. The note shows while any is on
-  // (data-note="on", Cleaning) or until one is (data-note="off", Moving).
+  // (data-note="on") or until one is (data-note="off"); Moving has none.
   el.querySelectorAll('[data-add]').forEach((b) =>
     b.addEventListener('click', () => {
       const k = b.dataset.add;
@@ -102,7 +102,7 @@ export function init(el) {
       else S.on.delete(k);
       b.setAttribute(b.getAttribute('role') === 'switch' ? 'aria-checked' : 'aria-pressed', String(on));
       route.querySelectorAll(`li[data-add="${k}"]`).forEach((li) => (li.hidden = !on));
-      note.hidden = (note.dataset.note === 'off') === S.on.size > 0;
+      if (note) note.hidden = (note.dataset.note === 'off') === S.on.size > 0;
     }),
   );
 

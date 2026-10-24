@@ -53,6 +53,7 @@ Desktop 1512 × 860 · 12 columns · mocks drawn on a 20 margin (Brand Guide say
 - What's included opens on Workplaces.
 - Cleaning · closing CTA (CC-02b, locked: rooms come clean · dust lifts · 2s a room · coarse dust · crew leaves · labels on): Carbon panel inset by the page margin, headline (display 110 on desktop, h2 on phones), space chips (Studio · 1–2 bedroom default · 3+ · House · Workplace), live written-quote promise, yellow "Get a quote for your …" → /quote/?service=cleaning&for=…&size=…, call link. Plan on columns 7–12; starts at 40% in view, replays on a new pick; reduced motion shows it clean.
 - Moving · From quote to keys (MV-02): the WI-01b route with moving stops (Request a quote · Get it in writing · Confirm your date · Moving day · Final walkthrough), Homes (default) / Businesses, and three independent add-on chips under it (Packing · Boxes and supplies · Move-out clean; 34 tall, small 14, the + turns to ×) that drop their own + items into their step. The note "Add-ons drop their + items into the step they belong to" shows until one is on. Move-out clean items link to /cleaning/. Lists in src/js/data/moving-plan.js.
+- Moving · Questions (CH-03b, the Cleaning component and settings): five moving questions in the page dl, opening line from data-greet, Help links to /faq/#moving, "Leaving the old place? Add a move-out clean. See cleaning →" under the window. From quote to keys has no note under the route.
 - Nav and footer list Cleaning before Moving.
 
 ## Post-build
