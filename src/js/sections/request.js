@@ -103,7 +103,7 @@ export function init(el) {
     let text;
     let tag = '';
     if (out) {
-      text = `${out.code} is outside our five areas. Send it anyway and we’ll tell you straight, or call +1 347 777 2380.`;
+      text = `${out.code} is outside our five areas. Send it anyway and we’ll tell you straight, or call +1 647 877 1411.`;
       tag = 'Outside our areas · we’ll confirm';
     } else if (a && b) {
       text = `${a.place} → ${b.place} · ${a.region === b.region ? `both in ${REGION[a.region]}` : `${REGION[a.region]} to ${REGION[b.region]}`} · both covered`;
