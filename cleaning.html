@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="en-CA">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <script>document.documentElement.classList.add('js')</script>
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <meta name="robots" content="noindex"> <!-- pre-launch: remove at launch (CLAUDE.md "Before launch") -->
+  <title>Cleaning · Onaway</title>
+  <meta name="description" content="Home and workplace cleaning across the GTA, once or on a schedule. The same standard every visit. Your quote arrives in writing within 2 hours.">
+  <link rel="preload" href="/fonts/InstrumentSans-Variable.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="/fonts/OverpassMono-Variable.woff2" as="font" type="font/woff2" crossorigin>
+  <script type="module" src="/src/js/main.js"></script>
+</head>
+<body>
+  {{> nav}}
+
+  <main id="main">
+    {{!-- CL-06e Platforms (round 5): headline, then the Cleaning band and two platforms hanging from a rail. src/js/sections/svc-hero.js --}}
+    <section class="svc-hero" data-section="svchero" aria-labelledby="svc-title">
+      <div class="grid-site">
+        <nav class="svc-hero__crumb label col-span-full" aria-label="Breadcrumb">
+          <a href="/#services">Home / Services</a> / <b aria-current="page">Cleaning</b>
+        </nav>
+        <h1 id="svc-title" class="svc-hero__title col-span-full lg:col-span-9 text-h2 md:text-h1 lg:text-display uppercase">A clean space,<br> on your schedule.</h1>
+        <div class="svc-hero__side col-span-full lg:col-span-3">
+          <p class="svc-hero__lead text-lead">Homes and workplaces across the GTA, once or on a schedule. The same standard every visit.</p>
+          <p class="svc-hero__by label">Your quote arrives in writing <b data-q="by">within 2 hours</b></p>
+          <a class="svc-hero__call" href="tel:+16478771411">Or call +1 647 877 1411</a>
+        </div>
+      </div>
+
+      <div class="svc-hang">
+        <div class="svc-hang__rail" aria-hidden="true"></div>
+        <div class="svc-band" aria-hidden="true">
+          <span class="svc-band__tile"><svg viewBox="0 0 96 96"><g fill="currentColor"><path d="M30 14h34a8 8 0 0 1 8 8v4a4 4 0 0 1-4 4H54v8H40V30H30a4 4 0 0 1-4-4v-8a4 4 0 0 1 4-4z"/><path d="M72 16h8v8h-8z"/><path d="M40 30h10l-6 16h-6z"/><path d="M36 40h22v4c8 4 12 10 12 18v20a6 6 0 0 1-6 6H32a6 6 0 0 1-6-6V62c0-8 4-14 10-18z"/></g><rect x="34" y="60" width="28" height="14" rx="2" style="fill:var(--band-tile)"/></svg></span>
+          <span class="svc-band__name">Cleaning</span>
+          <span class="svc-band__board" data-dm="2 HR QUOTE" data-pitch="3"></span>
+          <span class="svc-band__arrow">↓</span>
+        </div>
+        <div class="svc-doors">
+          <a class="svc-door" href="/quote/?service=cleaning&amp;for=home">
+            <span class="svc-door__tile"><svg viewBox="0 0 96 96" aria-hidden="true"><g fill="currentColor"><path d="M66 16h10v20l-10-8z"/><path d="M45.4 13.2a4 4 0 0 1 5.2 0l35 30A4 4 0 0 1 83 50.3H78V80a6 6 0 0 1-6 6H24a6 6 0 0 1-6-6V50.3h-5a4 4 0 0 1-2.6-7.1z"/></g><rect x="40" y="60" width="16" height="26" rx="2" style="fill:var(--door-tile)"/><rect x="25" y="56" width="10" height="10" rx="1.5" style="fill:var(--door-tile)"/><rect x="61" y="56" width="10" height="10" rx="1.5" style="fill:var(--door-tile)"/></svg></span>
+            <span class="svc-door__text"><span class="svc-door__name">Home</span><span class="svc-door__sub">Condo, house or rental.</span></span>
+            <span class="svc-door__arrow" aria-hidden="true">→</span>
+          </a>
+          <a class="svc-door" href="/quote/?service=cleaning&amp;for=business">
+            <span class="svc-door__tile"><svg viewBox="0 0 96 96" aria-hidden="true"><g fill="currentColor"><path d="M16 16a6 6 0 0 1 6-6h30a6 6 0 0 1 6 6v70H16z"/><path d="M58 36h16a6 6 0 0 1 6 6v44H58z"/><rect x="10" y="82" width="76" height="6" rx="3"/></g><g style="fill:var(--door-tile)"><rect x="24" y="20" width="9" height="8" rx="1.5"/><rect x="41" y="20" width="9" height="8" rx="1.5"/><rect x="24" y="34" width="9" height="8" rx="1.5"/><rect x="41" y="34" width="9" height="8" rx="1.5"/><rect x="24" y="48" width="9" height="8" rx="1.5"/><rect x="41" y="48" width="9" height="8" rx="1.5"/><rect x="64" y="46" width="10" height="8" rx="1.5"/><rect x="64" y="60" width="10" height="8" rx="1.5"/><rect x="30" y="66" width="14" height="16" rx="2"/></g></svg></span>
+            <span class="svc-door__text"><span class="svc-door__name">Workplace</span><span class="svc-door__sub">Offices, shops, clinics, studios.</span></span>
+            <span class="svc-door__arrow" aria-hidden="true">→</span>
+          </a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  {{> footer}}
+</body>
+</html>

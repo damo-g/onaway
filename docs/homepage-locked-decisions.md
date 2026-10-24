@@ -42,6 +42,10 @@ Desktop 1512 × 860 · 12 columns · mocks drawn on a 20 margin (Brand Guide say
 - Token adherence (October 24): every size is on the scale. Mock-only values were snapped: nav button text 18 → lead 20; ticket numbers 56 → h1 68; quote sentence 60 → h1 68; nav/buttons 72/80/88 → 55/89; quote button 76 → 89; nav wordmark 36 → 34; ticket stub 56 → 55, tear-off 152 → 144, stamp 118 → 89 (set on three lines).
 - Mobile pass, round 1: hero headline at h2 with "Steady hands" and "at your door" on one line each; the three services stay side by side as 34-tall chips (no arrows); GTA map plate 288 on phones; quote headline h2, a 55-tall one-line button, 2px blank underlines.
 
+## Service pages
+- Cleaning hero (CL-06e Platforms, round 5): breadcrumb (Home / Services → /#services), headline first (display 110 caps on columns 1–9; the mock's 89 is off the type scale), lead + quote promise + call on columns 10–12. 89 below: an 8px Carbon rail, the Cleaning band (55 tall, cycling 2 HR QUOTE / HOMES + WORK / ONCE OR WEEKLY every 2.8s, ↓) on chains, then two platforms (Home, Workplace; 110 tall) on chains, linking to /quote/?service=cleaning&for=home|business. Band then platforms swing in once; static under reduced motion.
+- Nav and footer list Cleaning before Moving.
+
 ## Post-build
 - GT-09 map: replace hand-drawn mock with OpenStreetMap vector data in MapLibre GL, styled to tokens, flyTo on match, credit © OpenStreetMap contributors.
 - Postal-code → area mapping must be verified against Canada Post before launch.

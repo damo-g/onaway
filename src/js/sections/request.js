@@ -449,6 +449,8 @@ export function init(el) {
     const params = new URLSearchParams(location.search);
     const quote = JSON.parse(sessionStorage.getItem('onaway:quote') || 'null') || {};
     const map = JSON.parse(sessionStorage.getItem('onaway:where') || 'null');
+    const kind = { home: 'home', business: 'business' }[params.get('for')];
+    if (kind) tap('kind', kind);
     const svc = SVC[params.get('service')] || SVC[quote.service];
     if (svc) tap('svc', svc);
     const placeName = quote.area || map?.place;
