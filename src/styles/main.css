@@ -98,6 +98,7 @@
   --text-button: 18px;
   --text-numeral: 56px; /* TS-02 step numbers */
   --text-sentence: 60px; /* QC-02 quote sentence */
+  --text-tagline: 84px; /* FT-02 footer tagline */
   --tracking-nav: 0.02em;
   --tracking-mono: 0.06em;
 
@@ -1142,6 +1143,138 @@
   html[data-motion="reduce"] .qc-route .fl,
   html[data-motion="reduce"] .qc-blank.is-next { animation: none; }
   html[data-motion="reduce"] .qc-route .mv { display: none; }
+  /* ---------- Footer (FT-02 Window) ---------- */
+  /* Options (dev panel): data-fill windows (locked) | sky | lake | traffic | flap | flat · data-signal arrive (locked)
+     | turn | still | off · data-hover signal (locked) | sweep | invert | mark */
+  .footer {
+    --ft-fg: var(--color-paper);
+    --ft-mut: color-mix(in srgb, var(--color-paper) 62%, transparent);
+    --ft-line: color-mix(in srgb, var(--color-paper) 22%, transparent);
+    display: flex;
+    flex-direction: column;
+    min-height: 100svh;
+    padding-block: var(--spacing-34) var(--grid-margin);
+    background: var(--color-carbon);
+    color: var(--ft-fg);
+  }
+  .footer__top { align-items: start; row-gap: var(--spacing-21); }
+  .footer__tag { max-width: 14ch; font-size: var(--text-h2); line-height: 1; font-weight: 600; letter-spacing: -0.01em; }
+  .footer__clock { color: var(--ft-fg); }
+  .footer__clock time { font-variant-numeric: tabular-nums; }
+
+  /* Hanging columns under one hairline */
+  .footer__cols { margin-top: var(--spacing-55); row-gap: var(--spacing-34); }
+  .footer__cols::before { content: ""; grid-column: 1 / -1; height: 1px; background: var(--ft-line); }
+  .footer__col { grid-column: 1 / -1; }
+  .footer__label { display: block; padding-bottom: var(--spacing-13); color: var(--ft-fg); }
+  .footer__row {
+    position: relative;
+    isolation: isolate;
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: var(--spacing-13);
+    padding-block: var(--spacing-8);
+    border-bottom: 1px solid var(--ft-line);
+    font-size: var(--text-lead);
+    line-height: 1.1;
+    font-weight: 600;
+    transition: color 0.3s, padding 0.3s;
+  }
+  .footer__row--mono {
+    font-family: var(--font-mono);
+    font-size: var(--text-label);
+    letter-spacing: 0.1em;
+    font-weight: 500;
+    font-stretch: normal;
+    text-transform: uppercase;
+    padding-block: var(--spacing-13);
+  }
+  .footer__k { color: var(--ft-mut); transition: color 0.3s; }
+  .footer__arrow { font-weight: 400; opacity: 0.5; transition: transform 0.3s, opacity 0.3s; }
+  a.footer__row:hover .footer__arrow { transform: translateX(5px); opacity: 1; }
+  a.footer__row:focus-visible { outline: 2px solid var(--ft-fg); outline-offset: 4px; }
+
+  /* Hover: Signal (locked) — the yellow square drops in at the start of the row and the text steps right */
+  a.footer__row::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 50%;
+    width: 10px;
+    height: 10px;
+    margin-top: -5px;
+    background: var(--color-yellow);
+    transform: scale(0) rotate(45deg);
+    transition: transform 0.35s cubic-bezier(0.3, 0.7, 0.3, 1);
+  }
+  .footer:not([data-hover]) a.footer__row:is(:hover, :focus-visible),
+  .footer[data-hover="signal"] a.footer__row:is(:hover, :focus-visible) { padding-left: var(--spacing-21); }
+  .footer:not([data-hover]) a.footer__row:is(:hover, :focus-visible)::after,
+  .footer[data-hover="signal"] a.footer__row:is(:hover, :focus-visible)::after { transform: scale(1) rotate(0deg); }
+  .footer[data-hover]:not([data-hover="signal"]) a.footer__row::after { display: none; }
+  a.footer__row::before { content: ""; position: absolute; inset: 0 -10px; z-index: -1; pointer-events: none; transition: transform 0.45s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.3s; }
+  .footer[data-hover="sweep"] a.footer__row::before { background: var(--ft-fg); transform: scaleX(0); transform-origin: 0 50%; }
+  .footer[data-hover="sweep"] a.footer__row:hover::before { transform: scaleX(1); }
+  .footer[data-hover="invert"] a.footer__row::before { background: var(--ft-fg); opacity: 0; }
+  .footer[data-hover="invert"] a.footer__row:hover::before { opacity: 1; }
+  .footer:is([data-hover="sweep"], [data-hover="invert"]) a.footer__row:hover,
+  .footer:is([data-hover="sweep"], [data-hover="invert"]) a.footer__row:hover .footer__k { color: var(--color-carbon); }
+  .footer[data-hover="mark"] a.footer__row::before { inset: auto -4px 9px; height: 0.55em; background: color-mix(in srgb, var(--color-yellow) 50%, transparent); transform: scaleX(0); transform-origin: 0 50%; }
+  .footer[data-hover="mark"] a.footer__row:hover::before { transform: scaleX(1); }
+
+  .footer__legal {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: var(--spacing-13) var(--spacing-21);
+    margin-top: var(--spacing-34);
+    padding-inline: var(--grid-margin);
+    color: var(--ft-mut);
+  }
+  .footer__legal .label { font-weight: 500; }
+  .footer__legal-links { display: flex; gap: var(--spacing-21); }
+  .footer__legal-links a { transition: color 0.25s; }
+  .footer__legal-links a:hover { color: var(--ft-fg); }
+
+  /* The wordmark: a mask filled by the shader (flat Paper without WebGL or with the flat fill) */
+  .footer__mark { display: flex; align-items: flex-end; gap: var(--spacing-13); margin-top: auto; padding: var(--spacing-34) var(--grid-margin) 0; }
+  .footer__wordmark {
+    position: relative;
+    flex: 1;
+    min-width: 0;
+    aspect-ratio: 298.46 / 56;
+    background: var(--ft-fg);
+    -webkit-mask: url("/svg/wordmark.svg") left bottom / contain no-repeat;
+    mask: url("/svg/wordmark.svg") left bottom / contain no-repeat;
+  }
+  .footer__wordmark canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
+  .footer[data-fill="flat"] .footer__wordmark canvas,
+  .footer.is-flat .footer__wordmark canvas { display: none; }
+  .footer__signal { flex: none; width: calc(var(--spacing-34) + var(--spacing-13)); aspect-ratio: 1; margin-bottom: 0.4%; background: var(--color-yellow); }
+  .footer:not([data-signal]) .footer__signal,
+  .footer[data-signal="arrive"] .footer__signal { animation: ft-arrive 7s cubic-bezier(0.2, 0.7, 0.2, 1) infinite; }
+  .footer[data-signal="turn"] .footer__signal { animation: ft-turn 4.2s cubic-bezier(0.6, 0, 0.2, 1) infinite; }
+  .footer[data-signal="off"] .footer__signal { display: none; }
+
+  @media (width >= 768px) {
+    .footer__tag { font-size: var(--text-h1); }
+    .footer__follow { grid-column: 1 / span 3; }
+    .footer__explore { grid-column: 4 / span 2; }
+    .footer__contact { grid-column: 6 / span 3; }
+  }
+  @media (width >= 1024px) {
+    .footer { padding-top: var(--spacing-34); }
+    .footer__tag { font-size: var(--text-tagline); }
+    .footer__clock { justify-self: end; text-align: right; padding-top: var(--spacing-13); }
+    .footer__cols { margin-top: var(--spacing-21); }
+    .footer__follow { grid-column: 1 / span 3; }
+    .footer__explore { grid-column: 7 / span 3; }
+    .footer__contact { grid-column: 10 / span 3; }
+    .footer__legal { margin-top: var(--spacing-34); }
+  }
+  @media (prefers-reduced-motion: reduce) { .footer__signal { animation: none !important; } }
+  html[data-motion="reduce"] .footer__signal { animation: none !important; }
 }
 
 @keyframes hero-reveal { to { visibility: visible; } }
@@ -1156,4 +1289,6 @@
 @keyframes qc-draw { from { stroke-dashoffset: 1; } to { stroke-dashoffset: 0; } }
 @keyframes qc-nudge { 0%, 100% { border-bottom-color: var(--qc-fg); } 50% { border-bottom-color: var(--color-yellow); } }
 @keyframes qc-ready { 0% { scale: 0.98; } 60% { scale: 1.02; } 100% { scale: 1; } }
+@keyframes ft-arrive { 0% { translate: -160px 0; opacity: 0; } 6% { opacity: 1; } 22%, 86% { translate: 0 0; opacity: 1; } 94%, 100% { translate: 24px 0; opacity: 0; } }
+@keyframes ft-turn { 0%, 42% { rotate: 0deg; } 50%, 92% { rotate: 45deg; } 100% { rotate: 90deg; } }
 @keyframes tk-head { from { left: 0; opacity: 1; } 95% { opacity: 1; } to { left: 100%; opacity: 0; } }

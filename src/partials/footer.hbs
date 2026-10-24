@@ -1,6 +1,53 @@
-{{!-- Placeholder until section/07-footer (FT-02 Window): full width, full height Carbon. --}}
-<footer id="footer" data-section="footer" data-nav-theme="dark" class="section section--bleed bg-carbon text-paper">
-  <div class="grid-site py-89">
-    <p class="label col-span-full">The GTA's steady hands.</p>
+{{!-- 07 Footer · FT-02 Window: full width, full height Carbon. The wordmark is a mask filled with the
+     Windows shader (src/js/shaders/window.js); live Toronto time; the yellow square arrives beside it.
+     Contact details, socials and business number are PLACEHOLDERS (docs/build-context.md §6). --}}
+<footer id="footer" data-section="footer" data-nav-theme="dark" class="section section--bleed footer">
+  <div class="footer__top grid-site">
+    <p class="footer__tag col-span-full lg:col-span-8">We’ll take it from here.</p>
+    <p class="footer__clock label col-span-full lg:col-span-4">Toronto · <time data-toronto-time>--:--</time></p>
+  </div>
+
+  <div class="footer__cols grid-site">
+    <nav class="footer__col footer__follow" aria-label="Follow us">
+      <h2 class="footer__label label">Follow</h2>
+      <ul role="list">
+        <li><a class="footer__row footer__row--mono" href="#" rel="noopener"><span>Instagram</span><span class="footer__k" aria-hidden="true">↗</span></a></li>
+        <li><a class="footer__row footer__row--mono" href="#" rel="noopener"><span>TikTok</span><span class="footer__k" aria-hidden="true">↗</span></a></li>
+        <li><a class="footer__row footer__row--mono" href="#" rel="noopener"><span>LinkedIn</span><span class="footer__k" aria-hidden="true">↗</span></a></li>
+      </ul>
+    </nav>
+    <nav class="footer__col footer__explore" aria-label="Explore">
+      <h2 class="footer__label label">Explore</h2>
+      <ul role="list">
+        <li><a class="footer__row" href="/moving/"><span>Moving</span><span class="footer__arrow" aria-hidden="true">→</span></a></li>
+        <li><a class="footer__row" href="/cleaning/"><span>Cleaning</span><span class="footer__arrow" aria-hidden="true">→</span></a></li>
+        <li><a class="footer__row" href="/delivery/"><span>Delivery</span><span class="footer__arrow" aria-hidden="true">→</span></a></li>
+        <li><a class="footer__row" href="/about/"><span>About</span><span class="footer__arrow" aria-hidden="true">→</span></a></li>
+        <li><a class="footer__row" href="/faq/"><span>FAQ</span><span class="footer__arrow" aria-hidden="true">→</span></a></li>
+      </ul>
+    </nav>
+    <div class="footer__col footer__contact">
+      <h2 class="footer__label label">Contact</h2>
+      <ul role="list">
+        <li><a class="footer__row footer__row--mono" href="tel:+13477772380"><span class="footer__k">Call</span><span>+1 347 777 2380</span></a></li>
+        <li><a class="footer__row footer__row--mono" href="sms:+16475550190"><span class="footer__k">Text</span><span>(647) 555-0190</span></a></li>
+        <li><a class="footer__row footer__row--mono" href="mailto:hello@onaway.ca"><span class="footer__k">Email</span><span>hello@onaway.ca</span></a></li>
+        <li><p class="footer__row footer__row--mono footer__row--static"><span class="footer__k">Hours</span><span>8 AM – 8 PM daily</span></p></li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="footer__legal">
+    <p class="label">© 2026 Onaway Inc. · Business no. 71234 5678 RC0001</p>
+    <ul class="footer__legal-links" role="list">
+      <li><a class="label" href="/privacy/">Privacy</a></li>
+      <li><a class="label" href="/terms/">Terms</a></li>
+      <li><a class="label" href="/accessibility/">Accessibility</a></li>
+    </ul>
+  </div>
+
+  <div class="footer__mark">
+    <span class="footer__wordmark" role="img" aria-label="ONAWAY"><canvas aria-hidden="true"></canvas></span>
+    <span class="footer__signal" aria-hidden="true"></span>
   </div>
 </footer>
