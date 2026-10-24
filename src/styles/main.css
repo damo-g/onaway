@@ -1765,7 +1765,7 @@
   .qs__faq dt { margin-top: var(--spacing-21); font-weight: 600; }
   .qs__faq dd { margin-top: var(--spacing-8); color: color-mix(in srgb, var(--color-carbon) 80%, transparent); }
 
-  .qs__window { position: relative; display: flex; flex-direction: column; height: 440px; border: 1.5px solid var(--color-carbon); border-radius: 2px; }
+  .qs__window { position: relative; display: flex; flex-direction: column; height: 440px; border-radius: 2px; background: color-mix(in srgb, var(--color-carbon) 5%, var(--color-paper)); }
   .qs__window[hidden] { display: none; }
   .qs__thread { flex: 1; min-height: 0; overflow-y: auto; overscroll-behavior: contain; scrollbar-width: thin; scrollbar-color: color-mix(in srgb, var(--color-carbon) 25%, transparent) transparent; }
   .qs__thread.is-scrolled { mask-image: linear-gradient(transparent, var(--color-carbon) var(--spacing-34)); }
@@ -1782,11 +1782,12 @@
   .qs__dots i:nth-child(2) { animation-delay: 0.15s; }
   .qs__dots i:nth-child(3) { animation-delay: 0.3s; }
   .qs__chips { display: flex; flex-wrap: wrap; gap: var(--spacing-8); padding: 0 var(--spacing-34) var(--spacing-21); flex: none; }
-  .qs__chips button { height: var(--spacing-34); padding-inline: var(--spacing-13); border: 1.5px solid var(--color-line); border-radius: 2px; font-size: var(--text-small); font-weight: 600; cursor: pointer; transition: border-color 0.2s, opacity 0.3s; }
+  .qs__chips button { height: var(--spacing-34); padding-inline: var(--spacing-13); border: 1.5px solid transparent; border-radius: 2px; background: var(--color-paper); font-size: var(--text-small); font-weight: 600; cursor: pointer; transition: border-color 0.2s, opacity 0.3s; }
   .qs__chips button:hover { border-color: var(--color-carbon); }
   .qs__chips button.is-used { opacity: 0.35; pointer-events: none; }
   .qs__done { font-size: var(--text-small); line-height: var(--spacing-34); color: var(--mut); }
-  .qs__box { display: flex; align-items: center; gap: var(--spacing-13); flex: none; padding: var(--spacing-13) var(--spacing-13) var(--spacing-13) var(--spacing-34); border-top: 1px solid var(--color-line); }
+  /* The message box: a Paper well inset 13 from the window's sides and bottom */
+  .qs__box { display: flex; align-items: center; gap: var(--spacing-13); flex: none; margin: 0 var(--spacing-13) var(--spacing-13); padding: 6px 6px 6px var(--spacing-21); border-radius: 2px; background: var(--color-paper); }
   .qs__box input { flex: 1; min-width: 0; padding-block: var(--spacing-8); font-size: var(--text-body); }
   .qs__box input::placeholder { color: var(--mut); }
   .qs__box input:focus { outline: 0; }
@@ -1804,7 +1805,6 @@
     .qs__inner { padding: var(--spacing-21); }
     .qs__chips { flex-wrap: nowrap; overflow-x: auto; padding-inline: var(--spacing-21); }
     .qs__chips button { flex: none; }
-    .qs__box { padding-left: var(--spacing-21); }
   }
   @media (prefers-reduced-motion: reduce) {
     .qs__msg { animation: none; }
