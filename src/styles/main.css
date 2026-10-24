@@ -436,9 +436,6 @@
     padding-inline: var(--grid-margin);
     text-align: center;
   }
-  @media (width >= 1280px) {
-    .hero__content { top: calc(var(--nav-h) + var(--spacing-55) + var(--spacing-21)); }
-  }
   .hero__title span { display: block; }
   .hero__services {
     position: absolute;
