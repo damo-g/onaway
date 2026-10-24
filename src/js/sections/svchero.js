@@ -2,8 +2,7 @@ import { renderDotMatrix } from '../dotmatrix.js';
 import { prefersReducedMotion } from '../motion.js';
 
 // Service page hero (CL-06e Platforms): the band's board cycles its facts every 2.8s (static under
-// reduced motion), the "by" time follows Toronto, and the band then the platforms swing in once on load.
-const FACTS = { cleaning: ['2 HR QUOTE', 'HOMES + WORK', 'ONCE OR WEEKLY'] };
+// reduced motion; facts come from data-facts), the "by" time follows Toronto, and the band then the platforms swing in once on load.
 
 function quoteBy() {
   const parts = new Intl.DateTimeFormat('en-CA', { timeZone: 'America/Toronto', hour: 'numeric', minute: '2-digit', hour12: false }).formatToParts(new Date());
@@ -21,7 +20,7 @@ export function init(el) {
   setInterval(by, 30000);
 
   const board = el.querySelector('.svc-band__board');
-  const facts = FACTS[document.body.dataset.service || 'cleaning'] || FACTS.cleaning;
+  const facts = (board.dataset.facts || board.dataset.dm).split('|');
   renderDotMatrix(el);
   if (prefersReducedMotion()) return;
 
