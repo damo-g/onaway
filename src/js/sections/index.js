@@ -13,8 +13,9 @@ import * as questions from './questions.js';
 import * as cleancta from './cleancta.js';
 import * as movecta from './movecta.js';
 import * as soon from './soon.js';
+import * as dropcta from './dropcta.js';
 
-const sections = { hero, services, steps, promises, gta, quote, request, svchero, often, included, questions, cleancta, movecta, soon, footer };
+const sections = { hero, services, steps, promises, gta, quote, request, svchero, often, included, questions, cleancta, movecta, soon, dropcta, footer };
 
 // Runs each section's init(el) when its section is on the page, in page order (pins stack correctly).
 export function initSections() {

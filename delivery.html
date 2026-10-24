@@ -122,6 +122,31 @@
       </div>
       <p class="qs__more col-span-full lg:col-start-6 lg:col-span-7"><b>More than a few pieces?</b> A move might suit you better. <a href="/moving/">See moving <span aria-hidden="true">→</span></a></p>
     </section>
+
+    {{!-- DL-05 closing CTA, the window at the door (locked: 2s a stop · on-the-way message · crew leaves). The Cleaning
+         CC-02b panel; pick what's going and the crew takes it to the door, inside the window. src/js/sections/dropcta.js --}}
+    <section class="ccta dcta" data-section="dropcta" data-nav-theme="dark" aria-labelledby="ccta-title">
+      <div class="ccta__panel">
+        <div class="ccta__text">
+          <h2 id="ccta-title" class="ccta__title">Tell us what’s<br> going where.</h2>
+          <div>
+            <span class="ccta__label label" id="ccta-what">What’s going</span>
+            <div class="ccta__chips" role="group" aria-labelledby="ccta-what">
+              <button type="button" data-k="one" aria-pressed="true">One item</button>
+              <button type="button" data-k="few" aria-pressed="false">A few pieces</button>
+              <button type="button" data-k="store" aria-pressed="false">A store pickup</button>
+              <button type="button" data-k="reg" aria-pressed="false">Regular drop-offs</button>
+            </div>
+          </div>
+          <p class="ccta__lead">A written quote <b data-qby>within 2 hours</b>, with your window on it. No obligation.</p>
+          <div class="ccta__acts ccta__acts--stack">
+            <a class="ccta__cta" href="/quote/?service=delivery&amp;for=home&amp;what=single">Get a delivery quote for one item <span aria-hidden="true">→</span></a>
+            <a class="ccta__call" href="tel:+16478771411">Or call +1 647 877 1411</a>
+          </div>
+        </div>
+        <div class="ccta__plan" aria-hidden="true"><svg viewBox="0 60 680 220"></svg></div>
+      </div>
+    </section>
   </main>
 
   {{> footer}}
