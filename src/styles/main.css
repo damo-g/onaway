@@ -98,7 +98,6 @@
   --text-button: 18px;
   --text-numeral: 56px; /* TS-02 step numbers */
   --text-sentence: 60px; /* QC-02 quote sentence */
-  --text-tagline: 84px; /* FT-02 footer tagline */
   --tracking-nav: 0.02em;
   --tracking-mono: 0.06em;
 
@@ -269,12 +268,34 @@
     text-transform: uppercase;
     white-space: nowrap;
   }
-  .nav-links a,
+  .nav-links > a,
   .nav-fr { transition: color 0.2s; }
-  .nav-links a { display: inline-flex; align-items: center; gap: var(--spacing-8); }
-  .nav-links a:hover,
+  .nav-links > a { display: inline-flex; align-items: center; gap: var(--spacing-8); }
+  .nav-links > a:hover,
   .nav-fr:hover { color: var(--color-rust); }
-  .nav-plus { width: var(--spacing-13); height: var(--spacing-13); }
+  .nav-plus { width: var(--spacing-13); height: var(--spacing-13); transition: rotate 0.3s var(--ease-out); }
+
+  /* Services drop: Carbon, rows like the footer columns, Signal hover */
+  .nav-drop { position: relative; }
+  .nav-drop__btn { display: inline-flex; align-items: center; gap: var(--spacing-8); text-transform: inherit; letter-spacing: inherit; cursor: pointer; transition: color 0.2s; }
+  .nav-drop__btn:hover { color: var(--color-rust); }
+  .nav-drop__btn[aria-expanded="true"] .nav-plus { rotate: 45deg; }
+  .nav-drop__panel {
+    --ft-fg: var(--color-paper);
+    --ft-line: color-mix(in srgb, var(--color-paper) 22%, transparent);
+    position: absolute;
+    top: calc(100% + var(--spacing-21));
+    left: calc(-1 * var(--spacing-21));
+    width: 360px;
+    padding: var(--spacing-21) var(--spacing-21) var(--spacing-13);
+    background: var(--color-carbon);
+    color: var(--ft-fg);
+    text-transform: none;
+    letter-spacing: normal;
+  }
+  /* bridge the gap so the pointer can travel from the button into the panel */
+  .nav-drop__panel::before { content: ""; position: absolute; inset: calc(-1 * var(--spacing-21)) 0 100%; }
+  .nav-drop__label { display: block; padding-bottom: var(--spacing-13); color: color-mix(in srgb, var(--color-paper) 62%, transparent); }
   .nav-fr {
     display: none;
     margin-right: var(--spacing-34);
@@ -1153,12 +1174,12 @@
     display: flex;
     flex-direction: column;
     min-height: 100svh;
-    padding-block: var(--spacing-34) var(--grid-margin);
+    padding-block: var(--spacing-55) var(--grid-margin);
     background: var(--color-carbon);
     color: var(--ft-fg);
   }
   .footer__top { align-items: start; row-gap: var(--spacing-21); }
-  .footer__tag { max-width: 14ch; font-size: var(--text-h2); line-height: 1; font-weight: 600; letter-spacing: -0.01em; }
+  .footer__tag { max-width: 22ch; font-size: var(--text-h3); line-height: 1.1; font-weight: 500; letter-spacing: -0.01em; }
   .footer__clock { color: var(--ft-fg); }
   .footer__clock time { font-variant-numeric: tabular-nums; }
 
@@ -1194,6 +1215,37 @@
   .footer__arrow { font-weight: 400; opacity: 0.5; transition: transform 0.3s, opacity 0.3s; }
   a.footer__row:hover .footer__arrow { transform: translateX(5px); opacity: 1; }
   a.footer__row:focus-visible { outline: 2px solid var(--ft-fg); outline-offset: 4px; }
+
+  .nav-drop__row {
+    position: relative;
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: var(--spacing-13);
+    padding-block: var(--spacing-8);
+    border-bottom: 1px solid var(--ft-line);
+    font-size: var(--text-lead);
+    line-height: 1.1;
+    font-weight: 600;
+    transition: padding 0.3s;
+  }
+  .nav-drop__row:focus-visible { outline: 2px solid var(--ft-fg); outline-offset: 4px; }
+  .nav-drop__arrow { font-weight: 400; opacity: 0.5; transition: transform 0.3s, opacity 0.3s; }
+  .nav-drop__row:hover .nav-drop__arrow { transform: translateX(5px); opacity: 1; }
+  .nav-drop__row::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 50%;
+    width: 10px;
+    height: 10px;
+    margin-top: -5px;
+    background: var(--color-yellow);
+    transform: scale(0) rotate(45deg);
+    transition: transform 0.35s cubic-bezier(0.3, 0.7, 0.3, 1);
+  }
+  .nav-drop__row:is(:hover, :focus-visible) { padding-left: var(--spacing-21); }
+  .nav-drop__row:is(:hover, :focus-visible)::after { transform: scale(1) rotate(0deg); }
 
   /* Hover: Signal (locked) — the yellow square drops in at the start of the row and the text steps right */
   a.footer__row::after {
@@ -1238,7 +1290,7 @@
   .footer__legal-links a:hover { color: var(--ft-fg); }
 
   /* The wordmark: a mask filled by the shader (flat Paper without WebGL or with the flat fill) */
-  .footer__mark { display: flex; align-items: flex-end; gap: var(--spacing-13); margin-top: auto; padding: var(--spacing-34) var(--grid-margin) 0; }
+  .footer__mark { display: flex; align-items: flex-end; gap: var(--spacing-13); margin-top: auto; padding: var(--spacing-55) var(--grid-margin) 0; }
   .footer__wordmark {
     position: relative;
     flex: 1;
@@ -1258,20 +1310,20 @@
   .footer[data-signal="off"] .footer__signal { display: none; }
 
   @media (width >= 768px) {
-    .footer__tag { font-size: var(--text-h1); }
+    .footer__tag { font-size: var(--text-h2); }
     .footer__follow { grid-column: 1 / span 3; }
     .footer__explore { grid-column: 4 / span 2; }
     .footer__contact { grid-column: 6 / span 3; }
   }
   @media (width >= 1024px) {
-    .footer { padding-top: var(--spacing-34); }
-    .footer__tag { font-size: var(--text-tagline); }
+    .footer { padding-top: var(--spacing-55); }
+    .footer__tag { font-size: var(--text-h2); }
     .footer__clock { justify-self: end; text-align: right; padding-top: var(--spacing-13); }
-    .footer__cols { margin-top: var(--spacing-21); }
+    .footer__cols { margin-top: var(--spacing-55); }
     .footer__follow { grid-column: 1 / span 3; }
     .footer__explore { grid-column: 7 / span 3; }
     .footer__contact { grid-column: 10 / span 3; }
-    .footer__legal { margin-top: var(--spacing-34); }
+    .footer__legal { margin-top: var(--spacing-55); }
   }
   @media (prefers-reduced-motion: reduce) { .footer__signal { animation: none !important; } }
   html[data-motion="reduce"] .footer__signal { animation: none !important; }
