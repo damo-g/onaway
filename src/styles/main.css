@@ -460,10 +460,10 @@
   /* Phones: the three services stay side by side as small chips */
   @media (width < 768px) {
     .hero__services { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--spacing-8); }
-    .hero-card { justify-content: center; gap: var(--spacing-8); height: var(--spacing-34); padding-inline: var(--spacing-8); font-size: var(--text-small); font-weight: 600; }
+    .hero-card { gap: var(--spacing-8); height: var(--spacing-34); padding-inline: var(--spacing-8); font-size: var(--text-label); font-weight: 600; letter-spacing: 0.02em; }
     .hero-card svg { width: var(--spacing-13); height: var(--spacing-13); }
-    .hero-card .hero-card__arrow { display: none; }
   }
+  @media (width < 375px) { .hero-card svg { display: none; } } /* the narrowest phones: label and arrow only */
   @media (width >= 768px) {
     .hero__services { grid-template-columns: repeat(3, minmax(0, 1fr)); }
   }
