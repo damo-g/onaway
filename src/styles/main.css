@@ -430,7 +430,7 @@
     padding-inline: var(--grid-margin);
     text-align: center;
   }
-  .hero__title span { display: block; }
+  .hero__title span { display: block; white-space: nowrap; }
   .hero__services {
     position: absolute;
     inset-inline: var(--grid-margin);
@@ -457,6 +457,13 @@
   .hero-card:hover,
   .hero-card:focus-visible { --tile: var(--color-carbon); background: var(--color-carbon); color: var(--color-paper); }
   .hero-card:focus-visible { outline-color: var(--color-carbon); }
+  /* Phones: the three services stay side by side as small chips */
+  @media (width < 768px) {
+    .hero__services { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--spacing-8); }
+    .hero-card { justify-content: center; gap: var(--spacing-8); height: var(--spacing-34); padding-inline: var(--spacing-8); font-size: var(--text-small); font-weight: 600; }
+    .hero-card svg { width: var(--spacing-13); height: var(--spacing-13); }
+    .hero-card .hero-card__arrow { display: none; }
+  }
   @media (width >= 768px) {
     .hero__services { grid-template-columns: repeat(3, minmax(0, 1fr)); }
   }
@@ -854,7 +861,7 @@
     --map-ink: var(--color-paper);
   }
   .gta__stage { position: relative; display: flex; flex-direction: column; gap: var(--spacing-34); }
-  .gta__plate { position: relative; height: 480px; overflow: hidden; background: var(--map-land); }
+  .gta__plate { position: relative; height: calc(2 * var(--spacing-144)); overflow: hidden; background: var(--map-land); }
   .gmap { position: absolute; inset: 0; width: 100%; height: 100%; }
 
   /* Map layers (from the mock: tint, minor streets, rivers, concessions, boundaries, highways, shore, labels) */
@@ -1141,6 +1148,8 @@
 
   @media (width < 768px) {
     .qc__sentence { font-size: var(--text-h3); }
+    .qc-blank { border-bottom-width: 2px; }
+    .qc__cta { height: var(--spacing-55); gap: var(--spacing-13); padding-inline: var(--spacing-21); font-size: var(--text-body); white-space: nowrap; }
     .qc__meta { white-space: normal; width: calc(100% - 2 * var(--grid-margin)); text-align: center; bottom: var(--spacing-21); }
     .qc { padding-bottom: var(--spacing-89); }
   }
