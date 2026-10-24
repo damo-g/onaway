@@ -200,7 +200,7 @@ onaway/
 > Step 0, before any section: set up the foundation.
 > 1. Scaffold the repo exactly as in Build Context §4: Vite multi-page, Tailwind v4 with the full design system in `@theme`, Alpine.js, GSAP + ScrollTrigger, Lenis synced to ScrollTrigger, Handlebars partials, and self-hosted Instrument Sans (width axis) and Overpass Mono.
 > 2. Build a one-page **token test** that renders the colours, the type scale, the spacing scale and the 12/8/4 grid overlay (toggle with G), so I can check the system before any design.
-> 3. Everything runs locally first: give me the commands to install, run on localhost and start a local git repo with a sensible `.gitignore` and first commit. Also give me the Cloudflare Quick Tunnel command for showing the client. GitHub and Cloudflare Pages come later; no domain is bought yet.
+> 3. Everything runs locally first: give me the commands to install, run on localhost and start a local git repo with a sensible `.gitignore` and first commit. Also give me the Cloudflare Quick Tunnel command for showing the client. Deploys go to Namecheap (onaway.ca) through GitHub Actions.
 > 4. Use the decided 20px desktop margin (Build Context §2).
 >
 > Then build **Section 01, Hero (HF-01)** from the image and locked mock I attach. It must be responsive at 1512, 1280 and 390, use tokens only, honour reduced motion and be airy. Publish it as an artifact for review and give me the files to commit. Don't start section 02 until I sign off.
