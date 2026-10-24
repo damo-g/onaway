@@ -1,10 +1,11 @@
 import { prefersReducedMotion } from '../motion.js';
 import { MOVING } from '../data/moving-plan.js';
+import { DELIVERY } from '../data/delivery-plan.js';
 
 // WI-01b What's included: five stops in the crew's order, every list visible. Tour: one stop every 3.6s,
 // the line filling toward the next; hovering the route pauses it, clicking a stop holds it there.
 // Lists are drafts for the client to confirm. + items show only while their add-on is on: Cleaning's
-// Deep clean switch, or Moving's add-on chips (data-plan="moving", lists in src/js/data/moving-plan.js).
+// Deep clean switch, or the add-on chips on Moving and Delivery (data-plan, lists in src/js/data/*-plan.js).
 const CLEANING = {
   home: [
     { n: 'Kitchen', t: ['Counters and backsplash wiped', 'Sink and taps cleaned and shined', 'Stovetop and the outside of appliances', 'Cabinet fronts and handles', 'Bins emptied and relined'], d: ['Inside the oven', 'Inside the fridge', 'Inside cabinets and drawers'] },
@@ -25,6 +26,7 @@ const CLEANING = {
 const PLANS = {
   cleaning: Object.fromEntries(Object.entries(CLEANING).map(([k, v]) => [k, v.map((s) => ({ n: s.n, t: [...s.t, ...s.d.map((t) => ({ add: 'deep', t }))] }))])),
   moving: MOVING,
+  delivery: DELIVERY,
 };
 const STEP = 3600;
 const esc = (s) => s.replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' })[c]);

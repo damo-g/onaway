@@ -44,6 +44,7 @@ export default defineConfig(({ command }) => ({
         quote: resolve(root, 'quote.html'),
         cleaning: resolve(root, 'cleaning.html'),
         moving: resolve(root, 'moving.html'),
+        delivery: resolve(root, 'delivery.html'),
       },
     },
   },

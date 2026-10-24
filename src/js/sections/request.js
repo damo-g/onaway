@@ -457,6 +457,27 @@ export function init(el) {
     if (size && (svc === 'clean' || svc === 'move')) tap('size', size);
     const often = params.get('often');
     if (often && svc === 'clean') tap('often', often);
+    // From Delivery's How soon: when, and the arrival window into the details
+    // From Delivery's closing panel: what's going
+    const what = params.get('what');
+    const carry = { single: 'One item', few: 'A few items' }[what];
+    if (carry && svc === 'deliver') tap('what', carry);
+    if (what === 'regular' && svc === 'deliver' && !params.get('when')) tap('speed', 'Regular');
+    if (what === 'store' && svc === 'deliver') {
+      S.details = 'Pickup from a store.';
+      el.querySelector('[data-details]').value = S.details;
+    }
+    const speed = { 'same-day': 'Same day', scheduled: 'Scheduled', regular: 'Regular' }[params.get('when')];
+    if (speed && svc === 'deliver') tap('speed', speed);
+    const win = /^(\d{1,2})-(\d{1,2})$/.exec(params.get('window') || '');
+    if (win && svc === 'deliver') {
+      const [a, b] = [+win[1], +win[2]];
+      const m = (h) => (h < 12 || h === 24 ? 'AM' : 'PM');
+      const n = (h) => ((h + 11) % 12) + 1;
+      const range = m(a) === m(b) ? `${n(a)} – ${n(b)} ${m(b)}` : `${n(a)} ${m(a)} – ${n(b)} ${m(b)}`;
+      S.details = `Arrival window: ${range}${speed === 'Regular' ? ', every week' : ''}.`;
+      el.querySelector('[data-details]').value = S.details;
+    }
     const date = params.get('date');
     if (date && /^\d{4}-\d{2}-\d{2}$/.test(date) && new Date(`${date}T12:00`) >= new Date(new Date().toDateString())) {
       S.timing = 'Pick a date';
