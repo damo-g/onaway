@@ -1494,7 +1494,6 @@
   .qticket::after { bottom: 0; transform: scaleY(-1); }
   .qticket__body { min-width: 0; padding: var(--spacing-34); }
   .qticket__head { display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--spacing-21); }
-  .qticket__wm { width: 96px; height: auto; }
   .qticket__row { display: grid; grid-template-columns: var(--spacing-89) 1fr; gap: 0 var(--spacing-13); align-items: baseline; padding-block: var(--spacing-13); border-top: 1px dashed color-mix(in srgb, var(--color-carbon) 28%, transparent); cursor: pointer; }
   .qticket__row dt { color: var(--qp-mut); }
   .qticket__row:hover dt { color: var(--color-carbon); }
@@ -1506,7 +1505,7 @@
   .qticket__prog { position: relative; height: 3px; margin-top: var(--spacing-21); background: color-mix(in srgb, var(--color-carbon) 12%, transparent); }
   .qticket__prog i { position: absolute; inset: 0 auto 0 0; width: 0; background: var(--color-carbon); transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1); }
   .qticket__progl { display: flex; justify-content: space-between; gap: var(--spacing-8); margin-top: var(--spacing-8); color: var(--qp-mut); }
-  .qticket__stub { position: relative; display: flex; flex-direction: column; align-items: center; justify-content: space-between; gap: var(--spacing-21); padding-block: var(--spacing-34); border-left: 1.5px dashed color-mix(in srgb, var(--color-carbon) 35%, transparent); color: color-mix(in srgb, var(--color-carbon) 60%, transparent); transition: transform 0.7s cubic-bezier(0.2, 0.8, 0.2, 1) 0.25s, box-shadow 0.7s 0.25s; }
+  .qticket__stub { position: relative; display: flex; flex-direction: column; align-items: center; justify-content: flex-start; gap: var(--spacing-21); padding-block: var(--spacing-34); border-left: 1.5px dashed color-mix(in srgb, var(--color-carbon) 35%, transparent); color: color-mix(in srgb, var(--color-carbon) 60%, transparent); transition: transform 0.7s cubic-bezier(0.2, 0.8, 0.2, 1) 0.25s, box-shadow 0.7s 0.25s; }
   .qticket__stub svg { width: var(--spacing-34); height: var(--spacing-34); }
   .qticket__v { writing-mode: vertical-rl; rotate: 180deg; color: var(--color-carbon); }
   .qticket__v--sent { display: none; }
