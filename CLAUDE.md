@@ -15,7 +15,7 @@ Static marketing site for ONAWAY: cleaning, moving and delivery across the GTA (
 - **Smooth scroll:** Lenis, driven by `gsap.ticker`, with `ScrollTrigger.update` on scroll. It is turned off under `prefers-reduced-motion`.
 - **Partials:** Handlebars via `vite-plugin-handlebars` for the nav and footer.
 - **Fonts:** self-hosted WOFF2 files in `public/fonts`, Instrument Sans (variable, `wdth` + `wght`) and Overpass Mono. No Google Fonts in production.
-- **Hosting:** local first on `npm run dev` (localhost:5173). Client demos go through `cloudflared tunnel --url http://localhost:5173`. Cloudflare Pages comes later; no domain is bought yet.
+- **Hosting:** Namecheap cPanel shared hosting (no Node), onaway.ca as an addon domain. Every push to `main` deploys via GitHub Actions (see Deploy). Local dev on `npm run dev` (localhost:5173); client demos through `cloudflared tunnel --url http://localhost:5173`.
 
 ## Design tokens (the only values allowed)
 - **Colour:** paper #F7F2E7 · carbon #202521 · yellow #E4BB3F · rust #A9503E · camel #B49A78.
@@ -66,3 +66,12 @@ Leave 144 of paper between the quote and the footer.
 - `npm run build` writes the static site to `dist/`.
 - `npm run preview` serves the built `dist/`.
 - `cloudflared tunnel --url http://localhost:5173` gives a temporary public link for a client.
+
+## Deploy
+- Commit locally, push to `main`. GitHub Actions (`.github/workflows/deploy.yml`) runs `npm ci` and `npm run build`, then uploads `dist/` over FTPS to the onaway.ca document root (secrets FTP_SERVER, FTP_USERNAME, FTP_PASSWORD). Live in a minute or two; the first run takes longer while images encode (they're cached after).
+- Rerun: GitHub → Actions → "Deploy to onaway.ca" → Run workflow.
+- `public/.htaccess` ships with the build: redirects onaway.adeona.ca and www to https://onaway.ca, clean URLs, 404 page, caching, compression.
+
+## Before launch
+- Remove `<meta name="robots" content="noindex">` from every page and change `public/robots.txt` to allow crawling.
+- Replace the placeholder contact details in the footer (and the nav's phone number).

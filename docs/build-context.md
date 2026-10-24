@@ -127,10 +127,10 @@ The full settings are in **Homepage Locked Decisions**.
 | Shaders | Plain WebGL in one small module, with a still fallback |
 | Shared nav and footer | Handlebars partials via `vite-plugin-handlebars` |
 | Fonts | Self-hosted WOFF2 files for Instrument Sans (variable, including the width axis) and Overpass Mono. No Google Fonts call in production |
-| Forms | Formspree or a Cloudflare Pages Function, decided at the quote page |
+| Forms | Formspree or a small PHP handler on the host, decided at the quote page |
 | Source control | **Git, local first.** Push to a private GitHub repo whenever you're ready, so there's an off-machine backup |
 | Phase 1: local | Build and review on `localhost:5173` (`npm run dev`). For a client look during a call, use a Cloudflare Quick Tunnel: `cloudflared tunnel --url http://localhost:5173`. It's free and needs no account or domain |
-| Phase 2: hosting, later | **Cloudflare Pages** on the free `*.pages.dev` address: `main` is production and every branch gets a preview URL. The custom domain is added once onaway.ca is bought |
+| Hosting | **Namecheap cPanel shared hosting**, onaway.ca (addon domain). Every push to `main` builds in GitHub Actions and uploads `dist/` over FTPS. onaway.adeona.ca redirects to onaway.ca |
 
 ### Repo layout
 
@@ -151,7 +151,7 @@ onaway/
 
 - Branch `section/01-hero`, and so on, one per section.
 - Review it on localhost, or through the tunnel for the client, then merge to `main`.
-- Once Cloudflare Pages is connected, each pushed branch also gets a preview link.
+- Merging to `main` deploys to https://onaway.ca automatically.
 - Commits are small and named by section.
 
 ## 5. Conditions for every section
@@ -181,7 +181,7 @@ onaway/
 - Budget: page JS under 120 KB gzipped, LCP under 2.5s on 4G.
 
 **Sign-off**
-- Each section is approved on its preview link before the next one starts.
+- Each section is approved on localhost or the tunnel before the next one starts.
 
 ## 6. Still placeholder or post-build
 
@@ -220,7 +220,7 @@ onaway/
    - the R2-E backdrop
    - tb05 and any others used
 7. **Design system export:** the Figma variables, styles or the token sheet, if they differ from §2 at all.
-8. **Your machine:** Node 20 or newer, Git, and `cloudflared` for tunnels. A GitHub account and a Cloudflare account come later, not now.
+8. **Your machine:** Node 20 or newer, Git, and `cloudflared` for tunnels. A GitHub account for the repo and deploys.
 9. **Copy:** the current section copy as it stands in the mocks. It will be used with minimal revisions.
 10. **Decided:** the grid margin is 20px.
 

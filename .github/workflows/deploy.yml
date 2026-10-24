@@ -1,0 +1,44 @@
+# Every push to main builds the site and uploads dist/ to Namecheap (cPanel) over FTPS.
+# The FTP account is rooted in the onaway.ca document root, so dist/ goes to ./ as-is.
+name: Deploy to onaway.ca
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+concurrency:
+  group: deploy-production
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - run: npm ci
+
+      # Encoded AVIF/WebP variants are slow to make; reuse them until a source image or the encoder changes
+      - name: Restore encoded images
+        uses: actions/cache@v4
+        with:
+          path: node_modules/.cache/onaway-images
+          key: images-${{ hashFiles('src/assets/images/**', 'scripts/vite-images.js') }}
+
+      - run: npm run build
+
+      - name: Upload to Namecheap (FTPS)
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.5
+        with:
+          server: ${{ secrets.FTP_SERVER }}
+          username: ${{ secrets.FTP_USERNAME }}
+          password: ${{ secrets.FTP_PASSWORD }}
+          protocol: ftps
+          local-dir: ./dist/
+          server-dir: ./

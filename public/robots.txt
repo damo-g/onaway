@@ -1,0 +1,3 @@
+# Pre-launch: keep the site out of search results. At launch, replace with "Allow: /" and a sitemap.
+User-agent: *
+Disallow: /

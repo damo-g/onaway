@@ -28,6 +28,7 @@ export default defineConfig(({ command }) => ({
       // tokens.html is a dev review page (served by `npm run dev`), not part of the site build
       input: {
         main: resolve(root, 'index.html'),
+        notFound: resolve(root, '404.html'), // served by .htaccess ErrorDocument
       },
     },
   },

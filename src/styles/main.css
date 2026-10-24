@@ -1331,6 +1331,16 @@
   }
   @media (prefers-reduced-motion: reduce) { .footer__signal { animation: none !important; } }
   html[data-motion="reduce"] .footer__signal { animation: none !important; }
+
+  /* ---------- 404 ---------- */
+  .notfound { padding-block: var(--section-gap); }
+  .notfound__title { margin-top: var(--spacing-21); }
+  .notfound__lead { max-width: 36ch; margin-top: var(--spacing-21); color: color-mix(in srgb, var(--color-carbon) 78%, transparent); }
+  .notfound__actions { display: flex; flex-wrap: wrap; gap: var(--spacing-13); margin-top: var(--spacing-55); }
+  .notfound__actions a { display: inline-flex; align-items: center; gap: var(--spacing-21); height: var(--spacing-55); padding-inline: var(--spacing-21); font-size: var(--text-body); font-weight: 600; }
+  .notfound__home { background: var(--color-carbon); color: var(--color-paper); }
+  .notfound__quote { background: var(--color-yellow); color: var(--color-carbon); }
+  .notfound__home:focus-visible { outline-color: var(--color-carbon); }
 }
 
 @keyframes hero-reveal { to { visibility: visible; } }

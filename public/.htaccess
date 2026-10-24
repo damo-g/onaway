@@ -1,0 +1,57 @@
+# ONAWAY · served from the onaway.ca document root (Namecheap cPanel, addon domain).
+# Vite copies this file from public/ into dist/; the deploy uploads dist/ as-is.
+
+<IfModule mod_rewrite.c>
+  RewriteEngine On
+  RewriteBase /
+
+  # 1. The cPanel alias onaway.adeona.ca → onaway.ca, keeping the path
+  RewriteCond %{HTTP_HOST} ^onaway\.adeona\.ca$ [NC]
+  RewriteRule ^ https://onaway.ca%{REQUEST_URI} [R=301,L]
+
+  # 2. www → onaway.ca
+  RewriteCond %{HTTP_HOST} ^www\.onaway\.ca$ [NC]
+  RewriteRule ^ https://onaway.ca%{REQUEST_URI} [R=301,L]
+
+  # 3. Force https
+  RewriteCond %{HTTPS} !=on
+  RewriteCond %{HTTP:X-Forwarded-Proto} !https
+  RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [R=301,L]
+
+  # 4. Clean URLs: /quote or /quote/ serves quote.html when that file exists.
+  #    Real files and folders are never rewritten.
+  RewriteCond %{REQUEST_FILENAME} !-f
+  RewriteCond %{REQUEST_FILENAME} !-d
+  RewriteCond %{DOCUMENT_ROOT}/$1.html -f
+  RewriteRule ^(.+?)/?$ $1.html [L]
+</IfModule>
+
+# 5. Not found
+ErrorDocument 404 /404.html
+
+# Types some shared hosts don't know yet
+<IfModule mod_mime.c>
+  AddType image/avif .avif
+  AddType image/webp .webp
+  AddType font/woff2 .woff2
+  AddType image/svg+xml .svg
+</IfModule>
+
+# 6. Caching: Vite's hashed files (name-HASH.ext, under /assets/) for a year; HTML always revalidates
+<IfModule mod_headers.c>
+  <FilesMatch "\.html$">
+    Header set Cache-Control "no-cache"
+  </FilesMatch>
+  <FilesMatch "-[A-Za-z0-9_-]{8}\.(js|css)$">
+    Header set Cache-Control "public, max-age=31536000, immutable"
+  </FilesMatch>
+</IfModule>
+
+# 7. Compress text
+<IfModule mod_deflate.c>
+  AddOutputFilterByType DEFLATE text/html text/css text/plain text/xml application/javascript text/javascript application/json image/svg+xml
+</IfModule>
+
+# 8. No directory listings
+Options -Indexes
+DirectoryIndex index.html
