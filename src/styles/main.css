@@ -235,6 +235,9 @@
     color: var(--color-carbon);
   }
   .site-nav[data-past] { --nav-bg-o: 1; --nav-line-o: 1; }
+  /* Near the footer (which repeats its links) the bar slides away */
+  .site-nav { transition: transform 0.4s var(--ease-out), visibility 0.4s; }
+  .site-nav[data-hidden] { transform: translateY(-100%); visibility: hidden; }
   .site-nav[data-after="clear"][data-past] { --nav-bg-o: 0; --nav-line-o: 0; }
   .site-nav[data-after="clear"][data-theme="dark"] { color: var(--color-paper); }
   /* Buttons keep their fills; the Carbon call button gets the dark hairline so it doesn't vanish on Carbon */
@@ -1194,7 +1197,7 @@
   .footer__cols { margin-top: var(--spacing-55); row-gap: var(--spacing-34); }
   .footer__cols::before { content: ""; grid-column: 1 / -1; height: 1px; background: var(--ft-line); }
   .footer__col { grid-column: 1 / -1; }
-  .footer__label { display: block; padding-bottom: var(--spacing-13); color: var(--ft-fg); }
+  .footer__label { display: block; padding-bottom: var(--spacing-13); color: var(--ft-mut); } /* headings, not links */
   .footer__row {
     position: relative;
     isolation: isolate;

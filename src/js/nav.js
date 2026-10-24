@@ -46,4 +46,15 @@ export function initNav() {
     });
   });
   if (import.meta.env.DEV) document.addEventListener('section:options', update);
+
+  // Hide the bar once the footer reaches the middle of the screen; it returns when you scroll back up
+  const footer = document.querySelector('.footer');
+  if (footer) {
+    ScrollTrigger.create({
+      trigger: footer,
+      start: 'top 50%',
+      onEnter: () => { nav.setAttribute('data-hidden', ''); nav.querySelector('.nav-drop')?.dispatchEvent(new MouseEvent('mouseleave')); },
+      onLeaveBack: () => nav.removeAttribute('data-hidden'),
+    });
+  }
 }

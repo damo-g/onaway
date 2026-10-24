@@ -27,7 +27,7 @@ export function init(el) {
   const note = el.querySelector('.incl__note');
   const sw = el.querySelector('.incl__switch');
   const still = prefersReducedMotion();
-  const S = { space: 'home', deep: false, i: 0, held: false, picked: false };
+  const S = { space: 'work', deep: false, i: 0, held: false, picked: false };
   let anim = null;
   let gen = 0;
 

@@ -48,7 +48,9 @@ Desktop 1512 × 860 · 12 columns · mocks drawn on a 20 margin (Brand Guide say
 - Cleaning · What's included (WI-01b, with the user's settings): route of five stops in the crew's order, every list in full; Homes / Workplaces and a Deep clean switch (off by default). Deep items carry an inline + at weight 500; "Deep clean adds the + items" shows only while it's on. Stop names h3 26; current and passed stops Carbon; inactive lists dimmed lightly (85%). Tour every 3.6s; hovering the route pauses it, clicking a stop holds it. Below 1024 the route is vertical with no tour. How often pauses only on its tabs and days.
 - Cleaning · Questions (CH-03b, locked): heading on 1–4, a 440 message window on 6–12 (70svh on phones) that scrolls inside; five chips (asked ones fade), answers typed character by character after typing dots with a block caret, "Onaway" label, ASK button, chips only (no free typing yet). All answers are in the HTML as a list for search and the Help page; the typing is presentation. Closing line: Moving out? Pair it with a move-out clean → /moving/. Answers are drafts for the client to confirm.
 - What's included: controls right-aligned; 8 between the heading and its line.
-- Footer TEXT uses the same number as CALL (+1 647 877 1411).
+- Footer TEXT uses the same number as CALL (+1 647 877 1411). Footer column headings are muted (62% Paper), like the CALL / TEXT keys.
+- Navbar slides away once the footer reaches the middle of the screen and returns on scrolling back up (every page).
+- What's included opens on Workplaces.
 - Nav and footer list Cleaning before Moving.
 
 ## Post-build
