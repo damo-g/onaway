@@ -1364,17 +1364,15 @@
   .qstep__head { display: flex; align-items: center; gap: var(--spacing-21); width: 100%; min-height: var(--spacing-89); padding-block: var(--spacing-21); text-align: left; cursor: default; }
   .qstep__n { width: var(--spacing-34); flex: none; white-space: nowrap; }
   .qstep__title { flex: none; font-size: var(--text-h2); line-height: 1.05; font-weight: 600; letter-spacing: -0.01em; }
-  .qstep__sum, .qstep__edit, .qstep__wait { display: none; }
+  .qstep__sum, .qstep__edit { display: none; }
   .qstep__sum { margin-left: auto; max-width: 55%; font-size: var(--text-body); text-align: right; color: var(--qp-mut); }
   .qstep__edit { flex: none; margin-left: var(--spacing-21); font-size: var(--text-small); text-decoration: underline; text-underline-offset: 4px; }
-  .qstep__wait { margin-left: auto; color: var(--qp-mut); }
   .qstep.can-open .qstep__head { cursor: pointer; }
   .qstep.is-done .qstep__title, .qstep.is-waiting .qstep__title { font-size: var(--text-h3); }
   .qstep.is-done :is(.qstep__sum, .qstep__edit) { display: block; }
   .qstep.is-done .qstep__n::before { content: "✓ "; }
   .qstep.is-waiting :is(.qstep__title, .qstep__n) { color: var(--qp-mut); }
   .qstep.is-waiting.can-open .qstep__title { color: var(--color-carbon); }
-  .qstep.is-waiting:not(.can-open) .qstep__wait { display: block; }
   .qstep__body { display: none; padding: 0 0 var(--spacing-55) var(--spacing-55); }
   .qstep.is-open .qstep__body { display: block; animation: qp-up 0.45s cubic-bezier(0.2, 0.7, 0.2, 1) both; }
   /* "GOT IT": a 2px line runs along the step's edge for 0.8s */
@@ -1508,7 +1506,7 @@
   .qticket__prog { position: relative; height: 3px; margin-top: var(--spacing-21); background: color-mix(in srgb, var(--color-carbon) 12%, transparent); }
   .qticket__prog i { position: absolute; inset: 0 auto 0 0; width: 0; background: var(--color-carbon); transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1); }
   .qticket__progl { display: flex; justify-content: space-between; gap: var(--spacing-8); margin-top: var(--spacing-8); color: var(--qp-mut); }
-  .qticket__stub { position: relative; display: flex; flex-direction: column; align-items: center; justify-content: space-between; padding-block: var(--spacing-34); border-left: 1.5px dashed color-mix(in srgb, var(--color-carbon) 35%, transparent); color: color-mix(in srgb, var(--color-carbon) 60%, transparent); transition: transform 0.7s cubic-bezier(0.2, 0.8, 0.2, 1) 0.25s, box-shadow 0.7s 0.25s; }
+  .qticket__stub { position: relative; display: flex; flex-direction: column; align-items: center; justify-content: space-between; gap: var(--spacing-21); padding-block: var(--spacing-34); border-left: 1.5px dashed color-mix(in srgb, var(--color-carbon) 35%, transparent); color: color-mix(in srgb, var(--color-carbon) 60%, transparent); transition: transform 0.7s cubic-bezier(0.2, 0.8, 0.2, 1) 0.25s, box-shadow 0.7s 0.25s; }
   .qticket__stub svg { width: var(--spacing-34); height: var(--spacing-34); }
   .qticket__v { writing-mode: vertical-rl; rotate: 180deg; color: var(--color-carbon); }
   .qticket__v--sent { display: none; }
@@ -1516,21 +1514,14 @@
   /* Sent: the stub tears away with the reference, the RECEIVED stamp lands where the progress was */
   .qp.is-sent .qticket__stub { transform: translate(13px, 8px) rotate(3deg); box-shadow: 0 13px 34px color-mix(in srgb, var(--color-carbon) 16%, transparent); }
   .qp.is-sent :is(.qticket__prog, .qticket__progl) { visibility: hidden; }
-  .qp.is-sent .qticket__v--open { display: none; }
   .qp.is-sent .qticket__v--sent { display: block; }
   .qp.is-sent .qticket__stamp { opacity: 1; transform: rotate(-6deg) scale(1); }
-  .qp.is-sent .qside__hours { display: none; }
   .qside__block { padding-block: var(--spacing-34); border-top: 1px solid var(--color-line); }
   .qside__h { margin-bottom: var(--spacing-21); font-size: var(--text-h3); font-weight: 600; }
   .qside__call { display: flex; align-items: center; justify-content: space-between; gap: var(--spacing-13); height: var(--spacing-55); padding-inline: var(--spacing-21); border: 1.5px solid var(--color-carbon); font-size: var(--text-lead); font-weight: 600; transition: background-color 0.25s, color 0.25s; }
   .qside__call small { font-weight: 500; }
   .qside__call:hover { background: var(--color-carbon); color: var(--color-paper); }
   .qside__mail { display: inline-block; margin-top: var(--spacing-13); font-size: var(--text-body); text-decoration: underline; text-underline-offset: 4px; }
-  .qside__hours p { font-size: var(--text-body); line-height: 1.6; }
-  .qside__hours .label { margin-bottom: var(--spacing-21); font-weight: 600; }
-  .qside__now { display: flex; align-items: center; gap: var(--spacing-8); margin-top: var(--spacing-13); }
-  .qside__now i { width: var(--spacing-8); height: var(--spacing-8); border-radius: 50%; background: var(--color-carbon); }
-  .qside__hours.is-closed .qside__now i { background: var(--color-rust); }
 
   @media (width < 768px) {
     .qstep__body { padding-left: 0; }

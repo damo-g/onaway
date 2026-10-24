@@ -48,7 +48,6 @@ export function init(el) {
     const c = clock();
     el.querySelectorAll('[data-q]').forEach((n) => (n.textContent = c[n.dataset.q]));
     el.querySelector('.qp__after').hidden = c.isOpen;
-    el.querySelector('.qside__hours').classList.toggle('is-closed', !c.isOpen);
   }
   tick();
   setInterval(tick, 30000);
