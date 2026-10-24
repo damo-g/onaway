@@ -52,6 +52,34 @@
         </div>
       </div>
     </section>
+
+    {{!-- DL-02 How soon: the Cleaning How often pattern (HO-08) with three weeks of days and a row of arrival windows.
+         Cut-off, lead time, windows and defaults are the SOON settings in src/js/sections/soon.js --}}
+    <section class="often soon grid-site" data-section="soon" aria-labelledby="soon-title">
+      <h2 id="soon-title" class="often__title col-span-full lg:col-span-4">How soon.<small>Today, a day you pick, or the same slot every week.</small></h2>
+      <div class="often__pick col-span-full lg:col-start-6 lg:col-span-7">
+        <div class="often__tabs" role="tablist" aria-label="How soon">
+          <button type="button" role="tab" class="often__tab" data-i="0">Same-day</button>
+          <button type="button" role="tab" class="often__tab" data-i="1">Scheduled</button>
+          <button type="button" role="tab" class="often__tab" data-i="2">Regular</button>
+        </div>
+        <p class="often__note label">Your day and window are held in writing.</p>
+      </div>
+      <div class="often__vis col-span-full">
+        <p class="often__cap" aria-live="polite"></p>
+        <div class="soon__box">
+          <p class="soon__lbl label"><span class="soon__dl">The next three weeks</span></p>
+          <div class="soon__days" role="group" aria-label="Day"></div>
+          <p class="soon__lbl label"><span class="soon__wl"></span><span class="soon__cut"></span></p>
+          <div class="soon__wins" role="group" aria-label="Arrival window"></div>
+        </div>
+        <p class="often__hint label">Tap a day and a window</p>
+        <div class="often__act" hidden>
+          <a class="often__cta" href="/quote/?service=delivery">Get a delivery quote <span aria-hidden="true">→</span></a>
+          <button type="button" class="often__reset">Start over</button>
+        </div>
+      </div>
+    </section>
   </main>
 
   {{> footer}}
