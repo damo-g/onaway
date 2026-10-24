@@ -593,8 +593,9 @@
   /* ---------- Steps (TS-02 Journey Ticket) ---------- */
   /* Options (dev panel): data-ticket stamps (locked) | stamp | pin | notch · data-symbol centre (locked) | foot
      · data-animation write (locked) | across | unroll. */
-  /* Generous air above the copy: section gap + 89 (233 on desktop, 178 on phones) */
-  .steps { padding-top: calc(var(--section-gap) + var(--spacing-89)); }
+  /* About section gap + 89 between the R2-E board and the copy, counting the paper the board already
+     leaves under itself (--services-tail, set by services.js); never less than 55 of its own */
+  .steps { padding-top: max(var(--spacing-55), calc(var(--section-gap) + var(--spacing-89) - var(--services-tail, 0px))); }
   .steps .section__grid { row-gap: var(--spacing-55); align-items: start; }
   .steps__intro { display: flex; flex-direction: column; gap: var(--spacing-34); }
   .steps__lead { max-width: 30ch; color: color-mix(in srgb, var(--color-carbon) 78%, transparent); }
