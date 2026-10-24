@@ -95,9 +95,6 @@
 
   /* Navbar height as a utility (pt-nav …); the per-breakpoint sizes live in :root below */
   --spacing-nav: var(--nav-h);
-  --text-button: 18px;
-  --text-numeral: 56px; /* TS-02 step numbers */
-  --text-sentence: 60px; /* QC-02 quote sentence */
   --tracking-nav: 0.02em;
   --tracking-mono: 0.06em;
 
@@ -107,11 +104,11 @@
 /* Registered so JS reads resolved px (getComputedStyle) for the hero scrub */
 @property --grid-margin { syntax: "<length>"; inherits: true; initial-value: 20px; }
 @property --grid-gutter { syntax: "<length>"; inherits: true; initial-value: 20px; }
-@property --nav-h { syntax: "<length>"; inherits: true; initial-value: 72px; }
+@property --nav-h { syntax: "<length>"; inherits: true; initial-value: 55px; }
 @property --nav-h-a { syntax: "<length>"; inherits: true; initial-value: 89px; }
 @property --wm-h { syntax: "<length>"; inherits: true; initial-value: 21px; }
 @property --wm-h-a { syntax: "<length>"; inherits: true; initial-value: 21px; }
-@property --btn-h-a { syntax: "<length>"; inherits: true; initial-value: 72px; }
+@property --btn-h-a { syntax: "<length>"; inherits: true; initial-value: 55px; }
 @property --hero-gap-a { syntax: "<length>"; inherits: true; initial-value: 34px; }
 
 /* ---------- Grid: 12 / 8 / 4 columns, stretch, width auto ---------- */
@@ -125,31 +122,28 @@
 
     /* Navbar, from HF-01. Docked: --nav-h, --wm-h; the call and quote buttons fill the bar, flush right.
        State A (bar on the fold): *-a; the buttons are --btn-h-a tall, centred, inset by the margin. */
-    --nav-h: 72px;
+    --nav-h: 55px;
     --nav-h-a: 89px;
     --wm-h: 21px;
     --wm-h-a: 21px;
-    --btn-h-a: 72px;
+    --btn-h-a: 55px;
     --hero-gap-a: 55px;
   }
   @media (width >= 768px) {
     :root {
       --grid-cols: 8; --section-gap: 144px;
-      --nav-h: 80px; --nav-h-a: 144px; --wm-h: 36px; --wm-h-a: 36px; --btn-h-a: 80px; --hero-gap-a: 89px;
+      --nav-h: 89px; --nav-h-a: 144px; --wm-h: 34px; --wm-h-a: 34px; --btn-h-a: 89px; --hero-gap-a: 89px;
     }
   }
   @media (width >= 1024px) {
     :root {
       --grid-cols: 12;
       /* Wordmark 110 → 36 at the 1512 frame; smaller screens start smaller so the bar never crowds */
-      --nav-h-a: 150px; --wm-h-a: clamp(36px, calc((100vw - 1100px) * 0.267), 110px);
+      --nav-h-a: 144px; --wm-h-a: clamp(34px, calc((100vw - 1100px) * 0.267), 110px);
       --hero-gap-a: 144px; /* plate ends well above the bar, as in the HF-01 inspiration */
     }
   }
 
-  @media (width >= 1280px) {
-    :root { --nav-h: 88px; --btn-h-a: 88px; }
-  }
 
   /* Pages without the hero start below the fixed navbar */
   body:not(:has([data-section="hero"])) { padding-top: var(--nav-h); }
@@ -377,7 +371,7 @@
   @media (width >= 768px) {
     .nav-call { display: flex; padding-inline: var(--spacing-21); }
     .nav-call-number { display: inline; }
-    .nav-quote { gap: var(--spacing-34); padding-inline: var(--spacing-21); font-size: var(--text-button); }
+    .nav-quote { gap: var(--spacing-34); padding-inline: var(--spacing-21); font-size: var(--text-lead); }
     .nav-quote-arrow { display: inline; }
   }
   @media (width >= 1024px) {
@@ -600,12 +594,12 @@
   .steps__intro { display: flex; flex-direction: column; gap: var(--spacing-34); }
   .steps__lead { max-width: 30ch; color: color-mix(in srgb, var(--color-carbon) 78%, transparent); }
 
-  /* Sizes from TS-02: body 720 × 500 with a 56 stub, tear-off 152, stamp 118 */
+  /* TS-02 on the scale: 500 tall body with a 55 stub, 144 tear-off, 89 stamp */
   .ticket {
     --ticket-h: 500px;
-    --tear-w: 152px;
-    --stub: 56px;
-    --stamp-size: 118px;
+    --tear-w: var(--spacing-144);
+    --stub: var(--spacing-55);
+    --stamp-size: var(--spacing-89);
     --ticket-face: color-mix(in srgb, var(--color-carbon) 5%, var(--color-paper));
     --ticket-stub: color-mix(in srgb, var(--color-carbon) 7%, var(--color-paper));
     --ticket-rule: color-mix(in srgb, var(--color-carbon) 12%, transparent);
@@ -644,7 +638,7 @@
   .ticket__fields { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); }
   .ticket__field { display: flex; flex-direction: column; gap: var(--spacing-13); padding: var(--spacing-55) var(--spacing-21); }
   .ticket__field + .ticket__field { border-left: 1px solid var(--ticket-rule); }
-  .ticket__num { margin-bottom: var(--spacing-21); font-size: var(--text-numeral); line-height: 1; font-weight: 500; letter-spacing: -0.02em; }
+  .ticket__num { margin-bottom: var(--spacing-21); font-size: var(--text-h1); line-height: 1; font-weight: 500; letter-spacing: -0.02em; }
   .ticket__title { font-size: var(--text-h3); line-height: var(--text-h3--line-height); font-weight: 600; }
   .ticket__copy { font-size: var(--text-body); line-height: var(--text-body--line-height); color: color-mix(in srgb, var(--color-carbon) 72%, transparent); }
   .ticket__seam { position: absolute; top: 0; bottom: 0; left: var(--stub); width: 0; }
@@ -663,7 +657,7 @@
     rotate: -10deg;
     font-family: var(--font-mono);
     font-size: var(--text-label);
-    line-height: 1.7;
+    line-height: 1.3;
     letter-spacing: var(--text-label--letter-spacing);
     font-weight: 600;
     font-stretch: normal;
@@ -719,7 +713,6 @@
       --seam-t: radial-gradient(circle var(--br) at 50% 0, transparent 96%, var(--cut) 100%) top / var(--bp) 100% repeat-x;
       --mask-body: var(--e-l), var(--e-r), var(--e-t), var(--seam-b);
       --mask-tear: var(--e-l), var(--e-r), var(--seam-t), var(--e-b);
-      --stamp-size: 89px;
     }
     .steps[data-ticket="pin"] .ticket,
     .steps[data-ticket="notch"] .ticket { --mask-body: var(--seam-b); --mask-tear: var(--seam-t); }
@@ -1123,7 +1116,7 @@
     display: inline-flex;
     align-items: center;
     gap: var(--spacing-34);
-    height: 76px;
+    height: var(--spacing-89);
     padding-inline: var(--spacing-34);
     background: var(--qc-cta-bg);
     color: var(--qc-cta-fg);
@@ -1152,7 +1145,7 @@
     .qc { padding-bottom: var(--spacing-89); }
   }
   @media (width >= 1024px) {
-    .qc__sentence { font-size: var(--text-sentence); }
+    .qc__sentence { font-size: var(--text-h1); }
   }
 
   /* Entrance: the route draws in once on entry (quote.js arms it). Reduced motion: no drawing, drift or square. */

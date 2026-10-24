@@ -49,7 +49,7 @@ Leave 144 of paper between the quote and the footer.
 
 ## Rules for every change
 - Work **one section at a time** on the branch `section/NN-name`. Don't start the next section until the user signs off.
-- **Tokens only:** no raw hex, px or spacing outside the theme.
+- **Tokens only:** no raw hex, px or spacing outside the theme. Type uses only the eight scale sizes; component heights snap to the spacing scale (e.g. 55, 89, 144).
 - **Semantic HTML**, visible focus states, and WCAG AA contrast. Decorative canvases get `aria-hidden`.
 - **Reduced motion:** build the end state first, then add motion. Motion goes one thing at a time, left to right, ease-out. No parallax.
 - **Images:** AVIF/WebP with `srcset`, lazy loaded below the fold. Put the full-size source in `src/assets/images/` and write `{{picture "name" alt="…" sizes="…"}}`; `scripts/vite-images.js` encodes the widths (cached) and only ships images a page uses. Review-only alternatives go inside `{{#if dev}}…{{/if}}`.
@@ -57,7 +57,7 @@ Leave 144 of paper between the quote and the footer.
 - **Copy:** use it exactly as in the mocks unless the user changes it. CTA wording is "Get a free quote".
 - **Checking:** before saying a section is done, run the dev server, screenshot it at 1512, 1280 and 390 (Playwright, `npm run shots`), plus 1920 for wide screens, compare against the section image and the mock, and fix what doesn't match. Screenshots go to the OS temp folder, never into the repo.
 - **Review panel:** section options live only in the dev review panel; the locked option is the default; nothing from the panel ships in the build. Register options with `registerOptions(id, { option: [locked, ...alternatives] })` from `src/js/options.js`.
-- **Navbar:** fixed; docked height 88 on xl, 80 on tablet, 72 on mobile, with the call and quote buttons filling it flush right. Wordmark, links, FR, Carbon call button, yellow "Get a free quote". The hero drives its docking; after the hero it is on paper (locked) or clear with colour switching over `[data-nav-theme="dark"]` sections (panel option `nav.after`).
+- **Navbar:** fixed; docked height 89 from tablet up and 55 on phones (spacing tokens), with the call and quote buttons filling it flush right. Wordmark, links, FR, Carbon call button, yellow "Get a free quote". The hero drives its docking; after the hero it is on paper (locked) or clear with colour switching over `[data-nav-theme="dark"]` sections (panel option `nav.after`).
 - **Motion:** use `onEnterOnce` and `pinScrub` from `src/js/motion.js`; both jump to the end state under reduced motion.
 - **Commits:** small, named by section, e.g. `hero: pinned scrub`.
 
