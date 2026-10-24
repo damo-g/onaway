@@ -80,6 +80,23 @@
         </div>
       </div>
     </section>
+
+    {{!-- What's included: the Moving plan route (MV-02, on WI-01b) with delivery stops and one add-on chip.
+         Lists live in src/js/data/delivery-plan.js. src/js/sections/included.js --}}
+    <section class="incl grid-site" data-section="included" data-plan="delivery" aria-labelledby="incl-title">
+      <h2 id="incl-title" class="incl__title col-span-full lg:col-span-6">What’s included.<small>From pickup to placed, in the order it happens.</small></h2>
+      <div class="incl__ctl col-span-full lg:col-start-8 lg:col-span-5">
+        <div class="incl__seg" role="group" aria-label="Delivery for">
+          <button type="button" data-space="home" aria-pressed="true">Homes</button>
+          <button type="button" data-space="business" aria-pressed="false">Businesses</button>
+        </div>
+        <div class="incl__adds" role="group" aria-labelledby="incl-adds">
+          <span id="incl-adds" class="label">Add-ons</span>
+          <button type="button" data-add="assembly" aria-pressed="false"><i aria-hidden="true">+</i>Assembly</button>
+        </div>
+      </div>
+      <div class="incl__route col-span-full"></div>
+    </section>
   </main>
 
   {{> footer}}
