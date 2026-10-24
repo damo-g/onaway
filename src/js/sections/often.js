@@ -129,8 +129,11 @@ export function init(el) {
     }, STEP);
   }
 
-  el.addEventListener('mouseenter', () => { held = true; el.classList.add('is-held'); clearTimeout(timer); });
-  el.addEventListener('mouseleave', () => { held = false; el.classList.remove('is-held'); if (!picked) { show(false); loop(); } });
+  // Hovering the rhythm tabs or the days pauses the loop (not the whole section)
+  [el.querySelector('.often__tabs'), box].forEach((zone) => {
+    zone.addEventListener('mouseenter', () => { held = true; el.classList.add('is-held'); clearTimeout(timer); });
+    zone.addEventListener('mouseleave', () => { held = false; el.classList.remove('is-held'); if (!picked) loop(); });
+  });
   tabs.forEach((t, j) => t.addEventListener('click', () => { i = j; show(); }));
   cells.forEach((c) => c.addEventListener('click', () => {
     start = Number(c.dataset.k);

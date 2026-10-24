@@ -1694,6 +1694,63 @@
     .often__tok { transition: none; }
     .often__tab.is-on::before { animation: none; transform: scaleX(1); }
   }
+  /* ---------- What's included (WI-01b) ---------- */
+  .incl { --mut: color-mix(in srgb, var(--color-carbon) 62%, transparent); position: relative; row-gap: var(--spacing-55); padding-block: var(--section-gap); }
+  .incl::before { content: ""; position: absolute; inset: 0 var(--grid-margin) auto; border-top: 1px solid var(--color-line); }
+  .incl__title { font-size: var(--text-h2); line-height: 1; font-weight: 600; letter-spacing: -0.01em; }
+  .incl__title small { display: block; margin-top: var(--spacing-13); font-size: var(--text-body); line-height: 1.5; font-weight: 400; letter-spacing: 0; color: var(--mut); }
+  .incl__ctl { display: flex; flex-wrap: wrap; align-items: center; gap: var(--spacing-21); align-self: end; }
+  .incl__seg { display: flex; }
+  .incl__seg button { height: var(--spacing-34); padding-inline: var(--spacing-13); border: 1.5px solid var(--color-line); font-size: var(--text-small); font-weight: 600; cursor: pointer; }
+  .incl__seg button + button { margin-left: -1.5px; }
+  .incl__seg button:first-child { border-radius: 2px 0 0 2px; }
+  .incl__seg button:last-child { border-radius: 0 2px 2px 0; }
+  .incl__seg button[aria-pressed="true"] { position: relative; z-index: 1; background: var(--color-carbon); color: var(--color-paper); border-color: var(--color-carbon); }
+  .incl__switch { display: flex; align-items: center; gap: var(--spacing-8); font-size: var(--text-small); font-weight: 600; cursor: pointer; }
+  .incl__track { position: relative; width: 38px; height: 22px; border: 1.5px solid var(--color-carbon); border-radius: 2px; transition: background-color 0.25s; }
+  .incl__track b { position: absolute; top: 3px; left: 3px; width: var(--spacing-13); height: var(--spacing-13); border-radius: 1px; background: var(--color-carbon); transition: transform 0.25s cubic-bezier(0.65, 0, 0.2, 1), background-color 0.25s; }
+  .incl__switch[aria-checked="true"] .incl__track { background: var(--color-carbon); }
+  .incl__switch[aria-checked="true"] .incl__track b { transform: translateX(16px); background: var(--color-paper); }
+
+  /* Route: a 2px line at 15% Carbon filling Carbon stop to stop; five columns */
+  .incl__route { --route-dir: h; position: relative; }
+  .incl__line { position: absolute; inset: 7px 0 auto; height: 2px; background: color-mix(in srgb, var(--color-carbon) 15%, transparent); }
+  .incl__line b { position: absolute; inset: 0 auto 0 0; width: 0; background: var(--color-carbon); }
+  .incl__stops { position: relative; display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); column-gap: var(--grid-gutter); }
+  .incl__stop { position: relative; }
+  .incl__head { display: flex; flex-direction: column; align-items: flex-start; width: 100%; text-align: left; cursor: pointer; }
+  .incl__sq { position: relative; z-index: 1; display: block; width: 16px; height: 16px; border: 2px solid color-mix(in srgb, var(--color-carbon) 35%, transparent); border-radius: 2px; background: var(--color-paper); transition: background-color 0.3s, border-color 0.3s; }
+  .incl__stop.is-past .incl__sq,
+  .incl__stop.is-on .incl__sq { background: var(--color-carbon); border-color: var(--color-carbon); }
+  .incl__num { margin-top: var(--spacing-21); color: var(--mut); }
+  .incl__name { margin-top: var(--spacing-8); font-size: var(--text-h3); line-height: 1.15; font-weight: 600; color: var(--mut); transition: color 0.35s; }
+  .incl__stop:is(.is-on, .is-past) .incl__name { color: var(--color-carbon); }
+  .incl__head:focus-visible { outline-offset: 4px; }
+  /* Every list in full; the stops not playing are only lightly dimmed */
+  .incl__list { margin-top: var(--spacing-21); }
+  .incl__list li { padding-block: var(--spacing-8); border-top: 1px solid color-mix(in srgb, var(--color-carbon) 10%, transparent); font-size: var(--text-small); line-height: 1.4; transition: color 0.35s; }
+  .incl__stop:not(.is-on) .incl__list li { color: color-mix(in srgb, var(--color-carbon) 85%, transparent); }
+  .incl__list li.is-deep { display: none; font-weight: 500; }
+  .incl__list li.is-deep i { margin-right: var(--spacing-8); font-family: var(--font-mono); font-style: normal; font-weight: 600; }
+  .incl.is-deep .incl__list li.is-deep { display: block; animation: incl-in 0.45s ease both; }
+  .incl__note b { font-weight: 600; color: var(--color-carbon); }
+  .incl__note { color: var(--mut); }
+
+  /* Phones and tablets: the route turns vertical at the left, each stop followed by its list */
+  @media (width < 1024px) {
+    .incl__route { --route-dir: v; padding-left: var(--spacing-34); }
+    .incl__line { inset: 0 auto 0 7px; width: 2px; height: auto; }
+    .incl__line b { inset: 0 0 auto 0; width: auto; height: 0; }
+    .incl__stops { grid-template-columns: 1fr; row-gap: var(--spacing-34); }
+    .incl__sq { position: absolute; left: calc(-1 * var(--spacing-34)); top: var(--spacing-8); }
+    .incl__num { margin-top: 0; }
+    /* no timed tour here: every stop reads at full strength */
+    .incl__name, .incl__stop:not(.is-on) .incl__list li { color: var(--color-carbon); }
+    .incl__sq { background: var(--color-carbon); border-color: var(--color-carbon); }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .incl.is-deep .incl__list li.is-deep { animation: none; }
+  }
 }
 
 @keyframes hero-reveal { to { visibility: visible; } }
@@ -1715,4 +1772,5 @@
 @keyframes qp-arm { from { width: 0; } to { width: 100%; } }
 @keyframes svc-swing { 0% { rotate: -1.2deg; } 60% { rotate: 0.4deg; } 100% { rotate: 0deg; } }
 @keyframes often-fill { from { transform: scaleX(0); } to { transform: scaleX(1); } }
+@keyframes incl-in { from { opacity: 0; translate: 0 -6px; } to { opacity: 1; translate: 0 0; } }
 @keyframes tk-head { from { left: 0; opacity: 1; } 95% { opacity: 1; } to { left: 100%; opacity: 0; } }
