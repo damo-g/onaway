@@ -220,8 +220,7 @@ export function init(el) {
       Object.assign(s.desc.style, { left: `${g.under ? nx : g.descX}px`, top: `${descTop}px`, opacity: c, display: show });
       Object.assign(s.fact.style, { left: `${g.factX}px`, top: `${h / 2 - g.factH[i] / 2}px`, opacity: c, display: g.noFact ? 'none' : show });
 
-      const idle = t <= 0.02 || t >= 0.999;
-      s.a.classList.toggle('is-live', idle);
+      s.a.classList.add('is-live'); // clickable and hoverable at every point of the scrub
       s.a.classList.toggle('is-lift', t <= 0.02);
     });
   }

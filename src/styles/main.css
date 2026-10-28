@@ -283,7 +283,7 @@
     position: absolute;
     top: calc(100% + var(--spacing-21));
     left: calc(-1 * var(--spacing-21));
-    width: 360px;
+    width: 320px;
     padding: var(--spacing-13) var(--spacing-21);
     background: var(--color-paper);
     box-shadow: 0 0 0 1px var(--color-line), 0 13px 34px -21px color-mix(in srgb, var(--color-carbon) 45%, transparent);
@@ -377,7 +377,7 @@
   @media (width >= 768px) {
     .nav-call { display: flex; padding-inline: var(--spacing-21); }
     .nav-call-number { display: inline; }
-    .nav-quote { gap: var(--spacing-34); padding-inline: var(--spacing-21); font-size: var(--text-lead); }
+    .nav-quote { gap: var(--spacing-34); padding-inline: var(--spacing-21); font-size: var(--text-body); }
     .nav-quote-arrow { display: inline; }
   }
   @media (width >= 1024px) {
@@ -589,7 +589,7 @@
   .services.is-scripted .sign__tile { transition: background-color 0.2s; }
   .services.is-scripted .sign__desc { line-height: 1.5; }
 
-  /* Hover is live at rest (start and end), paused mid-morph; the face inverts, and lifts 3px at the start */
+  /* Hover and clicks work through the whole scrub; the face inverts, and lifts 3px at the start */
   .services .sign.is-live:hover,
   .services .sign.is-live:focus-visible {
     --s-txt: var(--s-htxt); --s-sub: var(--s-htxt); --s-face: var(--s-hbg); --s-tile: var(--s-hbg); --s-glyph: var(--s-htxt);
@@ -597,7 +597,6 @@
   }
   .services .sign.is-lift:hover,
   .services .sign.is-lift:focus-visible { translate: 0 -3px; }
-  .services.is-scripted .sign:not(.is-live) { pointer-events: none; }
   /* ---------- Steps (TS-02 Journey Ticket) ---------- */
   /* Options (dev panel): data-ticket stamps (locked) | stamp | pin | notch · data-symbol centre (locked) | foot
      · data-animation write (locked) | across | unroll. */
@@ -1237,6 +1236,8 @@
     font-size: var(--text-lead);
     line-height: 1.1;
     font-weight: 600;
+    letter-spacing: var(--tracking-nav);
+    text-transform: uppercase;
     transition: padding 0.3s;
   }
   li:last-child > .nav-drop__row { border-bottom: 0; }
