@@ -5,7 +5,7 @@
   <ul class="help__list" role="list">
     {{#each items}}
     <li class="help__row" id="{{id}}">
-      <h3><button type="button" class="help__q" id="q-{{id}}" aria-expanded="false" aria-controls="a-{{id}}"><span class="help__qt">{{q}}</span><span class="help__ic" aria-hidden="true"><b class="help__i-q">?</b><b class="help__i-tx">Ask</b><svg class="help__i-x" viewBox="0 0 16 16"><path d="M4 4l8 8M12 4l-8 8"/></svg></span></button></h3>
+      <h3><button type="button" class="help__q" id="q-{{id}}" aria-expanded="false" aria-controls="a-{{id}}"><span class="help__qt">{{q}}</span><span class="help__ic" aria-hidden="true"><b class="help__i-q">?</b><b class="help__i-tx">Ask</b>{{{icon "cancel-01" class="help__i-x"}}}</span></button></h3>
       <div class="help__a" id="a-{{id}}" role="region" aria-labelledby="q-{{id}}">
         <div>
           <div class="help__ona">
@@ -13,7 +13,7 @@
             <div>
               <span class="help__who label" aria-hidden="true">Onaway</span>
               <p class="help__bb"><span class="help__text">{{a}}</span></p>
-              <a class="help__more" href="{{link.href}}">{{link.label}} <span aria-hidden="true">→</span></a>
+              <a class="help__more" href="{{link.href}}">{{link.label}} <span aria-hidden="true">{{{icon "arrow-right-02"}}}</span></a>
             </div>
           </div>
         </div>

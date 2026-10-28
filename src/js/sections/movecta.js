@@ -1,4 +1,5 @@
 import { prefersReducedMotion } from '../motion.js';
+import { icon } from '../icons.js';
 
 // MV-04b closing CTA, Floor to Floor (locked: destination House · 2s a stop · checkpoint labels on · crew leaves).
 // Two elevations on one street: where you're moving from follows the chip (a condo floor, a house, an office
@@ -94,7 +95,7 @@ export function init(el) {
     current = key;
     const p = PLACES[key];
     chips.querySelectorAll('button').forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.k === key)));
-    cta.innerHTML = `Get a moving quote for ${p.cta} <span aria-hidden="true">→</span>`;
+    cta.innerHTML = `Get a moving quote for ${p.cta} <span aria-hidden="true">${icon('arrow-right-02')}</span>`;
     const q = new URLSearchParams({ service: 'moving', for: p.for });
     if (p.size) q.set('size', p.size);
     cta.href = `/quote/?${q}`;

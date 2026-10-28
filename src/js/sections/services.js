@@ -1,6 +1,7 @@
 import { registerOptions } from '../options.js';
 import { pinScrub, ScrollTrigger } from '../motion.js';
 import { renderDotMatrix } from '../dotmatrix.js';
+import { icon } from '../icons.js';
 
 // Locked first: light environment (EL-01), dark signs, chained, icon left, straight arrows,
 // description in its own column, fixed facts.
@@ -231,7 +232,7 @@ export function init(el) {
 
   if (import.meta.env.DEV) {
     // Review panel: environment plate, angled arrows and next-window facts are review-only
-    const ANGLED = ['↗', '→', '↘'];
+    const ANGLED = ['arrow-up-right-01', 'arrow-right-02', 'arrow-down-right-01'];
     const WINDOW = [['TUE 8-10', 'Tue 20 Oct'], ['WED 1-3', 'Wed 21 Oct'], ['TODAY 2-4', 'Mon 19 Oct']];
     const FIXED = signs.map((s) => s.fact.innerHTML);
     const pictures = { el01: plate.querySelector('picture') };
@@ -245,7 +246,7 @@ export function init(el) {
       if (env.startsWith('ed')) el.dataset.navTheme = 'dark';
       else delete el.dataset.navTheme;
       signs.forEach((s, i) => {
-        s.arrow.textContent = opt('arrows', 'straight') === 'angled' ? ANGLED[i] : '→';
+        s.arrow.innerHTML = icon(opt('arrows', 'straight') === 'angled' ? ANGLED[i] : 'arrow-right-02');
         s.fact.innerHTML =
           opt('fact', 'fixed') === 'window'
             ? `<span class="label" style="display:block;margin-bottom:8px;color:var(--s-sub)">Next open window · ${WINDOW[i][1]}</span><span data-dm="${WINDOW[i][0]}" data-pitch="5"></span>`

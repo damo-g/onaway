@@ -200,6 +200,10 @@
 
 /* ---------- Components ---------- */
 @layer components {
+  /* Hugeicons (src/icons): 1em, so they size with the text they sit in, stroked in currentColor */
+  .icon { display: inline-block; flex: none; width: 1em; height: 1em; vertical-align: -0.125em; }
+  .nav-menu-ic { display: contents; }
+
   /* Section shell (src/partials/section.hbs). 144 between sections, 89 on mobile. */
   .section { position: relative; }
   .section + .section { margin-top: var(--section-gap); }
@@ -270,7 +274,7 @@
   .nav-links > a { display: inline-flex; align-items: center; gap: var(--spacing-8); }
   .nav-links > a:hover,
   .nav-fr:hover { color: var(--color-rust); }
-  .nav-plus { width: var(--spacing-13); height: var(--spacing-13); transition: rotate 0.3s var(--ease-out); }
+  .nav-plus { width: 1em; height: 1em; transition: rotate 0.3s var(--ease-out); }
 
   /* Services drop: Paper, rows like the footer columns, Signal hover. Opens upward while the bar sits on the fold (hero state A). */
   .nav-drop { position: relative; }
@@ -1897,7 +1901,7 @@
   /* Ask button: 34 square, 1.5 Carbon; hover, focus and open fill Carbon; open shows a close */
   .help__ic { display: flex; flex: none; align-items: center; justify-content: center; width: var(--spacing-34); height: var(--spacing-34); border: 1.5px solid var(--color-carbon); border-radius: 2px; transition: background-color 0.2s, color 0.2s; }
   .help__ic b { display: none; font-family: var(--font-mono); font-size: var(--text-small); font-weight: 600; }
-  .help__ic svg { display: none; width: 16px; height: 16px; fill: none; stroke: currentColor; stroke-width: 1.75; }
+  .help__ic svg { display: none; width: 16px; height: 16px; }
   .help[data-ask="q"] .help__i-q { display: block; }
   .help[data-ask="tx"] .help__ic { width: auto; padding-inline: var(--spacing-13); }
   .help[data-ask="tx"] .help__i-tx { display: block; font-size: var(--text-label); letter-spacing: 0.12em; text-transform: uppercase; }
