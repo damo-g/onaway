@@ -36,18 +36,18 @@
           <span class="svc-band__tile"><svg viewBox="0 0 96 96"><g fill="currentColor"><path d="M30 14h34a8 8 0 0 1 8 8v4a4 4 0 0 1-4 4H54v8H40V30H30a4 4 0 0 1-4-4v-8a4 4 0 0 1 4-4z"/><path d="M72 16h8v8h-8z"/><path d="M40 30h10l-6 16h-6z"/><path d="M36 40h22v4c8 4 12 10 12 18v20a6 6 0 0 1-6 6H32a6 6 0 0 1-6-6V62c0-8 4-14 10-18z"/></g><rect x="34" y="60" width="28" height="14" rx="2" style="fill:var(--band-tile)"/></svg></span>
           <span class="svc-band__name">Cleaning</span>
           <span class="svc-band__board" data-dm="2 HR QUOTE" data-facts="2 HR QUOTE|HOMES + WORK|ONCE OR WEEKLY" data-pitch="3"></span>
-          <span class="svc-band__arrow">↓</span>
+          <span class="svc-band__arrow">{{{icon "arrow-down-02"}}}</span>
         </div>
         <div class="svc-doors">
           <a class="svc-door" href="/quote/?service=cleaning&amp;for=home">
             <span class="svc-door__tile"><svg viewBox="0 0 96 96" aria-hidden="true"><g fill="currentColor"><path d="M66 16h10v20l-10-8z"/><path d="M45.4 13.2a4 4 0 0 1 5.2 0l35 30A4 4 0 0 1 83 50.3H78V80a6 6 0 0 1-6 6H24a6 6 0 0 1-6-6V50.3h-5a4 4 0 0 1-2.6-7.1z"/></g><rect x="40" y="60" width="16" height="26" rx="2" style="fill:var(--door-tile)"/><rect x="25" y="56" width="10" height="10" rx="1.5" style="fill:var(--door-tile)"/><rect x="61" y="56" width="10" height="10" rx="1.5" style="fill:var(--door-tile)"/></svg></span>
             <span class="svc-door__text"><span class="svc-door__name">Home</span><span class="svc-door__sub">Condo, house or rental.</span></span>
-            <span class="svc-door__arrow" aria-hidden="true">→</span>
+            <span class="svc-door__arrow" aria-hidden="true">{{{icon "arrow-right-02"}}}</span>
           </a>
           <a class="svc-door" href="/quote/?service=cleaning&amp;for=business">
             <span class="svc-door__tile"><svg viewBox="0 0 96 96" aria-hidden="true"><g fill="currentColor"><path d="M16 16a6 6 0 0 1 6-6h30a6 6 0 0 1 6 6v70H16z"/><path d="M58 36h16a6 6 0 0 1 6 6v44H58z"/><rect x="10" y="82" width="76" height="6" rx="3"/></g><g style="fill:var(--door-tile)"><rect x="24" y="20" width="9" height="8" rx="1.5"/><rect x="41" y="20" width="9" height="8" rx="1.5"/><rect x="24" y="34" width="9" height="8" rx="1.5"/><rect x="41" y="34" width="9" height="8" rx="1.5"/><rect x="24" y="48" width="9" height="8" rx="1.5"/><rect x="41" y="48" width="9" height="8" rx="1.5"/><rect x="64" y="46" width="10" height="8" rx="1.5"/><rect x="64" y="60" width="10" height="8" rx="1.5"/><rect x="30" y="66" width="14" height="16" rx="2"/></g></svg></span>
             <span class="svc-door__text"><span class="svc-door__name">Workplace</span><span class="svc-door__sub">Offices, shops, clinics, studios.</span></span>
-            <span class="svc-door__arrow" aria-hidden="true">→</span>
+            <span class="svc-door__arrow" aria-hidden="true">{{{icon "arrow-right-02"}}}</span>
           </a>
         </div>
       </div>
@@ -75,7 +75,7 @@
         <div class="often__legend label" aria-hidden="true"><span><i class="is-first"></i>First visit</span><span><i></i>Repeat</span></div>
         <p class="often__hint label">Tap a day to start from it</p>
         <div class="often__act" hidden>
-          <a class="often__cta" href="/quote/?service=cleaning">Get a free cleaning quote <span aria-hidden="true">→</span></a>
+          <a class="often__cta" href="/quote/?service=cleaning">Get a free cleaning quote <span aria-hidden="true">{{{icon "arrow-right-02"}}}</span></a>
           <button type="button" class="often__reset">Start over</button>
         </div>
       </div>
@@ -97,17 +97,11 @@
     </section>
 
     {{!-- CH-03b Questions (locked: window 440 · used questions fade · ASK · plain answers · typed with dots and a block caret · "ONAWAY" label · chips only).
-         Every answer is in the HTML (the list below) for search and the Help page; the typing is presentation. src/js/sections/questions.js --}}
+         Every answer is in the HTML (the list below, from src/data/faq.js) for search and the Help page; the typing is presentation. src/js/sections/questions.js --}}
     <section class="qs grid-site" data-section="questions" aria-labelledby="qs-title">
-      <h2 id="qs-title" class="qs__title col-span-full lg:col-span-4">Questions.<small>What people ask most. More on the <a href="/faq/#cleaning">Help page</a>.</small></h2>
+      <h2 id="qs-title" class="qs__title col-span-full lg:col-span-4">Questions.<small>What people ask most. More on the <a href="/help/#cleaning">Help page</a>.</small></h2>
       <div class="qs__panel col-span-full lg:col-start-6 lg:col-span-7">
-        <dl class="qs__faq">
-          <dt>Do you bring supplies?</dt><dd>Yes. The crew brings everything: products, cloths, a vacuum and a mop. If you’d rather we use yours, or need scent-free products, say so in your quote.</dd>
-          <dt>Do I need to be home?</dt><dd>No, most people aren’t. Leave a key, a lockbox code or concierge instructions. We lock up and leave a note with what was done.</dd>
-          <dt>What if something’s missed?</dt><dd>Tell us within 24 hours and we’ll come back to put it right, at no cost.</dd>
-          <dt>Can I keep the same crew?</dt><dd>On a weekly or every-2-weeks rhythm, yes. We keep the same crew wherever we can, and tell you ahead of time if that changes.</dd>
-          <dt>What about pets?</dt><dd>Happy to work around them. Tell us who’s home and whether they should stay in a room while we clean.</dd>
-        </dl>
+        {{> faq-dl service="cleaning"}}
         <div class="qs__window" hidden>
           <div class="qs__thread" aria-live="polite" data-lenis-prevent><div class="qs__inner"></div></div>
           <div class="qs__chips"></div>
@@ -115,10 +109,10 @@
             <input type="text" aria-label="Your question" placeholder="Pick a question above" readonly autocomplete="off">
             <button type="submit" class="qs__ask">Ask</button>
           </form>
-          <button type="button" class="qs__new label">↓ New reply</button>
+          <button type="button" class="qs__new label">{{{icon "arrow-down-02"}}} New reply</button>
         </div>
       </div>
-      <p class="qs__more col-span-full lg:col-start-6 lg:col-span-7"><b>Moving out?</b> Pair it with a move-out clean. <a href="/moving/">See moving <span aria-hidden="true">→</span></a></p>
+      <p class="qs__more col-span-full lg:col-start-6 lg:col-span-7"><b>Moving out?</b> Pair it with a move-out clean. <a href="/moving/">See moving <span aria-hidden="true">{{{icon "arrow-right-02"}}}</span></a></p>
     </section>
 
     {{!-- CC-02b closing CTA (locked: rooms come clean · dust lifts · 2s a room · coarse dust · crew leaves · labels on).
@@ -139,7 +133,7 @@
           </div>
           <p class="ccta__lead">A written quote <b data-qby>within 2 hours</b>, with every cost on it. No obligation.</p>
           <div class="ccta__acts">
-            <a class="ccta__cta" href="/quote/?service=cleaning&amp;for=home&amp;size=1-2">Get a quote for your 1–2 bedroom <span aria-hidden="true">→</span></a>
+            <a class="ccta__cta" href="/quote/?service=cleaning&amp;for=home&amp;size=1-2">Get a quote for your 1–2 bedroom <span aria-hidden="true">{{{icon "arrow-right-02"}}}</span></a>
             <a class="ccta__call" href="tel:+16478771411">Or call +1 647 877 1411</a>
           </div>
         </div>

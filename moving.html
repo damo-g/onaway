@@ -36,18 +36,18 @@
           <span class="svc-band__tile"><svg viewBox="0 0 96 96"><g transform="translate(8 2) rotate(-14 40 80)"><g fill="currentColor"><path d="M22 8h20a5 5 0 0 1 5 5v4H40v-1h-6v48h44a5 5 0 0 1 5 5v5a5 5 0 0 1-5 5H31a6 6 0 0 1-6-6V16h-3a4 4 0 0 1 0-8z"/><path d="M40 16h7v8a4 4 0 0 1-4 4h-3z"/><circle cx="36" cy="82" r="11"/></g><circle cx="36" cy="82" r="4" style="fill:var(--band-tile)"/></g></svg></span>
           <span class="svc-band__name">Moving</span>
           <span class="svc-band__board" data-dm="2 HR QUOTE" data-facts="2 HR QUOTE|HOMES + OFFICES|A WRITTEN PLAN" data-pitch="3"></span>
-          <span class="svc-band__arrow">↓</span>
+          <span class="svc-band__arrow">{{{icon "arrow-down-02"}}}</span>
         </div>
         <div class="svc-doors">
           <a class="svc-door" href="/quote/?service=moving&amp;for=home">
             <span class="svc-door__tile"><svg viewBox="0 0 96 96" aria-hidden="true"><g fill="currentColor"><path d="M66 16h10v20l-10-8z"/><path d="M45.4 13.2a4 4 0 0 1 5.2 0l35 30A4 4 0 0 1 83 50.3H78V80a6 6 0 0 1-6 6H24a6 6 0 0 1-6-6V50.3h-5a4 4 0 0 1-2.6-7.1z"/></g><rect x="40" y="60" width="16" height="26" rx="2" style="fill:var(--door-tile)"/><rect x="25" y="56" width="10" height="10" rx="1.5" style="fill:var(--door-tile)"/><rect x="61" y="56" width="10" height="10" rx="1.5" style="fill:var(--door-tile)"/></svg></span>
             <span class="svc-door__text"><span class="svc-door__name">Homes</span><span class="svc-door__sub">Studio to four-bedroom, planned around your stairs, elevator and parking.</span></span>
-            <span class="svc-door__arrow" aria-hidden="true">→</span>
+            <span class="svc-door__arrow" aria-hidden="true">{{{icon "arrow-right-02"}}}</span>
           </a>
           <a class="svc-door" href="/quote/?service=moving&amp;for=business">
             <span class="svc-door__tile"><svg viewBox="0 0 96 96" aria-hidden="true"><g fill="currentColor"><path d="M16 16a6 6 0 0 1 6-6h30a6 6 0 0 1 6 6v70H16z"/><path d="M58 36h16a6 6 0 0 1 6 6v44H58z"/><rect x="10" y="82" width="76" height="6" rx="3"/></g><g style="fill:var(--door-tile)"><rect x="24" y="20" width="9" height="8" rx="1.5"/><rect x="41" y="20" width="9" height="8" rx="1.5"/><rect x="24" y="34" width="9" height="8" rx="1.5"/><rect x="41" y="34" width="9" height="8" rx="1.5"/><rect x="24" y="48" width="9" height="8" rx="1.5"/><rect x="41" y="48" width="9" height="8" rx="1.5"/><rect x="64" y="46" width="10" height="8" rx="1.5"/><rect x="64" y="60" width="10" height="8" rx="1.5"/><rect x="30" y="66" width="14" height="16" rx="2"/></g></svg></span>
             <span class="svc-door__text"><span class="svc-door__name">Businesses</span><span class="svc-door__sub">Office moves on evenings or weekends, every item labelled to its spot.</span></span>
-            <span class="svc-door__arrow" aria-hidden="true">→</span>
+            <span class="svc-door__arrow" aria-hidden="true">{{{icon "arrow-right-02"}}}</span>
           </a>
         </div>
       </div>
@@ -72,18 +72,12 @@
       <div class="incl__route col-span-full"></div>
     </section>
 
-    {{!-- CH-03b Questions (Cleaning component): the questions and answers are the dl below; edit them there.
+    {{!-- CH-03b Questions (Cleaning component): the questions and answers come from src/data/faq.js; edit them there.
          src/js/sections/questions.js --}}
     <section class="qs grid-site" data-section="questions" data-greet="Hi. Here’s what people ask us most about a move. Pick one." aria-labelledby="qs-title">
-      <h2 id="qs-title" class="qs__title col-span-full lg:col-span-4">Questions.<small>What people ask most. More on the <a href="/faq/#moving">Help page</a>.</small></h2>
+      <h2 id="qs-title" class="qs__title col-span-full lg:col-span-4">Questions.<small>What people ask most. More on the <a href="/help/#moving">Help page</a>.</small></h2>
       <div class="qs__panel col-span-full lg:col-start-6 lg:col-span-7">
-        <dl class="qs__faq">
-          <dt>How far ahead should I book?</dt><dd>Two to three weeks for most moves, longer for month-end and summer weekends. Tell us your date and we’ll say straight away if it’s tight.</dd>
-          <dt>What if it takes longer than quoted?</dt><dd>Your written quote is the price for the job it describes. If something changes on the day, like extra items or a blocked elevator, we tell you before it costs more, never after.</dd>
-          <dt>Do you handle elevator bookings?</dt><dd>We tell you exactly what to book and when, and work with your concierge on the day. Most GTA condos need the resident to make the booking.</dd>
-          <dt>Do you have insurance?</dt><dd>Yes. We can send a certificate of insurance to your building or landlord before moving day.</dd>
-          <dt>Can you move just a few things?</dt><dd>Yes. One room, a few big pieces or a storage unit. Tell us what it is and we’ll quote it the same way.</dd>
-        </dl>
+        {{> faq-dl service="moving"}}
         <div class="qs__window" hidden>
           <div class="qs__thread" aria-live="polite" data-lenis-prevent><div class="qs__inner"></div></div>
           <div class="qs__chips"></div>
@@ -91,10 +85,10 @@
             <input type="text" aria-label="Your question" placeholder="Pick a question above" readonly autocomplete="off">
             <button type="submit" class="qs__ask">Ask</button>
           </form>
-          <button type="button" class="qs__new label">↓ New reply</button>
+          <button type="button" class="qs__new label">{{{icon "arrow-down-02"}}} New reply</button>
         </div>
       </div>
-      <p class="qs__more col-span-full lg:col-start-6 lg:col-span-7"><b>Leaving the old place?</b> Add a move-out clean. <a href="/cleaning/">See cleaning <span aria-hidden="true">→</span></a></p>
+      <p class="qs__more col-span-full lg:col-start-6 lg:col-span-7"><b>Leaving the old place?</b> Add a move-out clean. <a href="/cleaning/">See cleaning <span aria-hidden="true">{{{icon "arrow-right-02"}}}</span></a></p>
     </section>
 
     {{!-- MV-04b closing CTA, Floor to Floor (locked: house destination · 2s a stop · checkpoint labels · crew leaves).
@@ -115,7 +109,7 @@
           </div>
           <p class="ccta__lead">A written plan and quote <b data-qby>within 2 hours</b>: crew, timing and every cost. No obligation.</p>
           <div class="ccta__acts">
-            <a class="ccta__cta" href="/quote/?service=moving&amp;for=home&amp;size=1-2">Get a moving quote for your 1–2 bedroom <span aria-hidden="true">→</span></a>
+            <a class="ccta__cta" href="/quote/?service=moving&amp;for=home&amp;size=1-2">Get a moving quote for your 1–2 bedroom <span aria-hidden="true">{{{icon "arrow-right-02"}}}</span></a>
             <a class="ccta__call" href="tel:+16478771411">Or call +1 647 877 1411</a>
           </div>
         </div>

@@ -1,0 +1,6 @@
+{{!-- A service's questions and answers from src/data/faq.js, as the Questions section's list: {{> faq-dl service="cleaning"}} --}}
+<dl class="qs__faq">
+  {{#each (lookup faq.byService service)}}
+  <dt>{{q}}</dt><dd>{{a}}</dd>
+  {{/each}}
+</dl>

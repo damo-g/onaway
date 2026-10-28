@@ -1,4 +1,5 @@
 import { prefersReducedMotion } from '../motion.js';
+import { icon } from '../icons.js';
 
 // CC-02b closing CTA. Pick a space: its plan draws in quiet lines, every room dusted. The crew (yellow square)
 // works the route in What's included order; each room it reaches comes clean (coarse dust lifts over 2s, the
@@ -44,7 +45,7 @@ export function init(el) {
   });
 
   function link(p) {
-    cta.innerHTML = `Get a quote for ${p.cta} <span aria-hidden="true">→</span>`;
+    cta.innerHTML = `Get a quote for ${p.cta} <span aria-hidden="true">${icon('arrow-right-02')}</span>`;
     const q = new URLSearchParams({ service: 'cleaning', for: p.for });
     if (p.size) q.set('size', p.size);
     cta.href = `/quote/?${q}`;

@@ -1,4 +1,5 @@
 import { prefersReducedMotion } from '../motion.js';
+import { icon } from '../icons.js';
 
 // DL-05 closing CTA, the window at the door. Pick what's going; the route draws from the pickup to your door.
 // The crew (yellow square) picks up, wraps, sets off (an "on the way" message pops up), carries in and places,
@@ -92,7 +93,7 @@ export function init(el) {
     current = key;
     const p = WHAT[key];
     chips.querySelectorAll('button').forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.k === key)));
-    cta.innerHTML = `Get a delivery quote for ${p.cta} <span aria-hidden="true">→</span>`;
+    cta.innerHTML = `Get a delivery quote for ${p.cta} <span aria-hidden="true">${icon('arrow-right-02')}</span>`;
     cta.href = `/quote/?${new URLSearchParams({ service: 'delivery', for: p.for, what: p.what })}`;
 
     const { s, W, last } = scene(p);

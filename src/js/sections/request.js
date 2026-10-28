@@ -1,5 +1,6 @@
 import { lookupPostcode } from '../data/postcodes.js';
 import { PLACES } from '../data/places.js';
+import { icon } from '../icons.js';
 
 // QP-01 The Ticket. Three steps that fold as you finish them (a "GOT IT" cue first), a live ticket that
 // mirrors every answer, and a stubbed send (the PHP handler comes later).
@@ -264,7 +265,7 @@ export function init(el) {
       const first = new Date(vy, vm, 1);
       const days = new Date(vy, vm + 1, 0).getDate();
       const atNow = vy === today.getFullYear() && vm === today.getMonth();
-      let h = `<div class="qcal__head"><button type="button" class="qcal__prev" aria-label="Previous month"${atNow ? ' disabled' : ''}>←</button><b>${MONTHS[vm]} ${vy}</b><button type="button" class="qcal__next" aria-label="Next month">→</button></div>`;
+      let h = `<div class="qcal__head"><button type="button" class="qcal__prev" aria-label="Previous month"${atNow ? ' disabled' : ''}>${icon('arrow-left-02')}</button><b>${MONTHS[vm]} ${vy}</b><button type="button" class="qcal__next" aria-label="Next month">${icon('arrow-right-02')}</button></div>`;
       h += `<div class="qcal__week label">${['S', 'M', 'T', 'W', 'T', 'F', 'S'].map((x) => `<span>${x}</span>`).join('')}</div><div class="qcal__grid">`;
       for (let i = 0; i < first.getDay(); i++) h += '<span></span>';
       for (let d = 1; d <= days; d++) {

@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="en-CA">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <script>document.documentElement.classList.add('js')</script>
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <meta name="robots" content="noindex"> <!-- pre-launch: remove at launch (CLAUDE.md "Before launch") -->
+  <title>Help · ONAWAY</title>
+  <meta name="description" content="Straight answers about cleaning, moving and delivery across the GTA. Pricing, booking, coverage, insurance and payment.">
+  <link rel="preload" href="/fonts/InstrumentSans-Variable.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="/fonts/OverpassMono-Variable.woff2" as="font" type="font/woff2" crossorigin>
+  <script type="application/ld+json">{{{faqJsonLd}}}</script>
+  <script type="module" src="/src/js/main.js"></script>
+</head>
+<body>
+  {{> nav page="help"}}
+
+  <main id="main">
+    <section class="help-hero grid-site" aria-labelledby="help-title">
+      <h1 id="help-title" class="help-hero__title col-span-full lg:col-span-8 text-h2 md:text-h1 uppercase">Straight answers.</h1>
+      <p class="help-hero__lead col-span-full lg:col-span-8 text-lead">What people ask before they book. If yours isn’t here, call us.</p>
+    </section>
+
+    {{!-- CH-02b Ask in Place rows, grouped. Every answer is in the HTML (and the FAQPage JSON-LD above); the typing is
+         presentation. Questions and answers: src/data/faq.js. Behaviour and settings: src/js/sections/help.js --}}
+    <section class="help grid-site" data-section="help" aria-label="Questions by topic">
+      <nav class="help__chips col-span-full" aria-label="Topics">
+        {{#each faq.groups}}<a href="#{{id}}" data-topic="{{id}}">{{chip}}</a>{{/each}}
+        {{#each faq.services}}<a href="#{{id}}" data-topic="{{id}}">{{chip}}</a>{{/each}}
+      </nav>
+      <nav class="help__topics col-span-full lg:col-span-3" aria-label="Topics">
+        <p class="help__label label">Topics</p>
+        <ul role="list">
+          {{#each faq.groups}}<li><a href="#{{id}}" data-topic="{{id}}">{{name}}</a></li>{{/each}}
+        </ul>
+        <p class="help__label label">By service</p>
+        <ul role="list">
+          {{#each faq.services}}<li><a href="#{{id}}" data-topic="{{id}}">{{name}}</a></li>{{/each}}
+        </ul>
+      </nav>
+      <div class="help__groups col-span-full lg:col-start-4 lg:col-span-9">
+        {{#each faq.groups}}{{> help-group}}{{/each}}
+        {{#each faq.services}}{{> help-group}}{{/each}}
+      </div>
+    </section>
+
+    {{!-- End band: the Cleaning closing panel shell (CC-02b), a person to call --}}
+    <section class="ccta help-end" data-nav-theme="dark" aria-labelledby="help-end-title">
+      <div class="ccta__panel">
+        <div class="help-end__text">
+          <h2 id="help-end-title" class="help-end__title">Still have a question?</h2>
+          <p class="ccta__lead">Call us. A person answers, 8 AM – 8 PM, every day.</p>
+        </div>
+        <div class="help-end__acts">
+          <a class="ccta__cta" href="tel:+16478771411">Call +1 647 877 1411 <span aria-hidden="true">{{{icon "arrow-right-02"}}}</span></a>
+          <p class="help-end__links"><a class="ccta__call" href="mailto:hello@onaway.ca">Email us</a> <span aria-hidden="true">·</span> <a class="ccta__call" href="/quote/">Get a free quote <span aria-hidden="true">{{{icon "arrow-right-02"}}}</span></a></p>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  {{> footer}}
+</body>
+</html>
