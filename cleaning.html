@@ -97,17 +97,11 @@
     </section>
 
     {{!-- CH-03b Questions (locked: window 440 · used questions fade · ASK · plain answers · typed with dots and a block caret · "ONAWAY" label · chips only).
-         Every answer is in the HTML (the list below) for search and the Help page; the typing is presentation. src/js/sections/questions.js --}}
+         Every answer is in the HTML (the list below, from src/data/faq.js) for search and the Help page; the typing is presentation. src/js/sections/questions.js --}}
     <section class="qs grid-site" data-section="questions" aria-labelledby="qs-title">
-      <h2 id="qs-title" class="qs__title col-span-full lg:col-span-4">Questions.<small>What people ask most. More on the <a href="/faq/#cleaning">Help page</a>.</small></h2>
+      <h2 id="qs-title" class="qs__title col-span-full lg:col-span-4">Questions.<small>What people ask most. More on the <a href="/help/#cleaning">Help page</a>.</small></h2>
       <div class="qs__panel col-span-full lg:col-start-6 lg:col-span-7">
-        <dl class="qs__faq">
-          <dt>Do you bring supplies?</dt><dd>Yes. The crew brings everything: products, cloths, a vacuum and a mop. If you’d rather we use yours, or need scent-free products, say so in your quote.</dd>
-          <dt>Do I need to be home?</dt><dd>No, most people aren’t. Leave a key, a lockbox code or concierge instructions. We lock up and leave a note with what was done.</dd>
-          <dt>What if something’s missed?</dt><dd>Tell us within 24 hours and we’ll come back to put it right, at no cost.</dd>
-          <dt>Can I keep the same crew?</dt><dd>On a weekly or every-2-weeks rhythm, yes. We keep the same crew wherever we can, and tell you ahead of time if that changes.</dd>
-          <dt>What about pets?</dt><dd>Happy to work around them. Tell us who’s home and whether they should stay in a room while we clean.</dd>
-        </dl>
+        {{> faq-dl service="cleaning"}}
         <div class="qs__window" hidden>
           <div class="qs__thread" aria-live="polite" data-lenis-prevent><div class="qs__inner"></div></div>
           <div class="qs__chips"></div>

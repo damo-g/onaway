@@ -4,6 +4,7 @@ import tailwindcss from '@tailwindcss/vite';
 import handlebars from 'vite-plugin-handlebars';
 import { existsSync } from 'node:fs';
 import { images } from './scripts/vite-images.js';
+import { faq, faqJsonLd } from './src/data/faq.js';
 
 const root = import.meta.dirname;
 const img = images({
@@ -30,8 +31,9 @@ export default defineConfig(({ command }) => ({
       // nav.hbs / footer.hbs / section.hbs → {{> nav}}; sections → {{> [01-hero]}}
       partialDirectory: [resolve(root, 'src/partials'), resolve(root, 'src/sections')],
       // `dev` gates review-only markup (e.g. alternative images) so it never reaches the build
-      context: { dev: command === 'serve' },
-      helpers: { eq: (a, b) => a === b, picture: img.picture },
+      // `faq` is every question and answer (src/data/faq.js): the Help page and the service pages' Questions
+      context: { dev: command === 'serve', faq },
+      helpers: { eq: (a, b) => a === b, picture: img.picture, faqJsonLd },
     }),
   ],
   server: { port: 5173, strictPort: true },
@@ -45,6 +47,7 @@ export default defineConfig(({ command }) => ({
         cleaning: resolve(root, 'cleaning.html'),
         moving: resolve(root, 'moving.html'),
         delivery: resolve(root, 'delivery.html'),
+        help: resolve(root, 'help.html'),
       },
     },
   },

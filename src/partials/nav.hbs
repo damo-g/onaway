@@ -23,7 +23,7 @@
         </div>
       </div>
       <a href="/about/">About</a>
-      <a href="/faq/">Help</a>
+      <a href="/help/"{{#if (eq page "help")}} aria-current="page"{{/if}}>Help</a>
     </nav>
     <a href="/fr/" class="nav-fr" lang="fr" hreflang="fr" aria-label="Français">FR</a>
     <button type="button" class="nav-menu-btn" aria-controls="nav-menu" :aria-expanded="open.toString()" aria-expanded="false" @click="open = !open">
@@ -42,7 +42,7 @@
   <div id="nav-menu" class="nav-menu" x-show="open" x-cloak @click.outside="open = false">
     <a href="/#services" @click="open = false">Services <span aria-hidden="true">+</span></a>
     <a href="/about/">About <span aria-hidden="true">→</span></a>
-    <a href="/faq/">Help <span aria-hidden="true">→</span></a>
+    <a href="/help/">Help <span aria-hidden="true">→</span></a>
     <a href="/fr/" lang="fr" hreflang="fr">Français <span aria-hidden="true">→</span></a>
     <a href="tel:+16478771411">Call +1 647 877 1411 <span aria-hidden="true">↗</span></a>
   </div>

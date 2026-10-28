@@ -3,7 +3,7 @@ import { prefersReducedMotion } from '../motion.js';
 // CH-03b Questions: the FAQ (already in the HTML) becomes a short message thread. Pick a chip, it's asked,
 // and the answer is typed back character by character after typing dots. The window keeps its height and
 // scrolls inside; if you scroll up to re-read, a "New reply" tab appears instead of pulling you down.
-// Questions and answers are the dl in the page; data-greet overrides the opening line, and the closing
+// Questions and answers are the dl in the page (from src/data/faq.js); data-greet overrides the opening line, and the closing
 // line links to the same Help anchor as the heading.
 const GREET = 'Hi. Here’s what people ask us most about a clean. Pick one.';
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));

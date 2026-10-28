@@ -20,6 +20,9 @@
 
   # 4. Clean URLs: /quote or /quote/ serves quote.html when that file exists.
   #    Real files and folders are never rewritten.
+  # The FAQ became the Help page
+  RewriteRule ^faq/?$ /help/ [R=301,L]
+
   RewriteCond %{REQUEST_FILENAME} !-f
   RewriteCond %{REQUEST_FILENAME} !-d
   RewriteCond %{DOCUMENT_ROOT}/$1.html -f
