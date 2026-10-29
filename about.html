@@ -36,6 +36,26 @@
         {{picture "about-hero" alt="An empty downtown Toronto street at sunrise, streetcar tracks running toward the sun" sizes="(width >= 1512px) calc(100vw - 80px), calc(100vw - 40px)" loading="eager"}}
       </figure>
     </section>
+
+    {{!-- WE-02 Hope is not a plan (locked: correction plays once · Rust strike · yellow square plan mark). The ledger's
+         hopes are real text in <s>; the strike is drawn once, row by row, when it's 40% in view. src/js/sections/hope.js --}}
+    <section class="hope grid-site" data-section="hope" aria-labelledby="hope-title">
+      <h2 id="hope-title" class="hope__title col-span-full lg:col-span-5">Hope is not a plan.</h2>
+      <div class="hope__essay col-span-full lg:col-start-7 lg:col-span-6">
+        <p>Most people only call for help a handful of times: a move, a deep clean before the keys go back, a sofa from across town. Each time, they let strangers into their home or their business and hope it goes well.</p>
+        <p>We started Onaway to replace that hope with a plan. A written quote with every cost on it. An arrival window we keep. A crew that treats your place like a workplace with rules, whether we’re carrying, cleaning or delivering.</p>
+        <p>We’re from here. We know which buildings need an elevator booked, which condos want a certificate of insurance, and how long the Gardiner takes at four.</p>
+      </div>
+      <div class="hope__ledger col-span-full">
+        <p class="hope__head label" aria-hidden="true"><span>The usual</span><span>With Onaway</span></p>
+        <ul class="hope__rows" role="list">
+          <li><span class="hope__svc label">Moving</span><p class="hope__usual"><s>We’ll hope the elevator’s free.</s></p><p class="hope__plan">Elevator booked, 9–11 AM, with your concierge.</p></li>
+          <li><span class="hope__svc label">Cleaning</span><p class="hope__usual"><s>We’ll hope they get the oven.</s></p><p class="hope__plan">Inside the oven, on the list you signed off.</p></li>
+          <li><span class="hope__svc label">Delivery</span><p class="hope__usual"><s>We’ll hope it comes today.</s></p><p class="hope__plan">Today, 2 – 4 PM, in writing.</p></li>
+          <li><span class="hope__svc label">The bill</span><p class="hope__usual"><s>We’ll hope there’s nothing extra.</s></p><p class="hope__plan">Every cost on the quote, before you say yes.</p></li>
+        </ul>
+      </div>
+    </section>
   </main>
 
   {{> footer}}

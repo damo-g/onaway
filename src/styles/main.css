@@ -1996,6 +1996,42 @@
     .js .about-wm__svg .layp path { stroke-dashoffset: 0; }
   }
 
+  /* ---------- About · Hope is not a plan (WE-02, locked: plays once · Rust strike · yellow square) ---------- */
+  .hope { --mut: color-mix(in srgb, var(--color-carbon) 62%, transparent); position: relative; row-gap: var(--spacing-55); padding-block: var(--section-gap); }
+  .hope::before { content: ""; position: absolute; inset: 0 var(--grid-margin) auto; border-top: 1px solid var(--color-line); }
+  .hope__title { font-size: var(--text-h2); line-height: 1; font-weight: 600; letter-spacing: -0.01em; }
+  @media (width >= 768px) { .hope__title { font-size: var(--text-h1); line-height: 0.95; } }
+  .hope__essay { display: flex; flex-direction: column; gap: var(--spacing-21); }
+  .hope__essay p { max-width: 58ch; font-size: var(--text-lead); line-height: 1.45; color: color-mix(in srgb, var(--color-carbon) 86%, transparent); }
+  /* Ledger: the usual hope, struck in Rust, then the plan */
+  .hope__ledger { border-top: 3px solid var(--color-carbon); }
+  .hope__head { display: none; padding-block: var(--spacing-13); color: var(--mut); }
+  .hope__rows li { display: grid; gap: var(--spacing-8); padding-block: var(--spacing-21); border-bottom: 1px solid var(--color-line); }
+  .hope__rows li:first-child { border-top: 1px solid var(--color-line); }
+  .hope__svc { font-weight: 600; }
+  .hope__usual { font-size: var(--text-lead); line-height: 1.45; color: var(--mut); }
+  .hope__usual s {
+    text-decoration: none;
+    background: linear-gradient(var(--color-rust), var(--color-rust)) 0 58% / 100% 2px no-repeat;
+    -webkit-box-decoration-break: clone; box-decoration-break: clone;
+  }
+  .hope__plan { display: flex; align-items: baseline; gap: var(--spacing-13); font-size: var(--text-h3); line-height: 1.2; font-weight: 600; }
+  .hope__plan::before { content: ""; flex: none; width: 10px; height: 10px; border-radius: 1px; background: var(--color-yellow); box-shadow: inset 0 0 0 1.5px var(--color-carbon); translate: 0 -0.1em; }
+  /* Before it plays (motion only): no strike, no plan; each row runs when hope.js marks it */
+  .hope.is-armed .hope__usual s { background-size: 0% 2px; transition: background-size 0.6s cubic-bezier(0.65, 0, 0.2, 1); }
+  .hope.is-armed .hope__plan { opacity: 0; translate: -8px 0; transition: opacity 0.5s ease-out 0.35s, translate 0.5s ease-out 0.35s; }
+  .hope.is-armed li.is-done .hope__usual s { background-size: 100% 2px; }
+  .hope.is-armed li.is-done .hope__plan { opacity: 1; translate: 0 0; }
+  @media (width >= 1024px) {
+    .hope__head { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); column-gap: var(--grid-gutter); }
+    .hope__head span:first-child { grid-column: 3 / span 4; }
+    .hope__head span:last-child { grid-column: 7 / span 6; }
+    .hope__rows li { grid-template-columns: repeat(12, minmax(0, 1fr)); column-gap: var(--grid-gutter); align-items: baseline; }
+    .hope__svc { grid-column: 1 / span 2; }
+    .hope__usual { grid-column: 3 / span 4; }
+    .hope__plan { grid-column: 7 / span 6; }
+  }
+
   /* ---------- Questions (CH-03b) ---------- */
   .qs { --mut: color-mix(in srgb, var(--color-carbon) 62%, transparent); position: relative; row-gap: var(--spacing-55); padding-block: var(--section-gap); }
   .qs::before { content: ""; position: absolute; inset: 0 var(--grid-margin) auto; border-top: 1px solid var(--color-line); }
