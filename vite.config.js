@@ -55,6 +55,7 @@ export default defineConfig(({ command }) => ({
         moving: resolve(root, 'moving.html'),
         delivery: resolve(root, 'delivery.html'),
         help: resolve(root, 'help.html'),
+        about: resolve(root, 'about.html'),
       },
     },
   },

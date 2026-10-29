@@ -22,7 +22,7 @@
           </ul>
         </div>
       </div>
-      <a href="/about/">About</a>
+      <a href="/about/"{{#if (eq page "about")}} aria-current="page"{{/if}}>About</a>
       <a href="/help/"{{#if (eq page "help")}} aria-current="page"{{/if}}>Help</a>
     </nav>
     <a href="/fr/" class="nav-fr" lang="fr" hreflang="fr" aria-label="Français">FR</a>
