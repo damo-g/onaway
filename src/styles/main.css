@@ -1953,8 +1953,7 @@
   .about-hero__text { display: flex; flex-direction: column; gap: var(--spacing-34); }
   .about-hero__title { line-height: 0.93; font-weight: 600; letter-spacing: -0.015em; }
   .about-hero__lead { max-width: 34ch; color: color-mix(in srgb, var(--color-carbon) 78%, transparent); }
-  /* The name: a 3px rule, the wordmark at full column width, then its three meanings */
-  .about-name { padding-top: var(--spacing-21); border-top: 3px solid var(--color-carbon); }
+  /* The name: the wordmark at full column width, then its three meanings */
   .about-wm { margin-bottom: var(--spacing-21); }
   .about-wm__svg { display: block; width: 100%; height: auto; overflow: visible; }
   .about-wm__svg .pa, .about-wm__svg .pb { fill: var(--color-carbon); transition: opacity 0.45s; }
@@ -2003,6 +2002,17 @@
   @media (width >= 768px) { .hope__title { font-size: var(--text-h1); line-height: 0.95; } }
   .hope__essay { display: flex; flex-direction: column; gap: var(--spacing-21); }
   .hope__essay p { max-width: 58ch; font-size: var(--text-lead); line-height: 1.45; color: color-mix(in srgb, var(--color-carbon) 86%, transparent); }
+  /* Drop cap (locked: three lines · Carbon · Display 600). Options: data-dropcap 3 | 2 | raised | off,
+     data-capcolor carbon | rust, data-capfont display | mono. initial-letter where supported, a float otherwise. */
+  .hope__essay p:first-child::first-letter { float: left; margin: 0.06em var(--spacing-13) 0 0; font-size: 3.7em; line-height: 0.82; font-weight: 600; letter-spacing: 0; color: var(--color-carbon); }
+  @supports (initial-letter: 3) or (-webkit-initial-letter: 3) {
+    .hope__essay p:first-child::first-letter { float: none; margin: 0 var(--spacing-13) 0 0; font-size: inherit; line-height: inherit; -webkit-initial-letter: 3; initial-letter: 3; }
+    .hope[data-dropcap="2"] .hope__essay p:first-child::first-letter { -webkit-initial-letter: 2; initial-letter: 2; }
+    .hope[data-dropcap="raised"] .hope__essay p:first-child::first-letter { -webkit-initial-letter: 3 1; initial-letter: 3 1; }
+  }
+  .hope[data-dropcap="off"] .hope__essay p:first-child::first-letter { all: unset; }
+  .hope[data-capcolor="rust"] .hope__essay p:first-child::first-letter { color: var(--color-rust); }
+  .hope[data-capfont="mono"] .hope__essay p:first-child::first-letter { font-family: var(--font-mono); font-weight: 500; }
   /* Ledger: the usual hope, struck in Rust, then the plan */
   .hope__ledger { border-top: 3px solid var(--color-carbon); }
   .hope__head { display: none; padding-block: var(--spacing-13); color: var(--mut); }
@@ -2016,7 +2026,7 @@
     -webkit-box-decoration-break: clone; box-decoration-break: clone;
   }
   .hope__plan { display: flex; align-items: baseline; gap: var(--spacing-13); font-size: var(--text-h3); line-height: 1.2; font-weight: 600; }
-  .hope__plan::before { content: ""; flex: none; width: 10px; height: 10px; border-radius: 1px; background: var(--color-yellow); box-shadow: inset 0 0 0 1.5px var(--color-carbon); translate: 0 -0.1em; }
+  .hope__plan::before { content: ""; flex: none; width: 10px; height: 10px; border-radius: 1px; background: var(--color-carbon); translate: 0 -0.1em; }
   /* Before it plays (motion only): no strike, no plan; each row runs when hope.js marks it */
   .hope.is-armed .hope__usual s { background-size: 0% 2px; transition: background-size 0.6s cubic-bezier(0.65, 0, 0.2, 1); }
   .hope.is-armed .hope__plan { opacity: 0; translate: -8px 0; transition: opacity 0.5s ease-out 0.35s, translate 0.5s ease-out 0.35s; }
@@ -2030,6 +2040,65 @@
     .hope__svc { grid-column: 1 / span 2; }
     .hope__usual { grid-column: 3 / span 4; }
     .hope__plan { grid-column: 7 / span 6; }
+  }
+
+  /* ---------- About · Our fine print is the big print (SD-03c) ---------- */
+  .fine { --mut: color-mix(in srgb, var(--color-carbon) 62%, transparent); position: relative; row-gap: var(--spacing-34); padding-block: var(--section-gap); }
+  .fine::before { content: ""; position: absolute; inset: 0 var(--grid-margin) auto; border-top: 1px solid var(--color-line); }
+  .fine__title { font-size: var(--text-h2); line-height: 1; font-weight: 600; letter-spacing: -0.01em; }
+  .fine__dek { align-self: end; max-width: 40ch; font-size: var(--text-lead); line-height: 1.5; color: color-mix(in srgb, var(--color-carbon) 78%, transparent); }
+  .fine__body { margin-top: var(--spacing-21); padding-top: var(--spacing-34); border-top: 1px solid var(--color-carbon); }
+  /* justified in the three desktop columns; flush left in one narrow column, where justifying opens gaps around the mono promises */
+  .fine__text { font-size: var(--text-small); line-height: 1.75; hyphens: auto; color: var(--mut); }
+  /* The promises, run in: mono, Carbon, the largest type on the page; each led by its clause number */
+  .fine__p { font-family: var(--font-mono); font-size: var(--text-lead); line-height: 1.3; font-weight: 500; letter-spacing: 0.02em; color: var(--color-carbon); }
+  .fine__p sup { margin-right: 4px; vertical-align: super; line-height: 0; color: var(--mut); }
+  /* Redaction lifts: a Carbon bar over each promise shrinks to the right (motion only) */
+  .fine.is-armed .fine__p { background: linear-gradient(var(--color-carbon), var(--color-carbon)) no-repeat right / 100% 100%; -webkit-box-decoration-break: clone; box-decoration-break: clone; transition: background-size 0.8s cubic-bezier(0.65, 0, 0.2, 1); }
+  .fine.is-armed .fine__p.is-lifted { background-size: 0% 100%; }
+  .fine__foot { color: var(--mut); }
+  @media (width >= 768px) {
+    .fine__title { font-size: var(--text-h1); line-height: 0.95; }
+  }
+  @media (width >= 1024px) {
+    .fine__text { column-count: 3; column-gap: var(--grid-gutter); text-align: justify; }
+    .fine__p { font-size: var(--text-h3); }
+  }
+
+  /* ---------- About closing panel (AC-04b): the service-page panel, one row, then the road ---------- */
+  .acta .acta__panel { row-gap: var(--spacing-34); padding-bottom: 0; align-items: end; }
+  .acta__title { grid-column: 1 / -1; font-size: var(--text-h2); line-height: 1; font-weight: 600; letter-spacing: -0.01em; }
+  .acta__pick { grid-column: 1 / -1; display: flex; flex-direction: column; gap: var(--spacing-21); }
+  .acta__pick .ccta__label { margin-bottom: 0; }
+  .acta__pick .ccta__chips { margin-top: calc(-1 * var(--spacing-8)); }
+  .acta__lead { max-width: 36ch; font-size: var(--text-body); line-height: 1.5; color: color-mix(in srgb, var(--color-paper) 62%, transparent); }
+  .acta__lead b { font-weight: 600; color: var(--color-paper); }
+  .acta__acts { grid-column: 1 / -1; display: flex; flex-direction: column; align-items: flex-start; gap: var(--spacing-21); }
+  .acta__acts .ccta__call { color: var(--color-paper); }
+  /* The road: bleeds to the panel's edges under a hairline; a flowing centre line, five stops, the crew */
+  .acta__road { grid-column: 1 / -1; position: relative; height: var(--spacing-55); margin: var(--spacing-21) calc(-1 * var(--spacing-21)) 0; border-top: 1px solid color-mix(in srgb, var(--color-paper) 18%, transparent); }
+  .acta__line { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; }
+  .acta__line line { stroke: color-mix(in srgb, var(--color-paper) 55%, transparent); stroke-width: 2; stroke-dasharray: 22 26; animation: acta-flow 2.4s linear infinite; }
+  .acta__stop { position: absolute; left: calc(var(--spacing-55) + (100% - 2 * var(--spacing-55)) * var(--i) / 4); top: 50%; width: 10px; height: 10px; margin: -5px 0 0 -5px; border-radius: 1px; background: var(--color-carbon); box-shadow: inset 0 0 0 1.5px color-mix(in srgb, var(--color-paper) 55%, transparent); transition: background-color 0.3s; }
+  .acta__stop.is-on { background: color-mix(in srgb, var(--color-paper) 55%, transparent); }
+  .acta__stop b { position: absolute; bottom: calc(100% + var(--spacing-8)); left: 50%; translate: -50% 0; font-family: var(--font-mono); font-size: 10px; font-weight: 400; letter-spacing: 0.14em; text-transform: uppercase; white-space: nowrap; color: color-mix(in srgb, var(--color-paper) 55%, transparent); }
+  .acta__stop:first-of-type b { left: 0; translate: 0 0; }
+  .acta__stop:last-of-type b { left: auto; right: 0; translate: 0 0; }
+  .acta__crew { position: absolute; left: 0; top: 50%; width: 12px; height: 12px; margin: -6px 0 0 -6px; border-radius: 1px; background: var(--color-yellow); box-shadow: inset 0 0 0 1.5px var(--color-carbon); }
+  @media (width < 768px) {
+    .acta__stop:nth-of-type(2), .acta__stop:nth-of-type(4) { display: none; }
+  }
+  @media (width >= 768px) {
+    .acta__title { font-size: var(--text-h1); line-height: 0.95; }
+  }
+  @media (width >= 1024px) {
+    .acta__road { margin-inline: calc(-1 * var(--spacing-55)); }
+    .acta__title { grid-column: 1 / span 5; }
+    .acta__pick { grid-column: 6 / span 4; }
+    .acta__acts { grid-column: 10 / span 3; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .acta__line line { animation: none; }
   }
 
   /* ---------- Questions (CH-03b) ---------- */
@@ -2163,6 +2232,7 @@
 @keyframes soon-pop { from { opacity: 0; scale: 0.6; } to { opacity: 1; scale: 1; } }
 @keyframes about-flow { to { stroke-dashoffset: -9.8; } }
 @keyframes about-write { from { clip-path: inset(0 100% 0 0); } to { clip-path: inset(0 0 0 0); } }
+@keyframes acta-flow { to { stroke-dashoffset: -48; } }
 @keyframes incl-in { from { opacity: 0; translate: 0 -6px; } to { opacity: 1; translate: 0 0; } }
 @keyframes qs-blink { 50% { opacity: 0; } }
 @keyframes qs-dot { 0%, 60%, 100% { opacity: 0.2; translate: 0 0; } 30% { opacity: 1; translate: 0 -3px; } }

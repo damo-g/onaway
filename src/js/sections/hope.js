@@ -1,4 +1,8 @@
 import { prefersReducedMotion } from '../motion.js';
+import { registerOptions } from '../options.js';
+
+// The essay's drop cap; the first value is the locked default
+registerOptions('hope', { dropcap: ['3', '2', 'raised', 'off'], capcolor: ['carbon', 'rust'], capfont: ['display', 'mono'] });
 
 // WE-02 Hope is not a plan. Once, when the ledger is 40% in view: from 0.9s, row by row 0.9s apart, a Rust line
 // strikes through the hope (0.6s), then the plan slides in (0.5s, 0.35s into the strike). The CSS holds the timing;
