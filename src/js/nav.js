@@ -3,7 +3,7 @@ import { registerOptions } from './options.js';
 
 // After the hero, the fixed navbar either sits on paper (locked) or stays clear and
 // switches its text colour over dark sections ([data-nav-theme="dark"]). Buttons never change.
-registerOptions('nav', { after: ['paper', 'clear'], drop: ['invert', 'quiet'] });
+registerOptions('nav', { after: ['paper', 'clear'], drop: ['quiet', 'invert'], panel: ['cards', 'flush'] });
 
 export function initNav() {
   const nav = document.querySelector('.site-nav');

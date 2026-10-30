@@ -276,7 +276,8 @@
   .nav-fr:hover { color: var(--color-rust); }
   .nav-plus { width: 1em; height: 1em; transition: rotate 0.3s var(--ease-out); }
 
-  /* Services drop: Paper, rows like the footer columns, Signal hover. Opens upward while the bar sits on the fold (hero state A). */
+  /* Services drop: the three services set like the hero cards. Opens upward while the bar sits on the fold (hero state A).
+     Panel option nav.panel: cards (locked: a clear drop, each service its own Paper card) | flush (one Paper panel, rows edge to edge). */
   .nav-drop { position: relative; }
   .nav-drop__btn { display: inline-flex; align-items: center; gap: var(--spacing-8); text-transform: inherit; letter-spacing: inherit; cursor: pointer; transition: color 0.2s; }
   .nav-drop__btn:hover { color: var(--color-rust); }
@@ -285,19 +286,18 @@
     --ft-fg: var(--color-carbon);
     --ft-line: var(--color-line);
     position: absolute;
-    top: calc(100% + var(--spacing-21));
-    left: calc(-1 * var(--spacing-21));
+    /* 8 below the bar: the drop sits centred in it, so half the bar under its middle */
+    top: calc(50% + var(--nav-h) / 2 + var(--spacing-8));
+    left: calc(-1 * var(--spacing-13));
     width: 320px;
-    padding: var(--spacing-13) var(--spacing-21);
-    background: var(--color-paper);
-    box-shadow: 0 0 0 1px var(--color-line), 0 13px 34px -21px color-mix(in srgb, var(--color-carbon) 45%, transparent);
+    padding: 0;
     color: var(--ft-fg);
     text-transform: none;
     letter-spacing: normal;
   }
   /* bridge the gap so the pointer can travel from the button into the panel */
-  .nav-drop__panel::before { content: ""; position: absolute; inset: calc(-1 * var(--spacing-21)) 0 100%; }
-  .nav-drop.is-up .nav-drop__panel { top: auto; bottom: calc(100% + var(--spacing-21)); box-shadow: 0 0 0 1px var(--color-line), 0 -13px 34px -21px color-mix(in srgb, var(--color-carbon) 45%, transparent); }
+  .nav-drop__panel::before { content: ""; position: absolute; inset: calc(-1 * var(--nav-h) / 2 - var(--spacing-8)) 0 100%; }
+  .nav-drop.is-up .nav-drop__panel { top: auto; bottom: calc(100% + var(--spacing-21)); }
   .nav-drop.is-up .nav-drop__panel::before { inset: 100% 0 calc(-1 * var(--spacing-21)); }
 
   .nav-fr {
@@ -1262,34 +1262,40 @@
   a.footer__row:hover .footer__arrow { transform: translateX(5px); opacity: 1; }
   a.footer__row:focus-visible { outline: 2px solid var(--ft-fg); outline-offset: 4px; }
 
-  /* Rows: the service pictogram, the name, the arrow. Hover (panel option nav.drop): invert (locked) like the
-     hero cards, or quiet (only the name and arrow move). The footer keeps its own Signal hover. */
+  /* Rows, like the hero cards: the pictogram at the text's 16, uppercase 500 at the nav's tracking, 8 between, 44 tall.
+     Hover (panel option nav.drop): quiet (locked: the name and arrow step right) | invert (the row turns Carbon). */
+  .nav-drop__panel ul { display: grid; gap: var(--spacing-8); }
   .nav-drop__row {
     --tile: var(--color-paper);
     position: relative;
     display: flex;
     align-items: center;
-    gap: var(--spacing-13);
-    margin-inline: calc(-1 * var(--spacing-8));
-    padding: var(--spacing-8);
-    border-bottom: 1px solid var(--ft-line);
-    font-size: var(--text-lead);
-    line-height: 1.1;
-    font-weight: 600;
+    gap: var(--spacing-8);
+    height: 44px;
+    padding-inline: var(--spacing-13);
+    background: var(--color-paper);
+    box-shadow: 0 0 0 1px var(--ft-line), 0 13px 34px -21px color-mix(in srgb, var(--color-carbon) 45%, transparent);
+    font-size: var(--text-body);
+    line-height: 1;
+    font-weight: 500;
     letter-spacing: var(--tracking-nav);
     text-transform: uppercase;
     transition: background-color 0.2s, color 0.2s;
   }
-  .nav-drop__row svg { width: 16px; height: 16px; flex: none; }
-  .nav-drop__row .nav-drop__arrow { margin-left: auto; }
-  .nav-drop__row:is(:hover, :focus-visible) { --tile: var(--color-carbon); background: var(--color-carbon); color: var(--color-paper); }
-  .site-nav[data-drop="quiet"] .nav-drop__row:is(:hover, :focus-visible) { --tile: var(--color-paper); background: none; color: inherit; }
-  .site-nav[data-drop="quiet"] .nav-drop__row:is(:hover, :focus-visible) > span:not(.nav-drop__arrow) { translate: 5px 0; }
+  .nav-drop__row svg { width: 1em; height: 1em; flex: none; }
   .nav-drop__row > span { transition: translate 0.3s; }
-  li:last-child > .nav-drop__row { border-bottom: 0; }
-  .nav-drop__row:focus-visible { outline: 2px solid var(--ft-fg); outline-offset: 4px; }
-  .nav-drop__arrow { font-weight: 400; opacity: 0.5; transition: transform 0.3s, opacity 0.3s; }
-  .nav-drop__row:hover .nav-drop__arrow { transform: translateX(5px); opacity: 1; }
+  .nav-drop__arrow { margin-left: auto; opacity: 0.5; transition: translate 0.3s, opacity 0.3s; }
+  .nav-drop__row:is(:hover, :focus-visible) .nav-drop__arrow { translate: 5px 0; opacity: 1; }
+  .nav-drop__row:is(:hover, :focus-visible) > span:not(.nav-drop__arrow) { translate: 5px 0; }
+  .nav-drop__row:focus-visible { outline: 2px solid var(--ft-fg); outline-offset: -2px; }
+  .site-nav[data-drop="invert"] .nav-drop__row:is(:hover, :focus-visible) { --tile: var(--color-carbon); background: var(--color-carbon); color: var(--color-paper); }
+  .site-nav[data-drop="invert"] .nav-drop__row:is(:hover, :focus-visible) > span:not(.nav-drop__arrow) { translate: 0 0; }
+  .site-nav[data-drop="invert"] .nav-drop__row:focus-visible { outline-color: var(--color-paper); }
+  /* Flush: one Paper panel, the rows edge to edge with hairlines between, no inner padding */
+  .site-nav[data-panel="flush"] .nav-drop__panel { background: var(--color-paper); box-shadow: 0 0 0 1px var(--ft-line), 0 13px 34px -21px color-mix(in srgb, var(--color-carbon) 45%, transparent); }
+  .site-nav[data-panel="flush"] .nav-drop__panel ul { gap: 0; }
+  .site-nav[data-panel="flush"] .nav-drop__row { box-shadow: none; }
+  .site-nav[data-panel="flush"] li + li > .nav-drop__row { border-top: 1px solid var(--ft-line); }
 
   /* Hover: Signal (locked) — the yellow square drops in at the start of the row and the text steps right */
   a.footer__row::after {
