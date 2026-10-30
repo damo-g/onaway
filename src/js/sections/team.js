@@ -1,4 +1,8 @@
 import { prefersReducedMotion } from '../motion.js';
+import { registerOptions } from '../options.js';
+
+// Painting height on tablets and up; the first value is the default
+registerOptions('team', { height: ['440', '400', '480', '620'] });
 
 // TM-02b The people who show up. Once, as it comes into view, the heading, dek, painting and captions rise in
 // 0.1s apart and the painting settles from 1.03 (CSS holds the timing). Reduced motion: never armed, static.
