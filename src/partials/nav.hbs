@@ -16,9 +16,9 @@
         </button>
         <div id="nav-services" class="nav-drop__panel" x-show="drop" x-cloak x-transition.opacity.duration.200ms @click.outside="drop = false">
           <ul role="list">
-            <li><a class="nav-drop__row" href="/cleaning/"><span>Cleaning</span><span class="nav-drop__arrow" aria-hidden="true">{{{icon "arrow-right-02"}}}</span></a></li>
-            <li><a class="nav-drop__row" href="/moving/"><span>Moving</span><span class="nav-drop__arrow" aria-hidden="true">{{{icon "arrow-right-02"}}}</span></a></li>
-            <li><a class="nav-drop__row" href="/delivery/"><span>Delivery</span><span class="nav-drop__arrow" aria-hidden="true">{{{icon "arrow-right-02"}}}</span></a></li>
+            <li><a class="nav-drop__row" href="/cleaning/">{{> picto name="cleaning"}}<span>Cleaning</span><span class="nav-drop__arrow" aria-hidden="true">{{{icon "arrow-right-02"}}}</span></a></li>
+            <li><a class="nav-drop__row" href="/moving/">{{> picto name="moving"}}<span>Moving</span><span class="nav-drop__arrow" aria-hidden="true">{{{icon "arrow-right-02"}}}</span></a></li>
+            <li><a class="nav-drop__row" href="/delivery/">{{> picto name="delivery"}}<span>Delivery</span><span class="nav-drop__arrow" aria-hidden="true">{{{icon "arrow-right-02"}}}</span></a></li>
           </ul>
         </div>
       </div>
@@ -40,7 +40,15 @@
     </div>
   </div>
   <div id="nav-menu" class="nav-menu" x-show="open" x-cloak @click.outside="open = false">
-    <a href="/#services" @click="open = false">Services <span aria-hidden="true">{{{icon "add-01"}}}</span></a>
+    {{!-- Services expands in place: the three services, smaller, each led by its pictogram --}}
+    <div class="nav-menu__group" x-data="{ svc: false }">
+      <button type="button" class="nav-menu__toggle" aria-controls="nav-menu-services" :aria-expanded="svc.toString()" aria-expanded="false" @click="svc = !svc">Services <span class="nav-menu__plus" aria-hidden="true">{{{icon "add-01"}}}</span></button>
+      <ul id="nav-menu-services" class="nav-menu__sub" role="list" x-show="svc" x-cloak x-transition.opacity.duration.200ms>
+        <li><a href="/cleaning/" @click="open = false">{{> picto name="cleaning"}}<span>Cleaning</span><span class="nav-menu__arrow" aria-hidden="true">{{{icon "arrow-right-02"}}}</span></a></li>
+        <li><a href="/moving/" @click="open = false">{{> picto name="moving"}}<span>Moving</span><span class="nav-menu__arrow" aria-hidden="true">{{{icon "arrow-right-02"}}}</span></a></li>
+        <li><a href="/delivery/" @click="open = false">{{> picto name="delivery"}}<span>Delivery</span><span class="nav-menu__arrow" aria-hidden="true">{{{icon "arrow-right-02"}}}</span></a></li>
+      </ul>
+    </div>
     <a href="/about/">About <span aria-hidden="true">{{{icon "arrow-right-02"}}}</span></a>
     <a href="/help/">Help <span aria-hidden="true">{{{icon "arrow-right-02"}}}</span></a>
     <a href="/fr/" lang="fr" hreflang="fr">Français <span aria-hidden="true">{{{icon "arrow-right-02"}}}</span></a>

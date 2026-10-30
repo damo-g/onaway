@@ -369,7 +369,8 @@
     border-block: 1px solid var(--color-line);
     padding: var(--spacing-21) var(--grid-margin) var(--spacing-34);
   }
-  .nav-menu a {
+  .nav-menu a,
+  .nav-menu__toggle {
     display: flex;
     justify-content: space-between;
     padding-block: var(--spacing-13);
@@ -378,6 +379,14 @@
     line-height: var(--text-h3--line-height);
     font-weight: 600;
   }
+  .nav-menu__toggle { width: 100%; align-items: center; text-align: left; cursor: pointer; }
+  .nav-menu__plus { display: inline-flex; transition: rotate 0.3s var(--ease-out); }
+  .nav-menu__toggle[aria-expanded="true"] .nav-menu__plus { rotate: 45deg; }
+  /* The services, a step smaller than the menu, indented, each led by its pictogram */
+  .nav-menu__sub { padding-block: var(--spacing-8) var(--spacing-13); border-bottom: 1px solid var(--color-line); }
+  .nav-menu__sub a { --tile: var(--color-paper); justify-content: flex-start; align-items: center; gap: var(--spacing-13); padding: var(--spacing-8) 0 var(--spacing-8) var(--spacing-21); border-bottom: 0; font-size: var(--text-lead); line-height: 1.3; }
+  .nav-menu__sub svg { width: 16px; height: 16px; flex: none; }
+  .nav-menu__sub .nav-menu__arrow { margin-left: auto; display: inline-flex; }
   @media (width >= 768px) {
     .nav-call { display: flex; padding-inline: var(--spacing-21); }
     .nav-call-number { display: inline; }
@@ -1253,39 +1262,34 @@
   a.footer__row:hover .footer__arrow { transform: translateX(5px); opacity: 1; }
   a.footer__row:focus-visible { outline: 2px solid var(--ft-fg); outline-offset: 4px; }
 
+  /* Rows: the service pictogram, the name, the arrow. Hover (panel option nav.drop): invert (locked) like the
+     hero cards, or quiet (only the name and arrow move). The footer keeps its own Signal hover. */
   .nav-drop__row {
+    --tile: var(--color-paper);
     position: relative;
     display: flex;
-    justify-content: space-between;
-    align-items: baseline;
+    align-items: center;
     gap: var(--spacing-13);
-    padding-block: var(--spacing-8);
+    margin-inline: calc(-1 * var(--spacing-8));
+    padding: var(--spacing-8);
     border-bottom: 1px solid var(--ft-line);
     font-size: var(--text-lead);
     line-height: 1.1;
     font-weight: 600;
     letter-spacing: var(--tracking-nav);
     text-transform: uppercase;
-    transition: padding 0.3s;
+    transition: background-color 0.2s, color 0.2s;
   }
+  .nav-drop__row svg { width: 16px; height: 16px; flex: none; }
+  .nav-drop__row .nav-drop__arrow { margin-left: auto; }
+  .nav-drop__row:is(:hover, :focus-visible) { --tile: var(--color-carbon); background: var(--color-carbon); color: var(--color-paper); }
+  .site-nav[data-drop="quiet"] .nav-drop__row:is(:hover, :focus-visible) { --tile: var(--color-paper); background: none; color: inherit; }
+  .site-nav[data-drop="quiet"] .nav-drop__row:is(:hover, :focus-visible) > span:not(.nav-drop__arrow) { translate: 5px 0; }
+  .nav-drop__row > span { transition: translate 0.3s; }
   li:last-child > .nav-drop__row { border-bottom: 0; }
   .nav-drop__row:focus-visible { outline: 2px solid var(--ft-fg); outline-offset: 4px; }
   .nav-drop__arrow { font-weight: 400; opacity: 0.5; transition: transform 0.3s, opacity 0.3s; }
   .nav-drop__row:hover .nav-drop__arrow { transform: translateX(5px); opacity: 1; }
-  .nav-drop__row::after {
-    content: "";
-    position: absolute;
-    left: 0;
-    top: 50%;
-    width: 10px;
-    height: 10px;
-    margin-top: -5px;
-    background: var(--color-yellow);
-    transform: scale(0) rotate(45deg);
-    transition: transform 0.35s cubic-bezier(0.3, 0.7, 0.3, 1);
-  }
-  .nav-drop__row:is(:hover, :focus-visible) { padding-left: var(--spacing-21); }
-  .nav-drop__row:is(:hover, :focus-visible)::after { transform: scale(1) rotate(0deg); }
 
   /* Hover: Signal (locked) — the yellow square drops in at the start of the row and the text steps right */
   a.footer__row::after {
