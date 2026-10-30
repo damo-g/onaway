@@ -1,9 +1,13 @@
 import { prefersReducedMotion } from '../motion.js';
+import { registerOptions } from '../options.js';
+
+// Phone order of the three blocks, and which side the name sits on at desktop; first values are the defaults
+registerOptions('about', { order: ['1', '2', '3'], side: ['left', 'swap'] });
 
 // AB-02c About hero: the wordmark is a road. On load its letters are laid stroke by stroke along their
 // centrelines (a mask drawn with stroke-dashoffset on pathLength 1, hidden by CSS until then, left to right, 0.9s each, 110ms apart, from 0.4s), then
 // the Paper lane markings fade in and flow (CSS, 2.4s; hovering the wordmark pauses them). Hover or focus
-// ọ̀nà or Onabule and WAY steps back, leaving ONA. Reduced motion: letters whole, lanes still.
+// ONA and the WAY half steps back; WAY and ONA does. Reduced motion: letters whole, lanes still.
 const STROKE = 900;
 const STAGGER = 110;
 const START = 400;
@@ -20,10 +24,12 @@ export function init(el) {
     setTimeout(() => el.classList.add('is-laid'), START + order.length * STAGGER + STROKE);
   }
 
-  const rows = [...el.querySelectorAll('.about-name__rows li')];
+  // Pointing at ONA fades the WAY half of the logo, and WAY fades ONA
+  const rows = [...el.querySelectorAll('.about-name__part')];
   const light = (row) => {
     rows.forEach((r) => r.classList.toggle('is-on', r === row));
     el.classList.toggle('is-ona', row?.dataset.k === 'ona');
+    el.classList.toggle('is-way', row?.dataset.k === 'way');
   };
   rows.forEach((r) => {
     r.addEventListener('mouseenter', () => light(r));

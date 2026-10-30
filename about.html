@@ -17,22 +17,24 @@
 
   <main id="main">
     {{!-- AB-02c hero (locked: laid, then lanes · lanes 2.4s · entry highlights letters · hover pauses · logo L ·
-         "The way" painting at 520). The wordmark is a road; the three meanings of the name sit under it. src/js/sections/about.js --}}
+         "The way" painting at 520). The wordmark is a road; ONA + WAY sit under it. Panel options: order (phones)
+         1 wordmark, painting, headline · 2 painting, wordmark, headline · 3 wordmark, headline, painting;
+         side (desktop) headline left · swap. src/js/sections/about.js --}}
     <section class="about-hero grid-site" data-section="about" aria-labelledby="about-title">
-      <div class="about-hero__text col-span-full lg:col-span-7">
+      <div class="about-hero__text">
         <h1 id="about-title" class="about-hero__title text-h2 md:text-h1 uppercase">A local crew<br> with a system.</h1>
         <p class="about-hero__lead text-lead">A Toronto company that cleans, moves and delivers for homes and businesses across the GTA, with a plan written down before anyone lifts a thing.</p>
       </div>
-      <div class="about-name col-span-full lg:col-start-9 lg:col-span-4">
+      <div class="about-name">
         <div class="about-wm">{{> about-wordmark}}</div>
-        <ol class="about-name__rows" role="list">
-          {{!-- Instrument Sans has no combining dot below (U+0323), so ọ̀ would fall back to another font: the visible word is ònà in our font with the font's own full stop set under the o; the real spelling is in the sr-only span. --}}
-          <li tabindex="0" data-k="ona"><span class="about-name__n label" aria-hidden="true">1</span><div><p class="about-name__term"><b lang="yo"><span class="sr-only">ọ̀nà</span><span class="yo" aria-hidden="true"><span class="yo__o">ò</span>nà</span></b><span class="label">Yoruba</span></p><p class="about-name__def">Road. Way. The route you take to get somewhere.</p></div></li>
-          <li tabindex="0" data-k="ona"><span class="about-name__n label" aria-hidden="true">2</span><div><p class="about-name__term"><b>Onabule</b><span class="label">Family name</span></p><p class="about-name__def">The founder’s. The company carries it, and answers for it.</p></div></li>
-          <li tabindex="0" data-k="all"><span class="about-name__n label" aria-hidden="true">3</span><div><p class="about-name__term"><b>On a way</b><span class="label">English</span></p><p class="about-name__def">On our way, and on time. What you hear before we arrive.</p></div></li>
-        </ol>
+        {{!-- The name, as the wordmark splits it: ONA + WAY. Pointing at one fades the other half of the logo. --}}
+        <div class="about-name__parts">
+          <p class="about-name__part" tabindex="0" data-k="ona"><b class="about-name__term">Ona</b><span class="about-name__note label"><span>From <span lang="yo">ọ̀nà</span> · Yoruba</span> <span>Road, the way you take</span></span></p>
+          <span class="about-name__plus" aria-hidden="true">+</span>
+          <p class="about-name__part" tabindex="0" data-k="way"><b class="about-name__term">Way</b><span class="about-name__note label"><span>On a way · English</span> <span>On our way, and on time</span></span></p>
+        </div>
       </div>
-      <figure class="about-hero__fig col-span-full">
+      <figure class="about-hero__fig">
         {{picture "about-hero" alt="An empty downtown Toronto street at sunrise, streetcar tracks running toward the sun" sizes="(width >= 1512px) calc(100vw - 80px), calc(100vw - 40px)" loading="eager"}}
       </figure>
     </section>
