@@ -2,7 +2,7 @@ import { registerOptions } from '../options.js';
 import { pinScrub, prefersReducedMotion, ScrollTrigger } from '../motion.js';
 
 // Locked first: overcast plate, navbar clear once docked, zoom 1.00 → 1.25. Fallback mode (scroll-past) comes later.
-registerOptions('hero', { weather: ['ov01', 'tb05'], docked: ['clear', 'solid'], zoom: ['1.25', '1.04', 'off'], chip: ['gta', 'regions', 'coords'] });
+registerOptions('hero', { weather: ['ov01', 'tb05'], docked: ['clear', 'solid'], zoom: ['1.25', '1.04', 'off'], chip: ['gta', 'regions', 'coords'], cards: ['44', '34', '55'] });
 
 const ZOOM = { '1.25': 0.25, '1.04': 0.04, off: 0 };
 // HF-01 timeline, t 0→1: the bar docks over 0→.45, the headline writes in at .46 and .50,

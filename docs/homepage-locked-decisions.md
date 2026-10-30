@@ -5,6 +5,7 @@ Desktop 1512 × 860 · 12 columns · mocks drawn on a 20 margin (Brand Guide say
 | # | Section | Locked version | Key settings | Fallback |
 |---|---|---|---|---|
 - Hero chip on the plate (Oct 2026): "The Greater Toronto Area" (locked) replaces "THE GTA 43.65°N 79.38°W" (one point is downtown Toronto, not the GTA, and reads as a code). Panel option hero.chip: gta · regions (Toronto · Peel · York · Durham · Halton; wraps on phones) · coords (the old tag). Alternatives are dev-only.
+- Hero service cards (end state, tablet and up, Oct 2026): set like the nav (16 uppercase, 500, nav tracking), 13 side padding, 8 between icon and label, icon 16; 44 tall (panel option hero.cards: 44 · 34 · 55). Phones keep their 34 chips.
 | 01 | Hero | HF-01 Hero Flow (pinned) | Plate 20,20,1472×630; navbar docks clear; wordmark 110→36 at 80%; zoom 1.00→1.25; overcast OV-01 | Scroll-past mode |
 | 02 | Services | R2-E Station Signs to Board | Light environment, dark signs, chained, icon left, straight arrows; facts 2 HR QUOTE / WE WRAP IT / GTA-WIDE; pinned scroll scrub (signs → board); generous bottom padding (≥ 89 below the signs) | — |
 | 03 | Three steps. No surprises. | TS-02 Journey Ticket | Stamp · subtle edge (3px bites every 10px), W symbol centred in 56px stub, Write-in animation, real tear-off CTA | Unroll + write |

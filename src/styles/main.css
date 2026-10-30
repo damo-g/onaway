@@ -453,17 +453,23 @@
     --tile: var(--color-paper);
     display: flex;
     align-items: center;
-    gap: var(--spacing-13);
-    height: var(--spacing-55);
-    padding-inline: var(--spacing-21);
+    gap: var(--spacing-8);
+    height: 44px;
+    padding-inline: var(--spacing-13);
     background: var(--color-paper);
     color: var(--color-carbon);
-    font-size: var(--text-lead);
+    font-size: var(--text-body);
     font-weight: 500;
+    letter-spacing: var(--tracking-nav);
     text-transform: uppercase;
     transition: background-color 0.2s, color 0.2s;
   }
-  .hero-card svg { width: var(--spacing-21); height: var(--spacing-21); flex: none; }
+  /* Set like the nav: 16 uppercase at its tracking, 13 sides, 8 between icon and label. Height (panel option hero.cards): 44 (default) | 34 | 55 */
+  .hero-card svg { width: 1em; height: 1em; flex: none; }
+  @media (width >= 768px) {
+    .hero[data-cards="34"] .hero-card { height: var(--spacing-34); }
+    .hero[data-cards="55"] .hero-card { height: var(--spacing-55); }
+  }
   .hero-card .hero-card__arrow { margin-left: auto; }
   .hero-card:hover,
   .hero-card:focus-visible { --tile: var(--color-carbon); background: var(--color-carbon); color: var(--color-paper); }
