@@ -2095,6 +2095,18 @@
   .hope[data-dropcap="off"] .hope__opener::first-letter { all: unset; }
   .hope[data-capcolor="rust"] .hope__opener::first-letter { color: var(--color-rust); }
   .hope[data-capfont="mono"] .hope__opener::first-letter { font-family: var(--font-mono); font-weight: 500; }
+  /* Logo letters (panel option hope.cap: logo (locked) · type): the O and W openers paint the wordmark's own letter
+     (public/svg/cap-*.svg) over the drop cap; the text keeps its real letter for reading and search */
+  /* Sized to the cap: where initial-letter works, the three-line cap (two line heights plus a cap height of the 20
+     text) and the box widened so the round O fits; in the float fallback (Firefox) the letter's own cap height */
+  .hope:not([data-cap="type"], [data-capfont="mono"], [data-dropcap="off"]) .hope__opener::first-letter { padding-right: 0.12em; background: no-repeat left bottom 0.1em / auto 0.72em; }
+  @supports (initial-letter: 3) or (-webkit-initial-letter: 3) {
+    .hope:not([data-cap="type"], [data-capfont="mono"], [data-dropcap="off"]) .hope__opener::first-letter { padding-right: 0.5em; background-position: left bottom; background-size: auto 3.7em; }
+  }
+  .hope:not([data-cap="type"], [data-capfont="mono"], [data-dropcap="off"]) .hope__opener:is([data-v="once"], [data-v="only"])::first-letter { color: transparent; background-image: url("/svg/cap-o.svg"); }
+  .hope:not([data-cap="type"], [data-capfont="mono"], [data-dropcap="off"]) .hope__opener[data-v="when"]::first-letter { color: transparent; background-image: url("/svg/cap-w.svg"); }
+  .hope:not([data-cap="type"], [data-capfont="mono"], [data-dropcap="off"])[data-capcolor="rust"] .hope__opener:is([data-v="once"], [data-v="only"])::first-letter { background-image: url("/svg/cap-o-rust.svg"); }
+  .hope:not([data-cap="type"], [data-capfont="mono"], [data-dropcap="off"])[data-capcolor="rust"] .hope__opener[data-v="when"]::first-letter { background-image: url("/svg/cap-w-rust.svg"); }
   /* Ledger: the usual hope, struck in Rust, then the plan */
   .hope__ledger { border-top: 3px solid var(--color-carbon); }
   .hope__head { display: none; padding-block: var(--spacing-13); color: var(--mut); }
