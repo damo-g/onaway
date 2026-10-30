@@ -1,11 +1,11 @@
 import { registerOptions } from '../options.js';
 import { onEnterOnce, prefersReducedMotion } from '../motion.js';
 
-// Locked first: Stamp · subtle edge, symbol centred, Write-in. Fallback animation: Unroll + write.
+// Locked first: stamps edge, symbol at the foot, printed across. "tear" is stamps with a perforated tear line on the quote stub.
 registerOptions('steps', {
-  ticket: ['stamps', 'stamp', 'pin', 'notch'],
-  symbol: ['centre', 'foot'],
-  animation: ['write', 'unroll', 'across'],
+  ticket: ['stamps', 'tear', 'stamp', 'pin', 'notch'],
+  symbol: ['foot', 'centre'],
+  animation: ['across', 'write', 'unroll'],
 });
 
 export function init(el) {

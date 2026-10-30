@@ -615,8 +615,8 @@
   .services .sign.is-lift:hover,
   .services .sign.is-lift:focus-visible { translate: 0 -3px; }
   /* ---------- Steps (TS-02 Journey Ticket) ---------- */
-  /* Options (dev panel): data-ticket stamps (locked) | stamp | pin | notch · data-symbol centre (locked) | foot
-     · data-animation write (locked) | across | unroll. */
+  /* Options (dev panel): data-ticket stamps (locked) | tear | stamp | pin | notch · data-symbol foot (locked) | centre
+     · data-animation across (locked) | write | unroll. */
   /* About section gap + 89 between the R2-E board and the copy, counting the paper the board already
      leaves under itself (--services-tail, set by services.js); never less than 55 of its own */
   .steps { padding-top: max(var(--spacing-55), calc(var(--section-gap) + var(--spacing-89) - var(--services-tail, 0px))); }
@@ -664,7 +664,8 @@
   }
   .ticket__stub { display: flex; align-items: center; justify-content: center; background: var(--ticket-stub); color: color-mix(in srgb, var(--color-carbon) 60%, transparent); }
   .ticket__stub svg { width: var(--spacing-21); height: auto; }
-  .steps[data-symbol="foot"] .ticket__stub { align-items: flex-end; padding-bottom: var(--spacing-34); }
+  .ticket__stub { align-items: flex-end; padding-bottom: var(--spacing-34); }
+  .steps[data-symbol="centre"] .ticket__stub { align-items: center; padding-bottom: 0; }
   .ticket__fields { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); }
   .ticket__field { display: flex; flex-direction: column; gap: var(--spacing-13); padding: var(--spacing-55) var(--spacing-21); }
   .ticket__field + .ticket__field { border-left: 1px solid var(--ticket-rule); }
@@ -719,6 +720,14 @@
   .ticket__head { display: none; }
 
   /* Edge styles */
+  /* Tear: stamps everywhere; the tear-off's own left edge is a perforated tear line (holes 8 in, notches at each end) */
+  .steps[data-ticket="tear"] .ticket {
+    --tear-holes: radial-gradient(circle 2.5px at 8px 50%, transparent 96%, var(--cut) 100%) left / 100% 9px repeat-y;
+    --tear-notch-t: radial-gradient(circle 8px at 8px 0, transparent 96%, var(--cut) 100%) no-repeat;
+    --tear-notch-b: radial-gradient(circle 8px at 8px 100%, transparent 96%, var(--cut) 100%) no-repeat;
+    --mask-tear: var(--e-t), var(--e-b), var(--e-r), var(--tear-holes), var(--tear-notch-t), var(--tear-notch-b);
+  }
+  .steps[data-ticket="tear"] .ticket__tear { padding-left: var(--spacing-34); }
   .steps[data-ticket="stamp"] .ticket { --br: 5px; --bp: 15px; }
   .steps[data-ticket="stamp"] .ticket__seam { border-left: 1px solid color-mix(in srgb, var(--color-carbon) 18%, transparent); }
   .steps[data-ticket="pin"] .ticket,
@@ -746,9 +755,16 @@
     }
     .steps[data-ticket="pin"] .ticket,
     .steps[data-ticket="notch"] .ticket { --mask-body: var(--seam-b); --mask-tear: var(--seam-t); }
+    .steps[data-ticket="tear"] .ticket {
+      --tear-holes: radial-gradient(circle 2.5px at 50% 8px, transparent 96%, var(--cut) 100%) top / 9px 100% repeat-x;
+      --tear-notch-t: radial-gradient(circle 8px at 0 8px, transparent 96%, var(--cut) 100%) no-repeat;
+      --tear-notch-b: radial-gradient(circle 8px at 100% 8px, transparent 96%, var(--cut) 100%) no-repeat;
+      --mask-tear: var(--e-l), var(--e-r), var(--e-b), var(--tear-holes), var(--tear-notch-t), var(--tear-notch-b);
+    }
+    .steps[data-ticket="tear"] .ticket__tear { padding: var(--spacing-34) var(--spacing-21) var(--spacing-21); }
     .ticket__inner { flex-direction: column; }
     .ticket__body { grid-template-columns: 1fr; grid-template-rows: var(--stub) auto; padding-bottom: var(--spacing-89); }
-    .steps[data-symbol="foot"] .ticket__stub { align-items: center; padding-bottom: 0; }
+    .ticket__stub, .steps[data-symbol="centre"] .ticket__stub { align-items: center; padding-bottom: 0; }
     .ticket__fields { grid-template-columns: 1fr; }
     .ticket__field { padding: var(--spacing-21); gap: var(--spacing-8); }
     .ticket__field + .ticket__field { border-left: 0; border-top: 1px solid var(--ticket-rule); }
@@ -780,10 +796,10 @@
   .steps[data-animation="unroll"] .ticket { --wd: 0.9s; }
   .steps[data-animation="unroll"] .ticket.is-armed .ticket__inner { animation: tk-open 1s cubic-bezier(0.5, 0, 0.2, 1) both; }
   /* Print across: a print head crosses in 30 steps; no write-in */
-  .steps[data-animation="across"] .ticket.is-armed .ticket__inner { animation: tk-open 1.8s steps(30, end) both; }
-  .steps[data-animation="across"] .ticket.is-armed :is(.ticket__num, .ticket__title, .ticket__copy, .ticket__tear-label, .ticket__arrow) { animation: none; }
-  .steps[data-animation="across"] .ticket.is-armed .ticket__stamp { animation-delay: 2s; }
-  .steps[data-animation="across"] .ticket.is-armed .ticket__head {
+  .steps:not([data-animation="write"], [data-animation="unroll"]) .ticket.is-armed .ticket__inner { animation: tk-open 1.8s steps(30, end) both; }
+  .steps:not([data-animation="write"], [data-animation="unroll"]) .ticket.is-armed :is(.ticket__num, .ticket__title, .ticket__copy, .ticket__tear-label, .ticket__arrow) { animation: none; }
+  .steps:not([data-animation="write"], [data-animation="unroll"]) .ticket.is-armed .ticket__stamp { animation-delay: 2s; }
+  .steps:not([data-animation="write"], [data-animation="unroll"]) .ticket.is-armed .ticket__head {
     display: block; position: absolute; top: -6px; bottom: -6px; width: 2px;
     background: color-mix(in srgb, var(--color-carbon) 45%, transparent);
     animation: tk-head 1.8s steps(30, end) both;
