@@ -480,6 +480,13 @@
   }
   /* While scripted, the scrub owns these; hidden until the first frame so state A never flashes */
   .hero.is-scripted .hero__chip { display: inline-flex; }
+  /* Chip wording (panel option chip): The Greater Toronto Area (locked) · the five regions · the old coordinates */
+  .hero__chip-v { display: inline-flex; gap: var(--spacing-13); white-space: nowrap; }
+  .hero__chip-v:not([data-v="gta"]), .hero:is([data-chip="regions"], [data-chip="coords"]) .hero__chip-v[data-v="gta"] { display: none; }
+  .hero[data-chip="regions"] .hero__chip-v[data-v="regions"] { display: inline; }
+  .hero[data-chip="coords"] .hero__chip-v[data-v="coords"] { display: inline-flex; }
+  .hero__chip-v[data-v="regions"] { white-space: normal; }
+  .hero__chip { max-width: calc(100% - 2 * var(--grid-margin)); }
   .hero.is-scripted .hero__lede { display: flex; }
   html.js .hero:not(.is-ready) { visibility: hidden; animation: hero-reveal 0s 2s forwards; }
   html.js body:has(.hero:not(.is-ready)) .site-nav { visibility: hidden; animation: hero-reveal 0s 2s forwards; }

@@ -6,7 +6,8 @@
     <div class="hero__grain" aria-hidden="true"></div>
   </div>
 
-  <span class="hero__chip label" aria-hidden="true"><span class="text-rust">The GTA</span><span>43.65°N 79.38°W</span></span>
+  {{!-- Chip on the plate (panel option hero.chip): gta (locked) · regions · coords. Alternatives are dev-only. --}}
+  <span class="hero__chip label" aria-hidden="true"><span class="hero__chip-v text-rust" data-v="gta">The Greater Toronto Area</span>{{#if dev}}<span class="hero__chip-v" data-v="regions"><span class="text-rust">Toronto</span> · Peel · York · Durham · Halton</span><span class="hero__chip-v" data-v="coords"><span class="text-rust">The GTA</span><span>43.65°N 79.38°W</span></span>{{/if}}</span>
   <p class="hero__lede text-small md:text-lead" aria-hidden="true"><span>Cleaning, Moving &amp; Delivery for homes &amp; businesses across&nbsp;the&nbsp;<span class="text-rust">GTA</span></span></p>
 
   <div class="hero__content">
