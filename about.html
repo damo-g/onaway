@@ -1,0 +1,121 @@
+<!doctype html>
+<html lang="en-CA">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <script>document.documentElement.classList.add('js')</script>
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <meta name="robots" content="noindex"> <!-- pre-launch: remove at launch (CLAUDE.md "Before launch") -->
+  <title>About · ONAWAY</title>
+  <meta name="description" content="A Toronto crew that cleans, moves and delivers across the GTA, with a plan written down before anyone lifts a thing.">
+  <link rel="preload" href="/fonts/InstrumentSans-Variable.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="/fonts/OverpassMono-Variable.woff2" as="font" type="font/woff2" crossorigin>
+  <script type="module" src="/src/js/main.js"></script>
+</head>
+<body>
+  {{> nav page="about"}}
+
+  <main id="main">
+    {{!-- AB-02c hero (locked: laid, then lanes · lanes 2.4s · entry highlights letters · hover pauses · logo L ·
+         "The way" painting at 520). The wordmark is a road; the three meanings of the name sit under it. src/js/sections/about.js --}}
+    <section class="about-hero grid-site" data-section="about" aria-labelledby="about-title">
+      <div class="about-hero__text col-span-full lg:col-span-7">
+        <h1 id="about-title" class="about-hero__title text-h2 md:text-h1 uppercase">A local crew<br> with a system.</h1>
+        <p class="about-hero__lead text-lead">A Toronto company that cleans, moves and delivers for homes and businesses across the GTA, with a plan written down before anyone lifts a thing.</p>
+      </div>
+      <div class="about-name col-span-full lg:col-start-9 lg:col-span-4">
+        <div class="about-wm">{{> about-wordmark}}</div>
+        <ol class="about-name__rows" role="list">
+          {{!-- Instrument Sans has no combining dot below (U+0323), so ọ̀ would fall back to another font: the visible word is ònà in our font with the font's own full stop set under the o; the real spelling is in the sr-only span. --}}
+          <li tabindex="0" data-k="ona"><span class="about-name__n label" aria-hidden="true">1</span><div><p class="about-name__term"><b lang="yo"><span class="sr-only">ọ̀nà</span><span class="yo" aria-hidden="true"><span class="yo__o">ò</span>nà</span></b><span class="label">Yoruba</span></p><p class="about-name__def">Road. Way. The route you take to get somewhere.</p></div></li>
+          <li tabindex="0" data-k="ona"><span class="about-name__n label" aria-hidden="true">2</span><div><p class="about-name__term"><b>Onabule</b><span class="label">Family name</span></p><p class="about-name__def">The founder’s. The company carries it, and answers for it.</p></div></li>
+          <li tabindex="0" data-k="all"><span class="about-name__n label" aria-hidden="true">3</span><div><p class="about-name__term"><b>On a way</b><span class="label">English</span></p><p class="about-name__def">On our way, and on time. What you hear before we arrive.</p></div></li>
+        </ol>
+      </div>
+      <figure class="about-hero__fig col-span-full">
+        {{picture "about-hero" alt="An empty downtown Toronto street at sunrise, streetcar tracks running toward the sun" sizes="(width >= 1512px) calc(100vw - 80px), calc(100vw - 40px)" loading="eager"}}
+      </figure>
+    </section>
+
+    {{!-- WE-02 Hope is not a plan (locked: correction plays once · Rust strike · yellow square plan mark). The ledger's
+         hopes are real text in <s>; the strike is drawn once, row by row, when it's 40% in view. src/js/sections/hope.js --}}
+    <section class="hope grid-site" data-section="hope" aria-labelledby="hope-title">
+      <h2 id="hope-title" class="hope__title col-span-full lg:col-span-5">Hope is not a plan.</h2>
+      <div class="hope__essay col-span-full lg:col-start-7 lg:col-span-6">
+        <p>Most people only call for help a handful of times: a move, a deep clean before the keys go back, a sofa from across town. Each time, they let strangers into their home or their business and hope it goes well.</p>
+        <p>We started Onaway to replace that hope with a plan. A written quote with every cost on it. An arrival window we keep. A crew that treats your place like a workplace with rules, whether we’re carrying, cleaning or delivering.</p>
+        <p>We’re from here. We know which buildings need an elevator booked, which condos want a certificate of insurance, and how long the Gardiner takes at four.</p>
+      </div>
+      <div class="hope__ledger col-span-full">
+        <p class="hope__head label" aria-hidden="true"><span>The usual</span><span>With Onaway</span></p>
+        <ul class="hope__rows" role="list">
+          <li><span class="hope__svc label">Moving</span><p class="hope__usual"><s>We’ll hope the elevator’s free.</s></p><p class="hope__plan">Elevator booked, 9–11 AM, with your concierge.</p></li>
+          <li><span class="hope__svc label">Cleaning</span><p class="hope__usual"><s>We’ll hope they get the oven.</s></p><p class="hope__plan">Inside the oven, on the list you signed off.</p></li>
+          <li><span class="hope__svc label">Delivery</span><p class="hope__usual"><s>We’ll hope it comes today.</s></p><p class="hope__plan">Today, 2 – 4 PM, in writing.</p></li>
+          <li><span class="hope__svc label">The bill</span><p class="hope__usual"><s>We’ll hope there’s nothing extra.</s></p><p class="hope__plan">Every cost on the quote, before you say yes.</p></li>
+        </ul>
+      </div>
+    </section>
+
+    {{!-- SD-03c Our fine print is the big print (locked: three columns · mono · 34 · small print 62% · 12 columns ·
+         redaction lifts · run-in · numbers on · folio off). LEGAL REVIEW: the small-print wording is a draft.
+         The six promises are run into the text; Carbon bars lift off them once at 40% in view. src/js/sections/fine.js --}}
+    <section class="fine grid-site" data-section="fine" aria-labelledby="fine-title">
+      <h2 id="fine-title" class="fine__title col-span-full lg:col-span-7">Our fine print<br> is the big print.</h2>
+      <p class="fine__dek col-span-full lg:col-start-9 lg:col-span-4">Most small print protects the company. Ours is six promises to you, in the largest type on the page.</p>
+      <div class="fine__body col-span-full">
+        <p class="fine__text">Every job begins with a request and ends with your signature, and between the two we commit to the following on every move, every clean and every delivery, for homes and for businesses alike, wherever in the Greater Toronto Area the work takes us. <strong class="fine__p"><sup class="label">01</sup>Nothing starts until it’s in writing.</strong> Prices are set out in the written quote and are not changed on the day without your agreement. <strong class="fine__p"><sup class="label">02</sup>We arrive inside the window.</strong> Arrival is within the stated window; where traffic, weather or a building intervenes, notice is given in advance and not after the fact. <strong class="fine__p"><sup class="label">03</sup>Protect first, then work.</strong> Before anything is lifted, scrubbed or set down, floors, frames and finishes are protected with runners, pads and covers suited to the space. <strong class="fine__p"><sup class="label">04</sup>One person answers.</strong> A single named contact is assigned to the job and is reachable from the quote to completion. <strong class="fine__p"><sup class="label">05</sup>We leave when you’ve checked.</strong> At completion the work is inspected with you and any omission is corrected before the crew departs. <strong class="fine__p"><sup class="label">06</sup>If we can’t, we say so.</strong> Where a request is outside what we can do well, we say so plainly and, where we can, refer you to someone who can.</p>
+      </div>
+      <p class="fine__foot label col-span-full">The Onaway standard · Applies to moving, cleaning and delivery · Homes and businesses</p>
+    </section>
+
+{{!-- TM-02b The people who show up: no names or faces, what the crew does. Heading, dek, image and captions
+         rise in once, 0.1s apart; the painting settles from 1.03. src/js/sections/team.js --}}
+    <section class="team grid-site" data-section="team" aria-labelledby="team-title">
+      <h2 id="team-title" class="team__title team__rise col-span-full lg:col-span-6">The people<br> who show up.</h2>
+      <p class="team__dek team__rise col-span-full lg:col-start-8 lg:col-span-5">No names or faces, just what they do. A crew trained by us, licensed and insured and background-checked, for every move, clean and delivery.</p>
+      <figure class="team__fig team__rise col-span-full">
+        {{picture "about-team" alt="Seen from inside the van: two crew members walk up the path to a lit porch, one pulling a dolly of moving blankets, the other carrying a cleaning caddy and the printed plan." sizes="(width >= 1512px) calc(100vw - 80px), calc(100vw - 40px)"}}
+      </figure>
+      <ul class="team__caps team__rise col-span-full" role="list">
+        <li><p class="team__cap">Here when we said.</p><p class="team__sub">Inside the window we gave you, or a call before it closes. Never a no-show.</p></li>
+        <li><p class="team__cap">One kit, one checklist.</p><p class="team__sub">Blankets, dolly and cleaning caddy, packed to the same list for every move, clean and delivery.</p></li>
+        <li><p class="team__cap">The plan, in writing.</p><p class="team__sub">The plan you approved, rooms, items and times, in hand before anyone knocks.</p></li>
+        <li><p class="team__cap">From here.</p><p class="team__sub">They know where a van can park, which lanes fit, and which buildings need the elevator booked.</p></li>
+      </ul>
+    </section>
+
+        {{!-- AC-04b closing panel (locked: "Tell us about your job." · road at the bottom, 55 tall · crew and stops · 9s pass ·
+         flowing). The service-page panel; pick a job, the button follows and the road's stops change. src/js/sections/aboutcta.js --}}
+    <section class="ccta acta" data-section="aboutcta" data-nav-theme="dark" aria-labelledby="acta-title">
+      <div class="ccta__panel acta__panel">
+        <h2 id="acta-title" class="acta__title">Tell us about<br> your job.</h2>
+        <div class="acta__pick">
+          <span class="ccta__label label" id="acta-job">Your job</span>
+          <div class="ccta__chips" role="group" aria-labelledby="acta-job">
+            <button type="button" data-k="cleaning" aria-pressed="true">Cleaning</button>
+            <button type="button" data-k="moving" aria-pressed="false">Moving</button>
+            <button type="button" data-k="delivery" aria-pressed="false">Delivery</button>
+          </div>
+          <p class="acta__lead">A written quote <b data-qby>within 2 hours</b>, with every cost on it. No obligation.</p>
+        </div>
+        <div class="acta__acts">
+          <a class="ccta__cta" href="/quote/?service=cleaning">Get a cleaning quote <span aria-hidden="true">{{{icon "arrow-right-02"}}}</span></a>
+          <a class="ccta__call" href="tel:+16478771411">Or call +1 647 877 1411</a>
+        </div>
+        <div class="acta__road" aria-hidden="true">
+          <svg class="acta__line"><line x1="0" y1="50%" x2="100%" y2="50%"/></svg>
+          <span class="acta__stop" style="--i:0"><b>Kitchen</b></span>
+          <span class="acta__stop" style="--i:1"><b>Baths</b></span>
+          <span class="acta__stop" style="--i:2"><b>Living</b></span>
+          <span class="acta__stop" style="--i:3"><b>Floors</b></span>
+          <span class="acta__stop" style="--i:4"><b>Checked</b></span>
+          <span class="acta__crew"></span>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  {{> footer}}
+</body>
+</html>

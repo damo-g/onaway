@@ -15,8 +15,13 @@ import * as movecta from './movecta.js';
 import * as soon from './soon.js';
 import * as dropcta from './dropcta.js';
 import * as help from './help.js';
+import * as about from './about.js';
+import * as hope from './hope.js';
+import * as fine from './fine.js';
+import * as aboutcta from './aboutcta.js';
+import * as team from './team.js';
 
-const sections = { hero, services, steps, promises, gta, quote, request, svchero, often, included, questions, cleancta, movecta, soon, dropcta, help, footer };
+const sections = { hero, services, steps, promises, gta, quote, request, svchero, often, included, questions, cleancta, movecta, soon, dropcta, help, about, hope, fine, team, aboutcta, footer };
 
 // Runs each section's init(el) when its section is on the page, in page order (pins stack correctly).
 export function initSections() {
