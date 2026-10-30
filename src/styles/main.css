@@ -2006,7 +2006,7 @@
      Instrument Sans 600 over a mono-label definition, a bold + on the split) · label (a mono label over a Body 16
      definition, left-aligned) · quiet (label, the definition at Small 14) · inline (one line) */
   /* Sized to the wordmark, WAY starting where the logo's WAY half does (x 144.6 of 298.46 = 48.45%), the + just before it */
-  .about-name__parts { position: relative; display: grid; grid-template-columns: 48.45% 1fr; align-items: start; width: min(100%, 362px); }
+  .about-name__parts { position: relative; display: grid; grid-template-columns: 48.45% 1fr; align-items: start; width: 100%; }
   .about-name__part[data-k="ona"] { padding-right: var(--spacing-21); }
   .js .about-name__parts { animation: about-write 0.8s cubic-bezier(0.4, 0, 0.2, 1) 0.5s both; }
   .about-name__part { display: flex; flex-direction: column; gap: var(--spacing-8); cursor: default; }
@@ -2034,10 +2034,11 @@
   .about-hero[data-text="inline"] .about-name__term { margin-right: var(--spacing-8); }
   .about-hero[data-text="inline"] .about-name__def { font-size: var(--text-small); }
   .about-hero[data-text="inline"] .about-name__plus { position: static; translate: none; margin-inline: var(--spacing-13); }
-  /* The wordmark's size (panel option about.mark): m (locked: 68 tall, the H1's size) · l (the full column) · s (42) */
-  .about-wm__svg { width: min(100%, 362px); }
-  .about-hero[data-mark="l"] :is(.about-wm__svg, .about-name__parts) { width: 100%; }
+  /* The wordmark's size (panel option about.mark): l (locked: the full column) · m (68 tall, the H1's size) · s (42) */
+  .about-wm__svg { width: 100%; }
+  .about-hero[data-mark="m"] :is(.about-wm__svg, .about-name__parts) { width: min(100%, 362px); }
   .about-hero[data-mark="s"] .about-wm__svg { width: min(100%, 224px); }
+  .about-hero[data-mark="s"] .about-name__parts { width: min(100%, 362px); }
   /* The painting: still, full width */
   .about-hero__fig { margin-top: var(--spacing-34); overflow: hidden; border-radius: 2px; aspect-ratio: 4 / 3; background: color-mix(in srgb, var(--color-carbon) 5%, var(--color-paper)); }
   .about-hero__fig picture, .about-hero__fig img { display: block; width: 100%; height: 100%; }
