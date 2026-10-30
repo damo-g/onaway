@@ -2,7 +2,7 @@ import { prefersReducedMotion } from '../motion.js';
 import { registerOptions } from '../options.js';
 
 // Phone order of the three blocks, and which side the name sits on at desktop; first values are the defaults
-registerOptions('about', { order: ['1', '2', '3'], side: ['left', 'swap'], text: ['label', 'quiet', 'sans', 'inline'], mark: ['m', 'l', 's'] });
+registerOptions('about', { order: ['1', '2', '3'], side: ['left', 'swap'], text: ['sans', 'label', 'quiet', 'inline'], mark: ['m', 'l', 's'] });
 
 // AB-02c About hero: the wordmark is a road. On load its letters are laid stroke by stroke along their
 // centrelines (a mask drawn with stroke-dashoffset on pathLength 1, hidden by CSS until then, left to right, 0.9s each, 110ms apart, from 0.4s), then
@@ -31,6 +31,13 @@ export function init(el) {
     el.classList.toggle('is-ona', row?.dataset.k === 'ona');
     el.classList.toggle('is-way', row?.dataset.k === 'way');
   };
+  // The + lights the whole name (both words, the lanes running faster)
+  const plus = el.querySelector('.about-name__plus');
+  const all = (on) => el.classList.toggle('is-all', on);
+  plus.addEventListener('mouseenter', () => all(true));
+  plus.addEventListener('focus', () => all(true));
+  plus.addEventListener('mouseleave', () => all(false));
+  plus.addEventListener('blur', () => all(false));
   rows.forEach((r) => {
     r.addEventListener('mouseenter', () => light(r));
     r.addEventListener('focus', () => light(r));

@@ -2001,9 +2001,10 @@
   .about-hero.is-ona .about-wm__svg .pb, .about-hero.is-ona .lanes path.w { opacity: 0.18; }
   .about-hero.is-way .about-wm__svg .pa, .about-hero.is-way .lanes path:not(.w) { opacity: 0.18; }
   .about-wm__svg .lanes path { transition: opacity 0.45s; }
-  /* ONA + WAY: the two halves of the name side by side, no rule; the definitions lead and the words are labels.
-     Type (panel option about.text): label (locked: mono label over a Body 16 definition) · quiet (the definition
-     at Small 14, muted) · sans (the word in Instrument Sans 600, the definition as a mono label) · inline (one line) */
+  /* ONA + WAY: the two halves of the name side by side, no rule.
+     Type (panel option about.text): sans (locked: each part centred under its half of the wordmark, the word in
+     Instrument Sans 600 over a mono-label definition, a bold + on the split) · label (a mono label over a Body 16
+     definition, left-aligned) · quiet (label, the definition at Small 14) · inline (one line) */
   /* Sized to the wordmark, WAY starting where the logo's WAY half does (x 144.6 of 298.46 = 48.45%), the + just before it */
   .about-name__parts { position: relative; display: grid; grid-template-columns: 48.45% 1fr; align-items: start; width: min(100%, 362px); }
   .about-name__part[data-k="ona"] { padding-right: var(--spacing-21); }
@@ -2015,8 +2016,14 @@
   .about-name__def { font-size: var(--text-body); line-height: 1.45; color: color-mix(in srgb, var(--color-carbon) 78%, transparent); text-wrap: balance; }
   .about-name__plus { position: absolute; left: 48.45%; top: 0; translate: calc(-100% - var(--spacing-8)) 0; font-family: var(--font-mono); font-size: var(--text-label); line-height: 1.4; color: var(--mut); }
   .about-hero[data-text="quiet"] .about-name__def { font-size: var(--text-small); color: var(--mut); }
-  .about-hero[data-text="sans"] .about-name__term { font-family: inherit; font-size: var(--text-body); font-weight: 600; letter-spacing: var(--tracking-nav); color: var(--color-carbon); }
-  .about-hero[data-text="sans"] .about-name__def { font-family: var(--font-mono); font-size: var(--text-label); letter-spacing: var(--text-label--letter-spacing); text-transform: uppercase; color: var(--mut); }
+  .about-hero:not([data-text="label"], [data-text="quiet"], [data-text="inline"]) .about-name__term { font-family: inherit; font-size: var(--text-body); font-weight: 600; letter-spacing: var(--tracking-nav); color: var(--color-carbon); }
+  .about-hero:not([data-text="label"], [data-text="quiet"], [data-text="inline"]) .about-name__def { font-family: var(--font-mono); font-size: var(--text-label); line-height: 1.5; letter-spacing: var(--text-label--letter-spacing); text-transform: uppercase; color: var(--mut); }
+  .about-hero:not([data-text="label"], [data-text="quiet"], [data-text="inline"]) .about-name__part { align-items: center; padding-inline: var(--spacing-13); text-align: center; }
+  .about-hero:not([data-text="label"], [data-text="quiet"], [data-text="inline"]) .about-name__plus { top: 50%; translate: -50% -50%; font-family: inherit; font-size: var(--text-lead); line-height: 1; font-weight: 600; color: var(--color-carbon); cursor: default; }
+  /* The + lights the whole name: both words underlined, the lane markings briefly running faster */
+  .about-name__plus:focus-visible { outline: 2px solid var(--color-carbon); outline-offset: 4px; }
+  .about-hero.is-all .about-name__term { color: var(--color-carbon); text-decoration-color: currentColor; }
+  .about-hero.is-laid.is-all .lanes path { animation-duration: 0.8s; }
   .about-hero[data-text="inline"] .about-name__parts { display: block; width: 100%; }
   .about-hero[data-text="inline"] .about-name__part { padding: 0; }
   .about-hero[data-text="inline"] :is(.about-name__part, .about-name__plus) { display: inline; }
