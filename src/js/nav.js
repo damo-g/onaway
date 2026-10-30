@@ -3,11 +3,12 @@ import { registerOptions } from './options.js';
 
 // After the hero, the fixed navbar either sits on paper (locked) or stays clear and
 // switches its text colour over dark sections ([data-nav-theme="dark"]). Buttons never change.
-registerOptions('nav', { after: ['paper', 'clear'], drop: ['quiet', 'invert'], panel: ['cards', 'flush'] });
+registerOptions('nav', { after: ['paper', 'clear'], drop: ['invert', 'quiet'], panel: ['flush', 'cards'], blend: ['off', 'on'] });
 
 export function initNav() {
   const nav = document.querySelector('.site-nav');
   if (!nav) return;
+  blendLayer(nav);
 
   const docked = () => parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--nav-h'));
   const hero = document.querySelector('[data-section="hero"]');
@@ -57,4 +58,42 @@ export function initNav() {
       onLeaveBack: () => nav.removeAttribute('data-hidden'),
     });
   }
+}
+
+// Blend (option nav.blend): a mirrored copy of the bar above it, set to mix-blend-mode: difference, shows the
+// wordmark, links and FR inverted against the page (the bar itself is its own layer, so the real ones can't
+// blend with what's under it). The copy follows the bar's attributes (the hero drives it through inline
+// variables) and the Services button's open state; it takes no pointer or focus, and Alpine ignores it.
+function blendLayer(nav) {
+  let copy = null;
+  const sync = new MutationObserver(() => {
+    if (!copy) return;
+    for (const { name, value } of nav.attributes) if (!['class', 'id', 'x-data', 'data-options'].includes(name)) copy.setAttribute(name, value);
+    for (const { name } of [...copy.attributes]) if (!nav.hasAttribute(name) && !['class', 'aria-hidden', 'inert', 'x-ignore'].includes(name)) copy.removeAttribute(name);
+    copy.querySelector('.nav-drop__btn')?.setAttribute('aria-expanded', nav.querySelector('.nav-drop__btn')?.getAttribute('aria-expanded') ?? 'false');
+  });
+  const toggle = () => {
+    const on = nav.dataset.blend === 'on';
+    if (on && !copy) {
+      copy = nav.cloneNode(true);
+      copy.classList.add('site-nav--blend');
+      copy.removeAttribute('data-options');
+      copy.removeAttribute('x-data');
+      copy.setAttribute('aria-hidden', 'true');
+      copy.setAttribute('inert', '');
+      copy.setAttribute('x-ignore', '');
+      copy.querySelectorAll('[id]').forEach((n) => n.removeAttribute('id'));
+      copy.querySelector('a[href="#main"]')?.remove();
+      nav.after(copy);
+      sync.observe(nav, { attributes: true, subtree: true, attributeFilter: ['style', 'class', 'aria-expanded', 'data-past', 'data-hidden', 'data-theme', 'data-after', 'data-blend', 'data-drop', 'data-panel'] });
+      sync.takeRecords();
+    } else if (!on && copy) {
+      sync.disconnect();
+      copy.remove();
+      copy = null;
+    }
+    if (copy) for (const { name, value } of nav.attributes) if (!['class', 'id', 'x-data', 'data-options'].includes(name)) copy.setAttribute(name, value);
+  };
+  new MutationObserver(toggle).observe(nav, { attributes: true, attributeFilter: ['data-blend'] });
+  toggle();
 }
