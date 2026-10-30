@@ -720,8 +720,8 @@
   .ticket__head { display: none; }
 
   /* Edge styles */
-  /* Tear: stamps everywhere; only the tear-off's left edge is straight, with the notch option's dashed line */
-  .steps[data-ticket="tear"] .ticket { --mask-tear: var(--e-t), var(--e-b), var(--e-r); }
+  /* Tear: stamps on the outer edges; the seam is straight on both sides (body and tear-off) with the notch option's dashed line */
+  .steps[data-ticket="tear"] .ticket { --mask-body: var(--e-t), var(--e-b), var(--e-l); --mask-tear: var(--e-t), var(--e-b), var(--e-r); }
   .steps[data-ticket="tear"] .ticket__tear { position: relative; }
   .steps[data-ticket="tear"] .ticket__tear::before { content: ""; position: absolute; inset: 0 auto 0 0; border-left: 1.5px dashed color-mix(in srgb, var(--color-carbon) 32%, transparent); }
   .steps[data-ticket="stamp"] .ticket { --br: 5px; --bp: 15px; }
@@ -751,7 +751,7 @@
     }
     .steps[data-ticket="pin"] .ticket,
     .steps[data-ticket="notch"] .ticket { --mask-body: var(--seam-b); --mask-tear: var(--seam-t); }
-    .steps[data-ticket="tear"] .ticket { --mask-tear: var(--e-l), var(--e-r), var(--e-b); }
+    .steps[data-ticket="tear"] .ticket { --mask-body: var(--e-l), var(--e-r), var(--e-t); --mask-tear: var(--e-l), var(--e-r), var(--e-b); }
     .steps[data-ticket="tear"] .ticket__tear::before { inset: 0 0 auto; border-left: 0; border-top: 1.5px dashed color-mix(in srgb, var(--color-carbon) 32%, transparent); }
     .ticket__inner { flex-direction: column; }
     .ticket__body { grid-template-columns: 1fr; grid-template-rows: var(--stub) auto; padding-bottom: var(--spacing-89); }
