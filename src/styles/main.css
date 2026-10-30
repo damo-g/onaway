@@ -2173,8 +2173,11 @@
   .acta__done { stroke: color-mix(in srgb, var(--color-paper) 55%, transparent); stroke-width: 1.5; }
   .acta__pstop { fill: var(--color-carbon); stroke: color-mix(in srgb, var(--color-paper) 55%, transparent); stroke-width: 1.5; transition: fill 0.3s; }
   .acta__pstop.is-on { fill: color-mix(in srgb, var(--color-paper) 55%, transparent); }
-  /* The strip's drawing sits back at 70% (plan and road alike); the crew stays at full strength */
-  .acta__plan, .acta__line, .acta__stop { opacity: 0.7; }
+  /* The strip's marks sit back at 70% (plan and road alike); the labels keep their strength, the crew stays full */
+  .acta__line, .acta__wall, .acta__todo, .acta__done, .acta__pstop { opacity: 0.7; }
+  .acta__stop { box-shadow: inset 0 0 0 1.5px color-mix(in srgb, var(--color-paper) 39%, transparent); }
+  .acta__stop.is-on { background: color-mix(in srgb, var(--color-paper) 39%, transparent); }
+  .acta__dust { fill: color-mix(in srgb, var(--color-paper) 70%, transparent); }
   .acta__crew { position: absolute; left: 0; top: 50%; width: 12px; height: 12px; margin: -6px 0 0 -6px; border-radius: 1px; background: var(--color-yellow); box-shadow: inset 0 0 0 1.5px var(--color-carbon); }
   @media (width < 768px) {
     .acta__stop:nth-of-type(2), .acta__stop:nth-of-type(4) { display: none; }
