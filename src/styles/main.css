@@ -1296,14 +1296,6 @@
   .site-nav:not([data-panel="cards"]) .nav-drop__row { box-shadow: none; }
   .site-nav:not([data-panel="cards"]) li + li > .nav-drop__row { border-top: 1px solid var(--ft-line); }
 
-  /* Blend (panel option nav.blend; meant for nav.after clear): the wordmark, the links and FR are redrawn in a
-     mirrored layer set to mix-blend-mode: difference, so they invert against whatever scrolls beneath. The real
-     ones stay for clicks and focus but go transparent. nav.js builds and syncs the layer. */
-  .site-nav.site-nav--blend { z-index: 41; color: var(--color-paper); mix-blend-mode: difference; pointer-events: none; }
-  .site-nav--blend::before, .site-nav--blend::after { display: none; }
-  .site-nav--blend :is(.nav-actions, .nav-menu-btn, .nav-menu, .nav-drop__panel) { visibility: hidden; }
-  .site-nav[data-blend="on"]:not(.site-nav--blend) :is(.nav-logo, .nav-links > a, .nav-drop__btn, .nav-fr) { color: transparent; }
-
   /* Hover: Signal (locked) — the yellow square drops in at the start of the row and the text steps right */
   a.footer__row::after {
     content: "";
