@@ -2080,18 +2080,21 @@
   .hope__title { font-size: var(--text-h2); line-height: 1; font-weight: 600; letter-spacing: -0.01em; }
   @media (width >= 768px) { .hope__title { font-size: var(--text-h1); line-height: 0.95; } }
   .hope__essay { display: flex; flex-direction: column; gap: var(--spacing-21); }
+  /* The opener's wording (panel option hope.copy): once (locked) · only · when · most */
+  .hope__opener:not([data-v="once"]), .hope:is([data-copy="only"], [data-copy="when"], [data-copy="most"]) .hope__opener[data-v="once"] { display: none; }
+  .hope[data-copy="only"] .hope__opener[data-v="only"], .hope[data-copy="when"] .hope__opener[data-v="when"], .hope[data-copy="most"] .hope__opener[data-v="most"] { display: block; }
   .hope__essay p { max-width: 58ch; font-size: var(--text-lead); line-height: 1.45; color: color-mix(in srgb, var(--color-carbon) 86%, transparent); }
   /* Drop cap (locked: three lines · Carbon · Display 600). Options: data-dropcap 3 | 2 | raised | off,
      data-capcolor carbon | rust, data-capfont display | mono. initial-letter where supported, a float otherwise. */
-  .hope__essay p:first-child::first-letter { float: left; margin: 0.06em var(--spacing-13) 0 0; font-size: 3.7em; line-height: 0.82; font-weight: 600; letter-spacing: 0; color: var(--color-carbon); }
+  .hope__opener::first-letter { float: left; margin: 0.06em var(--spacing-13) 0 0; font-size: 3.7em; line-height: 0.82; font-weight: 600; letter-spacing: 0; color: var(--color-carbon); }
   @supports (initial-letter: 3) or (-webkit-initial-letter: 3) {
-    .hope__essay p:first-child::first-letter { float: none; margin: 0 var(--spacing-13) 0 0; font-size: inherit; line-height: inherit; -webkit-initial-letter: 3; initial-letter: 3; }
-    .hope[data-dropcap="2"] .hope__essay p:first-child::first-letter { -webkit-initial-letter: 2; initial-letter: 2; }
-    .hope[data-dropcap="raised"] .hope__essay p:first-child::first-letter { -webkit-initial-letter: 3 1; initial-letter: 3 1; }
+    .hope__opener::first-letter { float: none; margin: 0 var(--spacing-13) 0 0; font-size: inherit; line-height: inherit; -webkit-initial-letter: 3; initial-letter: 3; }
+    .hope[data-dropcap="2"] .hope__opener::first-letter { -webkit-initial-letter: 2; initial-letter: 2; }
+    .hope[data-dropcap="raised"] .hope__opener::first-letter { -webkit-initial-letter: 3 1; initial-letter: 3 1; }
   }
-  .hope[data-dropcap="off"] .hope__essay p:first-child::first-letter { all: unset; }
-  .hope[data-capcolor="rust"] .hope__essay p:first-child::first-letter { color: var(--color-rust); }
-  .hope[data-capfont="mono"] .hope__essay p:first-child::first-letter { font-family: var(--font-mono); font-weight: 500; }
+  .hope[data-dropcap="off"] .hope__opener::first-letter { all: unset; }
+  .hope[data-capcolor="rust"] .hope__opener::first-letter { color: var(--color-rust); }
+  .hope[data-capfont="mono"] .hope__opener::first-letter { font-family: var(--font-mono); font-weight: 500; }
   /* Ledger: the usual hope, struck in Rust, then the plan */
   .hope__ledger { border-top: 3px solid var(--color-carbon); }
   .hope__head { display: none; padding-block: var(--spacing-13); color: var(--mut); }
@@ -2123,7 +2126,6 @@
 
   /* ---------- About · Our fine print is the big print (SD-03c) ---------- */
   .fine { --mut: color-mix(in srgb, var(--color-carbon) 62%, transparent); position: relative; row-gap: var(--spacing-34); padding-block: var(--section-gap); }
-  .fine::before { content: ""; position: absolute; inset: 0 var(--grid-margin) auto; border-top: 1px solid var(--color-line); }
   .fine__title { font-size: var(--text-h2); line-height: 1; font-weight: 600; letter-spacing: -0.01em; }
   .fine__dek { align-self: end; max-width: 40ch; font-size: var(--text-lead); line-height: 1.5; color: color-mix(in srgb, var(--color-carbon) 78%, transparent); }
   .fine__body { margin-top: var(--spacing-21); padding-top: var(--spacing-34); border-top: 1px solid var(--color-carbon); }

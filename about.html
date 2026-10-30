@@ -45,7 +45,11 @@
     <section class="hope grid-site" data-section="hope" aria-labelledby="hope-title">
       <h2 id="hope-title" class="hope__title col-span-full lg:col-span-5">Hope is not a plan.</h2>
       <div class="hope__essay col-span-full lg:col-start-7 lg:col-span-6">
-        <p>Most people only call for help a handful of times: a move, a deep clean before the keys go back, a sofa from across town. Each time, they let strangers into their home or their business and hope it goes well.</p>
+        {{!-- The opener starts on O or W so the drop cap ties to the name (panel option hope.copy: once (locked) · only · when · most). Alternatives are dev-only. --}}
+        <p class="hope__opener" data-v="once">Once in a while, everyone needs a hand: a move, a deep clean before the keys go back, a sofa from across town. Each time, they let strangers into their home or their business and hope it goes well.</p>
+        {{#if dev}}<p class="hope__opener" data-v="only">Only a handful of times do most people call for help: a move, a deep clean before the keys go back, a sofa from across town. Each time, they let strangers into their home or their business and hope it goes well.</p>
+        <p class="hope__opener" data-v="when">When most people call for help, it’s only a handful of times: a move, a deep clean before the keys go back, a sofa from across town. Each time, they let strangers into their home or their business and hope it goes well.</p>
+        <p class="hope__opener" data-v="most">Most people only call for help a handful of times: a move, a deep clean before the keys go back, a sofa from across town. Each time, they let strangers into their home or their business and hope it goes well.</p>{{/if}}
         <p>We started Onaway to replace that hope with a plan. A written quote with every cost on it. An arrival window we keep. A crew that treats your place like a workplace with rules, whether we’re carrying, cleaning or delivering.</p>
         <p>We’re from here. We know which buildings need an elevator booked, which condos want a certificate of insurance, and how long the Gardiner takes at four.</p>
       </div>
