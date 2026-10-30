@@ -2065,6 +2065,39 @@
     .fine__p { font-size: var(--text-h3); }
   }
 
+  /* ---------- About · The people who show up (TM-02b) ---------- */
+  .team { position: relative; row-gap: var(--spacing-34); padding-block: var(--section-gap); }
+  .team::before { content: ""; position: absolute; inset: 0 var(--grid-margin) auto; border-top: 1px solid var(--color-line); }
+  .team__title { font-size: var(--text-h2); line-height: 1; font-weight: 600; letter-spacing: -0.01em; }
+  .team__dek { align-self: end; max-width: 40ch; font-size: var(--text-lead); line-height: 1.5; color: color-mix(in srgb, var(--color-carbon) 82%, transparent); }
+  .team__fig { height: 620px; overflow: hidden; border-radius: 2px; background: color-mix(in srgb, var(--color-carbon) 5%, var(--color-paper)); }
+  .team__fig picture, .team__fig img { display: block; width: 100%; height: 100%; }
+  .team__fig img { object-fit: cover; object-position: 50% 60%; }
+  .team__caps { display: grid; gap: var(--spacing-21) var(--grid-gutter); border-top: 1px solid var(--color-carbon); }
+  .team__caps li { padding-top: var(--spacing-21); }
+  .team__caps li + li { border-top: 1px solid var(--color-line); }
+  .team__cap { margin-bottom: var(--spacing-8); font-size: var(--text-lead); line-height: 1.2; font-weight: 600; }
+  .team__sub { font-size: var(--text-small); line-height: 1.5; color: color-mix(in srgb, var(--color-carbon) 72%, transparent); }
+  /* Rise in once, 0.1s apart; the painting settles from 1.03 over 1.6s (motion only, set by team.js) */
+  .team.is-armed .team__rise { opacity: 0; translate: 0 var(--spacing-13); transition: opacity 0.7s ease-out, translate 0.7s cubic-bezier(0.2, 0.7, 0.2, 1); }
+  .team.is-armed .team__rise:nth-child(2) { transition-delay: 0.1s; }
+  .team.is-armed .team__rise:nth-child(3) { transition-delay: 0.2s; }
+  .team.is-armed .team__rise:nth-child(4) { transition-delay: 0.3s; }
+  .team.is-armed .team__fig img { scale: 1.03; transition: scale 1.6s cubic-bezier(0.2, 0.7, 0.2, 1) 0.2s; }
+  .team.is-armed.is-in .team__rise { opacity: 1; translate: 0 0; }
+  .team.is-armed.is-in .team__fig img { scale: 1; }
+  @media (width < 768px) {
+    .team__fig { height: auto; aspect-ratio: 4 / 3; }
+  }
+  @media (width >= 768px) {
+    .team__title { font-size: var(--text-h1); line-height: 0.95; }
+    .team__caps { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .team__caps li + li { border-top: 0; }
+  }
+  @media (width >= 1024px) {
+    .team__caps { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+  }
+
   /* ---------- About closing panel (AC-04b): the service-page panel, one row, then the road ---------- */
   .acta .acta__panel { row-gap: var(--spacing-34); padding-bottom: 0; align-items: end; }
   .acta__title { grid-column: 1 / -1; font-size: var(--text-h2); line-height: 1; font-weight: 600; letter-spacing: -0.01em; }
