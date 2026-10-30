@@ -19,7 +19,8 @@
     {{!-- AB-02c hero (locked: laid, then lanes · lanes 2.4s · entry highlights letters · hover pauses · logo L ·
          "The way" painting at 520). The wordmark is a road; ONA + WAY sit under it. Panel options: order (phones)
          1 wordmark, painting, headline · 2 painting, wordmark, headline · 3 wordmark, headline, painting;
-         side (desktop) headline left · swap. src/js/sections/about.js --}}
+         side (desktop) headline left · swap; text (the name's type) label · quiet · sans · inline; mark (the wordmark)
+         m · l · s. src/js/sections/about.js --}}
     <section class="about-hero grid-site" data-section="about" aria-labelledby="about-title">
       <div class="about-hero__text">
         <h1 id="about-title" class="about-hero__title text-h2 md:text-h1 uppercase">A local crew<br> with a system.</h1>
@@ -29,9 +30,9 @@
         <div class="about-wm">{{> about-wordmark}}</div>
         {{!-- The name, as the wordmark splits it: ONA + WAY. Pointing at one fades the other half of the logo. --}}
         <div class="about-name__parts">
-          <p class="about-name__part" tabindex="0" data-k="ona"><b class="about-name__term">Ona</b><span class="about-name__note label"><span>From <span lang="yo">ọ̀nà</span> · Yoruba</span> <span>Road, the way you take</span></span></p>
+          <p class="about-name__part" tabindex="0" data-k="ona"><b class="about-name__term" lang="yo">Ona</b> <span class="about-name__def">Yoruba for road, or the way.</span></p>
           <span class="about-name__plus" aria-hidden="true">+</span>
-          <p class="about-name__part" tabindex="0" data-k="way"><b class="about-name__term">Way</b><span class="about-name__note label"><span>On a way · English</span> <span>On our way, and on time</span></span></p>
+          <p class="about-name__part" tabindex="0" data-k="way"><b class="about-name__term">Way</b> <span class="about-name__def">On our way, and on time.</span></p>
         </div>
       </div>
       <figure class="about-hero__fig">

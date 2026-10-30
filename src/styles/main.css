@@ -2001,19 +2001,32 @@
   .about-hero.is-ona .about-wm__svg .pb, .about-hero.is-ona .lanes path.w { opacity: 0.18; }
   .about-hero.is-way .about-wm__svg .pa, .about-hero.is-way .lanes path:not(.w) { opacity: 0.18; }
   .about-wm__svg .lanes path { transition: opacity 0.45s; }
-  /* ONA + WAY: the two halves of the name side by side, a mono note under each; writes in once */
-  .about-name__parts { display: grid; grid-template-columns: 1fr auto 1fr; align-items: start; gap: var(--spacing-13); padding-top: var(--spacing-21); border-top: 1px solid var(--color-line); }
+  /* ONA + WAY: the two halves of the name side by side, no rule; the definitions lead and the words are labels.
+     Type (panel option about.text): label (locked: mono label over a Body 16 definition) · quiet (the definition
+     at Small 14, muted) · sans (the word in Instrument Sans 600, the definition as a mono label) · inline (one line) */
+  /* Sized to the wordmark, WAY starting where the logo's WAY half does (x 144.6 of 298.46 = 48.45%), the + just before it */
+  .about-name__parts { position: relative; display: grid; grid-template-columns: 48.45% 1fr; align-items: start; width: min(100%, 362px); }
+  .about-name__part[data-k="ona"] { padding-right: var(--spacing-21); }
   .js .about-name__parts { animation: about-write 0.8s cubic-bezier(0.4, 0, 0.2, 1) 0.5s both; }
   .about-name__part { display: flex; flex-direction: column; gap: var(--spacing-8); cursor: default; }
   .about-name__part:focus-visible { outline-offset: 4px; }
-  .about-name__term { font-size: var(--text-h3); line-height: 1; font-weight: 600; text-transform: uppercase; text-decoration: underline 2px transparent; text-underline-offset: 6px; transition: text-decoration-color 0.2s; }
-  .about-name__part.is-on .about-name__term { text-decoration-color: currentColor; }
-  /* the source on the first line, the meaning on the second */
-  .about-name__note { display: flex; flex-direction: column; line-height: 1.5; color: var(--mut); }
-  .about-name__note > span:first-child { white-space: nowrap; }
-  @media (width < 768px) { .about-name__note { letter-spacing: 0.06em; } } /* the source line fits a phone column */
-  @media (width < 375px) { .about-name__note > span:first-child { white-space: normal; } } /* the narrowest phones wrap it */
-  .about-name__plus { font-size: var(--text-h3); line-height: 1; font-weight: 400; color: var(--mut); }
+  .about-name__term { font-family: var(--font-mono); font-size: var(--text-label); line-height: 1.4; font-weight: 500; letter-spacing: var(--text-label--letter-spacing); text-transform: uppercase; color: var(--mut); text-decoration: underline 1px transparent; text-underline-offset: 4px; transition: color 0.2s, text-decoration-color 0.2s; }
+  .about-name__part.is-on .about-name__term { color: var(--color-carbon); text-decoration-color: currentColor; }
+  .about-name__def { font-size: var(--text-body); line-height: 1.45; color: color-mix(in srgb, var(--color-carbon) 78%, transparent); text-wrap: balance; }
+  .about-name__plus { position: absolute; left: 48.45%; top: 0; translate: calc(-100% - var(--spacing-8)) 0; font-family: var(--font-mono); font-size: var(--text-label); line-height: 1.4; color: var(--mut); }
+  .about-hero[data-text="quiet"] .about-name__def { font-size: var(--text-small); color: var(--mut); }
+  .about-hero[data-text="sans"] .about-name__term { font-family: inherit; font-size: var(--text-body); font-weight: 600; letter-spacing: var(--tracking-nav); color: var(--color-carbon); }
+  .about-hero[data-text="sans"] .about-name__def { font-family: var(--font-mono); font-size: var(--text-label); letter-spacing: var(--text-label--letter-spacing); text-transform: uppercase; color: var(--mut); }
+  .about-hero[data-text="inline"] .about-name__parts { display: block; width: 100%; }
+  .about-hero[data-text="inline"] .about-name__part { padding: 0; }
+  .about-hero[data-text="inline"] :is(.about-name__part, .about-name__plus) { display: inline; }
+  .about-hero[data-text="inline"] .about-name__term { margin-right: var(--spacing-8); }
+  .about-hero[data-text="inline"] .about-name__def { font-size: var(--text-small); }
+  .about-hero[data-text="inline"] .about-name__plus { position: static; translate: none; margin-inline: var(--spacing-13); }
+  /* The wordmark's size (panel option about.mark): m (locked: 68 tall, the H1's size) · l (the full column) · s (42) */
+  .about-wm__svg { width: min(100%, 362px); }
+  .about-hero[data-mark="l"] :is(.about-wm__svg, .about-name__parts) { width: 100%; }
+  .about-hero[data-mark="s"] .about-wm__svg { width: min(100%, 224px); }
   /* The painting: still, full width */
   .about-hero__fig { margin-top: var(--spacing-34); overflow: hidden; border-radius: 2px; aspect-ratio: 4 / 3; background: color-mix(in srgb, var(--color-carbon) 5%, var(--color-paper)); }
   .about-hero__fig picture, .about-hero__fig img { display: block; width: 100%; height: 100%; }
