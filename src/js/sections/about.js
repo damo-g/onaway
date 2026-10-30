@@ -2,7 +2,7 @@ import { prefersReducedMotion } from '../motion.js';
 import { registerOptions } from '../options.js';
 
 // Phone order of the three blocks, and which side the name sits on at desktop; first values are the defaults
-registerOptions('about', { order: ['1', '2', '3'], side: ['left', 'swap'], text: ['sans', 'label', 'quiet', 'inline'], mark: ['m', 'l', 's'] });
+registerOptions('about', { order: ['1', '2', '3'], side: ['left', 'swap'], text: ['sans', 'label', 'quiet', 'inline'], mark: ['m', 'l', 's'], plus: ['42', '26', '68'] });
 
 // AB-02c About hero: the wordmark is a road. On load its letters are laid stroke by stroke along their
 // centrelines (a mask drawn with stroke-dashoffset on pathLength 1, hidden by CSS until then, left to right, 0.9s each, 110ms apart, from 0.4s), then

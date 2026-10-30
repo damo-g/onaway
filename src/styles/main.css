@@ -2019,7 +2019,11 @@
   .about-hero:not([data-text="label"], [data-text="quiet"], [data-text="inline"]) .about-name__term { font-family: inherit; font-size: var(--text-body); font-weight: 600; letter-spacing: var(--tracking-nav); color: var(--color-carbon); }
   .about-hero:not([data-text="label"], [data-text="quiet"], [data-text="inline"]) .about-name__def { font-family: var(--font-mono); font-size: var(--text-label); line-height: 1.5; letter-spacing: var(--text-label--letter-spacing); text-transform: uppercase; color: var(--mut); }
   .about-hero:not([data-text="label"], [data-text="quiet"], [data-text="inline"]) .about-name__part { align-items: center; padding-inline: var(--spacing-13); text-align: center; }
-  .about-hero:not([data-text="label"], [data-text="quiet"], [data-text="inline"]) .about-name__plus { top: 50%; translate: -50% -50%; font-family: inherit; font-size: var(--text-lead); line-height: 1; font-weight: 600; color: var(--color-carbon); cursor: default; }
+  .about-hero:not([data-text="label"], [data-text="quiet"], [data-text="inline"]) .about-name__def > span { display: block; } /* each definition on two lines, as a pair */
+  /* The + on the split; size (panel option about.plus): 42 (locked, h2) · 26 (h3) · 68 (h1) */
+  .about-hero:not([data-text="label"], [data-text="quiet"], [data-text="inline"]) .about-name__plus { top: 50%; translate: -50% -50%; font-family: inherit; font-size: var(--text-h2); line-height: 1; font-weight: 600; color: var(--color-carbon); cursor: default; }
+  .about-hero:not([data-text="label"], [data-text="quiet"], [data-text="inline"])[data-plus="26"] .about-name__plus { font-size: var(--text-h3); }
+  .about-hero:not([data-text="label"], [data-text="quiet"], [data-text="inline"])[data-plus="68"] .about-name__plus { font-size: var(--text-h1); font-weight: 500; }
   /* The + lights the whole name: both words underlined, the lane markings briefly running faster */
   .about-name__plus:focus-visible { outline: 2px solid var(--color-carbon); outline-offset: 4px; }
   .about-hero.is-all .about-name__term { color: var(--color-carbon); text-decoration-color: currentColor; }
