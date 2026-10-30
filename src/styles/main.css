@@ -720,14 +720,10 @@
   .ticket__head { display: none; }
 
   /* Edge styles */
-  /* Tear: stamps everywhere; the tear-off's own left edge is a perforated tear line (holes 8 in, notches at each end) */
-  .steps[data-ticket="tear"] .ticket {
-    --tear-holes: radial-gradient(circle 2.5px at 8px 50%, transparent 96%, var(--cut) 100%) left / 100% 9px repeat-y;
-    --tear-notch-t: radial-gradient(circle 8px at 8px 0, transparent 96%, var(--cut) 100%) no-repeat;
-    --tear-notch-b: radial-gradient(circle 8px at 8px 100%, transparent 96%, var(--cut) 100%) no-repeat;
-    --mask-tear: var(--e-t), var(--e-b), var(--e-r), var(--tear-holes), var(--tear-notch-t), var(--tear-notch-b);
-  }
-  .steps[data-ticket="tear"] .ticket__tear { padding-left: var(--spacing-34); }
+  /* Tear: stamps everywhere; only the tear-off's left edge is straight, with the notch option's dashed line */
+  .steps[data-ticket="tear"] .ticket { --mask-tear: var(--e-t), var(--e-b), var(--e-r); }
+  .steps[data-ticket="tear"] .ticket__tear { position: relative; }
+  .steps[data-ticket="tear"] .ticket__tear::before { content: ""; position: absolute; inset: 0 auto 0 0; border-left: 1.5px dashed color-mix(in srgb, var(--color-carbon) 32%, transparent); }
   .steps[data-ticket="stamp"] .ticket { --br: 5px; --bp: 15px; }
   .steps[data-ticket="stamp"] .ticket__seam { border-left: 1px solid color-mix(in srgb, var(--color-carbon) 18%, transparent); }
   .steps[data-ticket="pin"] .ticket,
@@ -755,13 +751,8 @@
     }
     .steps[data-ticket="pin"] .ticket,
     .steps[data-ticket="notch"] .ticket { --mask-body: var(--seam-b); --mask-tear: var(--seam-t); }
-    .steps[data-ticket="tear"] .ticket {
-      --tear-holes: radial-gradient(circle 2.5px at 50% 8px, transparent 96%, var(--cut) 100%) top / 9px 100% repeat-x;
-      --tear-notch-t: radial-gradient(circle 8px at 0 8px, transparent 96%, var(--cut) 100%) no-repeat;
-      --tear-notch-b: radial-gradient(circle 8px at 100% 8px, transparent 96%, var(--cut) 100%) no-repeat;
-      --mask-tear: var(--e-l), var(--e-r), var(--e-b), var(--tear-holes), var(--tear-notch-t), var(--tear-notch-b);
-    }
-    .steps[data-ticket="tear"] .ticket__tear { padding: var(--spacing-34) var(--spacing-21) var(--spacing-21); }
+    .steps[data-ticket="tear"] .ticket { --mask-tear: var(--e-l), var(--e-r), var(--e-b); }
+    .steps[data-ticket="tear"] .ticket__tear::before { inset: 0 0 auto; border-left: 0; border-top: 1.5px dashed color-mix(in srgb, var(--color-carbon) 32%, transparent); }
     .ticket__inner { flex-direction: column; }
     .ticket__body { grid-template-columns: 1fr; grid-template-rows: var(--stub) auto; padding-bottom: var(--spacing-89); }
     .ticket__stub, .steps[data-symbol="centre"] .ticket__stub { align-items: center; padding-bottom: 0; }

@@ -1,7 +1,7 @@
 import { registerOptions } from '../options.js';
 import { onEnterOnce, prefersReducedMotion } from '../motion.js';
 
-// Locked first: stamps edge, symbol at the foot, printed across. "tear" is stamps with a perforated tear line on the quote stub.
+// Locked first: stamps edge, symbol at the foot, printed across. "tear" is stamps with a dashed tear line on the quote stub's left edge.
 registerOptions('steps', {
   ticket: ['stamps', 'tear', 'stamp', 'pin', 'notch'],
   symbol: ['foot', 'centre'],
