@@ -2041,6 +2041,7 @@
     .about-name { grid-column: 9 / span 4; grid-row: 1; }
     /* a true mirror: the headline and lede end flush on the right margin, as the name starts on the left */
     .about-hero[data-side="swap"] .about-hero__text { grid-column: 6 / span 7; align-items: flex-end; text-align: right; }
+    .about-hero[data-side="swap"] .about-hero__lead { text-align: left; } /* the block sits on the right margin; its lines read left-aligned */
     .about-hero[data-side="swap"] .about-name { grid-column: 1 / span 4; }
   }
   @media (prefers-reduced-motion: reduce) {
