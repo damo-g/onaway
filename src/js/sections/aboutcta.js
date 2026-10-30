@@ -4,9 +4,9 @@ import { icon } from '../icons.js';
 // AC-04b About closing panel. The job chip sets the button and the strip along the bottom, one drawing for all
 // three: the strip is split into stretches (Cleaning: rooms of different widths with doorways and the Cleaning
 // page's coarse dust; Moving and Delivery: five equal stretches of road under its flowing centre line), each
-// with its label in the top-left corner and a stop at its centre. The crew (yellow square) stops at each one:
-// the label brightens and the stop fills (Cleaning: the room's dust lifts over 2s first), then it moves on, a
-// solid line behind it. A 1.8s pause at the end and it goes again; a new chip restarts. Starts once at 40% in
+// with a stop at its centre (rooms label their top-left corner; the road labels sit centred over their stop). The crew (yellow square) stops at each one:
+// the label brightens and the stop fills (Cleaning: the room's dust lifts over 2s first), then it moves on (in the
+// rooms along a path, solid behind it; on the road along the flowing centre line). A 1.8s pause at the end and it goes again; a new chip restarts. Starts once at 40% in
 // view. Phones show the first, middle and last stretch. Reduced motion: the crew at the end, everything done.
 const STRETCHES = {
   cleaning: [['Kitchen', 18], ['Bath', 12], ['Living', 28], ['Bedroom', 24], ['Hall', 18]],
@@ -69,7 +69,8 @@ export function init(el) {
     list.forEach(([name, share], i) => {
       const w = (W * share) / total;
       if (clean && i) marks += `<line class="acta__wall" x1="${x}" y1="0" x2="${x}" y2="${H * 0.32}"/><line class="acta__wall" x1="${x}" y1="${H * 0.68}" x2="${x}" y2="${H}"/>`;
-      marks += `<text class="acta__rl" data-i="${i}" x="${x + 13}" y="15">${name.toUpperCase()}</text>`;
+      // Rooms label their top-left corner; the road labels sit centred over their stop
+      marks += clean ? `<text class="acta__rl" data-i="${i}" x="${x + 13}" y="15">${name.toUpperCase()}</text>` : `<text class="acta__rl" data-i="${i}" x="${x + w / 2}" y="15" text-anchor="middle">${name.toUpperCase()}</text>`;
       if (clean) {
         const g = seeded(53 + i * 97);
         const n = Math.round((w * H) / 520);
@@ -86,11 +87,12 @@ export function init(el) {
     });
     const [a, b] = [centres[0], centres.at(-1)];
     plan.innerHTML = marks + dust +
-      (clean ? `<line class="acta__todo" x1="${a}" y1="${mid}" x2="${b}" y2="${mid}"/>` : '') +
-      `<line class="acta__done" x1="${a}" y1="${mid}" x2="${b}" y2="${mid}"/>` +
+      // Rooms get the path (dotted ahead, solid behind); on the road the flowing centre line is the path
+      (clean ? `<line class="acta__todo" x1="${a}" y1="${mid}" x2="${b}" y2="${mid}"/><line class="acta__done" x1="${a}" y1="${mid}" x2="${b}" y2="${mid}"/>` : '') +
       centres.map((c, i) => `<rect class="acta__pstop" data-i="${i}" x="${c - 5}" y="${mid - 5}" width="10" height="10"/>`).join('');
-    path = { line: plan.querySelector('.acta__done'), a, len: b - a };
-    path.line.style.strokeDasharray = path.len;
+    const done = plan.querySelector('.acta__done');
+    path = done ? { line: done, a, len: b - a } : null;
+    if (path) path.line.style.strokeDasharray = path.len;
     stops = centres.map((c, i) => ({
       x: c,
       dust: [...plan.querySelectorAll(`.acta__dust[data-i="${i}"]`)],
