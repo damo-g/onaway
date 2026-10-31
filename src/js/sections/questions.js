@@ -1,8 +1,8 @@
 import { prefersReducedMotion } from '../motion.js';
 import { registerOptions } from '../options.js';
 
-// Locked first: a 380 window, the W avatar on each reply, replies in a bubble, the tinted window with Paper bubbles
-registerOptions('questions', { height: ['380', '440', '340'], avatar: ['on', 'name'], answer: ['bubble', 'plain'], surface: ['window', 'open'] });
+// Locked first: a 400 window, the W avatar on each reply, replies in a bubble, the tinted window with Paper bubbles
+registerOptions('questions', { height: ['400', '380', '440', '340'], avatar: ['on', 'name'], answer: ['bubble', 'plain'], surface: ['window', 'open'] });
 
 // CH-03b Questions: the FAQ (already in the HTML) becomes a short message thread. Pick a chip, it's asked,
 // and the answer is typed back character by character after typing dots. The window keeps its height and
