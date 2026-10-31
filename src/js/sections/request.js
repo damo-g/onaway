@@ -3,13 +3,19 @@ import { PLACES } from '../data/places.js';
 import { icon } from '../icons.js';
 
 // QP-01 The Ticket. Three steps that fold as you finish them (a "GOT IT" cue first), a live ticket that
-// mirrors every answer, and a stubbed send (the PHP handler comes later).
+// mirrors every answer, and a stubbed send (the PHP handler comes later). Step 1 is the job (service, size,
+// access, what's going); step 2 is where and when, all the timing in one place (When by service, and how often
+// for cleaning). Phones show the ticket as a sticky summary that opens to the full ticket.
 const NAMES = { clean: 'Cleaning', move: 'Moving', deliver: 'Delivery' };
 const PLACE_LABEL = { clean: 'The place', move: 'The move', deliver: 'The load' };
 const REGION = { Toronto: 'City of Toronto', Peel: 'Peel', York: 'York', Durham: 'Durham', Halton: 'Halton' };
 const ORDER = ['job', 'ww', 'you'];
 const STEP_NAME = { job: 'The job', ww: 'Where and when', you: 'How we reach you' };
-const JOB = ['svc', 'size', 'often', 'what', 'speed', 'access'];
+const JOB = ['svc', 'size', 'what', 'access'];
+// When, by service: the choices each one offers (Pick a date opens the calendar)
+const TIMING = { deliver: ['Same day', 'Pick a date', 'Regular'], other: ['This week', 'Next week', 'Later', 'Pick a date'] };
+// The note's hint follows the service
+const NOTE = { clean: 'Pets at home, a lockbox code, rooms to skip', move: 'A tight staircase, a booked elevator, a piano', deliver: 'What it is, a buzzer code, which floor' };
 const RX = {
   name: (v) => v.trim().length > 1,
   phone: (v) => v.replace(/\D/g, '').replace(/^1/, '').length === 10,
@@ -40,7 +46,7 @@ const fmtDate = (iso, opts) => new Date(`${iso}T12:00`).toLocaleDateString('en-C
 export function init(el) {
   const form = el.querySelector('.qp__form');
   const live = el.querySelector('[data-live]');
-  const S = { svc: null, kind: 'home', area: null, from: null, to: null, size: null, often: null, access: null, what: null, speed: null, timing: null, date: '', flex: false, details: '', name: '', company: '', phone: '', email: '' };
+  const S = { svc: null, kind: 'home', area: null, from: null, to: null, size: null, often: null, access: null, what: null, timing: null, date: '', flex: false, details: '', name: '', company: '', phone: '', email: '' };
   const two = () => S.svc === 'move' || S.svc === 'deliver';
   const steps = Object.fromEntries([...el.querySelectorAll('.qstep')].map((s) => [s.dataset.step, s]));
 
@@ -62,12 +68,11 @@ export function init(el) {
     else {
       if (!whereOk()) m.push(['where', 'where']);
       if ((S.svc === 'clean' || S.svc === 'move') && !S.size) m.push(['size', 'size']);
-      if (S.svc === 'clean' && !S.often) m.push(['often', 'how often']);
       if (S.svc === 'move' && !S.access) m.push(['access', 'getting in and out']);
-      if (S.svc === 'deliver' && !S.what) m.push(['what', 'what']);
-      if (S.svc === 'deliver' && !S.speed) m.push(['speed', 'how soon']);
+      if (S.svc === 'deliver' && !S.what) m.push(['what', 'what’s going']);
     }
     if (!whenOk()) m.push(['timing', 'when']);
+    if (S.svc === 'clean' && !S.often) m.push(['often', 'how often']);
     if (!RX.name(S.name)) m.push(['name', 'name']);
     if (!RX.phone(S.phone)) m.push(['phone', 'phone']);
     if (!RX.email(S.email)) m.push(['email', 'email']);
@@ -75,16 +80,17 @@ export function init(el) {
   }
   const done = {
     job: () => !!S.svc && !missing().some(([k]) => JOB.includes(k)),
-    ww: () => whereOk() && whenOk(),
+    ww: () => whereOk() && whenOk() && (S.svc !== 'clean' || !!S.often),
     you: () => false,
   };
-  const stepOf = (f) => (JOB.includes(f) ? 'job' : ['where', 'timing', 'area', 'from', 'to'].includes(f) ? 'ww' : 'you');
+  const stepOf = (f) => (JOB.includes(f) ? 'job' : ['where', 'timing', 'often', 'area', 'from', 'to'].includes(f) ? 'ww' : 'you');
 
   // ---------- summary (ticket + folded steps) ----------
   function summary() {
     const where = two() ? (S.from || S.to ? `${S.from ? S.from.place : '…'} → ${S.to ? S.to.place : '…'}` : '') : S.area ? S.area.place : '';
-    const place = [S.size, S.often, S.access, S.what, S.speed].filter(Boolean).join(' · ');
-    const day = S.timing === 'Pick a date' ? (S.date ? fmtDate(S.date, { weekday: 'short', month: 'short', day: 'numeric' }) : '') : S.timing || '';
+    const place = [S.size, S.access, S.what].filter(Boolean).join(' · ');
+    const pick = S.timing === 'Pick a date' ? (S.date ? fmtDate(S.date, { weekday: 'short', month: 'short', day: 'numeric' }) : '') : S.timing === 'Regular' ? 'Regular drop-offs' : S.timing || '';
+    const day = [pick, S.svc === 'clean' ? S.often : ''].filter(Boolean).join(' · ');
     return {
       svc: S.svc ? NAMES[S.svc] : '',
       kind: S.svc ? (S.kind === 'home' ? 'Home' : `Business${S.company ? ` · ${S.company}` : ''}`) : '',
@@ -143,9 +149,14 @@ export function init(el) {
       void n.offsetWidth;
       if (v[k]) n.classList.add('is-new');
     });
-    const got = [!!S.svc, S.svc && whereOk(), S.svc && !missing().some(([k]) => ['size', 'often', 'what', 'speed', 'access'].includes(k)), whenOk(), RX.name(S.name) && RX.phone(S.phone) && RX.email(S.email)].filter(Boolean).length;
+    const m0 = missing().map(([k]) => k);
+    const got = [!!S.svc, S.svc && whereOk(), S.svc && !m0.some((k) => ['size', 'what', 'access'].includes(k)), whenOk() && !m0.includes('often'), RX.name(S.name) && RX.phone(S.phone) && RX.email(S.email)].filter(Boolean).length;
     el.querySelector('.qticket__prog i').style.width = `${got * 20}%`;
-    el.querySelector('[data-t="pct"]').textContent = `${got} of 5`;
+    el.querySelector('[data-t="pct"]').textContent = `${got} of 5 answered`;
+    // the note's hint follows the service
+    const hint = NOTE[S.svc] || 'Anything that helps us quote it right';
+    el.querySelector('[data-notehint]').textContent = `Optional · ${hint.toLowerCase()}`;
+    el.querySelector('[data-details]').placeholder = `${hint}…`;
     // send button
     const m = missing();
     el.querySelector('.qsend__cta').classList.toggle('is-waiting', m.length > 0);
@@ -235,6 +246,11 @@ export function init(el) {
       const f = g.dataset.f;
       g.querySelectorAll('button').forEach((x) => x.setAttribute('aria-pressed', String(x === b)));
       S[f] = b.dataset.v;
+      if (f === 'svc' && S.timing && !TIMING[S.svc === 'deliver' ? 'deliver' : 'other'].includes(S.timing)) {
+        S.timing = null;
+        if (S.date) cal.clear();
+      }
+      if (f === 'svc' || f === 'timing') syncTiming();
       g.closest('.qrow')?.classList.remove('is-bad');
       if (f === 'kind') {
         S.size = null;
@@ -251,6 +267,11 @@ export function init(el) {
     }),
   );
 
+  // When sits in two groups (by service) but holds one answer: press it in both
+  function syncTiming() {
+    el.querySelectorAll('[data-f="timing"] button').forEach((x) => x.setAttribute('aria-pressed', String(x.dataset.v === S.timing)));
+  }
+
   // ---------- calendar ----------
   const calEl = el.querySelector('.qcal');
   const cal = (() => {
@@ -260,7 +281,8 @@ export function init(el) {
     let vm = today.getMonth();
     const MONTHS = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
     const iso = (d) => `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
-    const chip = () => el.querySelector('[data-f="timing"] [data-v="Pick a date"]');
+    const chips = () => el.querySelectorAll('[data-f="timing"] [data-v="Pick a date"]');
+    const chip = () => el.querySelector('[data-f="timing"].is-shown [data-v="Pick a date"]') || chips()[0];
     function render() {
       const first = new Date(vy, vm, 1);
       const days = new Date(vy, vm + 1, 0).getDate();
@@ -280,7 +302,7 @@ export function init(el) {
       calEl.querySelector('.qcal__next').onclick = () => { vm++; if (vm > 11) { vm = 0; vy++; } render(); };
       calEl.querySelectorAll('[data-d]').forEach((b) => (b.onclick = () => {
         S.date = b.dataset.d;
-        chip().textContent = fmtDate(S.date, { weekday: 'short', month: 'short', day: 'numeric' });
+        chips().forEach((c) => (c.textContent = fmtDate(S.date, { weekday: 'short', month: 'short', day: 'numeric' })));
         render();
         setTimeout(() => (calEl.hidden = true), 260);
         picked('date');
@@ -296,17 +318,32 @@ export function init(el) {
         setTimeout(() => calEl.querySelector('.is-picked, .qcal__grid button:not(:disabled)')?.focus({ preventScroll: true }), 30);
       },
       close() { calEl.hidden = true; },
-      clear() { S.date = ''; chip().textContent = 'Pick a date'; },
+      clear() { S.date = ''; chips().forEach((c) => (c.textContent = 'Pick a date')); },
     };
   })();
 
   el.querySelector('[data-flex]').addEventListener('change', (e) => { S.flex = e.target.checked; el.querySelector('[data-req="timing"]').classList.remove('is-bad'); picked('flex'); });
   el.querySelector('[data-details]').addEventListener('input', (e) => (S.details = e.target.value));
-  el.querySelector('.qaddnote').addEventListener('click', (e) => {
-    const note = e.currentTarget.nextElementSibling;
-    note.hidden = false;
-    e.currentTarget.hidden = true;
-    note.querySelector('textarea').focus();
+  const addNote = el.querySelector('.qaddnote');
+  function showNote(focus) {
+    addNote.nextElementSibling.hidden = false;
+    addNote.hidden = true;
+    if (focus) addNote.nextElementSibling.querySelector('textarea').focus();
+  }
+  addNote.addEventListener('click', () => showNote(true));
+  const note = (text) => {
+    S.details = S.details ? `${S.details} ${text}` : text;
+    el.querySelector('[data-details]').value = S.details;
+    showNote(false);
+  };
+
+  // ---------- the ticket on phones: a summary that opens ----------
+  const ticket = el.querySelector('.qticket');
+  ticket.querySelector('.qticket__toggle').addEventListener('click', (e) => {
+    const on = !ticket.classList.contains('is-expanded');
+    ticket.classList.toggle('is-expanded', on);
+    e.currentTarget.setAttribute('aria-expanded', String(on));
+    e.currentTarget.querySelector('.sr-only').textContent = on ? 'Hide your request' : 'Show your request';
   });
 
   // ---------- place pickers (postal code or town, tagged with the region) ----------
@@ -458,38 +495,35 @@ export function init(el) {
     if (size && (svc === 'clean' || svc === 'move')) tap('size', size);
     const often = params.get('often');
     if (often && svc === 'clean') tap('often', often);
-    // From Delivery's How soon: when, and the arrival window into the details
-    // From Delivery's closing panel: what's going
+    // Delivery: what's going (the closing panel) and when (How soon); the arrival window and a store pickup go in the note
     const what = params.get('what');
-    const carry = { single: 'One item', few: 'A few items' }[what];
+    const carry = { single: 'One item', few: 'A few pieces' }[what];
     if (carry && svc === 'deliver') tap('what', carry);
-    if (what === 'regular' && svc === 'deliver' && !params.get('when')) tap('speed', 'Regular');
-    if (what === 'store' && svc === 'deliver') {
-      S.details = 'Pickup from a store.';
-      el.querySelector('[data-details]').value = S.details;
-    }
-    const speed = { 'same-day': 'Same day', scheduled: 'Scheduled', regular: 'Regular' }[params.get('when')];
-    if (speed && svc === 'deliver') tap('speed', speed);
+    if (what === 'store' && svc === 'deliver') note('Pickup from a store.');
+    const deliverWhen = { 'same-day': 'Same day', regular: 'Regular' }[params.get('when')] || (what === 'regular' ? 'Regular' : null);
+    if (deliverWhen && svc === 'deliver') tap('timing', deliverWhen);
+    const date = params.get('date');
+    const dateOk = date && /^\d{4}-\d{2}-\d{2}$/.test(date) && new Date(`${date}T12:00`) >= new Date(new Date().toDateString());
     const win = /^(\d{1,2})-(\d{1,2})$/.exec(params.get('window') || '');
     if (win && svc === 'deliver') {
       const [a, b] = [+win[1], +win[2]];
-      const m = (h) => (h < 12 || h === 24 ? 'AM' : 'PM');
-      const n = (h) => ((h + 11) % 12) + 1;
+      const m = (hh) => (hh < 12 || hh === 24 ? 'AM' : 'PM');
+      const n = (hh) => ((hh + 11) % 12) + 1;
       const range = m(a) === m(b) ? `${n(a)} – ${n(b)} ${m(b)}` : `${n(a)} ${m(a)} – ${n(b)} ${m(b)}`;
-      S.details = `Arrival window: ${range}${speed === 'Regular' ? ', every week' : ''}.`;
-      el.querySelector('[data-details]').value = S.details;
+      const from = S.timing === 'Regular' && dateOk ? `, from ${fmtDate(date, { weekday: 'short', month: 'short', day: 'numeric' })}` : '';
+      note(`Arrival window: ${range}${S.timing === 'Regular' ? `, every week${from}` : ''}.`);
     }
-    const date = params.get('date');
-    if (date && /^\d{4}-\d{2}-\d{2}$/.test(date) && new Date(`${date}T12:00`) >= new Date(new Date().toDateString())) {
+    // A date (Cleaning's How often, Delivery's How soon) picks it; Same day and Regular keep theirs
+    if (dateOk && S.timing !== 'Same day' && S.timing !== 'Regular') {
       S.timing = 'Pick a date';
       S.date = date;
-      el.querySelectorAll('[data-f="timing"] button').forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.v === 'Pick a date')));
-      el.querySelector('[data-f="timing"] [data-v="Pick a date"]').textContent = fmtDate(date, { weekday: 'short', month: 'short', day: 'numeric' });
+      syncTiming();
+      el.querySelectorAll('[data-f="timing"] [data-v="Pick a date"]').forEach((c) => (c.textContent = fmtDate(date, { weekday: 'short', month: 'short', day: 'numeric' })));
     }
     const placeName = quote.area || map?.place;
-    const region = regionOf(placeName) || (map?.place === placeName ? map.region : null);
+    const region = placeName ? regionOf(placeName) || (map?.place === placeName ? map.region : null) : null;
     if (placeName && region) pickers[two() ? 'from' : 'area'].set({ place: placeName, region, code: map?.place === placeName ? map.fsa : '' });
-    const when = { 'this week': 'This week', 'next week': 'Next week' }[quote.when];
+    const when = { 'this week': 'This week', 'next week': 'Next week', later: 'Later' }[quote.when];
     if (when) tap('timing', when);
     if (quote.when === 'not sure yet') {
       const flex = el.querySelector('[data-flex]');

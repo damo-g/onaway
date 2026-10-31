@@ -6,7 +6,7 @@
   <script>document.documentElement.classList.add('js')</script>
   <link rel="icon" href="/favicon.svg" type="image/svg+xml">
   <meta name="robots" content="noindex"> <!-- pre-launch: remove at launch (CLAUDE.md "Before launch") -->
-  <title>Get a free quote · Onaway</title>
+  <title>Get a free quote · ONAWAY</title>
   <meta name="description" content="Tell us what you need. Your quote for cleaning, moving or delivery across the GTA arrives in writing within 2 hours.">
   <link rel="preload" href="/fonts/InstrumentSans-Variable.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="preload" href="/fonts/OverpassMono-Variable.woff2" as="font" type="font/woff2" crossorigin>
@@ -19,7 +19,7 @@
     {{!-- QP-01 The Ticket. src/js/sections/request.js. Sending is stubbed until the PHP handler is added. --}}
     <section class="qp" data-section="request" aria-labelledby="qp-title">
       <header class="qp__head grid-site">
-        <h1 id="qp-title" class="qp__title col-span-full lg:col-span-8 text-h1 lg:text-display uppercase">Get a free quote.</h1>
+        <h1 id="qp-title" class="qp__title col-span-full lg:col-span-8 text-h2 md:text-h1 uppercase">Get a free quote.</h1>
         <p class="qp__lead col-span-full lg:col-span-7 text-lead">Tell us what you need. Your quote arrives in writing <b data-q="by">within 2 hours</b>.</p>
         <p class="qp__after col-span-full lg:col-span-7" hidden>We’re closed for the night (open 8 AM – 8 PM daily). Send it now and it’s first in the morning.</p>
       </header>
@@ -49,15 +49,15 @@
                   <span class="qlabel" id="l-svc">Service</span>
                   <div class="qtiles" data-f="svc" role="group" aria-labelledby="l-svc">
                     <button type="button" class="qtile" data-v="clean" aria-pressed="false">
-                      <svg viewBox="0 0 96 96" aria-hidden="true"><g fill="currentColor"><path d="M30 14h34a8 8 0 0 1 8 8v4a4 4 0 0 1-4 4H54v8H40V30H30a4 4 0 0 1-4-4v-8a4 4 0 0 1 4-4z"/><path d="M72 16h8v8h-8z"/><path d="M40 30h10l-6 16h-6z"/><path d="M36 40h22v4c8 4 12 10 12 18v20a6 6 0 0 1-6 6H32a6 6 0 0 1-6-6V62c0-8 4-14 10-18z"/></g><rect x="34" y="60" width="28" height="14" rx="2" style="fill:var(--tile)"/></svg>
+                      {{> picto name="cleaning"}}
                       <span>Cleaning</span>
                     </button>
                     <button type="button" class="qtile" data-v="move" aria-pressed="false">
-                      <svg viewBox="0 0 96 96" aria-hidden="true"><g transform="translate(8 2) rotate(-14 40 80)"><g fill="currentColor"><path d="M22 8h20a5 5 0 0 1 5 5v4H40v-1h-6v48h44a5 5 0 0 1 5 5v5a5 5 0 0 1-5 5H31a6 6 0 0 1-6-6V16h-3a4 4 0 0 1 0-8z"/><path d="M40 16h7v8a4 4 0 0 1-4 4h-3z"/><circle cx="36" cy="82" r="11"/></g><circle cx="36" cy="82" r="4" style="fill:var(--tile)"/></g></svg>
+                      {{> picto name="moving"}}
                       <span>Moving</span>
                     </button>
                     <button type="button" class="qtile" data-v="deliver" aria-pressed="false">
-                      <svg viewBox="0 0 96 96" aria-hidden="true"><g fill="currentColor"><path d="M14 18h68a3 3 0 0 1 3 3v9H11v-9a3 3 0 0 1 3-3z"/><path d="M16 34h64v44a5 5 0 0 1-5 5H21a5 5 0 0 1-5-5z"/></g><rect x="43" y="18" width="10" height="34" style="fill:var(--tile)"/><rect x="28" y="62" width="18" height="5" rx="1" style="fill:var(--tile)"/></svg>
+                      {{> picto name="delivery"}}
                       <span>Delivery</span>
                     </button>
                   </div>
@@ -78,16 +78,6 @@
                   </div>
                   <p class="qerr">Pick one to continue.</p>
                 </div>
-                <div class="qrow" data-show="svc:clean" data-req="often">
-                  <span class="qlabel">How often</span>
-                  <div class="qopts" data-f="often">
-                    <button type="button" data-v="One time" aria-pressed="false">One time</button>
-                    <button type="button" data-v="Weekly" aria-pressed="false">Weekly</button>
-                    <button type="button" data-v="Every 2 weeks" aria-pressed="false">Every 2 weeks</button>
-                    <button type="button" data-v="Monthly" aria-pressed="false">Monthly</button>
-                  </div>
-                  <p class="qerr">Pick one to continue.</p>
-                </div>
                 <div class="qrow" data-show="svc:move" data-req="access">
                   <span class="qlabel">Getting in and out</span>
                   <div class="qopts" data-f="access">
@@ -98,20 +88,11 @@
                   <p class="qerr">Pick one to continue.</p>
                 </div>
                 <div class="qrow" data-show="svc:deliver" data-req="what">
-                  <span class="qlabel">What are we carrying</span>
+                  <span class="qlabel">What’s going</span>
                   <div class="qopts" data-f="what">
                     <button type="button" data-v="One item" aria-pressed="false">One item</button>
-                    <button type="button" data-v="A few items" aria-pressed="false">A few items</button>
+                    <button type="button" data-v="A few pieces" aria-pressed="false">A few pieces</button>
                     <button type="button" data-v="A full load" aria-pressed="false">A full load</button>
-                  </div>
-                  <p class="qerr">Pick one to continue.</p>
-                </div>
-                <div class="qrow" data-show="svc:deliver" data-req="speed">
-                  <span class="qlabel">How soon</span>
-                  <div class="qopts" data-f="speed">
-                    <button type="button" data-v="Same day" aria-pressed="false">Same day</button>
-                    <button type="button" data-v="Scheduled" aria-pressed="false">Scheduled</button>
-                    <button type="button" data-v="Regular" aria-pressed="false">Regular</button>
                   </div>
                   <p class="qerr">Pick one to continue.</p>
                 </div>
@@ -158,15 +139,33 @@
                     </div>
                   </div>
                 </div>
+                {{!-- When: one question for every service. Cleaning and Moving: this week, next week, later or a date;
+                     Delivery: same day, a date, or regular drop-offs. --}}
                 <div class="qrow qrow--when" data-req="timing">
                   <span class="qlabel">When</span>
-                  <div class="qopts" data-f="timing">
+                  <div class="qopts" data-f="timing" data-show="svc:clean,move">
                     <button type="button" data-v="This week" aria-pressed="false">This week</button>
                     <button type="button" data-v="Next week" aria-pressed="false">Next week</button>
+                    <button type="button" data-v="Later" aria-pressed="false">Later</button>
                     <button type="button" data-v="Pick a date" aria-pressed="false">Pick a date</button>
+                  </div>
+                  <div class="qopts" data-f="timing" data-show="svc:deliver">
+                    <button type="button" data-v="Same day" aria-pressed="false">Same day</button>
+                    <button type="button" data-v="Pick a date" aria-pressed="false">Pick a date</button>
+                    <button type="button" data-v="Regular" aria-pressed="false">Regular drop-offs</button>
                   </div>
                   <div class="qcal" role="dialog" aria-label="Pick a date" hidden></div>
                   <label class="qcheck"><input type="checkbox" data-flex> My dates are flexible</label>
+                  <p class="qerr">Pick one to continue.</p>
+                </div>
+                <div class="qrow" data-show="svc:clean" data-req="often">
+                  <span class="qlabel">How often</span>
+                  <div class="qopts" data-f="often">
+                    <button type="button" data-v="One time" aria-pressed="false">One time</button>
+                    <button type="button" data-v="Weekly" aria-pressed="false">Weekly</button>
+                    <button type="button" data-v="Every 2 weeks" aria-pressed="false">Every 2 weeks</button>
+                    <button type="button" data-v="Monthly" aria-pressed="false">Monthly</button>
+                  </div>
                   <p class="qerr">Pick one to continue.</p>
                 </div>
               </div>
@@ -183,7 +182,7 @@
               <div class="qstep__body">
                 <div class="qrow qfield" data-f="name">
                   <label class="qlabel" for="qp-name">Full name</label>
-                  <div class="qfield__wrap"><input class="qinput" id="qp-name" type="text" autocomplete="name"><span class="qfield__tick label" aria-hidden="true">✓</span></div>
+                  <div class="qfield__wrap"><input class="qinput" id="qp-name" type="text" autocomplete="name"><span class="qfield__tick" aria-hidden="true">{{{icon "tick-02"}}}</span></div>
                   <p class="qerr">We need this to prepare your quote.</p>
                 </div>
                 <div class="qrow qfield" data-f="company" data-show="kind:business">
@@ -193,22 +192,22 @@
                 <div class="qtwo">
                   <div class="qrow qfield" data-f="phone">
                     <label class="qlabel" for="qp-phone">Phone</label>
-                    <div class="qfield__wrap"><input class="qinput" id="qp-phone" type="tel" autocomplete="tel"><span class="qfield__tick label" aria-hidden="true">✓</span></div>
+                    <div class="qfield__wrap"><input class="qinput" id="qp-phone" type="tel" autocomplete="tel"><span class="qfield__tick" aria-hidden="true">{{{icon "tick-02"}}}</span></div>
                     <span class="qhint">We’ll only call about your quote.</span>
                     <p class="qerr">Please enter a 10-digit number.</p>
                   </div>
                   <div class="qrow qfield" data-f="email">
                     <label class="qlabel" for="qp-email">Email</label>
-                    <div class="qfield__wrap"><input class="qinput" id="qp-email" type="email" autocomplete="email"><span class="qfield__tick label" aria-hidden="true">✓</span></div>
+                    <div class="qfield__wrap"><input class="qinput" id="qp-email" type="email" autocomplete="email"><span class="qfield__tick" aria-hidden="true">{{{icon "tick-02"}}}</span></div>
                     <span class="qhint">Your quote is sent here.</span>
                     <p class="qerr">That email doesn’t look right.</p>
                   </div>
                 </div>
                 <div class="qrow">
-                  <button type="button" class="qaddnote">+ Add a note <small>Optional · the space, a tight staircase, a booked elevator</small></button>
+                  <button type="button" class="qaddnote">{{{icon "add-01"}}} <span>Add a note</span> <small data-notehint>Optional · anything that helps us quote it right</small></button>
                   <div class="qnote" hidden>
                     <label class="qlabel" for="qp-details">Anything we should know <small>Optional</small></label>
-                    <textarea class="qinput qinput--area" id="qp-details" data-details placeholder="The space, the size, a tight staircase, a booked elevator…"></textarea>
+                    <textarea class="qinput qinput--area" id="qp-details" data-details placeholder="Anything that helps us quote it right…"></textarea>
                   </div>
                 </div>
                 <div class="qsend">
@@ -221,7 +220,7 @@
           </div>
 
           <div class="qdone" hidden tabindex="-1">
-            <div class="qdone__check" aria-hidden="true">✓</div>
+            <div class="qdone__check" aria-hidden="true">{{{icon "tick-02"}}}</div>
             <h2 class="qdone__title">Got it.<br>Your request is in.</h2>
             <p class="qdone__text">Your quote goes to <b data-o="email"></b> <b data-q="by">within 2 hours</b>. Need it sooner? Call <a href="tel:+16478771411">+1 647 877 1411</a>.</p>
             <p class="qdone__text"><a href="/">Back to home</a></p>
@@ -231,11 +230,17 @@
 
         <aside class="qp__side col-span-full lg:col-start-9 lg:col-span-4" aria-label="Your request so far">
           <div class="qp__stick">
-            <div class="qticket">
-              <div class="qticket__body">
-                <div class="qticket__head">
-                  <span class="label">Quote request</span>
-                </div>
+            {{!-- The live ticket: a strip (the W, Quote request, how much is answered) over the rows. Desktop: always open.
+                 Phones: a sticky summary at the foot of the screen; the toggle opens the full ticket. --}}
+            <div class="qticket" role="group" aria-label="Your request so far">
+              <div class="qticket__strip">
+                <svg viewBox="0 0 100 100" aria-hidden="true"><circle cx="50" cy="50" r="50" fill="currentColor"/><path transform="translate(28.6 30) scale(.5)" style="fill:var(--qt-face)" d="M0,80C.14,77.73-.02,11.64.03,9.23l11.67-1.12s.01,40.19-.1,55.51c20.63-10.95,25.77-37.76,25.47-59.5,2.65-.22,9.1-.87,11.81-1.15-.51,20.26,3.46,45.8,24.97,53.64.05-15.31.05-40.2.07-55.53l11.65-1.08v70.04c-17.66,4.6-35.16-10.2-42.26-25.54-7.02,17.45-23.22,35.59-43.32,35.5Z"/></svg>
+                <span class="qticket__title label">Quote request</span>
+                <span class="qticket__count label" data-t="pct">0 of 5 answered</span>
+                <span class="qticket__ref label">Keep · Ref <b data-o="ref"></b></span>
+                <button type="button" class="qticket__toggle" aria-expanded="false" aria-controls="qticket-rows"><span class="sr-only">Show your request</span>{{{icon "arrow-down-02"}}}</button>
+              </div>
+              <div class="qticket__body" id="qticket-rows">
                 <dl>
                   <div class="qticket__row" data-step="job"><dt class="label">Service</dt><dd data-t="svc">—</dd></div>
                   <div class="qticket__row" data-step="job"><dt class="label">For a</dt><dd data-t="kind">—</dd></div>
@@ -246,18 +251,14 @@
                   <div class="qticket__row" data-step="you"><dt class="label">Reach</dt><dd data-t="reach">—</dd></div>
                 </dl>
                 <div class="qticket__prog"><i></i></div>
-                <div class="qticket__progl label"><span data-t="pct">0 of 5</span><span>In writing <b data-q="short"></b></span></div>
-              </div>
-              <div class="qticket__stub">
-                <svg viewBox="0 0 100 100" aria-hidden="true"><circle cx="50" cy="50" r="50" fill="currentColor"/><path transform="translate(28.6 30) scale(.5)" style="fill:var(--qt-face)" d="M0,80C.14,77.73-.02,11.64.03,9.23l11.67-1.12s.01,40.19-.1,55.51c20.63-10.95,25.77-37.76,25.47-59.5,2.65-.22,9.1-.87,11.81-1.15-.51,20.26,3.46,45.8,24.97,53.64.05-15.31.05-40.2.07-55.53l11.65-1.08v70.04c-17.66,4.6-35.16-10.2-42.26-25.54-7.02,17.45-23.22,35.59-43.32,35.5Z"/></svg>
-                <span class="qticket__v label qticket__v--sent">Keep · Ref <b data-o="ref"></b></span>
               </div>
               <span class="qticket__stamp label">Received · <b data-q="now"></b></span>
             </div>
 
             <div class="qside__block">
               <h3 class="qside__h">Rather talk to someone?</h3>
-              <a class="qside__call" href="tel:+16478771411">+1 647 877 1411 <small class="label">Call · fastest for same-day</small></a>
+              <a class="qside__call" href="tel:+16478771411">{{{icon "call-02"}}}<span>+1 647 877 1411</span></a>
+              <p class="qside__note label">Fastest for same-day · 8 AM – 8 PM, every day</p>
               <a class="qside__mail" href="mailto:hello@onaway.ca">hello@onaway.ca</a>
             </div>
           </div>

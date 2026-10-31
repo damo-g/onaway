@@ -56,6 +56,7 @@ export default defineConfig(({ command }) => ({
         delivery: resolve(root, 'delivery.html'),
         help: resolve(root, 'help.html'),
         about: resolve(root, 'about.html'),
+        privacy: resolve(root, 'privacy.html'),
       },
     },
   },
