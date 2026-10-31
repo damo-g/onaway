@@ -2249,7 +2249,15 @@
   .qs__faq dt { margin-top: var(--spacing-21); font-weight: 600; }
   .qs__faq dd { margin-top: var(--spacing-8); color: color-mix(in srgb, var(--color-carbon) 80%, transparent); }
 
-  .qs__window { position: relative; display: flex; flex-direction: column; height: 440px; border-radius: 2px; background: color-mix(in srgb, var(--color-carbon) 5%, var(--color-paper)); }
+  /* Panel options (questions): height 380 (locked) · 440 · 340 (desktop; phones 70svh) · avatar on (locked: the
+     Help page's W tile beside each reply) · name · answer bubble (locked) · plain · surface window (locked: the
+     tinted window, Paper bubbles and tile) · open (a Paper window with a hairline, Paper-2 bubbles, as on Help) */
+  .qs { --qs-surface: color-mix(in srgb, var(--color-carbon) 5%, var(--color-paper)); --qs-card: var(--color-paper); }
+  .qs[data-surface="open"] { --qs-surface: var(--color-paper); --qs-card: color-mix(in srgb, var(--color-carbon) 5%, var(--color-paper)); }
+  .qs__window { position: relative; display: flex; flex-direction: column; height: 380px; border-radius: 2px; background: var(--qs-surface); }
+  .qs[data-surface="open"] .qs__window { box-shadow: inset 0 0 0 1px var(--color-line); }
+  .qs[data-height="440"] .qs__window { height: 440px; }
+  .qs[data-height="340"] .qs__window { height: 340px; }
   .qs__window[hidden] { display: none; }
   .qs__thread { flex: 1; min-height: 0; overflow-y: auto; overscroll-behavior: contain; scrollbar-width: thin; scrollbar-color: color-mix(in srgb, var(--color-carbon) 25%, transparent) transparent; }
   .qs__thread.is-scrolled { mask-image: linear-gradient(transparent, var(--color-carbon) var(--spacing-34)); }
@@ -2257,6 +2265,13 @@
   .qs__msg { animation: qp-up 0.4s ease both; }
   .qs__who { display: block; margin-bottom: var(--spacing-8); line-height: 1; color: var(--mut); }
   .qs__text { max-width: 54ch; min-height: 1.5em; font-size: var(--text-body); line-height: 1.5; }
+  /* A reply: the W tile, then ONAWAY over the bubble */
+  .qs__msg--ona { display: grid; grid-template-columns: var(--spacing-34) minmax(0, 1fr); column-gap: var(--spacing-13); align-items: start; }
+  .qs__av { display: flex; align-items: center; justify-content: center; width: var(--spacing-34); height: var(--spacing-34); border-radius: 2px; background: var(--qs-card); }
+  .qs__av img { width: 18px; height: auto; }
+  .qs[data-avatar="name"] .qs__msg--ona { display: block; }
+  .qs[data-avatar="name"] .qs__av { display: none; }
+  .qs:not([data-answer="plain"]) .qs__text { width: fit-content; padding: var(--spacing-13) var(--spacing-21); border-radius: 2px; background: var(--qs-card); }
   .qs__msg--me { align-self: flex-end; max-width: 70%; }
   .qs__msg--me .qs__who { text-align: right; }
   .qs__msg--me p { padding: var(--spacing-8) var(--spacing-13); border-radius: 2px; background: var(--color-carbon); color: var(--color-paper); font-size: var(--text-body); line-height: 1.35; font-weight: 600; }
@@ -2266,12 +2281,12 @@
   .qs__dots i:nth-child(2) { animation-delay: 0.15s; }
   .qs__dots i:nth-child(3) { animation-delay: 0.3s; }
   .qs__chips { display: flex; flex-wrap: wrap; gap: var(--spacing-8); padding: 0 var(--spacing-34) var(--spacing-21); flex: none; }
-  .qs__chips button { height: var(--spacing-34); padding-inline: var(--spacing-13); border: 1.5px solid transparent; border-radius: 2px; background: var(--color-paper); font-size: var(--text-small); font-weight: 600; cursor: pointer; transition: border-color 0.2s, opacity 0.3s; }
+  .qs__chips button { height: var(--spacing-34); padding-inline: var(--spacing-13); border: 1.5px solid transparent; border-radius: 2px; background: var(--qs-card); font-size: var(--text-small); font-weight: 600; cursor: pointer; transition: border-color 0.2s, opacity 0.3s; }
   .qs__chips button:hover { border-color: var(--color-carbon); }
   .qs__chips button.is-used { opacity: 0.35; pointer-events: none; }
   .qs__done { font-size: var(--text-small); line-height: var(--spacing-34); color: var(--mut); }
   /* The message box: a Paper well inset 13 from the window's sides and bottom */
-  .qs__box { display: flex; align-items: center; gap: var(--spacing-13); flex: none; margin: 0 var(--spacing-13) var(--spacing-13); padding: 6px 6px 6px var(--spacing-21); border-radius: 2px; background: var(--color-paper); }
+  .qs__box { display: flex; align-items: center; gap: var(--spacing-13); flex: none; margin: 0 var(--spacing-13) var(--spacing-13); padding: 6px 6px 6px var(--spacing-21); border-radius: 2px; background: var(--qs-card); }
   .qs__box input { flex: 1; min-width: 0; padding-block: var(--spacing-8); font-size: var(--text-body); }
   .qs__box input::placeholder { color: var(--mut); }
   .qs__box input:focus { outline: 0; }

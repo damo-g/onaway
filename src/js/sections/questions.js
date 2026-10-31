@@ -1,4 +1,8 @@
 import { prefersReducedMotion } from '../motion.js';
+import { registerOptions } from '../options.js';
+
+// Locked first: a 380 window, the W avatar on each reply, replies in a bubble, the tinted window with Paper bubbles
+registerOptions('questions', { height: ['380', '440', '340'], avatar: ['on', 'name'], answer: ['bubble', 'plain'], surface: ['window', 'open'] });
 
 // CH-03b Questions: the FAQ (already in the HTML) becomes a short message thread. Pick a chip, it's asked,
 // and the answer is typed back character by character after typing dots. The window keeps its height and
@@ -54,7 +58,7 @@ export function init(el) {
   function reply() {
     const d = document.createElement('div');
     d.className = 'qs__msg qs__msg--ona';
-    d.innerHTML = '<span class="qs__who label">Onaway</span><div class="qs__text"></div>';
+    d.innerHTML = '<span class="qs__av" aria-hidden="true"><img src="/svg/symbol.svg" alt="" width="18" height="17"></span><div class="qs__body"><span class="qs__who label">Onaway</span><div class="qs__text"></div></div>';
     add(d);
     return d.querySelector('.qs__text');
   }
