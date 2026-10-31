@@ -16,6 +16,10 @@ desktop.ini
 .vscode/
 .idea/
 
+# kitchen (server/): secrets and logs stay on the server
+server/config.php
+server/logs/*.log
+
 # logs
 *.log
 npm-debug.log*

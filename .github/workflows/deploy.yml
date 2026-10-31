@@ -1,5 +1,6 @@
 # Every push to main builds the site and uploads dist/ to Namecheap (cPanel) over FTPS.
 # The FTP account is rooted in the onaway.ca document root, so dist/ goes to ./ as-is.
+# A second job uploads the kitchen (server/) to /home/adeonvqg/onaway-app/, only when server/ changed.
 name: Deploy to onaway.ca
 
 on:
@@ -42,3 +43,42 @@ jobs:
           protocol: ftps
           local-dir: ./dist/
           server-dir: ./
+
+  # Did this push touch server/? (A manual run always deploys the kitchen.)
+  changes:
+    runs-on: ubuntu-latest
+    outputs:
+      server: ${{ steps.filter.outputs.server }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dorny/paths-filter@v3
+        id: filter
+        with:
+          filters: |
+            server:
+              - 'server/**'
+
+  # The kitchen: server/ → onaway-app/ through its own FTP account (rooted there).
+  # config.php and the log files exist only on the server: never uploaded, and never deleted
+  # (FTP-Deploy only deletes files it uploaded itself, and these are excluded).
+  deploy-app:
+    needs: changes
+    if: needs.changes.outputs.server == 'true' || github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Upload the kitchen to Namecheap (FTPS)
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.5
+        with:
+          server: ${{ secrets.APP_FTP_SERVER }}
+          username: ${{ secrets.APP_FTP_USERNAME }}
+          password: ${{ secrets.APP_FTP_PASSWORD }}
+          protocol: ftps
+          local-dir: ./server/
+          server-dir: ./
+          exclude: |
+            **/.git*
+            **/.git*/**
+            config.php
+            logs/*.log

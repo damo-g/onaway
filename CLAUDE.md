@@ -70,6 +70,7 @@ Leave 144 of paper between the quote and the footer.
 ## Deploy
 - Commit locally, push to `main`. GitHub Actions (`.github/workflows/deploy.yml`) runs `npm ci` and `npm run build`, then uploads `dist/` over FTPS to the onaway.ca document root (secrets FTP_SERVER, FTP_USERNAME, FTP_PASSWORD). Live in a minute or two; the first run takes longer while images encode (they're cached after).
 - Rerun: GitHub → Actions → "Deploy to onaway.ca" → Run workflow.
+- Quote backend (see `docs/quote-backend-context.md`): the hatch `public/api/quote.php` ships with the site; the kitchen `server/` deploys to `/home/adeonvqg/onaway-app/` in a second job, only when `server/` changes (secrets APP_FTP_*). `config.php` lives only on the server.
 - `public/.htaccess` ships with the build: redirects onaway.adeona.ca and www to https://onaway.ca, clean URLs, 404 page, caching, compression.
 
 ## Before launch

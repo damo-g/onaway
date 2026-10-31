@@ -18,6 +18,9 @@
   RewriteCond %{HTTP:X-Forwarded-Proto} !https
   RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [R=301,L]
 
+  # The API (/api/quote.php) is left alone: no redirects or clean URLs past this point
+  RewriteRule ^api/ - [L]
+
   # 4. Clean URLs: /quote or /quote/ serves quote.html when that file exists.
   #    Real files and folders are never rewritten.
   # The FAQ became the Help page
