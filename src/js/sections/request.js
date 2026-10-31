@@ -13,7 +13,7 @@ const ORDER = ['job', 'ww', 'you'];
 const STEP_NAME = { job: 'The job', ww: 'Where and when', you: 'How we reach you' };
 const JOB = ['svc', 'size', 'what', 'access'];
 // When, by service: the choices each one offers (Pick a date opens the calendar)
-const TIMING = { deliver: ['Same day', 'Pick a date', 'Regular'], other: ['This week', 'Next week', 'Later', 'Pick a date'] };
+const TIMING = { deliver: ['Same day', 'Pick a date', 'Regular'], other: ['This week', 'Next week', 'Pick a date'] };
 // The note's hint follows the service
 const NOTE = { clean: 'Pets at home, a lockbox code, rooms to skip', move: 'A tight staircase, a booked elevator, a piano', deliver: 'What it is, a buzzer code, which floor' };
 const RX = {
@@ -270,6 +270,9 @@ export function init(el) {
   // When sits in two groups (by service) but holds one answer: press it in both
   function syncTiming() {
     el.querySelectorAll('[data-f="timing"] button').forEach((x) => x.setAttribute('aria-pressed', String(x.dataset.v === S.timing)));
+    const dated = S.timing === 'Pick a date';
+    el.querySelector('[data-flexrow]').hidden = dated;
+    if (dated && S.flex) { S.flex = false; el.querySelector('[data-flex]').checked = false; }
   }
 
   // ---------- calendar ----------
@@ -523,9 +526,9 @@ export function init(el) {
     const placeName = quote.area || map?.place;
     const region = placeName ? regionOf(placeName) || (map?.place === placeName ? map.region : null) : null;
     if (placeName && region) pickers[two() ? 'from' : 'area'].set({ place: placeName, region, code: map?.place === placeName ? map.fsa : '' });
-    const when = { 'this week': 'This week', 'next week': 'Next week', later: 'Later' }[quote.when];
+    const when = { 'this week': 'This week', 'next week': 'Next week' }[quote.when];
     if (when) tap('timing', when);
-    if (quote.when === 'not sure yet') {
+    if (quote.when === 'not sure yet' || quote.when === 'later') {
       const flex = el.querySelector('[data-flex]');
       flex.checked = true;
       flex.dispatchEvent(new Event('change'));

@@ -139,14 +139,13 @@
                     </div>
                   </div>
                 </div>
-                {{!-- When: one question for every service. Cleaning and Moving: this week, next week, later or a date;
+                {{!-- When: one question for every service. Cleaning and Moving: this week, next week or a date;
                      Delivery: same day, a date, or regular drop-offs. --}}
                 <div class="qrow qrow--when" data-req="timing">
                   <span class="qlabel">When</span>
                   <div class="qopts" data-f="timing" data-show="svc:clean,move">
                     <button type="button" data-v="This week" aria-pressed="false">This week</button>
                     <button type="button" data-v="Next week" aria-pressed="false">Next week</button>
-                    <button type="button" data-v="Later" aria-pressed="false">Later</button>
                     <button type="button" data-v="Pick a date" aria-pressed="false">Pick a date</button>
                   </div>
                   <div class="qopts" data-f="timing" data-show="svc:deliver">
@@ -155,7 +154,7 @@
                     <button type="button" data-v="Regular" aria-pressed="false">Regular drop-offs</button>
                   </div>
                   <div class="qcal" role="dialog" aria-label="Pick a date" hidden></div>
-                  <label class="qcheck"><input type="checkbox" data-flex> My dates are flexible</label>
+                  <label class="qcheck" data-flexrow><input type="checkbox" data-flex> My dates are flexible</label>
                   <p class="qerr">Pick one to continue.</p>
                 </div>
                 <div class="qrow" data-show="svc:clean" data-req="often">
