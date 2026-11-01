@@ -10,7 +10,7 @@ use DateTimeZone;
  * Checks a quote request and turns it into a quotes row: the same rules as the page (request.js).
  * quote.html is the source of truth for the choices; the page's payload() builds this JSON.
  *
- *   audience        "home" | "business"           company  string, business only, optional
+ *   audience        "home" | "business"           company  string, required for business
  *   service         "cleaning" | "moving" | "delivery"
  *   size            cleaning, moving: the form's wording ("Studio", "1–2 bedroom" … "Under 2,000 sq ft" …)
  *   often           cleaning: "One time" | "Weekly" | "Every 2 weeks" | "Monthly"
@@ -62,6 +62,9 @@ final class Validator
 
         $row['audience'] = $audience = self::choice($in, 'audience', self::AUDIENCES, $bad, 'home');
         $row['company'] = $audience === 'business' ? self::text($in['company'] ?? null, 120) : null;
+        if ($audience === 'business' && $row['company'] === null) {
+            $bad['company'] = 'missing';
+        }
         $row['service'] = $service = self::choice($in, 'service', self::SERVICES, $bad);
 
         // The job, by service

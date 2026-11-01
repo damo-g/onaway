@@ -21,7 +21,7 @@ const RX = {
   name: (v) => v.trim().length > 1,
   phone: (v) => /^\d{10}$/.test(v.trim().replace(/[\s\-().+]/g, '').replace(/^1/, '')),
   email: (v) => /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(v.trim()),
-  company: () => true,
+  company: (v) => v.trim().length > 0,
 };
 
 // Sending: the endpoint, the privacy line shown under Send, the phone for the failure line
@@ -92,6 +92,7 @@ export function init(el) {
     if (!whenOk()) m.push(['timing', 'when']);
     if (S.svc === 'clean' && !S.often) m.push(['often', 'how often']);
     if (!RX.name(S.name)) m.push(['name', 'name']);
+    if (S.kind === 'business' && !RX.company(S.company)) m.push(['company', 'company name']);
     if (!RX.phone(S.phone)) m.push(['phone', 'phone']);
     if (!RX.email(S.email)) m.push(['email', 'email']);
     return m;
@@ -168,7 +169,7 @@ export function init(el) {
       if (v[k]) n.classList.add('is-new');
     });
     const m0 = missing().map(([k]) => k);
-    const got = [!!S.svc, S.svc && whereOk(), S.svc && !m0.some((k) => ['size', 'what', 'access'].includes(k)), whenOk() && !m0.includes('often'), RX.name(S.name) && RX.phone(S.phone) && RX.email(S.email)].filter(Boolean).length;
+    const got = [!!S.svc, S.svc && whereOk(), S.svc && !m0.some((k) => ['size', 'what', 'access'].includes(k)), whenOk() && !m0.includes('often'), RX.name(S.name) && (S.kind !== 'business' || RX.company(S.company)) && RX.phone(S.phone) && RX.email(S.email)].filter(Boolean).length;
     el.querySelector('.qticket__prog i').style.width = `${got * 20}%`;
     el.querySelector('[data-t="pct"]').textContent = `${got} of 5 answered`;
     // the note's hint follows the service
@@ -456,7 +457,7 @@ export function init(el) {
       }
       S[f] = i.value;
       if (w.classList.contains('is-bad') && RX[f](i.value)) w.classList.remove('is-bad');
-      w.classList.toggle('is-ok', !!i.value && RX[f](i.value) && f !== 'company');
+      w.classList.toggle('is-ok', !!i.value && RX[f](i.value));
       update();
     });
     i.addEventListener('blur', () => i.value && w.classList.toggle('is-bad', !RX[f](i.value)));
