@@ -1,0 +1,108 @@
+<!doctype html>
+<html lang="en-CA">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <script>document.documentElement.classList.add('js')</script>
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <meta name="robots" content="noindex"> <!-- pre-launch: remove at launch (CLAUDE.md "Before launch") -->
+  <title>Privacy · ONAWAY</title>
+  <meta name="description" content="How ONAWAY collects, uses and protects your information when you ask for a quote or book cleaning, moving or delivery.">
+  <link rel="preload" href="/fonts/InstrumentSans-Variable.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="/fonts/OverpassMono-Variable.woff2" as="font" type="font/woff2" crossorigin>
+  <script type="module" src="/src/js/main.js"></script>
+</head>
+<body>
+  {{> nav}}
+
+  <main id="main">
+    {{!-- Privacy: a plain reading page. Bracketed text is for the client to fill in before launch. --}}
+    <article class="legal grid-site" aria-labelledby="legal-title">
+      <header class="legal__head col-span-full lg:col-span-8">
+        <h1 id="legal-title" class="legal__title text-h2 md:text-h1 uppercase">Privacy.</h1>
+        <p class="legal__lead text-lead">We ask for as little as we can, use it only to do the job you asked for, and never sell it.</p>
+      </header>
+
+      <div class="legal__body col-span-full lg:col-span-7">
+        <section>
+          <h2>Who we are</h2>
+          <p>ONAWAY is a locally owned cleaning, moving and delivery company serving Toronto and the GTA. [Registered business name, address.] Questions about your information go to <a href="mailto:privacy@onaway.ca">privacy@onaway.ca</a> [or <a href="mailto:hello@onaway.ca">hello@onaway.ca</a>].</p>
+        </section>
+
+        <section>
+          <h2>What we collect</h2>
+          <ul>
+            <li><b>When you ask for a quote:</b> your name, phone number, email, whether it’s for a home or a business (and the company name if it’s a business), the service, the area or postal code, the size of the job, timing, how you’d like us to reach you, and anything you add in the notes.</li>
+            <li><b>When you book with us:</b> the address and details we need to do the job and invoice you.</li>
+            <li><b>Automatically:</b> your IP address and the time of your request, used only to stop spam and abuse.</li>
+          </ul>
+          <p>We don’t ask for your full address until you book, and we never ask for payment details through the website.</p>
+        </section>
+
+        <section>
+          <h2>Why we use it</h2>
+          <ul>
+            <li>To prepare your quote and send it to you in writing.</li>
+            <li>To contact you about your request, the way you asked us to.</li>
+            <li>To schedule, carry out and invoice the job if you book.</li>
+            <li>To keep the site free of spam.</li>
+          </ul>
+        </section>
+
+        <section>
+          <h2>What we don’t do</h2>
+          <p>We don’t sell or rent your information. We don’t send marketing emails or texts. If that ever changes, we’ll only send them to people who’ve said yes.</p>
+        </section>
+
+        <section>
+          <h2>Who helps us</h2>
+          <p>We use a few trusted services to run the business. They only see what they need, and only to provide their service:</p>
+          <ul>
+            <li>[Hosting provider], which hosts this website and our email.</li>
+            <li>Cloudflare Turnstile, which checks that quote requests come from people, not bots.</li>
+            <li>Telegram, which alerts our team when a new request arrives.</li>
+            <li>Trello, where our team tracks requests.</li>
+          </ul>
+          <p>Some of these services may store information outside Canada, where it’s protected by their own security commitments and may be subject to local laws.</p>
+        </section>
+
+        <section>
+          <h2>How long we keep it</h2>
+          <ul>
+            <li><b>Requests that don’t become a booking:</b> deleted after [12] months.</li>
+            <li><b>Booked jobs and invoices:</b> kept for [7] years, because Canadian tax law requires us to keep business records.</li>
+          </ul>
+        </section>
+
+        <section>
+          <h2>Keeping it safe</h2>
+          <p>Your information is sent over an encrypted connection, kept on password-protected systems, and seen only by the people who need it to quote and do your job.</p>
+        </section>
+
+        <section>
+          <h2>Cookies</h2>
+          <p>This site doesn’t use advertising or tracking cookies.</p>
+        </section>
+
+        <section>
+          <h2>Your choices</h2>
+          <ul>
+            <li><b>See what we hold:</b> you can ask what information we have about you.</li>
+            <li><b>Correct it:</b> you can ask us to fix anything that’s wrong.</li>
+            <li><b>Delete it:</b> you can ask us to delete it, unless we’re required to keep it.</li>
+          </ul>
+          <p>Email us and we’ll reply within 30 days. If you’re not satisfied with our answer, you can contact the Office of the Privacy Commissioner of Canada at <a href="https://www.priv.gc.ca/" rel="noopener">priv.gc.ca</a>.</p>
+        </section>
+
+        <section>
+          <h2>Changes</h2>
+          <p>If we change how we handle your information, we’ll update this page and the date below.</p>
+          <p class="legal__date label">Last updated: [date]</p>
+        </section>
+      </div>
+    </article>
+  </main>
+
+  {{> footer}}
+</body>
+</html>

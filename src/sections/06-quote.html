@@ -1,9 +1,12 @@
 {{!-- 06 Quote · QC-02 Say It in a Sentence (centre poster, dark inset panel). Each blank opens a picker;
-     the button says what's missing. src/js/sections/quote.js. Area pre-fills from the GTA check (05). --}}
+     the button says what's missing. src/js/sections/quote.js. Area pre-fills from the GTA check (05).
+     Locked (Oct 2026): a small label leads and the sentence is the headline ("Get a free quote." stays as the
+     section's hidden heading). Panel options: head label | headline · size 68 | 42. --}}
 {{#> section id="quote" variant="inset" class="qc" label="Get a free quote"}}
   <div class="qc__bg" aria-hidden="true">{{> quote-route}}</div>
 
   <div class="qc__body col-span-full">
+    <p class="qc__kicker label" aria-hidden="true">Free quote · In writing within 2 hours</p>
     <h2 class="qc__title text-h2 md:text-h1 lg:text-display uppercase">Get a free quote.</h2>
 
     <form class="qc__form" action="/quote/" method="get" novalidate>
@@ -49,7 +52,7 @@
       <div class="qc__foot">
         <div class="qc__ready">
           <button type="submit" class="qc__cta" aria-disabled="true"><span class="qc__cta-label">Pick a service to start</span> <span class="qc__cta-arrow" aria-hidden="true">{{{icon "arrow-right-02"}}}</span></button>
-          <p class="qc__note">Next: your name and number. Your quote arrives in writing <b data-quote-by>within 2 hours</b>.</p>
+          <p class="qc__note">Next: your name and number. Your quote arrives in writing <b data-quote-by>within 2 hours</b>. No account, no call needed.</p>
         </div>
         <div class="qc__done" hidden>
           <h3 class="qc__done-title">Got it. One more page.</h3>
@@ -59,5 +62,4 @@
     </form>
   </div>
 
-  <p class="qc__meta label">Two taps to start · No account · No call needed</p>
 {{/section}}

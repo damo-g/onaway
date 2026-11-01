@@ -8,6 +8,8 @@ registerOptions('quote', {
   colour: ['dark', 'light', 'yellow'],
   marks: ['xo', 'box', 'cross', 'street'],
   ask: ['3', '2', '1'],
+  head: ['label', 'headline'], // a small label over the sentence, or the old display headline
+  size: ['68', '42'], // the sentence on desktop
 });
 
 const EMPTY = { service: 'a hand', area: 'your area', when: 'sometime soon' };
@@ -51,7 +53,7 @@ export function init(el) {
     const needArea = ask() >= 2;
     const ready = !!values.service && (!needArea || !!values.area);
     const wasReady = cta.getAttribute('aria-disabled') === 'false';
-    ctaLabel.textContent = !values.service ? 'Pick a service to start' : needArea && !values.area ? 'Add your area' : 'Get my free quote';
+    ctaLabel.textContent = !values.service ? 'Pick a service to start' : needArea && !values.area ? 'Add your area' : 'Get a free quote';
     cta.setAttribute('aria-disabled', String(!ready));
     if (ready && !wasReady) {
       cta.classList.remove('is-ready');
