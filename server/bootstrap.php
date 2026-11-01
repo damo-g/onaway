@@ -12,12 +12,15 @@ ini_set('error_log', __DIR__ . '/logs/php-errors.log');
 // Everything is stored in UTC; Toronto time is applied where it's shown (reference, promise label)
 date_default_timezone_set('UTC');
 
+// Onaway\… from src/; PHPMailer (vendored from its v7.1.1 release, no Composer) from vendor/phpmailer/src/
 spl_autoload_register(static function (string $class): void {
-    if (strncmp($class, 'Onaway\\', 7) !== 0) {
-        return;
-    }
-    $file = __DIR__ . '/src/' . str_replace('\\', '/', substr($class, 7)) . '.php';
-    if (is_file($file)) {
-        require $file;
+    foreach (['Onaway\\' => '/src/', 'PHPMailer\\PHPMailer\\' => '/vendor/phpmailer/src/'] as $prefix => $dir) {
+        if (strncmp($class, $prefix, strlen($prefix)) === 0) {
+            $file = __DIR__ . $dir . str_replace('\\', '/', substr($class, strlen($prefix))) . '.php';
+            if (is_file($file)) {
+                require $file;
+            }
+            return;
+        }
     }
 });
