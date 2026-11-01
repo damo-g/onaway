@@ -14,11 +14,13 @@ return [
     // Toronto: the reference's YYMM and the "in writing by" time
     'timezone' => 'America/Toronto',
 
-    // Step 3 · email, sent with an SMTP login to the quotes@ mailbox
+    // Step 3 · email, sent with an SMTP login to the quotes@ mailbox (cPanel → Email Accounts → Connect Devices).
+    // Both emails come from this address; the team copy goes to it too.
     'smtp' => [
-        'host' => '',
-        'port' => '',
-        'user' => '',      // quotes@onaway.ca
+        'host' => '',        // onaway.ca
+        'port' => 465,
+        'encryption' => '',  // ssl (port 465) or tls (port 587); blank = from the port
+        'user' => '',        // quotes@onaway.ca
         'pass' => '',
     ],
 

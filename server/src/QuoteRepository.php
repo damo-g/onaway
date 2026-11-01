@@ -25,8 +25,14 @@ final class QuoteRepository
     {
     }
 
-    /** Saves a request and issues its reference in one transaction; returns the reference. */
-    public function create(array $row, DateTimeImmutable $now, DateTimeZone $tz): string
+    // The columns the notifications stamp when they succeed
+    private const STAMPS = ['emailed_team_at', 'emailed_customer_at', 'telegram_at', 'trello_at'];
+
+    /**
+     * Saves a request and issues its reference in one transaction.
+     * @return array{id: int, ref: string}
+     */
+    public function create(array $row, DateTimeImmutable $now, DateTimeZone $tz): array
     {
         $unknown = array_diff(array_keys($row), self::COLUMNS);
         if ($unknown) {
@@ -35,7 +41,7 @@ final class QuoteRepository
         $row['created_at'] = $now->setTimezone(new DateTimeZone('UTC'))->format('Y-m-d H:i:s');
         $row = array_map(static fn ($v) => is_bool($v) ? (int) $v : $v, $row);
 
-        return $this->db->transaction(static function (Db $db) use ($row, $now, $tz): string {
+        return $this->db->transaction(static function (Db $db) use ($row, $now, $tz): array {
             $columns = array_keys($row);
             $db->run(
                 sprintf(
@@ -48,7 +54,24 @@ final class QuoteRepository
             $id = $db->lastId();
             $ref = Reference::make($id, $now, $tz);
             $db->run('UPDATE quotes SET ref = :ref WHERE id = :id', ['ref' => $ref, 'id' => $id]);
-            return $ref;
+            return ['id' => $id, 'ref' => $ref];
         });
+    }
+
+    public function stamp(int $id, string $column, DateTimeImmutable $at): void
+    {
+        if (!in_array($column, self::STAMPS, true)) {
+            throw new InvalidArgumentException("Not a stamp column: $column");
+        }
+        $this->db->run("UPDATE quotes SET $column = :at WHERE id = :id", [
+            'at' => $at->setTimezone(new DateTimeZone('UTC'))->format('Y-m-d H:i:s'),
+            'id' => $id,
+        ]);
+    }
+
+    // A short reason per failed step, e.g. "customer_email: SMTP Error: Could not authenticate."
+    public function recordError(int $id, string $reason): void
+    {
+        $this->db->run('UPDATE quotes SET last_error = :e WHERE id = :id', ['e' => $reason, 'id' => $id]);
     }
 }

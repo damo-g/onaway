@@ -14,6 +14,7 @@ use Throwable;
  *   400 { ok: false, error: "invalid", fields: { field: "missing" | "email" | "phone" | "date" | "invalid" } }
  *   500 { ok: false, error: "server" }  (the real error goes to logs/error.log)
  * Also 405 (not POST), 403 (another origin), 415 (not JSON), 413 (over 20 KB). No CORS, ever.
+ * After a save the visitor gets the answer at once; the emails go out after the response is closed.
  */
 final class QuoteHandler
 {
@@ -23,7 +24,8 @@ final class QuoteHandler
     {
         $now = new DateTimeImmutable('now', new DateTimeZone('UTC'));
         $raw = (string) stream_get_contents(fopen('php://input', 'rb'), self::MAX_BYTES + 1);
-        [$status, $body, $headers] = self::handle($_SERVER, $raw, $now);
+        [$status, $body, $headers, $after] = self::handle($_SERVER, $raw, $now) + [3 => null];
+        $json = (string) json_encode($body, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
 
         http_response_code($status);
         header_remove('X-Powered-By');
@@ -33,11 +35,34 @@ final class QuoteHandler
         foreach ($headers as $header) {
             header($header);
         }
-        echo json_encode($body, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
+        $finish = function_exists('litespeed_finish_request') ? 'litespeed_finish_request' : (function_exists('fastcgi_finish_request') ? 'fastcgi_finish_request' : null);
+        if ($after && !$finish) {
+            // no way to close the response early: tell the browser where it ends
+            header('Content-Length: ' . strlen($json));
+            header('Connection: close');
+        }
+        echo $json;
+
+        if ($after) {
+            // Close the response, then send: a slow mail server never keeps the visitor waiting
+            ignore_user_abort(true);
+            if ($finish) {
+                $finish();
+            } else {
+                @ob_end_flush();
+                flush();
+            }
+            @set_time_limit(60);
+            try {
+                $after();
+            } catch (Throwable $e) {
+                Log::error($e);
+            }
+        }
     }
 
-    /** @return array{int, array, string[]} status, body, extra headers */
-    public static function handle(array $server, string $raw, DateTimeImmutable $now, ?QuoteRepository $repo = null): array
+    /** @return array{0: int, 1: array, 2: string[], 3?: callable} status, body, extra headers, then what runs after the response */
+    public static function handle(array $server, string $raw, DateTimeImmutable $now, ?QuoteRepository $repo = null, ?Mailer $mailer = null): array
     {
         try {
             if (($server['REQUEST_METHOD'] ?? '') !== 'POST') {
@@ -78,14 +103,17 @@ final class QuoteHandler
             ];
 
             $repo ??= new QuoteRepository(Db::connect($config['db']));
-            $ref = $repo->create($row, $now, $tz);
+            ['id' => $id, 'ref' => $ref] = $repo->create($row, $now, $tz);
+
+            $notifier = new Notifier($repo, $mailer ?? new Mailer($config['smtp'] ?? []), $config, $tz);
+            $after = static fn () => $notifier->notify($id, $ref, $row, $promise->label, $now);
 
             return [200, [
                 'ok' => true,
                 'ref' => $ref,
                 'promisedBy' => $promise->by->format('Y-m-d\TH:i:s\Z'),
                 'promisedLabel' => $promise->label,
-            ], []];
+            ], [], $after];
         } catch (Throwable $e) {
             Log::error($e);
             return [500, ['ok' => false, 'error' => 'server'], []];
