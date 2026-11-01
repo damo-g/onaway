@@ -1,0 +1,8 @@
+# ONAWAY · /api/: only quote.php answers. No listings; everything else is refused.
+Options -Indexes
+DirectoryIndex disabled
+
+Require all denied
+<Files "quote.php">
+  Require all granted
+</Files>

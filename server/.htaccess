@@ -1,0 +1,3 @@
+# ONAWAY kitchen · never served. It lives outside the document root; this is the second lock
+# (and the only one if it ever has to move to the fallback, onaway.ca/_app/).
+Require all denied
