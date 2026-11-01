@@ -11,16 +11,13 @@ use Throwable;
 /**
  * POST /api/quote.php: same-origin JSON in, one saved row out.
  *   200 { ok: true, ref, promisedBy, promisedLabel }
- *   400 { ok: false, error: "invalid", fields: [...] }
+ *   400 { ok: false, error: "invalid", fields: { field: "missing" | "email" | "phone" | "date" | "invalid" } }
  *   500 { ok: false, error: "server" }  (the real error goes to logs/error.log)
  * Also 405 (not POST), 403 (another origin), 415 (not JSON), 413 (over 20 KB). No CORS, ever.
  */
 final class QuoteHandler
 {
     public const MAX_BYTES = 20480;
-
-    // Bump when the privacy line under Send changes (stored on every row)
-    public const PRIVACY_VERSION = 'v1';
 
     public static function run(): void
     {
@@ -62,13 +59,13 @@ final class QuoteHandler
                 $input = null;
             }
             if (!is_array($input) || array_is_list($input)) {
-                return [400, ['ok' => false, 'error' => 'invalid', 'fields' => []], []];
+                return [400, ['ok' => false, 'error' => 'invalid', 'fields' => (object) []], []];
             }
 
             $config = Config::load();
             $tz = new DateTimeZone($config['timezone'] ?: 'America/Toronto');
 
-            [$row, $bad] = QuoteValidator::check($input, $now, $tz);
+            [$row, $bad] = Validator::check($input, $now, $tz);
             if ($bad) {
                 return [400, ['ok' => false, 'error' => 'invalid', 'fields' => $bad], []];
             }
@@ -76,7 +73,6 @@ final class QuoteHandler
             $promise = Promise::at($now, $tz);
             $row += [
                 'promised_by' => $promise->by->format('Y-m-d H:i:s'),
-                'privacy_version' => self::PRIVACY_VERSION,
                 'ip' => substr((string) ($server['REMOTE_ADDR'] ?? ''), 0, 45),
                 'user_agent' => mb_substr((string) ($server['HTTP_USER_AGENT'] ?? ''), 0, 255) ?: null,
             ];

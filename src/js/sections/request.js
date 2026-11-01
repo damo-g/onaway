@@ -3,7 +3,7 @@ import { PLACES } from '../data/places.js';
 import { icon } from '../icons.js';
 
 // QP-01 The Ticket. Three steps that fold as you finish them (a "GOT IT" cue first), a live ticket that
-// mirrors every answer, and a stubbed send (the PHP handler comes later). Step 1 is the job (service, size,
+// mirrors every answer, and a background send to /api/quote.php (server/). Step 1 is the job (service, size,
 // access, what's going); step 2 is where and when, all the timing in one place (When by service, and how often
 // for cleaning). Phones show the ticket as a sticky summary that opens to the full ticket.
 const NAMES = { clean: 'Cleaning', move: 'Moving', deliver: 'Delivery' };
@@ -11,17 +11,32 @@ const PLACE_LABEL = { clean: 'The place', move: 'The move', deliver: 'The load' 
 const REGION = { Toronto: 'City of Toronto', Peel: 'Peel', York: 'York', Durham: 'Durham', Halton: 'Halton' };
 const ORDER = ['job', 'ww', 'you'];
 const STEP_NAME = { job: 'The job', ww: 'Where and when', you: 'How we reach you' };
-const JOB = ['svc', 'size', 'what', 'access'];
+const JOB = ['kind', 'svc', 'size', 'what', 'access'];
 // When, by service: the choices each one offers (Pick a date opens the calendar)
 const TIMING = { deliver: ['Same day', 'Pick a date', 'Regular'], other: ['This week', 'Next week', 'Pick a date'] };
 // The note's hint follows the service
 const NOTE = { clean: 'Pets at home, a lockbox code, rooms to skip', move: 'A tight staircase, a booked elevator, a piano', deliver: 'What it is, a buzzer code, which floor' };
+// The same rules as the server (server/src/Validator.php)
 const RX = {
   name: (v) => v.trim().length > 1,
-  phone: (v) => v.replace(/\D/g, '').replace(/^1/, '').length === 10,
+  phone: (v) => /^\d{10}$/.test(v.trim().replace(/[\s\-().+]/g, '').replace(/^1/, '')),
   email: (v) => /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(v.trim()),
-  company: () => true,
+  company: (v) => v.trim().length > 0,
 };
+
+// Sending: the endpoint, the privacy line shown under Send, the phone for the failure line
+const API = '/api/quote.php';
+const PRIVACY_VERSION = '2026-11-v1';
+const PHONE = { label: '+1 647 877 1411', tel: '+16478771411' };
+const CTA = 'Send my quote request';
+// The form's values in the endpoint's words
+const API_SVC = { clean: 'cleaning', move: 'moving', deliver: 'delivery' };
+const API_TIMING = { 'This week': 'this-week', 'Next week': 'next-week', 'Pick a date': 'date', 'Same day': 'same-day', Regular: 'regular' };
+const CONTACT = { call: 'Call', text: 'Text', email: 'Email' };
+// The endpoint's field names → the form's (for a 400)
+const FROM_API = { audience: 'kind', service: 'svc', size: 'size', often: 'often', access: 'access', what: 'what', area: 'area', from: 'from', to: 'to', timing: 'timing', date: 'timing', name: 'name', company: 'company', phone: 'phone', email: 'email', contact_pref: 'contact' };
+// Its codes → words: "missing" keeps each field's own line (the locked wording)
+const MSG = { email: 'That email doesn’t look right.', phone: 'Please enter a 10-digit number.', date: 'Pick a day from today, up to a year ahead.', invalid: 'Please check this one.' };
 
 // Toronto clock: "by 4:30 PM" (2 hours), 10 AM outside 8–6; open 8 AM – 8 PM
 function clock() {
@@ -42,11 +57,14 @@ function clock() {
 }
 
 const fmtDate = (iso, opts) => new Date(`${iso}T12:00`).toLocaleDateString('en-CA', opts);
+// A picked day: today or later, at most 12 months ahead (the server's rule)
+const lastDay = () => { const d = new Date(); d.setHours(0, 0, 0, 0); d.setFullYear(d.getFullYear() + 1); return d; };
+const dayOk = (iso) => { const d = new Date(`${iso}T12:00`); const t = new Date(); t.setHours(0, 0, 0, 0); return d >= t && d <= new Date(lastDay().getTime() + 864e5); };
 
 export function init(el) {
   const form = el.querySelector('.qp__form');
   const live = el.querySelector('[data-live]');
-  const S = { svc: null, kind: 'home', area: null, from: null, to: null, size: null, often: null, access: null, what: null, timing: null, date: '', flex: false, details: '', name: '', company: '', phone: '', email: '' };
+  const S = { svc: null, kind: 'home', area: null, from: null, to: null, size: null, often: null, access: null, what: null, timing: null, date: '', flex: false, details: '', name: '', company: '', phone: '', email: '', contact: null };
   const two = () => S.svc === 'move' || S.svc === 'deliver';
   const steps = Object.fromEntries([...el.querySelectorAll('.qstep')].map((s) => [s.dataset.step, s]));
 
@@ -61,7 +79,7 @@ export function init(el) {
 
   // ---------- requirements ----------
   const whereOk = () => (two() ? !!(S.from && S.to) : !!S.area);
-  const whenOk = () => !!(S.flex || (S.timing && (S.timing !== 'Pick a date' || S.date)));
+  const whenOk = () => !!(S.flex || (S.timing && (S.timing !== 'Pick a date' || (S.date && dayOk(S.date)))));
   function missing() {
     const m = [];
     if (!S.svc) m.push(['svc', 'service']);
@@ -74,6 +92,7 @@ export function init(el) {
     if (!whenOk()) m.push(['timing', 'when']);
     if (S.svc === 'clean' && !S.often) m.push(['often', 'how often']);
     if (!RX.name(S.name)) m.push(['name', 'name']);
+    if (S.kind === 'business' && !RX.company(S.company)) m.push(['company', 'company name']);
     if (!RX.phone(S.phone)) m.push(['phone', 'phone']);
     if (!RX.email(S.email)) m.push(['email', 'email']);
     return m;
@@ -98,7 +117,7 @@ export function init(el) {
       place,
       when: day ? `${day}${S.flex ? ' · flexible' : ''}` : S.flex ? 'Flexible' : '',
       who: S.name.trim(),
-      reach: [RX.phone(S.phone) ? S.phone : '', RX.email(S.email) ? S.email.trim() : ''].filter(Boolean).join(' · '),
+      reach: [RX.phone(S.phone) ? S.phone : '', RX.email(S.email) ? S.email.trim() : '', S.contact ? `prefers ${CONTACT[S.contact]}` : ''].filter(Boolean).join(' · '),
     };
   }
 
@@ -110,7 +129,7 @@ export function init(el) {
     let text;
     let tag = '';
     if (out) {
-      text = `${out.code} is outside our five areas. Send it anyway and we’ll tell you straight, or call +1 647 877 1411.`;
+      text = `${out.code} is outside our five areas. Send it anyway and we’ll tell you straight, or call ${PHONE.label}.`;
       tag = 'Outside our areas · we’ll confirm';
     } else if (a && b) {
       text = `${a.place} → ${b.place} · ${a.region === b.region ? `both in ${REGION[a.region]}` : `${REGION[a.region]} to ${REGION[b.region]}`} · both covered`;
@@ -150,7 +169,7 @@ export function init(el) {
       if (v[k]) n.classList.add('is-new');
     });
     const m0 = missing().map(([k]) => k);
-    const got = [!!S.svc, S.svc && whereOk(), S.svc && !m0.some((k) => ['size', 'what', 'access'].includes(k)), whenOk() && !m0.includes('often'), RX.name(S.name) && RX.phone(S.phone) && RX.email(S.email)].filter(Boolean).length;
+    const got = [!!S.svc, S.svc && whereOk(), S.svc && !m0.some((k) => ['size', 'what', 'access'].includes(k)), whenOk() && !m0.includes('often'), RX.name(S.name) && (S.kind !== 'business' || RX.company(S.company)) && RX.phone(S.phone) && RX.email(S.email)].filter(Boolean).length;
     el.querySelector('.qticket__prog i').style.width = `${got * 20}%`;
     el.querySelector('[data-t="pct"]').textContent = `${got} of 5 answered`;
     // the note's hint follows the service
@@ -244,8 +263,9 @@ export function init(el) {
     b.addEventListener('click', () => {
       const g = b.parentElement;
       const f = g.dataset.f;
-      g.querySelectorAll('button').forEach((x) => x.setAttribute('aria-pressed', String(x === b)));
-      S[f] = b.dataset.v;
+      const off = f === 'contact' && S.contact === b.dataset.v;
+      g.querySelectorAll('button').forEach((x) => x.setAttribute('aria-pressed', String(!off && x === b)));
+      S[f] = off ? null : b.dataset.v;
       if (f === 'svc' && S.timing && !TIMING[S.svc === 'deliver' ? 'deliver' : 'other'].includes(S.timing)) {
         S.timing = null;
         if (S.date) cal.clear();
@@ -290,14 +310,16 @@ export function init(el) {
       const first = new Date(vy, vm, 1);
       const days = new Date(vy, vm + 1, 0).getDate();
       const atNow = vy === today.getFullYear() && vm === today.getMonth();
-      let h = `<div class="qcal__head"><button type="button" class="qcal__prev" aria-label="Previous month"${atNow ? ' disabled' : ''}>${icon('arrow-left-02')}</button><b>${MONTHS[vm]} ${vy}</b><button type="button" class="qcal__next" aria-label="Next month">${icon('arrow-right-02')}</button></div>`;
+      const last = lastDay();
+      const atEnd = vy === last.getFullYear() && vm === last.getMonth();
+      let h = `<div class="qcal__head"><button type="button" class="qcal__prev" aria-label="Previous month"${atNow ? ' disabled' : ''}>${icon('arrow-left-02')}</button><b>${MONTHS[vm]} ${vy}</b><button type="button" class="qcal__next" aria-label="Next month"${atEnd ? ' disabled' : ''}>${icon('arrow-right-02')}</button></div>`;
       h += `<div class="qcal__week label">${['S', 'M', 'T', 'W', 'T', 'F', 'S'].map((x) => `<span>${x}</span>`).join('')}</div><div class="qcal__grid">`;
       for (let i = 0; i < first.getDay(); i++) h += '<span></span>';
       for (let d = 1; d <= days; d++) {
         const dt = new Date(vy, vm, d);
         const k = iso(dt);
         const cls = [k === iso(today) ? 'is-today' : '', k === S.date ? 'is-picked' : ''].filter(Boolean).join(' ');
-        h += `<button type="button" data-d="${k}"${dt < today ? ' disabled' : ''}${cls ? ` class="${cls}"` : ''} aria-label="${dt.toLocaleDateString('en-CA', { weekday: 'long', month: 'long', day: 'numeric' })}">${d}</button>`;
+        h += `<button type="button" data-d="${k}"${dt < today || dt > last ? ' disabled' : ''}${cls ? ` class="${cls}"` : ''} aria-label="${dt.toLocaleDateString('en-CA', { weekday: 'long', month: 'long', day: 'numeric' })}">${d}</button>`;
       }
       h += `</div><p class="qcal__foot">${S.date ? `Picked: <b>${fmtDate(S.date, { weekday: 'long', month: 'long', day: 'numeric' })}</b>` : 'Pick a day. We confirm the exact time on your quote.'}</p>`;
       calEl.innerHTML = h;
@@ -435,45 +457,80 @@ export function init(el) {
       }
       S[f] = i.value;
       if (w.classList.contains('is-bad') && RX[f](i.value)) w.classList.remove('is-bad');
-      w.classList.toggle('is-ok', !!i.value && RX[f](i.value) && f !== 'company');
+      w.classList.toggle('is-ok', !!i.value && RX[f](i.value));
       update();
     });
     i.addEventListener('blur', () => i.value && w.classList.toggle('is-bad', !RX[f](i.value)));
   });
 
-  // ---------- send (stubbed: shows the success state; the PHP handler is added later) ----------
-  function mark(f) {
-    if (f === 'where') {
-      let target = null;
-      (two() ? ['from', 'to'] : ['area']).forEach((p) => {
-        if (S[p]) return;
-        const pk = el.querySelector(`.qpick[data-f="${p}"]`);
-        pk.classList.add('is-bad');
-        target ??= pk;
-      });
-      return target;
-    }
-    const n = el.querySelector(`.qfield[data-f="${f}"]`) || el.querySelector(`[data-req="${f}"]`);
-    n?.classList.add('is-bad');
-    return n;
+  // ---------- errors: words next to the field, the first one focused ----------
+  function mark(f, code) {
+    let n;
+    if (f === 'where') n = (two() ? ['from', 'to'] : ['area']).filter((p) => !S[p]).map((p) => el.querySelector(`.qpick[data-f="${p}"]`));
+    else if (['area', 'from', 'to'].includes(f)) n = [el.querySelector(`.qpick[data-f="${f}"]`)];
+    else n = [el.querySelector(`.qfield[data-f="${f}"]`) || el.querySelector(`[data-req="${f}"]`)];
+    n = n.filter(Boolean);
+    n.forEach((x) => {
+      x.classList.add('is-bad');
+      const err = x.querySelector('.qerr');
+      if (!err) return;
+      err.dataset.text ??= err.textContent;
+      err.textContent = MSG[code] && !(code === 'missing') ? MSG[code] : err.dataset.text;
+    });
+    return n[0] || null;
   }
-  form.addEventListener('submit', (e) => {
-    e.preventDefault();
-    const m = missing();
-    if (m.length) {
-      let first = null;
-      m.forEach(([f]) => { const n = mark(f); first ??= n; });
-      open(stepOf(m[0][0]), false);
-      if (first) {
-        first.scrollIntoView({ behavior: 'smooth', block: 'center' });
-        first.querySelector('input, button')?.focus({ preventScroll: true });
-      }
-      return;
+  function showErrors(list) {
+    let first = null;
+    list.forEach(([f, code]) => { const n = mark(f, code); first ??= n; });
+    open(stepOf(list[0][0] === 'where' ? 'area' : list[0][0]), false);
+    if (first) {
+      first.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      first.querySelector('input, button')?.focus({ preventScroll: true });
     }
-    const ref = `ONA-${String(Date.now()).slice(-5)}`;
+  }
+
+  // ---------- the request as the endpoint reads it (server/src/Validator.php) ----------
+  function payload() {
+    const place = (p) => p && { name: p.place, region: p.region || '', code: p.code || '', outside: !!p.out };
+    return {
+      audience: S.kind,
+      company: S.kind === 'business' ? S.company.trim() : '',
+      service: API_SVC[S.svc],
+      size: S.svc === 'clean' || S.svc === 'move' ? S.size : null,
+      often: S.svc === 'clean' ? S.often : null,
+      access: S.svc === 'move' ? S.access : null,
+      what: S.svc === 'deliver' ? S.what : null,
+      ...(two() ? { from: place(S.from), to: place(S.to) } : { area: place(S.area) }),
+      timing: API_TIMING[S.timing] || (S.flex ? 'flexible' : null),
+      date: S.timing === 'Pick a date' ? S.date : null,
+      flexible: S.flex,
+      notes: S.details.trim(),
+      name: S.name.trim(),
+      phone: S.phone.trim(),
+      email: S.email.trim(),
+      contact_pref: S.contact,
+      privacy_version: PRIVACY_VERSION,
+    };
+  }
+
+  // ---------- send: in the background, 15 s at most; answers are kept until it's in ----------
+  const cta = el.querySelector('.qsend__cta');
+  const fail = el.querySelector('.qsend__fail');
+  const phoneLink = fail.querySelector('[data-phone]');
+  phoneLink.href = `tel:${PHONE.tel}`;
+  phoneLink.textContent = PHONE.label;
+  let sending = false;
+  function busy(on, label) {
+    cta.disabled = on;
+    cta.setAttribute('aria-busy', String(on));
+    cta.querySelector('[data-cta]').textContent = label;
+  }
+
+  function sent({ ref, promisedLabel }) {
     el.querySelectorAll('[data-o="email"]').forEach((n) => (n.textContent = S.email.trim()));
     el.querySelectorAll('[data-o="ref"]').forEach((n) => (n.textContent = ref));
-    // TODO(handler): POST the request to the PHP handler here; show the success state on its OK.
+    // the promise the server made replaces the page's live clock
+    el.querySelectorAll('.qdone [data-q="by"]').forEach((n) => { n.removeAttribute('data-q'); n.textContent = `by ${promisedLabel}`; });
     try { sessionStorage.removeItem('onaway:quote'); } catch {}
     el.classList.add('is-sent');
     el.querySelector('.qp__steps').hidden = true;
@@ -481,6 +538,51 @@ export function init(el) {
     ok.hidden = false;
     ok.focus({ preventScroll: true });
     el.scrollIntoView({ behavior: 'smooth' });
+  }
+
+  async function send() {
+    sending = true;
+    fail.hidden = true;
+    busy(true, 'Sending…');
+    live.textContent = 'Sending your request…';
+    const stop = new AbortController();
+    const timer = setTimeout(() => stop.abort(), 15000);
+    let res = null;
+    let body = null;
+    try {
+      res = await fetch(API, { method: 'POST', headers: { 'Content-Type': 'application/json', Accept: 'application/json' }, body: JSON.stringify(payload()), signal: stop.signal });
+      body = await res.json().catch(() => null);
+    } catch {
+      res = null;
+    }
+    clearTimeout(timer);
+    sending = false;
+
+    if (res?.ok && body?.ok && body.ref) {
+      live.textContent = `Sent. Your reference is ${body.ref}.`;
+      sent(body);
+      return;
+    }
+    const fields = res?.status === 400 && body?.fields ? Object.entries(body.fields).filter(([k]) => FROM_API[k]) : [];
+    if (fields.length) {
+      busy(false, CTA);
+      live.textContent = 'A few answers need another look.';
+      showErrors(fields.map(([k, code]) => [FROM_API[k], code]));
+      return;
+    }
+    busy(false, 'Try again');
+    fail.hidden = false;
+  }
+
+  form.addEventListener('submit', (e) => {
+    e.preventDefault();
+    if (sending) return;
+    const m = missing();
+    if (m.length) {
+      showErrors(m.map(([f]) => [f, 'missing']));
+      return;
+    }
+    send();
   });
 
   // ---------- arrive with answers: from the homepage quote or map, or a service page (?service=) ----------
@@ -506,7 +608,7 @@ export function init(el) {
     const deliverWhen = { 'same-day': 'Same day', regular: 'Regular' }[params.get('when')] || (what === 'regular' ? 'Regular' : null);
     if (deliverWhen && svc === 'deliver') tap('timing', deliverWhen);
     const date = params.get('date');
-    const dateOk = date && /^\d{4}-\d{2}-\d{2}$/.test(date) && new Date(`${date}T12:00`) >= new Date(new Date().toDateString());
+    const dateOk = date && /^\d{4}-\d{2}-\d{2}$/.test(date) && dayOk(date);
     const win = /^(\d{1,2})-(\d{1,2})$/.exec(params.get('window') || '');
     if (win && svc === 'deliver') {
       const [a, b] = [+win[1], +win[2]];

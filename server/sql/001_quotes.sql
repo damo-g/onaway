@@ -13,7 +13,7 @@ CREATE TABLE IF NOT EXISTS quotes (
 
   -- The job
   audience            ENUM('home','business') NOT NULL,
-  company             VARCHAR(120) NULL COMMENT 'business only, optional',
+  company             VARCHAR(120) NULL COMMENT 'required for business',
   service             ENUM('cleaning','moving','delivery') NOT NULL,
   size                VARCHAR(40)  NULL COMMENT 'cleaning, moving',
   often               VARCHAR(40)  NULL COMMENT 'cleaning',
