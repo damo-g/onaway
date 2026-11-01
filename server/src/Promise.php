@@ -8,7 +8,8 @@ use DateTimeZone;
 
 // "In writing by", in Toronto time, matching the page's clock:
 // 8:00 AM–6:00 PM → now + 2 hours · before 8 AM → 10 AM today · from 6 PM → 10 AM tomorrow.
-// Seconds are dropped, as on the page. $by is UTC (stored); $label reads "4:15 PM today" or "10 AM tomorrow".
+// Seconds are dropped, as on the page. $by is UTC (stored); $label reads "4:15 PM today" or "10:00 AM tomorrow",
+// in the same format as the page.
 final class Promise
 {
     private function __construct(
@@ -31,7 +32,6 @@ final class Promise
             [$by, $day] = [$local->modify('+2 hours'), 'today'];
         }
 
-        $time = $by->format($by->format('i') === '00' ? 'g A' : 'g:i A');
-        return new self($by->setTimezone(new DateTimeZone('UTC')), "$time $day");
+        return new self($by->setTimezone(new DateTimeZone('UTC')), $by->format('g:i A') . " $day");
     }
 }

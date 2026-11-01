@@ -16,7 +16,7 @@
   {{> nav}}
 
   <main id="main">
-    {{!-- QP-01 The Ticket. src/js/sections/request.js. Sending is stubbed until the PHP handler is added. --}}
+    {{!-- QP-01 The Ticket. src/js/sections/request.js sends it to /api/quote.php (the kitchen is server/). --}}
     <section class="qp" data-section="request" aria-labelledby="qp-title">
       <header class="qp__head grid-site">
         <h1 id="qp-title" class="qp__title col-span-full lg:col-span-8 text-h2 md:text-h1 uppercase">Get a free quote.</h1>
@@ -202,6 +202,15 @@
                     <p class="qerr">That email doesn’t look right.</p>
                   </div>
                 </div>
+                <div class="qrow" data-req="contact">
+                  <span class="qlabel" id="l-contact">Best way to reach you <small>Optional</small></span>
+                  <div class="qopts" data-f="contact" role="group" aria-labelledby="l-contact">
+                    <button type="button" data-v="call" aria-pressed="false">Call</button>
+                    <button type="button" data-v="text" aria-pressed="false">Text</button>
+                    <button type="button" data-v="email" aria-pressed="false">Email</button>
+                  </div>
+                  <p class="qerr">Pick Call, Text or Email, or leave it.</p>
+                </div>
                 <div class="qrow">
                   <button type="button" class="qaddnote">{{{icon "add-01"}}} <span>Add a note</span> <small data-notehint>Optional · anything that helps us quote it right</small></button>
                   <div class="qnote" hidden>
@@ -210,8 +219,9 @@
                   </div>
                 </div>
                 <div class="qsend">
-                  <button type="submit" class="qsend__cta">Send my quote request <span aria-hidden="true">{{{icon "arrow-right-02"}}}</span></button>
-                  <p class="qsend__note">No obligation. Used only for your quote. <a href="/privacy/">Privacy</a><span class="qsend__need label"></span></p>
+                  <button type="submit" class="qsend__cta"><b data-cta>Send my quote request</b> <span aria-hidden="true">{{{icon "arrow-right-02"}}}</span></button>
+                  <p class="qsend__note">We’ll only use your details to reply to this request. <a href="/privacy/">Privacy →</a><span class="qsend__need label"></span></p>
+                  <p class="qsend__fail" role="alert" hidden>That didn’t go through. Your details are still here. Try again, or call <a data-phone></a>.</p>
                 </div>
                 <p class="qcover label"><i aria-hidden="true"></i><span>We work across the City of Toronto, Peel, York, Durham and Halton.</span></p>
               </div>
