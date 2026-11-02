@@ -1,16 +1,15 @@
 <!doctype html>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>EM-03 Email Tickets</title>
+<title>EM-04 Email Tickets</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wdth,wght@75..100,400..700&family=Overpass+Mono:wght@400;500;600&display=swap">
 <link rel="stylesheet" href="shared.css">
 <style>
 .top .tools{flex-wrap:wrap;gap:8px;justify-content:flex-end;max-width:1100px}
 .tg{display:inline-flex;flex-wrap:wrap}.tg .tbtn+.tbtn{border-left:0}
-.tg.is-off{opacity:.35;pointer-events:none}
+.tg.is-off{display:none}
 .tl0{font-family:var(--mono);font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);align-self:center;margin-right:8px}
-.tbtn small{opacity:.6;margin-left:6px}
 .layout{max-width:1512px;margin:21px auto 0;display:grid;grid-template-columns:minmax(0,1fr) 340px;gap:21px;align-items:start}
 @media (max-width:1100px){.layout{grid-template-columns:1fr}}
 .desk{display:flex;justify-content:center;padding:34px 0;border:1px solid var(--line);background:var(--card)}
@@ -39,24 +38,33 @@
 </style>
 
 <div class="top">
-  <div><div class="id">ONAWAY · Quote backend · emails · round 3 · EM-03</div><h1>EM-03 · Email Tickets</h1></div>
+  <div><div class="id">ONAWAY · Quote backend · emails · round 4 · EM-04 · Stamp · subtle (locked)</div><h1>EM-04 · Email Tickets</h1></div>
   <div class="tools">
     <span class="tg" data-k="kind"><span class="tl0">Email</span>
       <button class="tbtn" data-v="customer" aria-pressed="true">Customer · Receipt</button>
       <button class="tbtn" data-v="team" aria-pressed="false">Team · Board ticket</button>
     </span>
-    <span class="tg" data-k="edge"><span class="tl0">Edge</span>
-      <button class="tbtn" data-v="subtle" aria-pressed="true">Stamp · subtle</button>
-      <button class="tbtn" data-v="medium" aria-pressed="false">Stamp · medium</button>
-      <button class="tbtn" data-v="edge" aria-pressed="false">Stamp edge</button>
+    <span class="tg" data-k="layout" data-for="customer"><span class="tl0">Layout</span>
+      <button class="tbtn" data-v="masthead" aria-pressed="true">Masthead</button>
+      <button class="tbtn" data-v="headline" aria-pressed="false">Headline</button>
+      <button class="tbtn" data-v="centred" aria-pressed="false">Centred</button>
     </span>
-    <span class="tg" data-k="theme"><span class="tl0">Board</span>
-      <button class="tbtn" data-v="dark" aria-pressed="true">Dark</button>
-      <button class="tbtn" data-v="light" aria-pressed="false">Light · floral white</button>
+    <span class="tg" data-k="title" data-for="customer"><span class="tl0">"Your request"</span>
+      <button class="tbtn" data-v="sans" aria-pressed="true">Instrument Sans</button>
+      <button class="tbtn" data-v="mono" aria-pressed="false">Mono</button>
     </span>
-    <span class="tg" data-k="due"><span class="tl0">Due chip</span>
-      <button class="tbtn" data-v="yellow" aria-pressed="true">Yellow</button>
-      <button class="tbtn" data-v="rust" aria-pressed="false">Rust + clock</button>
+    <span class="tg" data-k="seal" data-for="customer"><span class="tl0">W</span>
+      <button class="tbtn" data-v="tear" aria-pressed="true">On the tear</button>
+      <button class="tbtn" data-v="stub" aria-pressed="false">In the stub</button>
+    </span>
+    <span class="tg" data-k="theme" data-for="team"><span class="tl0">Board</span>
+      <button class="tbtn" data-v="light" aria-pressed="true">Light · floral white</button>
+      <button class="tbtn" data-v="dark" aria-pressed="false">Dark</button>
+    </span>
+    <span class="tg" data-k="due" data-for="team"><span class="tl0">Due chip</span>
+      <button class="tbtn" data-v="rust" aria-pressed="true">Rust · boutique</button>
+      <button class="tbtn" data-v="kraft" aria-pressed="false">Kraft</button>
+      <button class="tbtn" data-v="yellow" aria-pressed="false">Yellow</button>
     </span>
     <span class="tg" data-k="fonts"><span class="tl0">Fonts</span>
       <button class="tbtn" data-v="system" aria-pressed="true">As Gmail</button>
@@ -83,85 +91,81 @@
     <p class="why" id="sWhy"></p>
     <p class="lab">Your rating, out of 10</p>
     <div class="rate" id="rate"></div>
-    <p class="mine" id="mine">Not rated yet. Kept in this browser only; tell me your numbers.</p>
+    <p class="mine" id="mine"></p>
     <p class="lab">Options, scored</p>
     <table class="optscores" id="opts"></table>
   </aside>
 </div>
-<p class="note">Rendered live from the email HTML (email/em03.js) · sample request: Moving, Mississauga → Oakville, Wed Nov 4</p>
+<p class="note"></p>
 
 <div class="spec">
   <section>
-    <h2>Round 3, from your notes</h2>
+    <h2>Round 4, from your notes</h2>
     <ul>
-      <li><b>Customer · Receipt</b>. The stamp edge goes all the way round, but where the ticket meets the stub the edge is <b>notched</b> (half-circles each side and a dashed tear), separate from the outer edge. Paper only.</li>
-      <li><b>Team · Board ticket</b>, with no stub: the dot-matrix ref and the due chip already say it. <b>Dark</b>, or <b>Light</b> on Ticket Paper (the floral white), where the active dots turn Carbon and the unlit ones stay faint.</li>
-      <li><b>Due chip</b>: Yellow, or Rust with the Hugeicons clock. Both carry the zone ("Due 4:15 PM EST").</li>
-      <li><b>Stamp · medium</b> (4px every 12px) sits between subtle and edge, for comparison. Subtle stays the default.</li>
-      <li>Retired: Boarding pass and the kraft surfaces.</li>
-    </ul>
-  </section>
-  <section>
-    <h2>How it holds up in inboxes</h2>
-    <ul>
-      <li>The perforation is small background tiles. Gmail, Apple Mail, iOS and Outlook.com show it. Outlook desktop shows a straight edge, and the notches become square corners.</li>
-      <li>The clock is a PNG (Gmail shows no SVG) drawn from the Hugeicons clock-01 path.</li>
-      <li>The dot matrix is table cells, not an image, so it shows with images off. The board email is about 50 KB, well under Gmail’s 102 KB clip.</li>
-      <li>The plain-text version still goes with every email.</li>
+      <li><b>Stamp · subtle is locked</b> all round. Where the receipt meets its stub, the edge stays a notched tear.</li>
+      <li><b>The W sits on the tear</b>, sealed across the dashed line between the two notches, or quietly in the stub beside the ref. The top keeps only the wordmark.</li>
+      <li><b>The request date</b> sits at the top in small mono (Mon, Nov 2, 2026 · 2:15 PM EST). "Cleaning · Moving · Delivery · GTA" is gone.</li>
+      <li><b>"Your request" in Instrument Sans</b> by default (Mono stays as an option). Three editorial layouts of the same copy: <b>Masthead</b> (wordmark and date on one line over a rule, the title and the job set like a page), <b>Headline</b> (the job written as a headline), <b>Centred</b> (the receipt, refined).</li>
+      <li><b>Board ticket</b>: light by default. Job, When, Contact, Notes and Sent from are now Instrument Sans caps. The due chip is <b>Rust · boutique</b> (a double Rust hairline, wide tracking, no fill, no clock), <b>Kraft</b> (camel fill, Carbon text) or Yellow.</li>
     </ul>
   </section>
   <section>
     <h2>Ranking</h2>
     <ol>
-      <li><b>Team · Board ticket · Light · Rust + clock · Stamp · subtle · 9.4</b>. Calm on Ticket Paper, Carbon dots read like a printed departure board, and Rust with a clock says "due" before you read it. It sits better in a busy inbox than the dark board.</li>
-      <li><b>Customer · Receipt · Stamp · subtle · 9.3</b>. With the notch, the stub reads as a real tear-off, the same move as TS-02 on the homepage.</li>
-      <li><b>Team · Board ticket · Dark · Yellow · 9.0</b>. The strongest brand moment, but a heavy black block every time a request lands.</li>
+      <li><b>Customer · Masthead · Sans · W on the tear · 9.6</b>. Reads like a printed ticket and a page at once. The date sits where a masthead date would. The W on the tear is the moment people will remember.</li>
+      <li><b>Team · Light · Rust · boutique · 9.5</b>. Quiet, expensive-looking, and the caps sub-headings give it the editorial rhythm of the site.</li>
+      <li><b>Customer · Headline · 9.3</b>. The most editorial, but the headline repeats what the subject line already says.</li>
+      <li><b>Team · Light · Kraft · 9.2</b>. Warm, a little louder than Rust.</li>
+      <li><b>Customer · Centred · 9.0</b>. Tidy, the most "receipt", the least editorial.</li>
     </ol>
-    <p>Edge: Stamp · subtle 9.5 · medium 9 · edge 8.5. Medium is a touch busier at email sizes; subtle matches TS-02.</p>
+  </section>
+  <section>
+    <h2>Site-wide: the W on the tear</h2>
+    <p>The seal can come to the site wherever a ticket tears. On the homepage it would sit on TS-02’s seam in place of the W at the foot of the stub. On the quote page it would sit on the dashed line between the live ticket’s strip and its rows. Each is a change to a locked section, so I’d mock them first, one section at a time, once the emails are signed off.</p>
   </section>
 </div>
 
 <script type="module">
-import { build } from './email/em03.js';
+import { build } from './email/em04.js';
 const SCORE = {
-  customer: ['Customer · Receipt', 9.3, 'D’s layout and hierarchy on the site’s ticket: logo at the top, dashed rows, a stamp edge all round, and a notched tear where the stub comes away.'],
-  'team-dark': ['Team · Board ticket · Dark', 9.0, 'The arrival board as a Carbon ticket with a yellow dot-matrix ref. The most striking, and the heaviest in an inbox.'],
-  'team-light': ['Team · Board ticket · Light', 9.4, 'The same board on Ticket Paper: Carbon dots on a faint grid, like a printed departure board. Calmer in a list of emails, just as clear.'],
+  'customer-masthead': ['Customer · Masthead', 9.6, 'The wordmark and the date share a line over a Carbon rule, like a masthead. The title and the job are set like a page, then the promise. The W seals the tear.'],
+  'customer-headline': ['Customer · Headline', 9.3, 'The job written as a headline ("Moving, Mississauga → Oakville"), a two-column grid, the promise set large. The most editorial; it repeats the subject a little.'],
+  'customer-centred': ['Customer · Centred', 9.0, 'The receipt, refined: the wordmark and date centred, the title between hairlines, leaders. Tidy and familiar.'],
+  'team-light': ['Team · Board ticket · Light', 9.5, 'Ticket Paper, Carbon dots, caps sub-headings. Calm in a busy inbox and just as quick to scan.'],
+  'team-dark': ['Team · Board ticket · Dark', 9.0, 'The Carbon board with the yellow dot matrix. Striking, and heavy every time a request lands.'],
 };
 const OPTS = {
-  edge: { subtle: ['Stamp · subtle', 9.5], medium: ['Stamp · medium', 9], edge: ['Stamp edge', 8.5] },
-  theme: { light: ['Board · Light', 9.4], dark: ['Board · Dark', 9] },
-  due: { rust: ['Due · Rust + clock', 9.2], yellow: ['Due · Yellow', 8.8] },
+  customer: { title: { sans: ['Title · Instrument Sans', 9.5], mono: ['Title · Mono', 8.5] }, seal: { tear: ['W · On the tear', 9.6], stub: ['W · In the stub', 9] } },
+  team: { theme: { light: ['Board · Light', 9.5], dark: ['Board · Dark', 9] }, due: { rust: ['Due · Rust boutique', 9.5], kraft: ['Due · Kraft', 9.2], yellow: ['Due · Yellow', 8.8] } },
 };
 const SUBJ = {
   customer: ['We’ve got your request [ONA-2611-0042]', '<b>ONAWAY</b> &lt;quotes@onaway.ca&gt; · to Ada Lovelace'],
   team: ['New quote request [ONA-2611-0042] · Moving · Mississauga → Oakville', '<b>ONAWAY</b> &lt;quotes@onaway.ca&gt; · to ONAWAY quotes · reply-to Ada Lovelace'],
 };
-const state = { kind: 'customer', edge: 'subtle', theme: 'dark', due: 'yellow', fonts: 'system', width: 'desk' };
+const state = { kind: 'customer', layout: 'masthead', title: 'sans', seal: 'tear', theme: 'light', due: 'rust', fonts: 'system', width: 'desk' };
 const frame = document.getElementById('frame');
 const store = { get(k) { try { return localStorage.getItem(k); } catch (e) { return null; } }, set(k, v) { try { localStorage.setItem(k, v); } catch (e) {} } };
+const key = () => state.kind === 'team' ? 'team-' + state.theme : 'customer-' + state.layout;
 
 function fit() { try { frame.style.height = frame.contentDocument.documentElement.scrollHeight + 'px'; } catch (e) {} }
 function scores() {
-  const key = state.kind === 'team' ? 'team-' + state.theme : 'customer';
-  const [name, n, why] = SCORE[key];
+  const [name, n, why] = SCORE[key()];
   document.getElementById('sName').textContent = name;
   document.getElementById('sNum').innerHTML = `${n}<small> / 10</small>`;
   document.getElementById('sWhy').textContent = why;
-  const yours = store.get('em03:' + key);
+  const yours = store.get('em04:' + key());
   document.getElementById('rate').innerHTML = Array.from({ length: 10 }, (_, i) => `<button type="button" data-n="${i + 1}" aria-pressed="${String(yours === String(i + 1))}" aria-label="Rate ${name} ${i + 1} out of 10">${i + 1}</button>`).join('');
   document.getElementById('mine').textContent = yours ? `You gave ${name} ${yours}/10.` : 'Not rated yet. Kept in this browser only; tell me your numbers.';
-  const keys = ['edge'].concat(state.kind === 'team' ? ['theme', 'due'] : []);
-  document.getElementById('opts').innerHTML = keys.map((k) => Object.entries(OPTS[k]).map(([v, [label, s]]) => `<tr class="${state[k] === v ? 'is-on' : ''}"><td>${label}</td><td>${s}</td></tr>`).join('')).join('');
+  document.getElementById('opts').innerHTML = Object.entries(OPTS[state.kind]).map(([k, list]) => Object.entries(list).map(([v, [label, s]]) => `<tr class="${state[k] === v ? 'is-on' : ''}"><td>${label}</td><td>${s}</td></tr>`).join('')).join('');
 }
 function render() {
   document.getElementById('client').classList.toggle('is-phone', state.width === 'phone');
-  document.querySelectorAll('[data-k="theme"], [data-k="due"]').forEach((g) => g.classList.toggle('is-off', state.kind !== 'team'));
+  document.querySelectorAll('.tg[data-for]').forEach((g) => g.classList.toggle('is-off', g.dataset.for !== state.kind));
   document.getElementById('subj').textContent = SUBJ[state.kind][0];
   document.getElementById('meta').innerHTML = SUBJ[state.kind][1];
   const html = build({ ...state, base: 'email/assets/' });
   frame.srcdoc = html;
-  document.querySelector('.note').textContent = `Rendered live from the email HTML (email/em03.js) · ${(new Blob([html]).size / 1024).toFixed(1)} KB · sample request: Moving, Mississauga → Oakville, Wed Nov 4`;
+  document.querySelector('.note').textContent = `Rendered live from the email HTML (email/em04.js) · ${(new Blob([html]).size / 1024).toFixed(1)} KB · sample request: Moving, Mississauga → Oakville, Wed Nov 4`;
   scores();
 }
 frame.addEventListener('load', () => { fit(); setTimeout(fit, 400); });
@@ -176,7 +180,7 @@ document.querySelectorAll('.tg').forEach((g) => g.addEventListener('click', (e) 
 document.getElementById('rate').addEventListener('click', (e) => {
   const b = e.target.closest('button');
   if (!b) return;
-  store.set('em03:' + (state.kind === 'team' ? 'team-' + state.theme : 'customer'), b.dataset.n);
+  store.set('em04:' + key(), b.dataset.n);
   scores();
 });
 render();
