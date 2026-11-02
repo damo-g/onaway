@@ -531,7 +531,8 @@ export function init(el) {
 
   function sent({ ref, promisedLabel }) {
     el.querySelectorAll('[data-o="email"]').forEach((n) => (n.textContent = S.email.trim()));
-    el.querySelectorAll('[data-o="ref"]').forEach((n) => (n.textContent = ref));
+    // the tear-off stubs (refchip) all read the reference from one store
+    if (window.Alpine) window.Alpine.store('refCopy').ref = ref;
     // the promise the server made replaces the page's live clock
     el.querySelectorAll('.qdone [data-q="by"]').forEach((n) => { n.removeAttribute('data-q'); n.textContent = `by ${promisedLabel}`; });
     try { sessionStorage.removeItem('onaway:quote'); } catch {}
