@@ -1,0 +1,115 @@
+<!doctype html>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>EM-01 Email Tickets</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wdth,wght@75..100,400..700&family=Overpass+Mono:wght@400;500;600&display=swap">
+<link rel="stylesheet" href="shared.css">
+<style>
+.top .tools{flex-wrap:wrap;gap:8px;justify-content:flex-end}
+.tg{display:inline-flex}.tg .tbtn+.tbtn{border-left:0}
+.tl0{font-family:var(--mono);font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);align-self:center;margin-right:8px}
+.desk{max-width:1512px;margin:21px auto 0;display:flex;justify-content:center;padding:34px 0;border:1px solid var(--line);background:var(--card)}
+.client{width:640px;max-width:100%;background:#fff;color:#202521;box-shadow:0 1px 0 rgba(0,0,0,.04),0 8px 34px rgba(32,37,33,.12);transition:width .3s ease-out}
+.client.is-phone{width:390px}
+.client__head{padding:13px 21px;border-bottom:1px solid #e6e3dc;font:14px/1.45 -apple-system,'Segoe UI',Roboto,Arial,sans-serif}
+.client__subj{font-weight:600;font-size:16px;margin-bottom:4px}
+.client__meta{color:#5d625c}
+.client__meta b{font-weight:600;color:#202521}
+.client iframe{display:block;width:100%;height:600px;border:0}
+.note{max-width:1512px;margin:13px auto 0;font-family:var(--mono);font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);text-align:center}
+.spec code{font-family:var(--mono);font-size:13px}
+</style>
+
+<div class="top">
+  <div><div class="id">ONAWAY · Quote backend · emails · round 1 · EM-01</div><h1>EM-01 · Email Tickets</h1></div>
+  <div class="tools">
+    <span class="tg" data-k="style"><span class="tl0">Style</span>
+      <button class="tbtn" data-v="a" aria-pressed="true">A · Boarding pass</button>
+      <button class="tbtn" data-v="b" aria-pressed="false">B · Arrival board</button>
+      <button class="tbtn" data-v="c" aria-pressed="false">C · Paper stub</button>
+      <button class="tbtn" data-v="d" aria-pressed="false">D · Receipt roll</button>
+    </span>
+    <span class="tg" data-k="kind"><span class="tl0">Email</span>
+      <button class="tbtn" data-v="customer" aria-pressed="true">Customer</button>
+      <button class="tbtn" data-v="team" aria-pressed="false">Team</button>
+    </span>
+    <span class="tg" data-k="width"><span class="tl0">Width</span>
+      <button class="tbtn" data-v="desk" aria-pressed="true">Desktop</button>
+      <button class="tbtn" data-v="phone" aria-pressed="false">Phone 390</button>
+    </span>
+  </div>
+</div>
+
+<div class="desk">
+  <div class="client" id="client">
+    <div class="client__head">
+      <div class="client__subj" id="subj"></div>
+      <div class="client__meta" id="meta"></div>
+    </div>
+    <iframe id="frame" title="Email preview"></iframe>
+  </div>
+</div>
+<p class="note">Rendered from the real email HTML · sample request: Moving, Mississauga → Oakville, Wed Nov 4</p>
+
+<div class="spec">
+  <section>
+    <h2>A · Boarding pass</h2>
+    <p>A paper ticket on a darker paper page. Carbon header strip, the route in big caps, every detail in a two-column grid, then a notched tear and a stub with the ref and the quote time.</p>
+    <p>The most "ticket" of the four, and the team version scans well because of the grid. In Outlook desktop the notches come out square, which still reads as a ticket.</p>
+  </section>
+  <section>
+    <h2>B · Arrival board</h2>
+    <p>A Carbon departures board: the ref in split-flap tiles, mono rows, one yellow status chip ("Due 4:15 PM" / "Quote in writing by").</p>
+    <p>The strongest brand moment and the fastest to read on a phone. It's dark, so Gmail's dark mode leaves it almost untouched; the paper words above it may be inverted.</p>
+  </section>
+  <section>
+    <h2>C · Paper stub</h2>
+    <p>The quietest: today's email with a stub card added: a dotted perforation down the left edge and a punched hole. The team version stacks label over value in airy groups.</p>
+    <p>Closest to what's live, the safest in every client, and the easiest to keep tidy.</p>
+  </section>
+  <section>
+    <h2>D · Receipt roll</h2>
+    <p>A narrow till receipt: mono throughout, dotted leaders, a barcode drawn from the ref, a torn foot.</p>
+    <p>The most playful. The barcode is decorative and doesn't scan. All-mono text is slower to read for long notes.</p>
+  </section>
+  <section>
+    <h2>What's the same in all four</h2>
+    <ul>
+      <li>The customer's words are unchanged: "Got it, {First}. Your request {REF} is in. You’ll have your quote in writing by {time}. Rather talk? Call {phone}." The ticket adds the service, route and day they chose, with no new sentences.</li>
+      <li>The team email keeps every field, including the new <b>Sent from</b> group (device, IP, approx. location) and times with their zone.</li>
+      <li>Email-safe only: tables, inline styles, system fonts (Gmail strips web fonts), no images, no SVG. Labels use the system mono font in place of Overpass Mono.</li>
+      <li>A plain-text version is still sent with every email.</li>
+    </ul>
+  </section>
+</div>
+
+<script>
+const SUBJ = {
+  customer: ['We’ve got your request [ONA-2611-0042]', '<b>ONAWAY</b> &lt;quotes@onaway.ca&gt; · to Ada Lovelace'],
+  team: ['New quote request [ONA-2611-0042] · Moving · Mississauga → Oakville', '<b>ONAWAY</b> &lt;quotes@onaway.ca&gt; · to ONAWAY quotes · reply-to Ada Lovelace'],
+};
+const state = { style: 'a', kind: 'customer', width: 'desk' };
+const frame = document.getElementById('frame');
+function fit() {
+  try { frame.style.height = frame.contentDocument.documentElement.scrollHeight + 'px'; } catch (e) {}
+}
+function render() {
+  document.getElementById('client').classList.toggle('is-phone', state.width === 'phone');
+  document.getElementById('subj').textContent = SUBJ[state.kind][0];
+  document.getElementById('meta').innerHTML = SUBJ[state.kind][1];
+  const src = `email/${state.style}-${state.kind}.html`;
+  if (!frame.src.endsWith(src)) frame.src = src;
+  else setTimeout(fit, 320);
+}
+frame.addEventListener('load', fit);
+new ResizeObserver(() => fit()).observe(document.getElementById('client'));
+document.querySelectorAll('.tg').forEach((g) => g.addEventListener('click', (e) => {
+  const b = e.target.closest('.tbtn');
+  if (!b) return;
+  g.querySelectorAll('.tbtn').forEach((x) => x.setAttribute('aria-pressed', String(x === b)));
+  state[g.dataset.k] = b.dataset.v;
+  render();
+}));
+render();
+</script>

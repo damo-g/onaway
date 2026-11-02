@@ -1,0 +1,170 @@
+<!doctype html>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>CR-01 Copy the Ref</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wdth,wght@75..100,400..700&family=Overpass+Mono:wght@400;500;600&display=swap">
+<link rel="stylesheet" href="shared.css">
+<style>
+:root{--field:color-mix(in srgb,#202521 5%,#F7F2E7);--mut:color-mix(in srgb,#202521 62%,transparent);--ease:cubic-bezier(.2,.8,.2,1)}
+.top .tools{flex-wrap:wrap;gap:8px;justify-content:flex-end}
+.board{max-width:1512px;margin:21px auto 0;display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,470px),1fr));gap:21px}
+.card{background:var(--paper);color:var(--carbon);padding:34px 34px 21px;box-shadow:0 0 0 1px var(--line);display:flex;flex-direction:column;gap:21px;min-width:0}
+.card h2{margin:0;font-family:var(--display);font-stretch:87.5%;font-weight:600;font-size:26px;letter-spacing:-.01em}
+.card h2 small{display:block;margin-top:8px;font-family:var(--mono);font-size:12px;font-weight:500;letter-spacing:.12em;text-transform:uppercase;color:var(--mut)}
+.ctx{font-family:var(--mono);font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--mut);margin-bottom:8px}
+.lb{font-family:var(--mono);font-size:12px;letter-spacing:.12em;text-transform:uppercase;line-height:1}
+.desc{font-size:15px;line-height:1.55;margin:0;color:rgba(32,37,33,.78);max-width:52ch}
+
+/* the sent strip, as on /quote/ */
+.strip{position:relative;display:flex;align-items:center;gap:13px;min-height:55px;padding:0 21px;background:var(--field);color:var(--carbon);transform:rotate(-1.2deg);transform-origin:left center}
+.strip.is-phone{max-width:390px;padding:0 20px;transform:none;box-shadow:0 -8px 13px color-mix(in srgb,#202521 14%,transparent)}
+.strip svg.w{width:21px;height:21px;flex:none}
+.strip .end{margin-left:auto;display:flex;align-items:center;gap:8px}
+.line{font-family:var(--mono);font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--mut);display:flex;align-items:center;flex-wrap:wrap;gap:4px 8px}
+.line .ref{color:var(--carbon)}
+
+/* every variant's control is a real button: focus ring, 34px minimum target */
+.cp{white-space:nowrap;appearance:none;border:0;background:none;padding:0;margin:0;font:inherit;color:inherit;cursor:pointer;position:relative;display:inline-flex;align-items:center;gap:8px;min-height:34px}
+.cp:focus-visible{outline:2px solid var(--rust);outline-offset:4px}
+@media (max-width:600px){.card{padding:21px 16px}.strip.is-phone{margin:0 -16px;padding:0 16px}}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+
+/* 1 · Two tickets: a copy glyph drawn as two stacked tickets; the front one slides off and returns */
+.v1 .glyph{position:relative;width:21px;height:21px;flex:none}
+.v1 .glyph i{position:absolute;width:11px;height:14px;border:1.5px solid currentColor;border-top-style:dashed;background:var(--field)}
+.v1 .glyph i:first-child{left:0;top:0;opacity:.45}
+.v1 .glyph i:last-child{left:6px;top:4px;transition:transform .45s var(--ease),opacity .3s}
+.v1 .word{display:inline-grid;overflow:hidden;height:1em}
+.v1 .word span{grid-area:1/1;transition:transform .35s var(--ease)}
+.v1 .word span+span{transform:translateY(110%)}
+.v1.is-done .glyph i:last-child{transform:translate(9px,-9px) rotate(12deg);opacity:0}
+.v1.is-done .word span:first-child{transform:translateY(-110%)}
+.v1.is-done .word span+span{transform:none}
+
+/* 2 · Split-flap: no icon; the label flips letter by letter, KEEP → COPIED */
+.v2 .ref{border-bottom:1px dashed color-mix(in srgb,#202521 45%,transparent);padding-bottom:2px}
+.v2:hover .ref{border-bottom-style:solid}
+.v2 .flap{display:inline-flex;gap:1px}
+.v2 .flap b{display:inline-block;width:.78em;text-align:center;font-weight:600;padding:3px 0;background:var(--carbon);color:var(--paper);border-radius:1px}
+.v2 .flap b.is-flip{animation:flap .16s var(--ease)}
+@keyframes flap{0%{transform:scaleY(1)}50%{transform:scaleY(0)}100%{transform:scaleY(1)}}
+
+/* 3 · Tear-off stub: a small dashed-edge stub after the ref; it tears away and a fresh one is under it */
+.v3 .stub{position:relative;display:inline-grid;place-items:center;height:34px;padding:0 13px;border-left:1.5px dashed color-mix(in srgb,#202521 45%,transparent)}
+.v3 .stub>span{grid-area:1/1;transition:opacity .2s}
+.v3 .stub .top{position:absolute;inset:0;display:grid;place-items:center;background:var(--carbon);color:var(--paper);transition:transform .5s var(--ease),opacity .5s}
+.v3 .stub .under{opacity:0;color:var(--rust)}
+.v3.is-done .stub .top{transform:translate(13px,-21px) rotate(14deg);opacity:0}
+.v3.is-done .stub .under{opacity:1}
+
+/* 4 · Stamp: a quiet rust ring; on tap a mini COPIED stamp lands over the ref, like the Received stamp */
+.v4 .ring{width:13px;height:13px;border:1.5px solid var(--rust);border-radius:50%;flex:none;transition:background .2s}
+.v4 .wrap4{position:relative;display:inline-block}
+.v4 .stamp{position:absolute;left:78%;top:50%;padding:4px 8px;border:2px solid var(--rust);color:var(--rust);background:color-mix(in srgb,var(--paper) 70%,transparent);font-family:var(--mono);font-size:11px;font-weight:600;letter-spacing:.12em;white-space:nowrap;pointer-events:none;opacity:0;transform:translate(-50%,-50%) rotate(-6deg) scale(1.5);transition:transform .3s cubic-bezier(.2,.9,.3,1.3),opacity .15s}
+.v4.is-done .stamp{opacity:1;transform:translate(-50%,-50%) rotate(-6deg) scale(1)}
+.v4.is-done .ring{background:var(--rust)}
+
+/* 5 · Yellow line: the ref is the button; a yellow bar runs under it left to right (the one yellow moment) */
+.v5 .wrap5{position:relative;display:inline-block;padding-bottom:5px}
+.v5 .wrap5::before{content:"";position:absolute;left:0;right:0;bottom:0;height:1px;background:color-mix(in srgb,#202521 35%,transparent)}
+.v5 .wrap5::after{content:"";position:absolute;left:0;bottom:0;height:3px;width:100%;background:var(--yellow);transform:scaleX(0);transform-origin:left;transition:transform .45s var(--ease)}
+.v5.is-done .wrap5::after{transform:scaleX(1)}
+.v5 .tick{width:13px;height:13px;flex:none;opacity:.55;transition:opacity .2s}
+.v5 .msg{color:var(--mut);transition:opacity .2s}
+
+@media (prefers-reduced-motion: reduce){*{transition-duration:0s!important;animation:none!important}}
+.reduced *{transition-duration:0s!important;animation:none!important}
+</style>
+
+<div class="top">
+  <div><div class="id">ONAWAY · Quote page · sent ticket · round 1 · CR-01</div><h1>CR-01 · Copy the Ref</h1></div>
+  <div class="tools">
+    <button class="tbtn" id="all">Play all</button>
+    <button class="tbtn" id="rm" aria-pressed="false">Reduced motion</button>
+  </div>
+</div>
+
+<div class="board" id="board"></div>
+
+<div class="spec">
+  <section>
+    <h2>Where it goes</h2>
+    <ul>
+      <li>The sent ticket strip: "Keep · Ref ONA-…", on desktop (tilted, torn away) and as the phone's sticky strip.</li>
+      <li>The success line under "Got it.": "Reference ONA-… · A copy is on its way by email".</li>
+      <li>Tap any variant above to try it; it really copies.</li>
+    </ul>
+  </section>
+  <section>
+    <h2>Same in every variant</h2>
+    <ul>
+      <li>A real <code>&lt;button&gt;</code>, at least 34px tall to tap, with a visible focus ring. Its name is "Copy reference ONA-2611-0042".</li>
+      <li>A polite live region says "Reference copied". The confirmation holds for 1.6 s, then returns.</li>
+      <li>If the clipboard is blocked, the ref text is selected, so a long-press or Ctrl+C still works.</li>
+      <li>Reduced motion: no movement, the label just changes.</li>
+    </ul>
+  </section>
+  <section>
+    <h2>Tokens</h2>
+    <p>Mono label 12, sizes and gaps 8 · 13 · 21 · 34. Rust for stamps, as on the Received stamp. Yellow only in variant 5, as the one signal.</p>
+  </section>
+</div>
+
+<div class="sr" aria-live="polite" id="live"></div>
+
+<script>
+const REF = 'ONA-2611-0042';
+const W = '<svg class="w" viewBox="0 0 100 100" aria-hidden="true"><circle cx="50" cy="50" r="50" fill="#202521"/><path transform="translate(28.6 30) scale(.5)" fill="#F7F2E7" d="M0,80C.14,77.73-.02,11.64.03,9.23l11.67-1.12s.01,40.19-.1,55.51c20.63-10.95,25.77-37.76,25.47-59.5,2.65-.22,9.1-.87,11.81-1.15-.51,20.26,3.46,45.8,24.97,53.64.05-15.31.05-40.2.07-55.53l11.65-1.08v70.04c-17.66,4.6-35.16-10.2-42.26-25.54-7.02,17.45-23.22,35.59-43.32,35.5Z"/></svg>';
+const TICK = '<svg class="tick" viewBox="0 0 13 13" aria-hidden="true"><rect x=".75" y="2.75" width="8" height="9.5" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M4 .75h8.25V10" fill="none" stroke="currentColor" stroke-width="1.5"/></svg>';
+
+// Each variant: how the control reads in the strip (label "Keep · Ref" kept beside it) and on the success line
+const V = [
+  { k: 'v1', name: 'Two tickets', note: 'A copy icon redrawn as two stacked ticket stubs, each with a dashed tear along the top. On tap the front stub slides off, and "Keep" rolls up to "Copied".',
+    line: () => `<span class="word lb"><span>Reference</span><span>Copied</span></span><span class="lb"><b class="ref">${REF}</b></span><span class="glyph" aria-hidden="true"><i></i><i></i></span>`,
+    html: () => `<span class="word lb"><span>Keep</span><span>Copied</span></span><span class="lb">· Ref <b class="ref">${REF}</b></span><span class="glyph" aria-hidden="true"><i></i><i></i></span>` },
+  { k: 'v2', name: 'Split-flap', note: 'No icon at all. The ref has a dashed underline that says "tap me". The tiles flip letter by letter from KEEP to COPIED, like the arrival boards across the site.',
+    line: () => `<span class="lb">Reference <b class="ref">${REF}</b></span><span class="flap lb" aria-hidden="true" data-rest="COPY">${[...'COPY  '].map((c) => `<b>${c.trim() || '&nbsp;'}</b>`).join('')}</span>`,
+    html: () => `<span class="flap lb" aria-hidden="true" data-rest="KEEP">${[...'KEEP  '].map((c) => `<b>${c.trim() || '&nbsp;'}</b>`).join('')}</span><span class="lb">Ref <b class="ref">${REF}</b></span>` },
+  { k: 'v3', name: 'Tear-off stub', note: 'A small stub after the ref, with a dashed perforation. On tap it tears away, and "Copied" is printed underneath, then a fresh stub returns.',
+    html: () => `<span class="lb">Keep · Ref <b class="ref">${REF}</b></span><span class="stub lb"><span class="under">Copied</span><span class="top">Copy</span></span>` },
+  { k: 'v4', name: 'Stamp', note: 'A quiet rust ring sits beside the ref. On tap a mini COPIED stamp lands over the ref, the same stamp language as "Received" on the ticket.',
+    html: () => `<span class="lb">Keep · Ref <span class="wrap4"><b class="ref">${REF}</b><span class="stamp" aria-hidden="true">COPIED</span></span></span><span class="ring" aria-hidden="true"></span>` },
+  { k: 'v5', name: 'Yellow line', note: 'The most minimal. The ref is the button, with a hairline under it and a small copy mark. On tap a yellow bar runs under the ref from left to right, and the mark becomes "Copied".',
+    html: () => `<span class="lb">Keep · Ref <span class="wrap5"><b class="ref">${REF}</b></span></span>${TICK}<span class="msg lb" aria-hidden="true"></span>` },
+];
+
+const board = document.getElementById('board');
+const live = document.getElementById('live');
+board.innerHTML = V.map((v, i) => `
+  <article class="card">
+    <h2>${i + 1} · ${v.name}<small>Tap to copy</small></h2>
+    <p class="desc">${v.note}</p>
+    <div><div class="ctx">Sent ticket · desktop</div><div class="strip">${W}<span class="end"><button type="button" class="cp lb ${v.k}" aria-label="Copy reference ${REF}">${v.html()}</button></span></div></div>
+    <div><div class="ctx">Sticky strip · phone 390</div><div class="strip is-phone">${W}<span class="end"><button type="button" class="cp lb ${v.k}" aria-label="Copy reference ${REF}">${v.html()}</button></span></div></div>
+    <div><div class="ctx">Success line</div><p class="line"><button type="button" class="cp lb ${v.k}" aria-label="Copy reference ${REF}">${v.line ? v.line(v) : v.html().replace('Keep · Ref', 'Reference')}</button><span>· A copy is on its way by email</span></p></div>
+  </article>`).join('');
+
+function flapTo(btn, word) {
+  const tiles = btn.querySelectorAll('.flap b');
+  if (!tiles.length) return;
+  const target = word.padEnd(tiles.length, ' ');
+  tiles.forEach((t, i) => setTimeout(() => {
+    t.classList.remove('is-flip'); void t.offsetWidth; t.classList.add('is-flip');
+    t.innerHTML = target[i].trim() || '&nbsp;';
+  }, i * 55));
+}
+async function copy(btn) {
+  try { await navigator.clipboard.writeText(REF); }
+  catch (e) { const r = document.createRange(); r.selectNodeContents(btn.querySelector('.ref')); getSelection().removeAllRanges(); getSelection().addRange(r); }
+  live.textContent = ''; setTimeout(() => (live.textContent = 'Reference copied'), 30);
+  clearTimeout(btn._t);
+  btn.classList.add('is-done');
+  flapTo(btn, 'COPIED');
+  const msg = btn.querySelector('.msg'); if (msg) msg.textContent = 'Copied';
+  btn._t = setTimeout(() => { btn.classList.remove('is-done'); flapTo(btn, btn.querySelector('.flap')?.dataset.rest || 'KEEP'); if (msg) msg.textContent = ''; }, 1600);
+}
+board.addEventListener('click', (e) => { const b = e.target.closest('.cp'); if (b) copy(b); });
+document.getElementById('all').onclick = () => document.querySelectorAll('.cp').forEach((b, i) => setTimeout(() => copy(b), (i % 3) * 120 + Math.floor(i / 3) * 260));
+document.getElementById('rm').onclick = (e) => { const on = e.currentTarget.getAttribute('aria-pressed') !== 'true'; e.currentTarget.setAttribute('aria-pressed', String(on)); document.body.classList.toggle('reduced', on); };
+</script>
