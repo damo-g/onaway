@@ -35,7 +35,7 @@ const gap = (h) => `<div style="height:${h}px;line-height:${h}px;font-size:0;">&
 const R = 3, P = 10; // Stamp · subtle
 
 export function build(o) {
-  const opts = { kind: 'customer', layout: 'masthead', title: 'sans', seal: 'tear', theme: 'light', due: 'rust', fonts: 'system', base: 'email/assets/', ...o };
+  const opts = { kind: 'customer', layout: 'headline', title: 'sans', seal: 'tear', theme: 'light', due: 'rust', fonts: 'system', base: 'email/assets/', ...o };
   const A = (f) => opts.base + f;
   const SANS = (opts.fonts === 'brand' ? "'Instrument Sans', " : '') + "-apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif";
   const MONO = (opts.fonts === 'brand' ? "'Overpass Mono', " : '') + "'SFMono-Regular', Menlo, Consolas, 'Liberation Mono', 'Courier New', monospace";
@@ -65,9 +65,10 @@ export function build(o) {
     const lineBot = (bg) => `<td style="background:${bg};font-size:0;">&nbsp;</td>`;
     const sealCell = `<td rowspan="2" width="42" style="width:42px;padding:0;font-size:0;line-height:0;"><img src="${A('w-tear.png')}" width="42" height="26" alt="" style="display:block;border:0;width:42px;height:26px;"></td>`;
     const seam = (up, down) => `<tr><td colspan="3" style="padding:0;">${T(
-      // each quarter is a disc centred on the ticket's edge at the tear line, so the rounded corner faces inward
-      `<tr>${q(up, `0 ${N}px 0 0`)}${lineTop(up)}${seal ? sealCell + lineTop(up) : ''}${q(up, `${N}px 0 0 0`)}</tr>`
-      + `<tr>${q(down, `0 0 ${N}px 0`)}${lineBot(down)}${seal ? lineBot(down) : ''}${q(down, `0 0 0 ${N}px`)}</tr>`)}</td></tr>`;
+      // the W notch (round 3): each quarter's rounded corner faces the tear line, so the two lobes on each side
+      // mirror one another, our W, cut into both edges
+      `<tr>${q(up, `0 0 ${N}px 0`)}${lineTop(up)}${seal ? sealCell + lineTop(up) : ''}${q(up, `0 0 0 ${N}px`)}</tr>`
+      + `<tr>${q(down, `0 ${N}px 0 0`)}${lineBot(down)}${seal ? lineBot(down) : ''}${q(down, `${N}px 0 0 0`)}</tr>`)}</td></tr>`;
     const rows = sections.map((s, i) => (i ? seam(sections[i - 1].bg, s.bg) : '') + `<tr>${sideCell('left', s.bg)}<td style="background-color:${s.bg};">${s.html}</td>${sideCell('right', s.bg)}</tr>`).join('');
     return T(edgeRow('top', sections[0].bg) + rows + edgeRow('bottom', sections[sections.length - 1].bg));
   }
@@ -145,9 +146,8 @@ export function build(o) {
         + T(row('When', D.whenShort) + row('For a', 'Home'), 'margin-top:21px;')
         + gap(34) + promise() + `</div>`;
     }
-    const stub = opts.seal === 'stub'
-      ? `<div style="padding:21px;">${T(`<tr><td valign="middle" width="26">${symbol(false, 26)}</td><td valign="middle" style="padding-left:13px;${mono(12, C.carbon, 'font-weight:600;')}">Ref ${D.ref}</td><td valign="middle" align="right">${barcode(D.ref, C.carbon, 'right')}</td></tr>`)}</div>`
-      : `<div style="padding:21px;text-align:center;">${barcode(D.ref, C.carbon)}<div style="margin-top:8px;${mono(12, C.carbon, 'font-weight:600;')}">Ref ${D.ref}</div></div>`;
+    // the stub: the ref on the left, the barcode on the right; the W joins them only when it isn't on the tear
+    const stub = `<div style="padding:21px;">${T(`<tr>${opts.seal === 'stub' ? `<td valign="middle" width="26" style="padding-right:13px;">${symbol(false, 26)}</td>` : ''}<td valign="middle" style="${mono(12, C.carbon, 'font-weight:600;white-space:nowrap;')}">Ref ${D.ref}</td><td valign="middle" align="right">${barcode(D.ref, C.carbon, 'right')}</td></tr>`)}</div>`;
     const p = `margin:0 0 21px;${sans(17, C.carbon, 'line-height:1.55;')}`;
     const top = `<p style="${p}">Got it, ${D.first}.</p><p style="${p}">Your request <span style="font-family:${MONO};font-size:15px;white-space:nowrap;">${D.ref}</span> is in. You’ll have your quote in writing by <b>${nb(D.promised)}</b>.</p>`;
     const call = `<p style="${p}margin:0;">Rather talk? Call <a href="tel:${D.tel}" style="color:${C.carbon};text-decoration:underline;white-space:nowrap;">${D.phone}</a>.</p>`;

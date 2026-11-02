@@ -45,8 +45,8 @@
       <button class="tbtn" data-v="team" aria-pressed="false">Team · Board ticket</button>
     </span>
     <span class="tg" data-k="layout" data-for="customer"><span class="tl0">Layout</span>
-      <button class="tbtn" data-v="masthead" aria-pressed="true">Masthead</button>
-      <button class="tbtn" data-v="headline" aria-pressed="false">Headline</button>
+      <button class="tbtn" data-v="headline" aria-pressed="true">Headline</button>
+      <button class="tbtn" data-v="masthead" aria-pressed="false">Masthead</button>
       <button class="tbtn" data-v="centred" aria-pressed="false">Centred</button>
     </span>
     <span class="tg" data-k="title" data-for="customer"><span class="tl0">"Your request"</span>
@@ -103,7 +103,7 @@
     <h2>Round 4, from your notes</h2>
     <ul>
       <li><b>Stamp · subtle is locked</b> all round. Where the receipt meets its stub, the edge stays a notched tear.</li>
-      <li><b>The W sits on the tear</b>, sealed across the dashed line between the two notches, or quietly in the stub beside the ref. The top keeps only the wordmark.</li>
+      <li><b>The W sits on the tear</b>, sealed across the dashed line, between the round 3 notches: their corners mirror each other on both sides. The stub reads left to right, the ref then the barcode (the W joins them only if it moves into the stub). The top keeps only the wordmark.</li>
       <li><b>The request date</b> sits at the top in small mono (Mon, Nov 2, 2026 · 2:15 PM EST). "Cleaning · Moving · Delivery · GTA" is gone.</li>
       <li><b>"Your request" in Instrument Sans</b> by default (Mono stays as an option). Three editorial layouts of the same copy: <b>Masthead</b> (wordmark and date on one line over a rule, the title and the job set like a page), <b>Headline</b> (the job written as a headline), <b>Centred</b> (the receipt, refined).</li>
       <li><b>Board ticket</b>: light by default. Job, When, Contact, Notes and Sent from are now Instrument Sans caps. The due chip is <b>Rust · boutique</b> (a double Rust hairline, wide tracking, no fill, no clock), <b>Kraft</b> (camel fill, Carbon text) or Yellow.</li>
@@ -112,9 +112,9 @@
   <section>
     <h2>Ranking</h2>
     <ol>
-      <li><b>Customer · Masthead · Sans · W on the tear · 9.6</b>. Reads like a printed ticket and a page at once. The date sits where a masthead date would. The W on the tear is the moment people will remember.</li>
+      <li><b>Customer · Headline · Sans · W on the tear · 9.7</b>. Your pick: the job reads as a headline, the W seals the tear between the round 3 notches, and the stub runs left to right, the ref then the barcode.</li>
       <li><b>Team · Light · Rust · boutique · 9.5</b>. Quiet, expensive-looking, and the caps sub-headings give it the editorial rhythm of the site.</li>
-      <li><b>Customer · Headline · 9.3</b>. The most editorial, but the headline repeats what the subject line already says.</li>
+      <li><b>Customer · Masthead · 9.3</b>. A printed page feel, quieter than Headline.</li>
       <li><b>Team · Light · Kraft · 9.2</b>. Warm, a little louder than Rust.</li>
       <li><b>Customer · Centred · 9.0</b>. Tidy, the most "receipt", the least editorial.</li>
     </ol>
@@ -128,8 +128,8 @@
 <script type="module">
 import { build } from './email/em04.js';
 const SCORE = {
-  'customer-masthead': ['Customer · Masthead', 9.6, 'The wordmark and the date share a line over a Carbon rule, like a masthead. The title and the job are set like a page, then the promise. The W seals the tear.'],
-  'customer-headline': ['Customer · Headline', 9.3, 'The job written as a headline ("Moving, Mississauga → Oakville"), a two-column grid, the promise set large. The most editorial; it repeats the subject a little.'],
+  'customer-masthead': ['Customer · Masthead', 9.3, 'The wordmark and the date share a line over a Carbon rule, like a masthead. The title and the job are set like a page, then the promise. The W seals the tear.'],
+  'customer-headline': ['Customer · Headline', 9.7, 'The job written as a headline ("Moving, Mississauga → Oakville"), a two-column grid, the promise set large. The W seals the tear between the round 3 notches; the stub reads left to right, the ref then the barcode.'],
   'customer-centred': ['Customer · Centred', 9.0, 'The receipt, refined: the wordmark and date centred, the title between hairlines, leaders. Tidy and familiar.'],
   'team-light': ['Team · Board ticket · Light', 9.5, 'Ticket Paper, Carbon dots, caps sub-headings. Calm in a busy inbox and just as quick to scan.'],
   'team-dark': ['Team · Board ticket · Dark', 9.0, 'The Carbon board with the yellow dot matrix. Striking, and heavy every time a request lands.'],
@@ -142,7 +142,7 @@ const SUBJ = {
   customer: ['We’ve got your request [ONA-2611-0042]', '<b>ONAWAY</b> &lt;quotes@onaway.ca&gt; · to Ada Lovelace'],
   team: ['New quote request [ONA-2611-0042] · Moving · Mississauga → Oakville', '<b>ONAWAY</b> &lt;quotes@onaway.ca&gt; · to ONAWAY quotes · reply-to Ada Lovelace'],
 };
-const state = { kind: 'customer', layout: 'masthead', title: 'sans', seal: 'tear', theme: 'light', due: 'rust', fonts: 'system', width: 'desk' };
+const state = { kind: 'customer', layout: 'headline', title: 'sans', seal: 'tear', theme: 'light', due: 'rust', fonts: 'system', width: 'desk' };
 const frame = document.getElementById('frame');
 const store = { get(k) { try { return localStorage.getItem(k); } catch (e) { return null; } }, set(k, v) { try { localStorage.setItem(k, v); } catch (e) {} } };
 const key = () => state.kind === 'team' ? 'team-' + state.theme : 'customer-' + state.layout;
