@@ -17,11 +17,18 @@ final class Notifier
         private Mailer $mailer,
         private array $config,
         private DateTimeZone $tz,
+        private ?GeoIp $geoIp = null,
     ) {
     }
 
     public function notify(int $id, string $ref, array $row, string $promised, DateTimeImmutable $now): void
     {
+        // Where the request came from, for the team only (never sent to the customer)
+        $visitor = [
+            'device' => Device::describe($row['user_agent'] ?? null),
+            'ip' => (string) ($row['ip'] ?? ''),
+            'location' => ($this->geoIp ?? new GeoIp($this->config['geoip'] ?? []))->locate((string) ($row['ip'] ?? '')),
+        ];
         $emails = new QuoteEmails(
             $row,
             $ref,
@@ -30,6 +37,7 @@ final class Notifier
             $this->tz,
             (string) ($this->config['company_phone'] ?: '+1 647 877 1411'),
             (string) ($this->config['smtp']['user'] ?? 'quotes@onaway.ca'),
+            $visitor,
         );
         $errors = [];
         foreach (['team_email' => ['emailed_team_at', 'team'], 'customer_email' => ['emailed_customer_at', 'customer']] as $name => [$column, $build]) {

@@ -31,6 +31,7 @@ final class QuoteEmails
         private DateTimeZone $tz,
         private string $phone,
         private string $inbox,
+        private array $visitor = [],
     ) {
     }
 
@@ -59,11 +60,18 @@ final class QuoteEmails
                 'Prefers' => self::CONTACT[$r['contact_pref'] ?? ''] ?? null,
             ],
             'Notes' => ['Notes' => $r['notes'] ?? '—'],
+            'Sent from' => [
+                'Device' => $this->visitor['device'] ?? null,
+                'IP' => $this->visitor['ip'] ?? null,
+                'Location' => !empty($this->visitor['location']) ? $this->visitor['location'] . ' (approx., from IP)' : null,
+            ],
         ];
+        // Times carry their zone (EST / EDT), so they read right from anywhere
+        $promisedAt = empty($r['promised_by']) ? null : new DateTimeImmutable($r['promised_by'], new DateTimeZone('UTC'));
         $top = [
             'Ref' => $this->ref,
-            'Received' => $this->now->setTimezone($this->tz)->format('D, M j, g:i A'),
-            'Quote by' => $this->promised,
+            'Received' => $this->stamp($this->now),
+            'Quote by' => $promisedAt ? $this->stamp($promisedAt) : $this->promised,
         ];
         $outside = $this->outside();
 
@@ -181,6 +189,12 @@ final class QuoteEmails
             ? (new DateTimeImmutable($r['timing_date'], $this->tz))->format('D, M j, Y')
             : self::TIMING[$r['timing']] ?? $r['timing'];
         return $when . ($r['flexible'] && $r['timing'] !== 'flexible' ? ' · flexible' : '');
+    }
+
+    // "Mon, Nov 2, 4:15 PM EST"
+    private function stamp(DateTimeImmutable $at): string
+    {
+        return $at->setTimezone($this->tz)->format('D, M j, g:i A T');
     }
 
     private static function phone(string $digits): string

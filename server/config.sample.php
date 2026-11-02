@@ -27,6 +27,13 @@ return [
     // The phone number written in messages ("Rather talk? Call …")
     'company_phone' => '',
 
+    // Approximate place of the visitor's IP, team email only. Optional: leave as is for the free
+    // keyless lookup; 'url' => '' turns it off; {ip} is replaced. 'token' is sent as a Bearer header.
+    'geoip' => [
+        'url' => 'https://free.freeipapi.com/api/v1/json/{ip}',
+        'token' => '',
+    ],
+
     // Step 4 · Cloudflare Turnstile
     'turnstile' => [
         'site_key' => '',
