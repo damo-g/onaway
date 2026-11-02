@@ -1,38 +1,73 @@
 <!doctype html>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>EM-01 Email Tickets</title>
+<title>EM-02 Email Tickets</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wdth,wght@75..100,400..700&family=Overpass+Mono:wght@400;500;600&display=swap">
 <link rel="stylesheet" href="shared.css">
 <style>
-.top .tools{flex-wrap:wrap;gap:8px;justify-content:flex-end}
-.tg{display:inline-flex}.tg .tbtn+.tbtn{border-left:0}
+.top .tools{flex-wrap:wrap;gap:8px;justify-content:flex-end;max-width:1100px}
+.tg{display:inline-flex;flex-wrap:wrap}.tg .tbtn+.tbtn{border-left:0}
+.tg.is-off{opacity:.35;pointer-events:none}
 .tl0{font-family:var(--mono);font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);align-self:center;margin-right:8px}
-.desk{max-width:1512px;margin:21px auto 0;display:flex;justify-content:center;padding:34px 0;border:1px solid var(--line);background:var(--card)}
-.client{width:640px;max-width:100%;background:#fff;color:#202521;box-shadow:0 1px 0 rgba(0,0,0,.04),0 8px 34px rgba(32,37,33,.12);transition:width .3s ease-out}
+.tbtn small{opacity:.6;margin-left:6px}
+.layout{max-width:1512px;margin:21px auto 0;display:grid;grid-template-columns:minmax(0,1fr) 340px;gap:21px;align-items:start}
+@media (max-width:1100px){.layout{grid-template-columns:1fr}}
+.desk{display:flex;justify-content:center;padding:34px 0;border:1px solid var(--line);background:var(--card)}
+.client{width:640px;max-width:100%;background:#fff;color:#202521;box-shadow:0 8px 34px rgba(32,37,33,.12);transition:width .3s ease-out}
 .client.is-phone{width:390px}
 .client__head{padding:13px 21px;border-bottom:1px solid #e6e3dc;font:14px/1.45 -apple-system,'Segoe UI',Roboto,Arial,sans-serif}
 .client__subj{font-weight:600;font-size:16px;margin-bottom:4px}
 .client__meta{color:#5d625c}
-.client__meta b{font-weight:600;color:#202521}
-.client iframe{display:block;width:100%;height:600px;border:0}
+.client iframe{display:block;width:100%;height:700px;border:0}
+.score{position:sticky;top:21px;border:1px solid var(--line);background:var(--card);padding:21px}
+.score h2{margin:0 0 4px;font-family:var(--display);font-stretch:87.5%;font-weight:650;font-size:26px}
+.big{font-family:var(--display);font-stretch:87.5%;font-weight:650;font-size:68px;line-height:1;margin:13px 0 4px}
+.big small{font-size:20px;color:var(--muted);font-weight:500}
+.why{font-size:15px;line-height:1.5;margin:0 0 21px;color:var(--fg)}
+.lab{font-family:var(--mono);font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin:0 0 8px}
+.rate{display:grid;grid-template-columns:repeat(10,1fr);gap:4px;margin-bottom:8px}
+.rate button{font-family:var(--mono);font-size:12px;padding:8px 0;border:1px solid var(--line);background:transparent;color:var(--fg);cursor:pointer}
+.rate button[aria-pressed="true"]{background:var(--fg);color:var(--bg)}
+.rate button:focus-visible{outline:2px solid var(--rust);outline-offset:2px}
+.mine{font-size:13px;color:var(--muted);margin:0 0 21px}
+.optscores{width:100%;border-collapse:collapse;font-size:14px}
+.optscores td{padding:6px 0;border-top:1px solid var(--line)}
+.optscores td:last-child{text-align:right;font-family:var(--mono)}
+.optscores tr.is-on td{font-weight:600}
 .note{max-width:1512px;margin:13px auto 0;font-family:var(--mono);font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);text-align:center}
-.spec code{font-family:var(--mono);font-size:13px}
 </style>
 
 <div class="top">
-  <div><div class="id">ONAWAY · Quote backend · emails · round 1 · EM-01</div><h1>EM-01 · Email Tickets</h1></div>
+  <div><div class="id">ONAWAY · Quote backend · emails · round 2 · EM-02</div><h1>EM-02 · Email Tickets</h1></div>
   <div class="tools">
     <span class="tg" data-k="style"><span class="tl0">Style</span>
-      <button class="tbtn" data-v="a" aria-pressed="true">A · Boarding pass</button>
-      <button class="tbtn" data-v="b" aria-pressed="false">B · Arrival board</button>
-      <button class="tbtn" data-v="c" aria-pressed="false">C · Paper stub</button>
-      <button class="tbtn" data-v="d" aria-pressed="false">D · Receipt roll</button>
+      <button class="tbtn" data-v="receipt" aria-pressed="true">Receipt<small>9.2</small></button>
+      <button class="tbtn" data-v="board" aria-pressed="false">Board ticket<small>8.8</small></button>
+      <button class="tbtn" data-v="pass" aria-pressed="false">Boarding pass<small>8.3</small></button>
     </span>
     <span class="tg" data-k="kind"><span class="tl0">Email</span>
       <button class="tbtn" data-v="customer" aria-pressed="true">Customer</button>
       <button class="tbtn" data-v="team" aria-pressed="false">Team</button>
+    </span>
+    <span class="tg" data-k="edge"><span class="tl0">Edge</span>
+      <button class="tbtn" data-v="subtle" aria-pressed="true">Stamp · subtle</button>
+      <button class="tbtn" data-v="edge" aria-pressed="false">Stamp edge</button>
+      <button class="tbtn" data-v="notch" aria-pressed="false">Notched</button>
+      <button class="tbtn" data-v="plain" aria-pressed="false">Plain</button>
+    </span>
+    <span class="tg" data-k="surface"><span class="tl0">Surface</span>
+      <button class="tbtn" data-v="paper" aria-pressed="true">Paper</button>
+      <button class="tbtn" data-v="stub" aria-pressed="false">Kraft stub</button>
+      <button class="tbtn" data-v="kraft" aria-pressed="false">Kraft</button>
+    </span>
+    <span class="tg" data-k="ref"><span class="tl0">Ref (board)</span>
+      <button class="tbtn" data-v="matrix" aria-pressed="true">Dot matrix</button>
+      <button class="tbtn" data-v="flap" aria-pressed="false">Split-flap</button>
+    </span>
+    <span class="tg" data-k="fonts"><span class="tl0">Fonts</span>
+      <button class="tbtn" data-v="system" aria-pressed="true">As Gmail</button>
+      <button class="tbtn" data-v="brand" aria-pressed="false">As Apple Mail</button>
     </span>
     <span class="tg" data-k="width"><span class="tl0">Width</span>
       <button class="tbtn" data-v="desk" aria-pressed="true">Desktop</button>
@@ -41,69 +76,101 @@
   </div>
 </div>
 
-<div class="desk">
-  <div class="client" id="client">
-    <div class="client__head">
-      <div class="client__subj" id="subj"></div>
-      <div class="client__meta" id="meta"></div>
+<div class="layout">
+  <div class="desk">
+    <div class="client" id="client">
+      <div class="client__head"><div class="client__subj" id="subj"></div><div class="client__meta" id="meta"></div></div>
+      <iframe id="frame" title="Email preview"></iframe>
     </div>
-    <iframe id="frame" title="Email preview"></iframe>
   </div>
+  <aside class="score" aria-live="polite">
+    <p class="lab">My score</p>
+    <h2 id="sName"></h2>
+    <div class="big" id="sNum"></div>
+    <p class="why" id="sWhy"></p>
+    <p class="lab">Your rating, out of 10</p>
+    <div class="rate" id="rate"></div>
+    <p class="mine" id="mine">Not rated yet. Kept in this browser only; tell me your numbers.</p>
+    <p class="lab">Options, scored</p>
+    <table class="optscores" id="opts"></table>
+  </aside>
 </div>
-<p class="note">Rendered from the real email HTML · sample request: Moving, Mississauga → Oakville, Wed Nov 4</p>
+<p class="note">Rendered live from the email HTML (email/em02.js) · sample request: Moving, Mississauga → Oakville, Wed Nov 4</p>
 
 <div class="spec">
   <section>
-    <h2>A · Boarding pass</h2>
-    <p>A paper ticket on a darker paper page. Carbon header strip, the route in big caps, every detail in a two-column grid, then a notched tear and a stub with the ref and the quote time.</p>
-    <p>The most "ticket" of the four, and the team version scans well because of the grid. In Outlook desktop the notches come out square, which still reads as a ticket.</p>
-  </section>
-  <section>
-    <h2>B · Arrival board</h2>
-    <p>A Carbon departures board: the ref in split-flap tiles, mono rows, one yellow status chip ("Due 4:15 PM" / "Quote in writing by").</p>
-    <p>The strongest brand moment and the fastest to read on a phone. It's dark, so Gmail's dark mode leaves it almost untouched; the paper words above it may be inverted.</p>
-  </section>
-  <section>
-    <h2>C · Paper stub</h2>
-    <p>The quietest: today's email with a stub card added: a dotted perforation down the left edge and a punched hole. The team version stacks label over value in airy groups.</p>
-    <p>Closest to what's live, the safest in every client, and the easiest to keep tidy.</p>
-  </section>
-  <section>
-    <h2>D · Receipt roll</h2>
-    <p>A narrow till receipt: mono throughout, dotted leaders, a barcode drawn from the ref, a torn foot.</p>
-    <p>The most playful. The barcode is decorative and doesn't scan. All-mono text is slower to read for long notes.</p>
-  </section>
-  <section>
-    <h2>What's the same in all four</h2>
+    <h2>Round 2, from your notes</h2>
     <ul>
-      <li>The customer's words are unchanged: "Got it, {First}. Your request {REF} is in. You’ll have your quote in writing by {time}. Rather talk? Call {phone}." The ticket adds the service, route and day they chose, with no new sentences.</li>
-      <li>The team email keeps every field, including the new <b>Sent from</b> group (device, IP, approx. location) and times with their zone.</li>
-      <li>Email-safe only: tables, inline styles, system fonts (Gmail strips web fonts), no images, no SVG. Labels use the system mono font in place of Overpass Mono.</li>
-      <li>A plain-text version is still sent with every email.</li>
+      <li><b>Receipt</b> keeps D’s layout and hierarchy but takes the site’s ticket: the face and stub tints from TS-02, the Stamp · subtle edge, dashed rows like the quote ticket, values in Instrument Sans, labels in mono, and the logo (W symbol + wordmark) at the top. The stub tears off with the barcode and the ref.</li>
+      <li><b>Board ticket</b> is the arrival board as a Carbon ticket with paper perforations. The ref is in a yellow dot matrix (or split-flap), and the sub-headings (Job, When, Contact, Notes, Sent from) are Instrument Sans 20.</li>
+      <li><b>Boarding pass</b> picks up the logo strip, the perforated edge and the same sub-headings.</li>
+      <li>Paper stub is dropped. Kraft (camel with a fibre grain, as in FT-02) works as a whole surface or just the stub.</li>
     </ul>
+  </section>
+  <section>
+    <h2>How it holds up in inboxes</h2>
+    <ul>
+      <li>The perforation and grain are small background images. Gmail, Apple Mail, iOS and Outlook.com show them. Outlook desktop shows a clean straight edge, which still reads fine.</li>
+      <li>The dot matrix is built from table cells, not an image, so it shows even with images off. With images off, the logo falls back to the word "ONAWAY".</li>
+      <li>Gmail strips web fonts and uses the system sans and mono. Apple Mail can load Instrument Sans and Overpass Mono from onaway.ca.</li>
+      <li>Every email stays under Gmail’s 102 KB clipping limit, and the plain-text version still goes with it.</li>
+    </ul>
+  </section>
+  <section>
+    <h2>Ranking</h2>
+    <ol>
+      <li><b>Receipt · Stamp · subtle · Paper · 9.2</b>. Your favourite layout, now unmistakably ONAWAY. It reads like the ticket on the quote page and keeps a long team email scannable.</li>
+      <li><b>Board ticket · Dot matrix · Kraft stub · 8.8</b>. The strongest brand moment. A heavy dark block for a customer confirmation, but excellent for the team’s inbox.</li>
+      <li><b>Boarding pass · Stamp · subtle · 8.3</b>. Clear, with a big route. The header strip and the grid make it the busiest of the three.</li>
+    </ol>
+    <p>A hybrid worth considering: Receipt for the customer and Board ticket for the team. Each audience gets the version that suits it, and both share the same edge and stub.</p>
   </section>
 </div>
 
-<script>
+<script type="module">
+import { build } from './email/em02.js';
+const SCORE = {
+  receipt: ['Receipt', 9.2, 'D’s layout and hierarchy in the site’s ticket language: the logo at the top, dashed rows, Instrument Sans values, a perforated stub. It looks like the quote page’s ticket printed out.'],
+  board: ['Board ticket', 8.8, 'The arrival board as a Carbon ticket. The yellow dot-matrix ref is the most ownable moment of the three. Heavier for a customer, ideal for the team.'],
+  pass: ['Boarding pass', 8.3, 'A big route and a two-column grid. Easy to read, but the busiest header, and it repeats the logo in a dark strip.'],
+};
+const OPTS = {
+  edge: { subtle: ['Stamp · subtle', 9.5], edge: ['Stamp edge', 8.5], notch: ['Notched', 7], plain: ['Plain', 6] },
+  surface: { paper: ['Paper', 9], stub: ['Kraft stub', 8.8], kraft: ['Kraft', 7.2] },
+  ref: { matrix: ['Dot matrix', 9.2], flap: ['Split-flap', 7.5] },
+};
 const SUBJ = {
   customer: ['We’ve got your request [ONA-2611-0042]', '<b>ONAWAY</b> &lt;quotes@onaway.ca&gt; · to Ada Lovelace'],
   team: ['New quote request [ONA-2611-0042] · Moving · Mississauga → Oakville', '<b>ONAWAY</b> &lt;quotes@onaway.ca&gt; · to ONAWAY quotes · reply-to Ada Lovelace'],
 };
-const state = { style: 'a', kind: 'customer', width: 'desk' };
+const state = { style: 'receipt', kind: 'customer', edge: 'subtle', surface: 'paper', ref: 'matrix', fonts: 'system', width: 'desk' };
 const frame = document.getElementById('frame');
-function fit() {
-  try { frame.style.height = frame.contentDocument.documentElement.scrollHeight + 'px'; } catch (e) {}
+const store = { get(k) { try { return localStorage.getItem(k); } catch (e) { return null; } }, set(k, v) { try { localStorage.setItem(k, v); } catch (e) {} } };
+
+function fit() { try { frame.style.height = frame.contentDocument.documentElement.scrollHeight + 'px'; } catch (e) {} }
+function scores() {
+  const [name, n, why] = SCORE[state.style];
+  document.getElementById('sName').textContent = name;
+  document.getElementById('sNum').innerHTML = `${n}<small> / 10</small>`;
+  document.getElementById('sWhy').textContent = why;
+  const yours = store.get('em02:' + state.style);
+  document.getElementById('rate').innerHTML = Array.from({ length: 10 }, (_, i) => `<button type="button" data-n="${i + 1}" aria-pressed="${String(yours === String(i + 1))}" aria-label="Rate ${name} ${i + 1} out of 10">${i + 1}</button>`).join('');
+  document.getElementById('mine').textContent = yours ? `You gave ${name} ${yours}/10.` : 'Not rated yet. Kept in this browser only; tell me your numbers.';
+  const keys = ['edge', 'surface'].concat(state.style === 'board' ? ['ref'] : []);
+  document.getElementById('opts').innerHTML = keys.map((k) => Object.entries(OPTS[k]).map(([v, [label, s]]) => `<tr class="${state[k] === v ? 'is-on' : ''}"><td>${label}</td><td>${s}</td></tr>`).join('')).join('');
 }
 function render() {
   document.getElementById('client').classList.toggle('is-phone', state.width === 'phone');
+  document.querySelector('[data-k="ref"]').classList.toggle('is-off', state.style !== 'board');
   document.getElementById('subj').textContent = SUBJ[state.kind][0];
   document.getElementById('meta').innerHTML = SUBJ[state.kind][1];
-  const src = `email/${state.style}-${state.kind}.html`;
-  if (!frame.src.endsWith(src)) frame.src = src;
-  else setTimeout(fit, 320);
+  const html = build({ ...state, base: 'email/assets/' });
+  frame.srcdoc = html;
+  document.querySelector('.note').textContent = `Rendered live from the email HTML (email/em02.js) · ${(new Blob([html]).size / 1024).toFixed(1)} KB · sample request: Moving, Mississauga → Oakville, Wed Nov 4`;
+  scores();
 }
-frame.addEventListener('load', fit);
-new ResizeObserver(() => fit()).observe(document.getElementById('client'));
+frame.addEventListener('load', () => { fit(); setTimeout(fit, 400); });
+new ResizeObserver(() => setTimeout(fit, 320)).observe(document.getElementById('client'));
 document.querySelectorAll('.tg').forEach((g) => g.addEventListener('click', (e) => {
   const b = e.target.closest('.tbtn');
   if (!b) return;
@@ -111,5 +178,11 @@ document.querySelectorAll('.tg').forEach((g) => g.addEventListener('click', (e) 
   state[g.dataset.k] = b.dataset.v;
   render();
 }));
+document.getElementById('rate').addEventListener('click', (e) => {
+  const b = e.target.closest('button');
+  if (!b) return;
+  store.set('em02:' + state.style, b.dataset.n);
+  scores();
+});
 render();
 </script>
