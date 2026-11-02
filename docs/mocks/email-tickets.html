@@ -1,7 +1,7 @@
 <!doctype html>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>EM-02 Email Tickets</title>
+<title>EM-03 Email Tickets</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wdth,wght@75..100,400..700&family=Overpass+Mono:wght@400;500;600&display=swap">
 <link rel="stylesheet" href="shared.css">
@@ -39,31 +39,24 @@
 </style>
 
 <div class="top">
-  <div><div class="id">ONAWAY · Quote backend · emails · round 2 · EM-02</div><h1>EM-02 · Email Tickets</h1></div>
+  <div><div class="id">ONAWAY · Quote backend · emails · round 3 · EM-03</div><h1>EM-03 · Email Tickets</h1></div>
   <div class="tools">
-    <span class="tg" data-k="style"><span class="tl0">Style</span>
-      <button class="tbtn" data-v="receipt" aria-pressed="true">Receipt<small>9.2</small></button>
-      <button class="tbtn" data-v="board" aria-pressed="false">Board ticket<small>8.8</small></button>
-      <button class="tbtn" data-v="pass" aria-pressed="false">Boarding pass<small>8.3</small></button>
-    </span>
     <span class="tg" data-k="kind"><span class="tl0">Email</span>
-      <button class="tbtn" data-v="customer" aria-pressed="true">Customer</button>
-      <button class="tbtn" data-v="team" aria-pressed="false">Team</button>
+      <button class="tbtn" data-v="customer" aria-pressed="true">Customer · Receipt</button>
+      <button class="tbtn" data-v="team" aria-pressed="false">Team · Board ticket</button>
     </span>
     <span class="tg" data-k="edge"><span class="tl0">Edge</span>
       <button class="tbtn" data-v="subtle" aria-pressed="true">Stamp · subtle</button>
+      <button class="tbtn" data-v="medium" aria-pressed="false">Stamp · medium</button>
       <button class="tbtn" data-v="edge" aria-pressed="false">Stamp edge</button>
-      <button class="tbtn" data-v="notch" aria-pressed="false">Notched</button>
-      <button class="tbtn" data-v="plain" aria-pressed="false">Plain</button>
     </span>
-    <span class="tg" data-k="surface"><span class="tl0">Surface</span>
-      <button class="tbtn" data-v="paper" aria-pressed="true">Paper</button>
-      <button class="tbtn" data-v="stub" aria-pressed="false">Kraft stub</button>
-      <button class="tbtn" data-v="kraft" aria-pressed="false">Kraft</button>
+    <span class="tg" data-k="theme"><span class="tl0">Board</span>
+      <button class="tbtn" data-v="dark" aria-pressed="true">Dark</button>
+      <button class="tbtn" data-v="light" aria-pressed="false">Light · floral white</button>
     </span>
-    <span class="tg" data-k="ref"><span class="tl0">Ref (board)</span>
-      <button class="tbtn" data-v="matrix" aria-pressed="true">Dot matrix</button>
-      <button class="tbtn" data-v="flap" aria-pressed="false">Split-flap</button>
+    <span class="tg" data-k="due"><span class="tl0">Due chip</span>
+      <button class="tbtn" data-v="yellow" aria-pressed="true">Yellow</button>
+      <button class="tbtn" data-v="rust" aria-pressed="false">Rust + clock</button>
     </span>
     <span class="tg" data-k="fonts"><span class="tl0">Fonts</span>
       <button class="tbtn" data-v="system" aria-pressed="true">As Gmail</button>
@@ -95,78 +88,80 @@
     <table class="optscores" id="opts"></table>
   </aside>
 </div>
-<p class="note">Rendered live from the email HTML (email/em02.js) · sample request: Moving, Mississauga → Oakville, Wed Nov 4</p>
+<p class="note">Rendered live from the email HTML (email/em03.js) · sample request: Moving, Mississauga → Oakville, Wed Nov 4</p>
 
 <div class="spec">
   <section>
-    <h2>Round 2, from your notes</h2>
+    <h2>Round 3, from your notes</h2>
     <ul>
-      <li><b>Receipt</b> keeps D’s layout and hierarchy but takes the site’s ticket: the face and stub tints from TS-02, the Stamp · subtle edge, dashed rows like the quote ticket, values in Instrument Sans, labels in mono, and the logo (W symbol + wordmark) at the top. The stub tears off with the barcode and the ref.</li>
-      <li><b>Board ticket</b> is the arrival board as a Carbon ticket with paper perforations. The ref is in a yellow dot matrix (or split-flap), and the sub-headings (Job, When, Contact, Notes, Sent from) are Instrument Sans 20.</li>
-      <li><b>Boarding pass</b> picks up the logo strip, the perforated edge and the same sub-headings.</li>
-      <li>Paper stub is dropped. Kraft (camel with a fibre grain, as in FT-02) works as a whole surface or just the stub.</li>
+      <li><b>Customer · Receipt</b>. The stamp edge goes all the way round, but where the ticket meets the stub the edge is <b>notched</b> (half-circles each side and a dashed tear), separate from the outer edge. Paper only.</li>
+      <li><b>Team · Board ticket</b>, with no stub: the dot-matrix ref and the due chip already say it. <b>Dark</b>, or <b>Light</b> on Ticket Paper (the floral white), where the active dots turn Carbon and the unlit ones stay faint.</li>
+      <li><b>Due chip</b>: Yellow, or Rust with the Hugeicons clock. Both carry the zone ("Due 4:15 PM EST").</li>
+      <li><b>Stamp · medium</b> (4px every 12px) sits between subtle and edge, for comparison. Subtle stays the default.</li>
+      <li>Retired: Boarding pass and the kraft surfaces.</li>
     </ul>
   </section>
   <section>
     <h2>How it holds up in inboxes</h2>
     <ul>
-      <li>The perforation and grain are small background images. Gmail, Apple Mail, iOS and Outlook.com show them. Outlook desktop shows a clean straight edge, which still reads fine.</li>
-      <li>The dot matrix is built from table cells, not an image, so it shows even with images off. With images off, the logo falls back to the word "ONAWAY".</li>
-      <li>Gmail strips web fonts and uses the system sans and mono. Apple Mail can load Instrument Sans and Overpass Mono from onaway.ca.</li>
-      <li>Every email stays under Gmail’s 102 KB clipping limit, and the plain-text version still goes with it.</li>
+      <li>The perforation is small background tiles. Gmail, Apple Mail, iOS and Outlook.com show it. Outlook desktop shows a straight edge, and the notches become square corners.</li>
+      <li>The clock is a PNG (Gmail shows no SVG) drawn from the Hugeicons clock-01 path.</li>
+      <li>The dot matrix is table cells, not an image, so it shows with images off. The board email is about 50 KB, well under Gmail’s 102 KB clip.</li>
+      <li>The plain-text version still goes with every email.</li>
     </ul>
   </section>
   <section>
     <h2>Ranking</h2>
     <ol>
-      <li><b>Receipt · Stamp · subtle · Paper · 9.2</b>. Your favourite layout, now unmistakably ONAWAY. It reads like the ticket on the quote page and keeps a long team email scannable.</li>
-      <li><b>Board ticket · Dot matrix · Kraft stub · 8.8</b>. The strongest brand moment. A heavy dark block for a customer confirmation, but excellent for the team’s inbox.</li>
-      <li><b>Boarding pass · Stamp · subtle · 8.3</b>. Clear, with a big route. The header strip and the grid make it the busiest of the three.</li>
+      <li><b>Team · Board ticket · Light · Rust + clock · Stamp · subtle · 9.4</b>. Calm on Ticket Paper, Carbon dots read like a printed departure board, and Rust with a clock says "due" before you read it. It sits better in a busy inbox than the dark board.</li>
+      <li><b>Customer · Receipt · Stamp · subtle · 9.3</b>. With the notch, the stub reads as a real tear-off, the same move as TS-02 on the homepage.</li>
+      <li><b>Team · Board ticket · Dark · Yellow · 9.0</b>. The strongest brand moment, but a heavy black block every time a request lands.</li>
     </ol>
-    <p>A hybrid worth considering: Receipt for the customer and Board ticket for the team. Each audience gets the version that suits it, and both share the same edge and stub.</p>
+    <p>Edge: Stamp · subtle 9.5 · medium 9 · edge 8.5. Medium is a touch busier at email sizes; subtle matches TS-02.</p>
   </section>
 </div>
 
 <script type="module">
-import { build } from './email/em02.js';
+import { build } from './email/em03.js';
 const SCORE = {
-  receipt: ['Receipt', 9.2, 'D’s layout and hierarchy in the site’s ticket language: the logo at the top, dashed rows, Instrument Sans values, a perforated stub. It looks like the quote page’s ticket printed out.'],
-  board: ['Board ticket', 8.8, 'The arrival board as a Carbon ticket. The yellow dot-matrix ref is the most ownable moment of the three. Heavier for a customer, ideal for the team.'],
-  pass: ['Boarding pass', 8.3, 'A big route and a two-column grid. Easy to read, but the busiest header, and it repeats the logo in a dark strip.'],
+  customer: ['Customer · Receipt', 9.3, 'D’s layout and hierarchy on the site’s ticket: logo at the top, dashed rows, a stamp edge all round, and a notched tear where the stub comes away.'],
+  'team-dark': ['Team · Board ticket · Dark', 9.0, 'The arrival board as a Carbon ticket with a yellow dot-matrix ref. The most striking, and the heaviest in an inbox.'],
+  'team-light': ['Team · Board ticket · Light', 9.4, 'The same board on Ticket Paper: Carbon dots on a faint grid, like a printed departure board. Calmer in a list of emails, just as clear.'],
 };
 const OPTS = {
-  edge: { subtle: ['Stamp · subtle', 9.5], edge: ['Stamp edge', 8.5], notch: ['Notched', 7], plain: ['Plain', 6] },
-  surface: { paper: ['Paper', 9], stub: ['Kraft stub', 8.8], kraft: ['Kraft', 7.2] },
-  ref: { matrix: ['Dot matrix', 9.2], flap: ['Split-flap', 7.5] },
+  edge: { subtle: ['Stamp · subtle', 9.5], medium: ['Stamp · medium', 9], edge: ['Stamp edge', 8.5] },
+  theme: { light: ['Board · Light', 9.4], dark: ['Board · Dark', 9] },
+  due: { rust: ['Due · Rust + clock', 9.2], yellow: ['Due · Yellow', 8.8] },
 };
 const SUBJ = {
   customer: ['We’ve got your request [ONA-2611-0042]', '<b>ONAWAY</b> &lt;quotes@onaway.ca&gt; · to Ada Lovelace'],
   team: ['New quote request [ONA-2611-0042] · Moving · Mississauga → Oakville', '<b>ONAWAY</b> &lt;quotes@onaway.ca&gt; · to ONAWAY quotes · reply-to Ada Lovelace'],
 };
-const state = { style: 'receipt', kind: 'customer', edge: 'subtle', surface: 'paper', ref: 'matrix', fonts: 'system', width: 'desk' };
+const state = { kind: 'customer', edge: 'subtle', theme: 'dark', due: 'yellow', fonts: 'system', width: 'desk' };
 const frame = document.getElementById('frame');
 const store = { get(k) { try { return localStorage.getItem(k); } catch (e) { return null; } }, set(k, v) { try { localStorage.setItem(k, v); } catch (e) {} } };
 
 function fit() { try { frame.style.height = frame.contentDocument.documentElement.scrollHeight + 'px'; } catch (e) {} }
 function scores() {
-  const [name, n, why] = SCORE[state.style];
+  const key = state.kind === 'team' ? 'team-' + state.theme : 'customer';
+  const [name, n, why] = SCORE[key];
   document.getElementById('sName').textContent = name;
   document.getElementById('sNum').innerHTML = `${n}<small> / 10</small>`;
   document.getElementById('sWhy').textContent = why;
-  const yours = store.get('em02:' + state.style);
+  const yours = store.get('em03:' + key);
   document.getElementById('rate').innerHTML = Array.from({ length: 10 }, (_, i) => `<button type="button" data-n="${i + 1}" aria-pressed="${String(yours === String(i + 1))}" aria-label="Rate ${name} ${i + 1} out of 10">${i + 1}</button>`).join('');
   document.getElementById('mine').textContent = yours ? `You gave ${name} ${yours}/10.` : 'Not rated yet. Kept in this browser only; tell me your numbers.';
-  const keys = ['edge', 'surface'].concat(state.style === 'board' ? ['ref'] : []);
+  const keys = ['edge'].concat(state.kind === 'team' ? ['theme', 'due'] : []);
   document.getElementById('opts').innerHTML = keys.map((k) => Object.entries(OPTS[k]).map(([v, [label, s]]) => `<tr class="${state[k] === v ? 'is-on' : ''}"><td>${label}</td><td>${s}</td></tr>`).join('')).join('');
 }
 function render() {
   document.getElementById('client').classList.toggle('is-phone', state.width === 'phone');
-  document.querySelector('[data-k="ref"]').classList.toggle('is-off', state.style !== 'board');
+  document.querySelectorAll('[data-k="theme"], [data-k="due"]').forEach((g) => g.classList.toggle('is-off', state.kind !== 'team'));
   document.getElementById('subj').textContent = SUBJ[state.kind][0];
   document.getElementById('meta').innerHTML = SUBJ[state.kind][1];
   const html = build({ ...state, base: 'email/assets/' });
   frame.srcdoc = html;
-  document.querySelector('.note').textContent = `Rendered live from the email HTML (email/em02.js) · ${(new Blob([html]).size / 1024).toFixed(1)} KB · sample request: Moving, Mississauga → Oakville, Wed Nov 4`;
+  document.querySelector('.note').textContent = `Rendered live from the email HTML (email/em03.js) · ${(new Blob([html]).size / 1024).toFixed(1)} KB · sample request: Moving, Mississauga → Oakville, Wed Nov 4`;
   scores();
 }
 frame.addEventListener('load', () => { fit(); setTimeout(fit, 400); });
@@ -181,7 +176,7 @@ document.querySelectorAll('.tg').forEach((g) => g.addEventListener('click', (e) 
 document.getElementById('rate').addEventListener('click', (e) => {
   const b = e.target.closest('button');
   if (!b) return;
-  store.set('em02:' + state.style, b.dataset.n);
+  store.set('em03:' + (state.kind === 'team' ? 'team-' + state.theme : 'customer'), b.dataset.n);
   scores();
 });
 render();
