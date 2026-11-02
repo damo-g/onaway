@@ -435,7 +435,10 @@ export function init(el) {
       if (e.key === 'Enter') { e.preventDefault(); first?.click(); }
       if (e.key === 'Escape') pk.classList.remove('is-open');
     });
-    input.addEventListener('blur', () => setTimeout(() => pk.classList.remove('is-open'), 180));
+    // Pressing a suggestion keeps focus in the input, so a slow click or a trackpad tap still lands;
+    // the list closes only when focus really leaves the picker
+    res.addEventListener('pointerdown', (e) => e.target.closest('button') && e.preventDefault());
+    pk.addEventListener('focusout', (e) => { if (!pk.contains(e.relatedTarget)) pk.classList.remove('is-open'); });
     pk.querySelector('.qpick__change').onclick = () => {
       S[f] = null;
       pk.classList.remove('is-set', 'is-out');
