@@ -27,6 +27,9 @@ return [
     // The phone number written in messages ("Rather talk? Call …")
     'company_phone' => '',
 
+    // Optional: where the emails' images live (they ship with the site, in public/email/)
+    'email_assets' => 'https://onaway.ca/email/',
+
     // Approximate place of the visitor's IP, team email only. Optional: leave as is for the free
     // keyless lookup; 'url' => '' turns it off; {ip} is replaced. 'token' is sent as a Bearer header.
     'geoip' => [

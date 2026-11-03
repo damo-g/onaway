@@ -38,6 +38,8 @@ final class Notifier
             (string) ($this->config['company_phone'] ?: '+1 647 877 1411'),
             (string) ($this->config['smtp']['user'] ?? 'quotes@onaway.ca'),
             $visitor,
+            // the emails' images ship with the site, in public/email/
+            (string) ($this->config['email_assets'] ?? 'https://onaway.ca/email/'),
         );
         $errors = [];
         foreach (['team_email' => ['emailed_team_at', 'team'], 'customer_email' => ['emailed_customer_at', 'customer']] as $name => [$column, $build]) {
