@@ -1467,7 +1467,7 @@
   .qcheck input:checked::after { content: ""; width: var(--spacing-8); height: var(--spacing-8); background: var(--color-yellow); }
 
   /* Place picker */
-  .qpick { position: relative; }
+  .qpick { position: relative; min-width: 0; } /* lets the area tag truncate instead of widening the page on phones */
   .qpick__res { position: absolute; inset-inline: 0; top: calc(100% - var(--spacing-34)); z-index: 20; display: none; flex-direction: column; padding: var(--spacing-8); background: var(--color-carbon); color: var(--color-paper); }
   .qpick.is-open .qpick__res { display: flex; }
   .qpick__res button { display: flex; align-items: center; gap: var(--spacing-13); padding: var(--spacing-13); font-size: var(--text-lead); font-weight: 600; text-align: left; cursor: pointer; }
@@ -1479,9 +1479,11 @@
   .qpick__got { display: none; align-items: center; gap: var(--spacing-13); height: var(--spacing-55); padding-inline: var(--spacing-13); border-bottom: 1.5px solid var(--color-carbon); background: var(--qp-field); font-size: var(--text-lead); font-weight: 600; }
   .qpick__got i { width: var(--spacing-13); height: var(--spacing-13); flex: none; background: var(--color-yellow); outline: 1.5px solid var(--color-carbon); }
   .qpick.is-out .qpick__got i { background: var(--color-rust); outline: 0; }
+  /* the name, the area tag and Change share one text baseline; the square stays centred in the row */
+  .qpick__line { display: flex; flex: 1; align-items: baseline; gap: var(--spacing-13); min-width: 0; }
   .qpick__name { white-space: nowrap; }
   .qpick__tag { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-family: var(--font-mono); font-size: var(--text-label); letter-spacing: var(--text-label--letter-spacing); font-weight: 500; font-stretch: normal; text-transform: uppercase; color: var(--qp-mut); }
-  .qpick__change { margin-left: auto; font-size: var(--text-small); font-weight: 400; text-decoration: underline; text-underline-offset: 4px; cursor: pointer; }
+  .qpick__change { flex: none; margin-left: auto; font-size: var(--text-small); font-weight: 400; text-decoration: underline; text-underline-offset: 4px; cursor: pointer; }
   .qpick.is-set .qpick__got { display: flex; }
   .qpick.is-set .qinput { display: none; }
   .qpick__out { display: none; margin-top: var(--spacing-8); font-size: var(--text-small); color: var(--color-rust); }
