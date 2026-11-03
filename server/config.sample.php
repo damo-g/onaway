@@ -43,10 +43,10 @@ return [
         'secret' => '',
     ],
 
-    // Step 5 · Telegram alerts to the team group
+    // Step 5 · Telegram alerts to the team group. Both empty = off.
     'telegram' => [
-        'bot_token' => '',
-        'chat_id' => '',
+        'bot_token' => '',   // from @BotFather, like 1234567890:AA…
+        'chat_id' => '',     // the group's id from getUpdates, a negative number like -1001234567890
     ],
 
     // Step 6 · Trello, through the board's private email address
