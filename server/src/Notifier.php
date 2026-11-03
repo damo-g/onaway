@@ -7,9 +7,9 @@ use DateTimeImmutable;
 use DateTimeZone;
 use Throwable;
 
-// After a request is saved: the team email, then the customer confirmation (Telegram and Trello join in
-// steps 5–6). Each success stamps its column; a failure is logged, kept short in last_error, and never
-// stops the next one. The visitor already has their answer by now.
+// After a request is saved: the team email, the customer confirmation, then the Telegram alert, which warns
+// when an email failed so someone follows up by hand (Trello joins in step 6). Each success stamps its column;
+// a failure is logged, kept short in last_error, and never stops the next one. The visitor already has their answer.
 final class Notifier
 {
     public function __construct(
@@ -18,6 +18,7 @@ final class Notifier
         private array $config,
         private DateTimeZone $tz,
         private ?GeoIp $geoIp = null,
+        private ?Telegram $telegram = null,
     ) {
     }
 
@@ -42,6 +43,7 @@ final class Notifier
             (string) ($this->config['email_assets'] ?? 'https://onaway.ca/email/'),
         );
         $errors = [];
+        $failed = [];
         foreach (['team_email' => ['emailed_team_at', 'team'], 'customer_email' => ['emailed_customer_at', 'customer']] as $name => [$column, $build]) {
             try {
                 $this->mailer->send($emails->$build());
@@ -49,11 +51,23 @@ final class Notifier
             } catch (Throwable $e) {
                 Log::error($e, ['ref' => $ref, 'step' => $name]);
                 $errors[] = $name . ': ' . self::reason($e);
+                $failed[] = $build;
             }
         }
         try {
             $this->mailer->close();
         } catch (Throwable) {
+        }
+
+        $telegram = $this->telegram ?? new Telegram($this->config['telegram'] ?? []);
+        if ($telegram->enabled()) { // both values empty: Telegram is off
+            try {
+                $telegram->send($emails->telegram($failed));
+                $this->repo->stamp($id, 'telegram_at', new DateTimeImmutable('now', new DateTimeZone('UTC')));
+            } catch (Throwable $e) {
+                Log::error($e, ['ref' => $ref, 'step' => 'telegram']);
+                $errors[] = 'telegram: ' . self::reason($e);
+            }
         }
         if ($errors) {
             $this->repo->recordError($id, implode('; ', $errors));
