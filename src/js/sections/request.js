@@ -537,11 +537,16 @@ export function init(el) {
     el.querySelectorAll('.qdone [data-q="by"]').forEach((n) => { n.removeAttribute('data-q'); n.textContent = `by ${promisedLabel}`; });
     try { sessionStorage.removeItem('onaway:quote'); } catch {}
     el.classList.add('is-sent');
+    // the page header hides (CSS); the confirmation's heading names the section, and the ticket is just the slip now
+    el.setAttribute('aria-labelledby', 'qdone-title');
+    ticket.classList.remove('is-expanded');
+    ticket.querySelector('.qticket__toggle').setAttribute('aria-expanded', 'false');
     el.querySelector('.qp__steps').hidden = true;
     const ok = el.querySelector('.qdone');
     ok.hidden = false;
     ok.focus({ preventScroll: true });
-    el.scrollIntoView({ behavior: 'smooth' });
+    // the header is gone, so the confirmation starts at the top of the page
+    if (window.lenis) window.lenis.scrollTo(0); else window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
   async function send() {
