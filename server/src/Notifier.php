@@ -7,9 +7,10 @@ use DateTimeImmutable;
 use DateTimeZone;
 use Throwable;
 
-// After a request is saved: the team email, the customer confirmation, then the Telegram alert, which warns
-// when an email failed so someone follows up by hand (Trello joins in step 6). Each success stamps its column;
-// a failure is logged, kept short in last_error, and never stops the next one. The visitor already has their answer.
+// After a request is saved: the team email, the customer confirmation, the Trello card (an email to the board),
+// then the Telegram alert, which warns when any of those emails failed so someone follows up by hand. Each success
+// stamps its column; a failure is logged, kept short in last_error, and never stops the next one. The visitor
+// already has their answer.
 final class Notifier
 {
     public function __construct(
@@ -52,6 +53,18 @@ final class Notifier
                 Log::error($e, ['ref' => $ref, 'step' => $name]);
                 $errors[] = $name . ': ' . self::reason($e);
                 $failed[] = $build;
+            }
+        }
+        // The Trello card: off while the board address is empty
+        $board = trim((string) ($this->config['trello']['board_email'] ?? ''));
+        if ($board !== '') {
+            try {
+                $this->mailer->send($emails->board($board));
+                $this->repo->stamp($id, 'trello_at', new DateTimeImmutable('now', new DateTimeZone('UTC')));
+            } catch (Throwable $e) {
+                Log::error($e, ['ref' => $ref, 'step' => 'board_email']);
+                $errors[] = 'board_email: ' . self::reason($e);
+                $failed[] = 'board';
             }
         }
         try {

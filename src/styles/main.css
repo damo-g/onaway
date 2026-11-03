@@ -1538,7 +1538,6 @@
   .qdone__title { margin-bottom: var(--spacing-34); font-size: var(--text-h1); line-height: 1; font-weight: 650; letter-spacing: -0.01em; text-transform: uppercase; }
   .qdone__text { max-width: 34ch; margin-bottom: var(--spacing-21); font-size: var(--text-lead); line-height: 1.5; }
   .qdone__text a { text-decoration: underline; text-underline-offset: 4px; white-space: nowrap; }
-  .qdone__ref { margin-top: var(--spacing-34); color: var(--qp-mut); }
   .qdone:focus { outline: 0; }
 
   /* Side: the live ticket, then talk + hours */
@@ -1636,7 +1635,6 @@
   /* reduced motion: only the label changes */
   @media (prefers-reduced-motion: reduce) { .refchip .refchip__stub { transform: none !important; animation: none !important; } }
   html[data-motion="reduce"] .refchip .refchip__stub { transform: none !important; animation: none !important; }
-  .qdone__ref { display: flex; flex-wrap: wrap; align-items: center; gap: var(--spacing-8); }
   .qp.is-sent .qticket__stamp { opacity: 1; transform: rotate(-6deg) scale(1); }
   .qside__block { padding-block: var(--spacing-34); border-top: 1px solid var(--color-line); }
   .qside__h { margin-bottom: var(--spacing-21); font-size: var(--text-h3); font-weight: 600; }
