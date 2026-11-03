@@ -1571,7 +1571,63 @@
   .qp.is-sent .qticket__strip { transform: translate(8px, -8px) rotate(-2deg); }
   .qp.is-sent .qticket__prog, .qp.is-sent .qticket__count { visibility: hidden; }
   .qp.is-sent .qticket__count { display: none; }
-  .qp.is-sent .qticket__ref { display: block; }
+  .qp.is-sent .qticket__ref { display: flex; align-items: center; gap: var(--spacing-8); }
+  .qp.is-sent .qticket__strip { padding-block: var(--spacing-13); }
+  .qp.is-sent .qticket__title { display: none; } /* sent: [W] REF [chip] */
+
+  /* Tear-off stub (src/partials/refchip.hbs): the reference and a COPY stub, notched where they meet, one button
+     over both. On the ticket: reference Paper, stub Carbon 9%. In a line: reference Carbon 9%, stub Carbon 5%. */
+  .refchip {
+    --rc-ref: var(--color-paper);
+    --rc-stub: color-mix(in srgb, var(--color-carbon) 9%, var(--color-paper));
+    --rc-ease: cubic-bezier(0.45, 0, 0.55, 1);
+    position: relative; display: inline-flex; align-items: center; min-height: var(--spacing-34); color: var(--color-carbon);
+    -webkit-user-select: none; user-select: none; -webkit-touch-callout: none;
+  }
+  .refchip--line { --rc-ref: color-mix(in srgb, var(--color-carbon) 9%, var(--color-paper)); --rc-stub: color-mix(in srgb, var(--color-carbon) 5%, var(--color-paper)); }
+  .refchip:has(.refchip__hit:focus-visible) { outline: 2px solid color-mix(in srgb, var(--color-carbon) 55%, transparent); outline-offset: 3px; }
+  .refchip__ref {
+    display: inline-flex; align-items: center; min-height: var(--spacing-34); padding-inline: var(--spacing-13); background: var(--rc-ref);
+    font-family: var(--font-mono); font-size: var(--text-label); font-weight: 500; letter-spacing: var(--text-label--letter-spacing); font-stretch: normal; font-variant-numeric: tabular-nums; text-transform: uppercase; white-space: nowrap; color: var(--color-carbon);
+    text-decoration: underline 1px transparent; text-underline-offset: 5px; transition: text-decoration-color 0.2s ease-out;
+    -webkit-mask: radial-gradient(circle at 100% 0, #0000 3px, #000 3.5px) top / 100% 51% no-repeat, radial-gradient(circle at 100% 100%, #0000 3px, #000 3.5px) bottom / 100% 51% no-repeat;
+    mask: radial-gradient(circle at 100% 0, #0000 3px, #000 3.5px) top / 100% 51% no-repeat, radial-gradient(circle at 100% 100%, #0000 3px, #000 3.5px) bottom / 100% 51% no-repeat;
+  }
+  .refchip__hit { display: inline-flex; align-items: center; min-height: var(--spacing-34); padding: 0; cursor: pointer; -webkit-tap-highlight-color: transparent; }
+  .refchip__hit::after { content: ""; position: absolute; inset: 0; } /* the whole chip is the tap target */
+  .refchip__hit:focus-visible { outline: none; }
+  .refchip__stub {
+    display: inline-flex; align-items: center; justify-content: center; min-width: var(--spacing-34); min-height: var(--spacing-34); padding-inline: var(--spacing-13);
+    background-color: var(--rc-stub);
+    /* the drawn perforation: 1.2px dots every 4px at Carbon 30%, starting 2px down, between the notches */
+    background-image: radial-gradient(circle, color-mix(in srgb, var(--color-carbon) 30%, transparent) 0.6px, #0000 0.9px);
+    background-size: 2px 4px; background-repeat: repeat-y; background-position: 0 2px;
+    transform-origin: 0 100%; transition: transform 0.3s var(--rc-ease) 0.14s;
+    -webkit-mask: radial-gradient(circle at 0 0, #0000 3px, #000 3.5px) top / 100% 51% no-repeat, radial-gradient(circle at 0 100%, #0000 3px, #000 3.5px) bottom / 100% 51% no-repeat;
+    mask: radial-gradient(circle at 0 0, #0000 3px, #000 3.5px) top / 100% 51% no-repeat, radial-gradient(circle at 0 100%, #0000 3px, #000 3.5px) bottom / 100% 51% no-repeat;
+  }
+  .refchip__lb { display: inline-grid; font-family: var(--font-mono); font-size: var(--text-label); font-weight: 600; letter-spacing: var(--text-label--letter-spacing); font-stretch: normal; text-transform: uppercase; line-height: 1; }
+  .refchip__lb > span { grid-area: 1 / 1; display: inline-flex; justify-content: center; white-space: nowrap; transition: opacity 0.16s ease-out, transform 0.16s ease-out; }
+  .refchip__d { opacity: 0; transform: translateX(-4px); }
+  /* hover: the reference underlines and the stub hints at the tear; press: the stub dips */
+  .refchip:hover .refchip__ref { text-decoration-color: var(--color-carbon); }
+  .refchip:not(.is-done):hover .refchip__stub { transform: translateX(1px) rotate(1deg); transition-delay: 0s; transition-duration: 0.2s; }
+  .refchip:not(.is-done) .refchip__hit:active .refchip__stub { transform: translateY(1px); transition: transform 0.08s ease-out; }
+  /* copied: separate 3px, tip 4° from the lower corner, then the label swaps; the label returns before the stub */
+  .refchip.is-done .refchip__stub { transform: translate(5px, -2px) rotate(4deg); }
+  .refchip.is-done:not(.is-held) .refchip__stub { animation: refchip-tear 0.34s both; }
+  .refchip.is-done .refchip__r { opacity: 0; transform: translateX(4px); transition-delay: 0.3s; }
+  .refchip.is-done .refchip__d { opacity: 1; transform: none; transition-delay: 0.3s; }
+  .refchip.is-fail .refchip__d { color: var(--color-rust); }
+  @keyframes refchip-tear {
+    0% { transform: none; animation-timing-function: ease-out; }
+    35% { transform: translateX(3px); animation-timing-function: cubic-bezier(0.2, 0.7, 0.2, 1); }
+    100% { transform: translate(5px, -2px) rotate(4deg); }
+  }
+  /* reduced motion: only the label changes */
+  @media (prefers-reduced-motion: reduce) { .refchip .refchip__stub { transform: none !important; animation: none !important; } }
+  html[data-motion="reduce"] .refchip .refchip__stub { transform: none !important; animation: none !important; }
+  .qdone__ref { display: flex; flex-wrap: wrap; align-items: center; gap: var(--spacing-8); }
   .qp.is-sent .qticket__stamp { opacity: 1; transform: rotate(-6deg) scale(1); }
   .qside__block { padding-block: var(--spacing-34); border-top: 1px solid var(--color-line); }
   .qside__h { margin-bottom: var(--spacing-21); font-size: var(--text-h3); font-weight: 600; }
@@ -1599,10 +1655,12 @@
     .qticket.is-expanded .qticket__toggle svg { rotate: 180deg; }
     .qticket__body { display: none; max-height: 60svh; overflow-y: auto; padding-inline: var(--grid-margin); border-top: 1.5px dashed color-mix(in srgb, var(--color-carbon) 35%, transparent); -webkit-mask: none; mask: none; }
     .qticket.is-expanded .qticket__body { display: block; }
-    /* Sent: the strip keeps the W and the reference; the stamp lands just above the ticket */
-    .qp.is-sent .qticket__title { display: none; }
+    /* Sent: the stamp lands just above the ticket */
     .qticket__ref { white-space: nowrap; }
     .qticket__stamp { left: var(--grid-margin); bottom: calc(100% + var(--spacing-13)); }
+    /* the sticky bar clears the home indicator */
+    .qticket:not(.is-expanded) .qticket__strip { padding-bottom: calc(var(--spacing-13) + env(safe-area-inset-bottom)); }
+    .qticket.is-expanded .qticket__body { padding-bottom: calc(var(--spacing-34) + env(safe-area-inset-bottom)); }
     .qside__block { grid-column: 1 / -1; }
   }
   @media (width >= 768px) {

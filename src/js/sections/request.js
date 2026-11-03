@@ -435,7 +435,10 @@ export function init(el) {
       if (e.key === 'Enter') { e.preventDefault(); first?.click(); }
       if (e.key === 'Escape') pk.classList.remove('is-open');
     });
-    input.addEventListener('blur', () => setTimeout(() => pk.classList.remove('is-open'), 180));
+    // Pressing a suggestion keeps focus in the input, so a slow click or a trackpad tap still lands;
+    // the list closes only when focus really leaves the picker
+    res.addEventListener('pointerdown', (e) => e.target.closest('button') && e.preventDefault());
+    pk.addEventListener('focusout', (e) => { if (!pk.contains(e.relatedTarget)) pk.classList.remove('is-open'); });
     pk.querySelector('.qpick__change').onclick = () => {
       S[f] = null;
       pk.classList.remove('is-set', 'is-out');
@@ -528,7 +531,8 @@ export function init(el) {
 
   function sent({ ref, promisedLabel }) {
     el.querySelectorAll('[data-o="email"]').forEach((n) => (n.textContent = S.email.trim()));
-    el.querySelectorAll('[data-o="ref"]').forEach((n) => (n.textContent = ref));
+    // the tear-off stubs (refchip) all read the reference from one store
+    if (window.Alpine) window.Alpine.store('refCopy').ref = ref;
     // the promise the server made replaces the page's live clock
     el.querySelectorAll('.qdone [data-q="by"]').forEach((n) => { n.removeAttribute('data-q'); n.textContent = `by ${promisedLabel}`; });
     try { sessionStorage.removeItem('onaway:quote'); } catch {}

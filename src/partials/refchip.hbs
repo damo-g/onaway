@@ -1,0 +1,8 @@
+{{!-- Tear-off stub: the reference and a COPY stub, one button over both (src/js/refchip.js, .refchip in main.css).
+     {{> refchip}} on the ticket strip, {{> refchip tone="line"}} in a line of text. --}}
+<span class="refchip{{#if tone}} refchip--{{tone}}{{/if}}" x-data="refChip" :class="{ 'is-done': shown, 'is-held': held, 'is-fail': fail }">
+  <span class="refchip__ref" x-text="$store.refCopy.ref"></span>
+  <button type="button" class="refchip__hit" :aria-label="`Copy reference ${$store.refCopy.ref}`" aria-label="Copy reference" @click="copy($el)">
+    <span class="refchip__stub" @animationend="held = true"><span class="refchip__lb"><span class="refchip__r">Copy</span><span class="refchip__d" x-text="word">Copied</span></span></span>
+  </button>
+</span>

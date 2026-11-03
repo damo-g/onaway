@@ -1,0 +1,274 @@
+<!doctype html>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>CR-02 Copy the Ref</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wdth,wght@75..100,400..700&family=Overpass+Mono:wght@400;500;600&display=swap">
+<link rel="stylesheet" href="shared.css">
+<style>
+:root{--mut:color-mix(in srgb,#202521 62%,transparent);--ease:cubic-bezier(.2,.8,.2,1);--sig:var(--yellow)}
+.top .tools{flex-wrap:wrap;gap:8px;justify-content:flex-end;max-width:1100px}
+.tg{display:inline-flex;flex-wrap:wrap}.tg .tbtn+.tbtn{border-left:0}
+.tl0{font-family:var(--mono);font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);align-self:center;margin-right:8px}
+.board{max-width:1512px;margin:21px auto 0;display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,470px),1fr));gap:21px}
+.card{background:var(--paper);color:var(--carbon);padding:34px 34px 21px;box-shadow:0 0 0 1px var(--line);display:flex;flex-direction:column;gap:21px;min-width:0}
+.card__head{display:flex;align-items:flex-start;justify-content:space-between;gap:13px}
+.card h2{margin:0;font-family:var(--display);font-stretch:87.5%;font-weight:600;font-size:26px;letter-spacing:-.01em}
+.card h2 small{display:block;margin-top:8px;font-family:var(--mono);font-size:12px;font-weight:500;letter-spacing:.12em;text-transform:uppercase;color:var(--mut)}
+.mark{font-family:var(--display);font-stretch:87.5%;font-weight:650;font-size:42px;line-height:1;white-space:nowrap}
+.mark small{font-size:16px;font-weight:500;color:var(--mut)}
+.desc{font-size:15px;line-height:1.55;margin:0;color:rgba(32,37,33,.78);max-width:52ch}
+.ctx{font-family:var(--mono);font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--mut);margin-bottom:8px}
+.lb{font-family:var(--mono);font-size:12px;letter-spacing:.12em;text-transform:uppercase;line-height:1}
+.yours{display:flex;align-items:center;gap:4px;flex-wrap:wrap;padding-top:13px;border-top:1px solid rgba(32,37,33,.14)}
+.yours span{font-family:var(--mono);font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--mut);margin-right:4px}
+.yours button{font-family:var(--mono);font-size:12px;width:26px;padding:6px 0;border:1px solid rgba(32,37,33,.2);background:transparent;color:var(--carbon);cursor:pointer}
+.yours button[aria-pressed="true"]{background:var(--carbon);color:var(--paper)}
+.yours button:focus-visible{outline:2px solid var(--rust);outline-offset:2px}
+
+/* the sent strip, as on /quote/; Kraft = camel with the fibre grain */
+.strip{--face:color-mix(in srgb,#202521 5%,#F7F2E7);position:relative;display:flex;align-items:center;gap:13px;min-height:55px;padding:0 21px;background:var(--face);color:var(--carbon);transform:rotate(-1.2deg);transform-origin:left center}
+body[data-surface="kraft"] .strip{--face:#B49A78;background:#B49A78 url("email/assets/kraft.jpg");--mut:rgba(32,37,33,.78)}
+.strip.is-phone{max-width:390px;padding:0 20px;transform:none;box-shadow:0 -8px 13px color-mix(in srgb,#202521 14%,transparent)}
+.strip svg.w{width:21px;height:21px;flex:none}
+.strip .end{margin-left:auto;display:flex;align-items:center;gap:8px}
+.line{font-family:var(--mono);font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--mut);display:flex;align-items:center;flex-wrap:wrap;gap:4px 8px}
+.line .ref{color:var(--carbon)}
+.ref{font-weight:600}
+
+.cp{appearance:none;border:0;background:none;padding:0;margin:0;font:inherit;color:inherit;cursor:pointer;position:relative;display:inline-flex;align-items:center;gap:8px;min-height:34px;white-space:nowrap;--tile:var(--face, #F7F2E7)}
+.line .cp{--tile:var(--paper)}
+.cp:focus-visible{outline:2px solid var(--rust);outline-offset:4px}
+.ic{display:inline-grid;place-items:center;width:21px;height:21px;flex:none}
+.ic svg{width:100%;height:100%;overflow:visible}
+.ic .front{transition:transform .45s var(--ease),opacity .3s}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+
+/* 1 · Tear-off stub: a perforated stub holds the icon; it tears away, "Copied" is printed beneath, a fresh one slides in */
+.v1 .stub{position:relative;display:inline-grid;place-items:center;width:89px;height:34px}
+.v1 .stub__under{grid-area:1/1;display:flex;align-items:center;gap:6px;color:var(--rust);opacity:0;transition:opacity .2s .15s}
+.v1 .stub__top{grid-area:1/1;display:flex;align-items:center;justify-content:center;gap:6px;width:100%;height:100%;background:var(--carbon);color:var(--paper);--tile:var(--carbon);
+  -webkit-mask:radial-gradient(circle at 0 50%,transparent 3px,#000 3.5px) 0 0/3px 10px repeat-y,linear-gradient(#000,#000) 3px 0/calc(100% - 3px) 100% no-repeat;
+  mask:radial-gradient(circle at 0 50%,transparent 3px,#000 3.5px) 0 0/3px 10px repeat-y,linear-gradient(#000,#000) 3px 0/calc(100% - 3px) 100% no-repeat;
+  transform-origin:0 100%;transition:transform .55s var(--ease),opacity .45s}
+.v1 .stub__top .ic{width:13px;height:13px}
+.v1 .stub::before{content:"";position:absolute;left:-1px;top:4px;bottom:4px;border-left:1.5px dashed color-mix(in srgb,#202521 40%,transparent)}
+.v1.is-done .stub__top{transform:translate(21px,13px) rotate(18deg);opacity:0}
+.v1.is-done .stub__under{opacity:1}
+/* phone strip: the stub is icon only, so the ref keeps its room */
+.strip.is-phone .v1 .stub{width:34px}.strip.is-phone .v1 .stub__top{font-size:0;gap:0}.strip.is-phone .v1 .stub__under{font-size:0;gap:0}
+.v1.is-back .stub__top{transition:none;transform:translateX(13px);opacity:0}
+
+/* 2 · Split-flap, two ways: Kraft flaps at rest, Carbon flaps when copied; each falls on a hinge, left to right */
+.v2 .flaps{display:inline-flex;gap:2px}
+.fl{position:relative;display:inline-block;width:13px;height:21px;perspective:120px;font-family:var(--mono);font-size:12px;font-weight:600;line-height:21px;text-align:center}
+.fl i{position:absolute;left:0;right:0;height:50%;overflow:hidden;font-style:normal;border-radius:1.5px;backface-visibility:hidden}
+.fl i b{display:block;height:21px;font-weight:600}
+.fl .t{top:0;border-radius:1.5px 1.5px 0 0}
+.fl .bo{bottom:0;border-radius:0 0 1.5px 1.5px}
+.fl .bo b{transform:translateY(-50%)}
+.fl .t::after{content:"";position:absolute;left:0;right:0;bottom:0;height:1px;background:rgba(0,0,0,.28)}
+.fl [data-c="kraft"]{background:linear-gradient(#BDA484,#B49A78);color:var(--carbon)}
+.fl .bo[data-c="kraft"]{background:linear-gradient(#AD936F,#B49A78)}
+.fl [data-c="carbon"]{background:linear-gradient(#2A302B,#202521);color:var(--paper)}
+.fl .bo[data-c="carbon"]{background:linear-gradient(#1A1E1B,#202521)}
+.fl .ft{top:0;transform-origin:50% 100%;animation:fall-top .16s ease-in forwards;z-index:2}
+.fl .fb{bottom:0;transform-origin:50% 0;transform:rotateX(90deg);animation:fall-bot .16s ease-out .16s forwards;z-index:2}
+@keyframes fall-top{to{transform:rotateX(-90deg)}}
+@keyframes fall-bot{to{transform:rotateX(0)}}
+/* on a Kraft strip the resting flaps turn paper, so they never vanish into it */
+body[data-surface="kraft"] .strip .fl [data-c="kraft"]{background:linear-gradient(#FBF8F0,#F7F2E7)}
+body[data-surface="kraft"] .strip .fl .bo[data-c="kraft"]{background:linear-gradient(#EFE9DC,#F7F2E7)}
+
+/* 3 · Punch: the icon is the punch; a hole is clipped from the strip and the chad drops away */
+.v3 .hole{position:relative;width:13px;height:13px;border-radius:50%;flex:none;background:transparent;box-shadow:inset 0 0 0 1.5px color-mix(in srgb,#202521 35%,transparent);transition:background .15s,box-shadow .15s}
+.v3.is-done .hole{background:var(--bg);box-shadow:inset 0 2px 3px rgba(32,37,33,.45)}
+.v3 .chad{position:absolute;inset:0;border-radius:50%;background:var(--face, #EFE7D6);opacity:0;pointer-events:none}
+.v3.is-done .chad{animation:chad .6s var(--ease) forwards}
+@keyframes chad{0%{opacity:1;transform:none}100%{opacity:0;transform:translate(8px,34px) rotate(90deg) scale(.8)}}
+.v3 .word{display:inline-grid;overflow:hidden;height:1em}
+.v3 .word span{grid-area:1/1;transition:transform .3s var(--ease) .1s}
+.v3 .word span+span{transform:translateY(110%)}
+.v3.is-done .word span:first-child{transform:translateY(-110%)}
+.v3.is-done .word span+span{transform:none}
+
+/* 4 · Signal line: the ref is the button; the signal colour runs under it left to right; the icon becomes a tick */
+.v4 .wrap{position:relative;display:inline-block;padding-bottom:5px}
+.v4 .wrap::before{content:"";position:absolute;left:0;right:0;bottom:0;height:1px;background:color-mix(in srgb,#202521 35%,transparent)}
+.v4 .wrap::after{content:"";position:absolute;left:0;bottom:0;height:3px;width:100%;background:var(--sig);transform:scaleX(0);transform-origin:left;transition:transform .45s var(--ease)}
+.v4.is-done .wrap::after{transform:scaleX(1)}
+.v4 .swap{display:inline-grid}
+.v4 .swap>*{grid-area:1/1;transition:opacity .2s,transform .3s var(--ease)}
+.v4 .swap .tick{opacity:0;transform:scale(.6)}
+.v4.is-done .swap .ic{opacity:0;transform:scale(.6)}
+.v4.is-done .swap .tick{opacity:1;transform:none}
+.v4 .tick{width:21px;height:21px;display:grid;place-items:center}
+.v4 .tick svg{width:100%;height:100%}
+
+/* 5 · Two tickets: the icon is the whole control; its front ticket slides off and comes back */
+.v5 .ic{width:21px;height:21px}
+.v5.is-done .ic .front{transform:translate(6px,-8px) rotate(14deg);opacity:0}
+.v5 .word{display:inline-grid;overflow:hidden;height:1em}
+.v5 .word span{grid-area:1/1;transition:transform .35s var(--ease)}
+.v5 .word span+span{transform:translateY(110%)}
+.v5.is-done .word span:first-child{transform:translateY(-110%)}
+.v5.is-done .word span+span{transform:none}
+
+@media (max-width:600px){.card{padding:21px 16px}.v1 .stub{width:34px}.v1 .stub__top,.v1 .stub__under{font-size:0;gap:0}.strip:not(.is-phone){transform:none}.strip.is-phone{margin:0 -16px;padding:0 16px}}
+@media (prefers-reduced-motion: reduce){*{transition-duration:0s!important;animation-duration:0s!important;animation-delay:0s!important}}
+.reduced *{transition-duration:0s!important;animation-duration:0s!important;animation-delay:0s!important}
+</style>
+
+<body data-surface="paper" data-icon="tickets">
+<div class="top">
+  <div><div class="id">ONAWAY · Quote page · sent ticket · round 2 · CR-02</div><h1>CR-02 · Copy the Ref</h1></div>
+  <div class="tools">
+    <span class="tg" data-k="surface"><span class="tl0">Surface</span><button class="tbtn" data-v="paper" aria-pressed="true">Paper</button><button class="tbtn" data-v="kraft" aria-pressed="false">Kraft</button></span>
+    <span class="tg" data-k="icon"><span class="tl0">Icon</span><button class="tbtn" data-v="tickets" aria-pressed="true">Hugeicons · tickets</button><button class="tbtn" data-v="copy" aria-pressed="false">Hugeicons · copy</button><button class="tbtn" data-v="picto" aria-pressed="false">Pictogram</button></span>
+    <span class="tg" data-k="sig"><span class="tl0">Signal line</span><button class="tbtn" data-v="yellow" aria-pressed="true">Yellow</button><button class="tbtn" data-v="rust" aria-pressed="false">Rust</button><button class="tbtn" data-v="carbon" aria-pressed="false">Carbon</button><button class="tbtn" data-v="kraft" aria-pressed="false">Kraft</button></span>
+    <button class="tbtn" id="all">Play all</button>
+    <button class="tbtn" id="rm" aria-pressed="false">Reduced motion</button>
+  </div>
+</div>
+
+<div class="board" id="board"></div>
+
+<div class="spec">
+  <section>
+    <h2>Ranking</h2>
+    <ol>
+      <li><b>Split-flap, two ways · 9.1</b>. The most "ONAWAY" of the set: the arrival boards from the homepage, now as the confirmation. Kraft flaps fall to Carbon, so you see the change without reading it. No icon needed.</li>
+      <li><b>Tear-off stub · 8.8</b>. A real stub with the Stamp · subtle perforation, the icon printed on it. It tears off, and "Copied" is underneath. Very clear, a little bigger than the others.</li>
+      <li><b>Punch · 8.4</b>. A conductor's punch: a hole appears in the ticket and the chad drops. Charming, but quieter as feedback.</li>
+      <li><b>Signal line · 8.0</b>. The most minimal. Rust or Carbon keep yellow free for the page; yellow is the strongest signal.</li>
+      <li><b>Two tickets · 7.6</b>. Good with the pictogram, but just an animated icon.</li>
+    </ol>
+  </section>
+  <section>
+    <h2>Options, scored</h2>
+    <table>
+      <tr><td>Icon · Hugeicons tickets</td><td>9</td></tr>
+      <tr><td>Icon · Pictogram</td><td>8.5</td></tr>
+      <tr><td>Icon · Hugeicons copy</td><td>7</td></tr>
+      <tr><td>Surface · Paper</td><td>9</td></tr>
+      <tr><td>Surface · Kraft</td><td>8.5</td></tr>
+      <tr><td>Signal · Yellow</td><td>8.5</td></tr>
+      <tr><td>Signal · Rust</td><td>8.5</td></tr>
+      <tr><td>Signal · Carbon</td><td>7.5</td></tr>
+      <tr><td>Signal · Kraft</td><td>6.5</td></tr>
+    </table>
+    <p>Hugeicons "tickets" is two stacked tickets, already in the site’s icon family (1.5 stroke, rounded). The pictogram is drawn in the style of the service pictograms (filled, with knockouts that take the surface colour). Plain "copy" is the generic two-squares icon.</p>
+  </section>
+  <section>
+    <h2>Same in every variant</h2>
+    <ul>
+      <li>A real <code>&lt;button&gt;</code>, at least 34px tall, with a visible focus ring. Its name is "Copy reference ONA-2611-0042".</li>
+      <li>A polite live region says "Reference copied". The confirmation holds for 1.6 s, then returns.</li>
+      <li>If the clipboard is blocked, the ref text is selected instead.</li>
+      <li>Reduced motion: no movement, the end state only.</li>
+    </ul>
+  </section>
+</div>
+<div class="sr" aria-live="polite" id="live"></div>
+
+<script>
+const REF = 'ONA-2611-0042';
+const W = '<svg class="w" viewBox="0 0 100 100" aria-hidden="true"><circle cx="50" cy="50" r="50" fill="#202521"/><path transform="translate(28.6 30) scale(.5)" fill="#F7F2E7" d="M0,80C.14,77.73-.02,11.64.03,9.23l11.67-1.12s.01,40.19-.1,55.51c20.63-10.95,25.77-37.76,25.47-59.5,2.65-.22,9.1-.87,11.81-1.15-.51,20.26,3.46,45.8,24.97,53.64.05-15.31.05-40.2.07-55.53l11.65-1.08v70.04c-17.66,4.6-35.16-10.2-42.26-25.54-7.02,17.45-23.22,35.59-43.32,35.5Z"/></svg>';
+// Icons: each has a .front part that moves in "Two tickets"
+const ICON = {
+  tickets: '<svg viewBox="0 0 24 24" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"><path d="m19.902 7.25l-.493-1.267c-.551-1.259-1.023-2.031-1.692-2.52a4 4 0 0 0-1.25-.613c-1.197-.337-2.49.199-5.075 1.271L8.238 5.43c-.703.292-1.31.544-1.836.779"/><path class="front" d="M3 16.25a2.5 2.5 0 0 0 0-5c0-.93 0-1.394.077-1.78A4 4 0 0 1 6.22 6.327c.386-.077.85-.077 1.78-.077h5.5c3.288 0 4.931 0 6.038.908a4 4 0 0 1 .554.554C21 8.82 21 10.642 21 14.288c0 2.929 0 4.393-.908 5.5a4 4 0 0 1-.554.554c-1.107.908-2.75.908-6.038.908H8c-.93 0-1.394 0-1.78-.077a4 4 0 0 1-3.143-3.143C3 17.644 3 17.18 3 16.25"/></g></svg>',
+  copy: '<svg viewBox="0 0 24 24" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"><path class="front" d="M7.5 14.5c0-3.3 0-4.95 1.025-5.975S11.2 7.5 14.5 7.5s4.95 0 5.975 1.025S21.5 11.2 21.5 14.5s0 4.95-1.025 5.975S17.8 21.5 14.5 21.5s-4.95 0-5.975-1.025S7.5 17.8 7.5 14.5"/><path d="M7.5 16.5c-1.396 0-2.095 0-2.656-.196a3.5 3.5 0 0 1-2.148-2.148C2.5 13.595 2.5 12.896 2.5 11.5v-2c0-3.3 0-4.95 1.025-5.975S6.2 2.5 9.5 2.5h2c1.396 0 2.095 0 2.656.196a3.5 3.5 0 0 1 2.148 2.148c.196.561.196 1.26.196 2.656"/></g></svg>',
+  // two tickets in the service-pictogram style: filled, notched, the perforation knocked out in the surface colour
+  picto: '<svg viewBox="0 0 96 96" aria-hidden="true"><g transform="rotate(-14 48 40)"><path fill="currentColor" d="M20 16h56a4 4 0 0 1 4 4v8a8 8 0 0 0 0 16v8a4 4 0 0 1-4 4H20a4 4 0 0 1-4-4v-8a8 8 0 0 0 0-16v-8a4 4 0 0 1 4-4z"/></g><g class="front"><path fill="currentColor" stroke="var(--tile)" stroke-width="5" d="M16 38h64a4 4 0 0 1 4 4v9a9 9 0 0 0 0 18v9a4 4 0 0 1-4 4H16a4 4 0 0 1-4-4v-9a9 9 0 0 0 0-18v-9a4 4 0 0 1 4-4z"/><path d="M34 46v6M34 57v6M34 68v6" stroke="var(--tile)" stroke-width="4" stroke-linecap="round"/></g></svg>',
+};
+const TICK = '<svg viewBox="0 0 24 24" aria-hidden="true"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="m5 14l3.5 3.5L19 6.5"/></svg>';
+const ic = () => `<span class="ic">${ICON[document.body.dataset.icon]}</span>`;
+const flaps = (word, color) => `<span class="flaps" aria-hidden="true" data-rest="${word}">${[...word.padEnd(6, ' ')].map((c) => `<span class="fl"><i class="t" data-c="${color}"><b>${c.trim() || '&nbsp;'}</b></i><i class="bo" data-c="${color}"><b>${c.trim() || '&nbsp;'}</b></i></span>`).join('')}</span>`;
+
+// Each variant: the strip version and the success-line version
+const V = [
+  { k: 'v2', name: 'Split-flap, two ways', score: 9.1, note: 'Six real flaps on a hinge. At rest they read COPY on Kraft (on paper when the strip itself is Kraft). On tap they fall one by one, left to right, to COPIED on Carbon, the colour change landing with each flap, then fall back. No icon needed.',
+    strip: () => `${flaps('COPY', 'kraft')}<span class="lb">Ref <b class="ref">${REF}</b></span>`,
+    line: () => `<span class="lb">Reference <b class="ref">${REF}</b></span>${flaps('COPY', 'kraft')}` },
+  { k: 'v1', name: 'Tear-off stub', score: 8.8, note: 'A Carbon stub with the Stamp · subtle perforation and the icon printed on it. On tap it tears off along the perforation, "Copied" is printed underneath, and a fresh stub slides back in.',
+    strip: () => `<span class="lb">Keep · Ref <b class="ref">${REF}</b></span><span class="stub lb"><span class="stub__under">${TICK.replace('<svg', '<svg width="13" height="13"')}Copied</span><span class="stub__top">${ic()}Copy</span></span>`,
+    line: () => `<span class="lb">Reference <b class="ref">${REF}</b></span><span class="stub lb"><span class="stub__under">${TICK.replace('<svg', '<svg width="13" height="13"')}Copied</span><span class="stub__top">${ic()}Copy</span></span>` },
+  { k: 'v3', name: 'Punch', score: 8.4, note: 'A conductor’s punch. The icon sits beside a faint punch mark. On tap the hole is clipped from the ticket, the chad drops away, and "Keep" rolls up to "Copied". The hole stays, like a used ticket.',
+    strip: () => `<span class="lb"><span class="word"><span>Keep</span><span>Copied</span></span> · Ref <b class="ref">${REF}</b></span><span class="hole"><span class="chad"></span></span>${ic()}`,
+    line: () => `<span class="lb"><span class="word"><span>Reference</span><span>Copied</span></span> <b class="ref">${REF}</b></span><span class="hole"><span class="chad"></span></span>${ic()}` },
+  { k: 'v4', name: 'Signal line', score: 8.0, note: 'The ref is the button, with a hairline under it and the icon beside it. On tap the signal colour runs under the ref, left to right, and the icon turns into a tick. Pick the colour in the top bar.',
+    strip: () => `<span class="lb">Keep · Ref <span class="wrap"><b class="ref">${REF}</b></span></span><span class="swap">${ic()}<span class="tick">${TICK}</span></span>`,
+    line: () => `<span class="lb">Reference <span class="wrap"><b class="ref">${REF}</b></span></span><span class="swap">${ic()}<span class="tick">${TICK}</span></span>` },
+  { k: 'v5', name: 'Two tickets', score: 7.6, note: 'The icon carries it. Its front ticket slides off as if handed over, and "Keep" rolls up to "Copied". Best with the tickets icon or the pictogram.',
+    strip: () => `<span class="lb"><span class="word"><span>Keep</span><span>Copied</span></span> · Ref <b class="ref">${REF}</b></span>${ic()}`,
+    line: () => `<span class="lb"><span class="word"><span>Reference</span><span>Copied</span></span> <b class="ref">${REF}</b></span>${ic()}` },
+];
+
+const board = document.getElementById('board');
+const live = document.getElementById('live');
+const store = { get(k) { try { return localStorage.getItem(k); } catch (e) { return null; } }, set(k, v) { try { localStorage.setItem(k, v); } catch (e) {} } };
+const btn = (v, inner) => `<button type="button" class="cp lb ${v.k}" aria-label="Copy reference ${REF}">${inner}</button>`;
+function draw() {
+  board.innerHTML = V.map((v, i) => {
+    const yours = store.get('cr02:' + v.k);
+    return `<article class="card">
+      <div class="card__head"><h2>${i + 1} · ${v.name}<small>Tap to copy</small></h2><div class="mark">${v.score}<small> / 10</small></div></div>
+      <p class="desc">${v.note}</p>
+      <div><div class="ctx">Sent ticket · desktop</div><div class="strip">${W}<span class="end">${btn(v, v.strip())}</span></div></div>
+      <div><div class="ctx">Sticky strip · phone 390</div><div class="strip is-phone">${W}<span class="end">${btn(v, v.strip())}</span></div></div>
+      <div><div class="ctx">Success line</div><p class="line">${btn(v, v.line())}<span>· A copy is on its way by email</span></p></div>
+      <div class="yours" data-k="${v.k}"><span>Your rating</span>${Array.from({ length: 10 }, (_, n) => `<button type="button" data-n="${n + 1}" aria-pressed="${String(yours === String(n + 1))}" aria-label="Rate ${v.name} ${n + 1} out of 10">${n + 1}</button>`).join('')}</div>
+    </article>`;
+  }).join('');
+}
+
+// Split-flap: each flap falls on its hinge (old top half folds down, new bottom half lands), left to right
+function flipTo(b, word, color) {
+  const tiles = b.querySelectorAll('.fl');
+  const target = word.padEnd(tiles.length, ' ');
+  const reduced = document.body.classList.contains('reduced') || matchMedia('(prefers-reduced-motion: reduce)').matches;
+  tiles.forEach((t, i) => setTimeout(() => {
+    const ch = target[i].trim() || '&nbsp;';
+    const top = t.querySelector('.t'), bot = t.querySelector('.bo');
+    t.querySelectorAll('.ft,.fb').forEach((x) => x.remove());
+    if (reduced) { top.dataset.c = bot.dataset.c = color; top.innerHTML = bot.innerHTML = `<b>${ch}</b>`; return; }
+    const ft = document.createElement('i'); ft.className = 't ft'; ft.dataset.c = top.dataset.c; ft.innerHTML = top.innerHTML;
+    const fb = document.createElement('i'); fb.className = 'bo fb'; fb.dataset.c = color; fb.innerHTML = `<b>${ch}</b>`;
+    top.dataset.c = color; top.innerHTML = `<b>${ch}</b>`;
+    t.append(ft, fb);
+    setTimeout(() => { bot.dataset.c = color; bot.innerHTML = `<b>${ch}</b>`; ft.remove(); fb.remove(); }, 340);
+  }, reduced ? 0 : i * 70));
+}
+async function copy(b) {
+  try { await navigator.clipboard.writeText(REF); }
+  catch (e) { const r = document.createRange(); r.selectNodeContents(b.querySelector('.ref')); getSelection().removeAllRanges(); getSelection().addRange(r); }
+  live.textContent = ''; setTimeout(() => (live.textContent = 'Reference copied'), 30);
+  clearTimeout(b._t); clearTimeout(b._u);
+  b.classList.remove('is-back');
+  b.classList.add('is-done');
+  if (b.querySelector('.fl')) flipTo(b, 'COPIED', 'carbon');
+  b._t = setTimeout(() => {
+    if (b.querySelector('.fl')) flipTo(b, b.querySelector('.flaps').dataset.rest, 'kraft');
+    if (b.classList.contains('v3')) { b.classList.remove('is-done'); return; }
+    // the stub: a fresh one slides back in
+    if (b.classList.contains('v1')) { b.classList.add('is-back'); b.classList.remove('is-done'); b._u = setTimeout(() => b.classList.remove('is-back'), 30); return; }
+    b.classList.remove('is-done');
+  }, 1600);
+}
+board.addEventListener('click', (e) => {
+  const r = e.target.closest('.yours button');
+  if (r) { store.set('cr02:' + r.parentElement.dataset.k, r.dataset.n); r.parentElement.querySelectorAll('button').forEach((x) => x.setAttribute('aria-pressed', String(x === r))); return; }
+  const b = e.target.closest('.cp'); if (b) copy(b);
+});
+document.querySelectorAll('.tg').forEach((g) => g.addEventListener('click', (e) => {
+  const b = e.target.closest('.tbtn'); if (!b) return;
+  g.querySelectorAll('.tbtn').forEach((x) => x.setAttribute('aria-pressed', String(x === b)));
+  const k = g.dataset.k, v = b.dataset.v;
+  if (k === 'sig') document.documentElement.style.setProperty('--sig', { yellow: '#E4BB3F', rust: '#A9503E', carbon: '#202521', kraft: '#B49A78' }[v]);
+  else { document.body.dataset[k] = v; if (k === 'icon') draw(); }
+}));
+document.getElementById('all').onclick = () => document.querySelectorAll('.cp').forEach((b, i) => setTimeout(() => copy(b), (i % 3) * 120 + Math.floor(i / 3) * 260));
+document.getElementById('rm').onclick = (e) => { const on = e.currentTarget.getAttribute('aria-pressed') !== 'true'; e.currentTarget.setAttribute('aria-pressed', String(on)); document.body.classList.toggle('reduced', on); };
+draw();
+</script>
+</body>

@@ -5,10 +5,11 @@ namespace Onaway;
 
 use DateTimeImmutable;
 use DateTimeZone;
+use Onaway\EmailTicket as Tk;
 
-// The two emails for a saved request (context doc §7). Each is ['to', 'replyTo', 'subject', 'html', 'text'].
-//   team()      to quotes@, reply-to the customer: every field, grouped Job · Places · When · Contact · Notes
-//   customer()  to the customer: the confirmation and nothing else
+// The two emails for a saved request (context doc §7), drawn as tickets (EM-04). Each is ['to', 'replyTo', 'subject', 'html', 'text'].
+//   team()      to quotes@, reply-to the customer: the light Board ticket, every field, the ref in dot matrix
+//   customer()  to the customer: the confirmation words, then the Headline receipt with the W sealed on the tear
 final class QuoteEmails
 {
     private const SERVICE = ['cleaning' => 'Cleaning', 'moving' => 'Moving', 'delivery' => 'Delivery'];
@@ -16,12 +17,7 @@ final class QuoteEmails
     private const TIMING = ['this-week' => 'This week', 'next-week' => 'Next week', 'same-day' => 'Same day', 'regular' => 'Regular drop-offs', 'flexible' => 'Flexible'];
     private const CONTACT = ['call' => 'Call', 'text' => 'Text', 'email' => 'Email'];
 
-    private const PAPER = '#F7F2E7';
-    private const CARBON = '#202521';
-    private const YELLOW = '#E4BB3F';
-    private const RUST = '#A9503E';
-    private const SANS = "-apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif";
-    private const MONO = "'SFMono-Regular', Menlo, Consolas, 'Liberation Mono', 'Courier New', monospace";
+    private Tk $tk;
 
     public function __construct(
         private array $row,
@@ -31,7 +27,10 @@ final class QuoteEmails
         private DateTimeZone $tz,
         private string $phone,
         private string $inbox,
+        private array $visitor = [],
+        string $assets = 'https://onaway.ca/email/',
     ) {
+        $this->tk = new Tk($assets);
     }
 
     public function team(): array
@@ -59,11 +58,18 @@ final class QuoteEmails
                 'Prefers' => self::CONTACT[$r['contact_pref'] ?? ''] ?? null,
             ],
             'Notes' => ['Notes' => $r['notes'] ?? '—'],
+            'Sent from' => [
+                'Device' => $this->visitor['device'] ?? null,
+                'IP' => $this->visitor['ip'] ?? null,
+                'Location' => !empty($this->visitor['location']) ? $this->visitor['location'] . ' (approx., from IP)' : null,
+            ],
         ];
+        // Times carry their zone (EST / EDT), so they read right from anywhere
+        $promisedAt = $this->promisedAt();
         $top = [
             'Ref' => $this->ref,
-            'Received' => $this->now->setTimezone($this->tz)->format('D, M j, g:i A'),
-            'Quote by' => $this->promised,
+            'Received' => $this->stamp($this->now),
+            'Quote by' => $promisedAt ? $this->stamp($promisedAt) : $this->promised,
         ];
         $outside = $this->outside();
 
@@ -71,7 +77,7 @@ final class QuoteEmails
         $text = '';
         foreach (['' => $top] + $groups as $title => $rows) {
             $text .= $title === '' ? '' : "\n" . strtoupper($title) . "\n";
-            foreach (array_filter($rows, static fn ($v) => $v !== null && $v !== '') as $label => $value) {
+            foreach (self::filled($rows) as $label => $value) {
                 $text .= str_pad(strtoupper($label), 20) . str_replace("\n", "\n" . str_repeat(' ', 20), $value) . "\n";
             }
         }
@@ -79,25 +85,35 @@ final class QuoteEmails
             $text = "OUTSIDE GTA: {$outside}\n\n" . $text;
         }
 
-        // HTML: the same, as a table with mono labels
-        $rowsHtml = '';
-        foreach (['' => $top] + $groups as $title => $rows) {
-            if ($title !== '') {
-                $rowsHtml .= '<tr><td colspan="2" style="padding:21px 0 8px;font:600 12px/1.4 ' . self::MONO . ';letter-spacing:0.12em;text-transform:uppercase;color:' . self::CARBON . ';border-bottom:1px solid #d6d1c6;">' . self::e($title) . '</td></tr>';
-            }
-            foreach (array_filter($rows, static fn ($v) => $v !== null && $v !== '') as $label => $value) {
-                $rowsHtml .= '<tr>'
-                    . '<td valign="top" style="width:150px;padding:8px 13px 8px 0;font:12px/1.5 ' . self::MONO . ';letter-spacing:0.08em;text-transform:uppercase;color:#6b6e69;">' . self::e($label) . '</td>'
-                    . '<td valign="top" style="padding:8px 0;font:16px/1.45 ' . self::SANS . ';color:' . self::CARBON . ';">' . nl2br(self::e($value)) . '</td>'
-                    . '</tr>';
+        // HTML: the light Board ticket on Ticket Paper, sub-headings in Instrument Sans caps, no stub
+        $row = static fn (string $label, string $value, bool $strong = false) => '<tr>'
+            . '<td valign="top" width="34%" style="padding:13px 13px 13px 0;border-top:1px solid ' . Tk::LIGHT_RULE . ';' . Tk::mono(11, Tk::MUTED) . '">' . Tk::e($label) . '</td>'
+            . '<td valign="top" style="padding:13px 0;border-top:1px solid ' . Tk::LIGHT_RULE . ';' . Tk::sans(16, Tk::CARBON, $strong ? 'font-weight:700;' : '') . '">' . Tk::nb(nl2br(Tk::e($value))) . '</td></tr>';
+        $sub = static fn (string $title) => '<tr><td colspan="2" style="padding:34px 0 8px;' . Tk::sans(20, Tk::CARBON, 'font-weight:600;line-height:1.1;text-transform:uppercase;letter-spacing:0.02em;') . '">' . Tk::e($title) . '</td></tr>';
+        $rows = $row('Route', $this->route(), true) . $row('Received', $top['Received']) . $row('Quote by', $top['Quote by']);
+        foreach ($groups as $title => $list) {
+            $list = self::filled($list);
+            if ($list) {
+                $rows .= $sub($title) . implode('', array_map($row, array_keys($list), $list));
             }
         }
+        // The due chip: a double Rust hairline, wide tracking, no fill
+        $chip = '<table role="presentation" cellpadding="0" cellspacing="0" border="0" align="right" style="border-collapse:separate;"><tr><td style="padding:2px;border:1px solid ' . Tk::RUST . ';">'
+            . '<div style="padding:4px 10px;border:1px solid ' . Tk::RUST . ';' . Tk::mono(10, Tk::RUST, 'font-weight:600;letter-spacing:0.2em;white-space:nowrap;') . '">' . Tk::e($this->due()) . '</div></td></tr></table>';
+        $header = Tk::table('<tr><td width="26" valign="middle">' . $this->tk->img('w-carbon.png', 26, 26) . '</td>'
+            . '<td valign="middle" style="padding-left:13px;' . Tk::mono(11, Tk::MUTED) . '">ONAWAY · Arrivals · ' . Tk::e($service) . '</td>'
+            . '<td align="right" valign="middle">' . $chip . '</td></tr>');
         $banner = $outside
-            ? '<p style="margin:0 0 21px;padding:13px;border:2px solid ' . self::RUST . ';font:600 14px/1.4 ' . self::MONO . ';letter-spacing:0.08em;color:' . self::RUST . ';">OUTSIDE GTA · ' . self::e($outside) . '</p>'
+            ? Tk::gap(13) . '<div style="padding:8px 13px;border:1px solid ' . Tk::RUST . ';' . Tk::mono(12, Tk::RUST, 'font-weight:600;') . '">Outside GTA · ' . Tk::e($outside) . '</div>'
             : '';
-        $html = $this->page(
+        $body = '<div style="padding:21px 21px 34px;">' . $header . Tk::gap(21)
+            . '<div style="display:inline-block;padding:13px;background:' . Tk::FACE . ';border-radius:3px;">' . Tk::matrix($this->ref) . '</div>'
+            . $banner . Tk::gap(21) . Tk::table($rows) . '</div>';
+        $html = Tk::page(
             "New quote request {$this->ref}",
-            $banner . '<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="border-collapse:collapse;">' . $rowsHtml . '</table>'
+            Tk::FACE,
+            Tk::preheader("{$service} · {$this->route()} · " . strtolower($this->due())) . $this->tk->ticket([['html' => $body, 'bg' => Tk::PAPER]], Tk::FACE),
+            560
         );
 
         return [
@@ -114,38 +130,52 @@ final class QuoteEmails
         $r = $this->row;
         $first = Mailer::line(explode(' ', $r['name'])[0]);
         $tel = '+1' . preg_replace('/\D/', '', preg_replace('/^\+?1/', '', $this->phone));
+        $service = self::SERVICE[$r['service']];
 
         $text = "Got it, {$first}. Your request {$this->ref} is in. You’ll have your quote in writing by {$this->promised}. Rather talk? Call {$this->phone}.\n";
 
-        $p = 'margin:0 0 21px;font:18px/1.55 ' . self::SANS . ';color:' . self::CARBON . ';';
-        $body = '<p style="' . $p . '">Got it, ' . self::e($first) . '.</p>'
-            . '<p style="' . $p . '">Your request <span style="font-family:' . self::MONO . ';font-size:16px;">' . self::e($this->ref) . '</span> is in. You’ll have your quote in writing by <b>' . self::e($this->promised) . '</b>.</p>'
-            . '<p style="' . $p . '">Rather talk? Call <a href="tel:' . self::e($tel) . '" style="color:' . self::CARBON . ';text-decoration:underline;white-space:nowrap;">' . self::e($this->phone) . '</a>.</p>'
-            // the ticket line: a dashed tear, the yellow square, the reference in mono
-            . '<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin-top:34px;border-top:1.5px dashed #b9b4a9;"><tr>'
-            . '<td style="padding:13px 0 0;font:12px/1.4 ' . self::MONO . ';letter-spacing:0.12em;text-transform:uppercase;color:' . self::CARBON . ';">'
-            . '<span style="display:inline-block;width:8px;height:8px;margin-right:8px;background:' . self::YELLOW . ';vertical-align:1px;"></span>'
-            . 'Ref ' . self::e($this->ref) . '</td></tr></table>';
+        // The words, unchanged
+        $p = 'margin:0 0 21px;' . Tk::sans(17, Tk::CARBON, 'line-height:1.55;');
+        $words = '<p style="' . $p . '">Got it, ' . Tk::e($first) . '.</p>'
+            . '<p style="' . $p . '">Your request <span style="font-family:' . Tk::MONO . ';font-size:15px;white-space:nowrap;">' . Tk::e($this->ref) . '</span> is in. You’ll have your quote in writing by <b>' . Tk::nb(Tk::e($this->promised)) . '</b>.</p>';
+        $call = '<p style="' . $p . 'margin:0;">Rather talk? Call <a href="tel:' . Tk::e($tel) . '" style="color:' . Tk::CARBON . ';text-decoration:underline;white-space:nowrap;">' . Tk::e($this->phone) . '</a>.</p>';
+
+        // The Headline receipt: wordmark and the request's date, the job as a headline, a two-column grid, the promise
+        $local = $this->now->setTimezone($this->tz);
+        $meta = '<div style="' . Tk::mono(11, Tk::MUTED, 'text-align:right;line-height:1.5;') . '"><span style="white-space:nowrap;">' . $local->format('D, M j, Y') . '</span><br><span style="white-space:nowrap;">' . $local->format('g:i A T') . '</span></div>';
+        $route = $r['service'] === 'cleaning'
+            ? Tk::e($r['area_name'])
+            : Tk::e($r['from_name']) . ' <span style="color:' . Tk::RUST . ';">→</span> ' . Tk::e($r['to_name']);
+        $stack = static fn (string $label, string $value) => '<div style="' . Tk::mono(11, Tk::MUTED) . '">' . Tk::e($label) . '</div><div style="margin-top:4px;' . Tk::sans(16, Tk::CARBON, 'font-weight:600;') . '">' . Tk::nb(Tk::e($value)) . '</div>';
+        $body = '<div style="padding:26px 21px 0;">' . Tk::table('<tr><td valign="middle">' . $this->tk->img('wordmark-carbon.png', 96, 18, 'ONAWAY', Tk::sans(16, Tk::CARBON, 'font-weight:700;letter-spacing:0.06em;')) . '</td><td valign="middle" align="right">' . $meta . '</td></tr>') . '</div>'
+            . '<div style="padding:34px 21px;">'
+            . '<div style="' . Tk::sans(15, Tk::MUTED, 'font-weight:600;') . '">Your request</div>'
+            . '<div style="margin-top:8px;' . Tk::sans(30, Tk::CARBON, 'font-weight:600;line-height:1.1;letter-spacing:-0.015em;') . '">' . Tk::e($service) . ', ' . $route . '</div>'
+            . Tk::gap(21)
+            . Tk::table('<tr><td valign="top" width="50%" style="padding:13px 13px 0 0;border-top:1px solid ' . Tk::CARBON . ';">' . $stack('When', $this->whenShort()) . '</td>'
+                . '<td valign="top" width="50%" style="padding:13px 0 0;border-top:1px solid ' . Tk::CARBON . ';">' . $stack('For a', $r['audience'] === 'business' ? 'Business' : 'Home') . '</td></tr>')
+            . Tk::gap(34)
+            . '<div style="padding:21px 0 0;border-top:1px dashed ' . Tk::RULE . ';"><div style="' . Tk::mono(11, Tk::CARBON, 'font-weight:700;') . '">' . Tk::square() . 'Quote in writing by</div>'
+            . '<div style="margin-top:8px;' . Tk::sans(30, Tk::CARBON, 'font-weight:600;line-height:1.1;letter-spacing:-0.01em;') . '">' . Tk::nb(Tk::e($this->promised)) . '</div></div></div>';
+        // The stub: the ref on the left, the barcode on the right; the W is sealed on the tear above it
+        $stub = '<div style="padding:21px;">' . Tk::table('<tr><td valign="middle" style="' . Tk::mono(12, Tk::CARBON, 'font-weight:600;white-space:nowrap;') . '">Ref ' . Tk::e($this->ref) . '</td><td valign="middle" align="right">' . Tk::barcode($this->ref) . '</td></tr>') . '</div>';
+
+        $html = Tk::page(
+            "We've got your request",
+            Tk::PAPER,
+            Tk::preheader("Your quote is coming by {$this->promised}.") . $words . Tk::gap(13)
+                . $this->tk->ticket([['html' => $body, 'bg' => Tk::FACE], ['html' => $stub, 'bg' => Tk::STUB]], Tk::PAPER, true)
+                . Tk::gap(34) . $call,
+            480
+        );
 
         return [
             'to' => [$r['email'], $r['name']],
             'replyTo' => null,
             'subject' => "We've got your request [{$this->ref}]",
-            'html' => $this->page("We've got your request", $body),
+            'html' => $html,
             'text' => $text,
         ];
-    }
-
-    // Paper page, 560 wide, web-safe fonts, no images
-    private function page(string $title, string $inner): string
-    {
-        return '<!doctype html><html lang="en-CA"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">'
-            . '<meta name="color-scheme" content="light only"><meta name="supported-color-schemes" content="light only"><title>' . self::e($title) . '</title></head>'
-            . '<body style="margin:0;padding:0;background:' . self::PAPER . ';">'
-            . '<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:' . self::PAPER . ';"><tr><td align="center" style="padding:34px 20px;">'
-            . '<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="max-width:560px;"><tr><td align="left">'
-            . $inner
-            . '</td></tr></table></td></tr></table></body></html>';
     }
 
     // "Mississauga" or "Mississauga → Oakville"
@@ -183,13 +213,45 @@ final class QuoteEmails
         return $when . ($r['flexible'] && $r['timing'] !== 'flexible' ? ' · flexible' : '');
     }
 
+    // The customer's short form: "Wed, Nov 4" or "This week"
+    private function whenShort(): string
+    {
+        $r = $this->row;
+        return $r['timing'] === 'date'
+            ? (new DateTimeImmutable($r['timing_date'], $this->tz))->format('D, M j')
+            : (self::TIMING[$r['timing']] ?? $r['timing']);
+    }
+
+    private function promisedAt(): ?DateTimeImmutable
+    {
+        return empty($this->row['promised_by']) ? null : new DateTimeImmutable($this->row['promised_by'], new DateTimeZone('UTC'));
+    }
+
+    // "Due 4:15 PM EST", or "Due Tue 10:00 AM EST" when the promise falls on a later day
+    private function due(): string
+    {
+        $at = $this->promisedAt();
+        if (!$at) {
+            return 'Due ' . $this->promised;
+        }
+        $at = $at->setTimezone($this->tz);
+        $sameDay = $at->format('Y-m-d') === $this->now->setTimezone($this->tz)->format('Y-m-d');
+        return 'Due ' . $at->format(($sameDay ? '' : 'D ') . 'g:i A T');
+    }
+
+    // "Mon, Nov 2, 4:15 PM EST"
+    private function stamp(DateTimeImmutable $at): string
+    {
+        return $at->setTimezone($this->tz)->format('D, M j, g:i A T');
+    }
+
+    private static function filled(array $rows): array
+    {
+        return array_filter($rows, static fn ($v) => $v !== null && $v !== '');
+    }
+
     private static function phone(string $digits): string
     {
         return sprintf('(%s) %s-%s', substr($digits, 0, 3), substr($digits, 3, 3), substr($digits, 6));
-    }
-
-    private static function e(?string $value): string
-    {
-        return htmlspecialchars((string) $value, ENT_QUOTES | ENT_HTML5, 'UTF-8');
     }
 }

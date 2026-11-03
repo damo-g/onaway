@@ -3,6 +3,7 @@ import Alpine from 'alpinejs';
 import { initLenis } from './lenis.js';
 import { ScrollTrigger } from './motion.js';
 import { initNav } from './nav.js';
+import { registerRefChip } from './refchip.js';
 import { initSections } from './sections/index.js';
 
 // Dev review panel: applies section options and simulated reduced motion before anything inits.
@@ -18,4 +19,5 @@ initNav();
 document.fonts.ready.then(() => ScrollTrigger.refresh());
 
 window.Alpine = Alpine;
+registerRefChip(Alpine);
 Alpine.start();
