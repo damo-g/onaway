@@ -179,33 +179,44 @@ final class QuoteEmails
     }
 
     /**
-     * The Telegram alert (context doc §7), in Telegram's HTML with every value escaped:
-     * "New request ONA-2611-0042 · Moving · Mississauga → Oakville · Next week · Ada · (416) 555-0100 · prefers Text · quote by 4:15 PM today"
-     * then a warning line for outside the GTA, and one for each email that failed.
+     * The Telegram alert (context doc §7), in Telegram's HTML with every value escaped, one idea per line so it
+     * scans on a phone; warnings come first so they're never missed:
+     *   ⚠️ Email failed: team email, follow up manually
+     *   NEW REQUEST  ONA-2611-0042          (the ref is tap-to-copy)
+     *   Moving · Mississauga → Oakville
+     *   Next week · Home · 1–2 bedroom · Elevator
+     *   Ada · (416) 555-0100 · prefers Text
+     *   Quote by 4:15 PM today
      * @param string[] $failed the emails that didn't go out: 'team', 'customer'
      */
     public function telegram(array $failed = []): string
     {
         $r = $this->row;
-        $parts = [
-            self::SERVICE[$r['service']],
-            $this->route(),
-            $this->whenShort() . ($r['flexible'] && $r['timing'] !== 'flexible' ? ' (flexible)' : ''),
-            Mailer::line(explode(' ', $r['name'])[0]),
-            self::phone($r['phone']), // Telegram makes the number tappable itself
-        ];
-        if (!empty($r['contact_pref']) && isset(self::CONTACT[$r['contact_pref']])) {
-            $parts[] = 'prefers ' . self::CONTACT[$r['contact_pref']];
-        }
-        $parts[] = 'quote by ' . $this->promised;
-        $text = '<b>New request ' . Telegram::e($this->ref) . '</b> · ' . implode(' · ', array_map([Telegram::class, 'e'], $parts));
-        if ($outside = $this->outside()) {
-            $text .= "\n⚠ OUTSIDE GTA: " . Telegram::e($outside);
-        }
+        $e = [Telegram::class, 'e'];
+        $join = static fn (array $parts) => implode(' · ', array_map($e, array_values(array_filter($parts, static fn ($v) => $v !== null && $v !== ''))));
+        $lines = [];
         if ($failed) {
-            $text .= "\n⚠ Email failed: " . implode(' and ', array_map(static fn ($f) => "{$f} email", $failed)) . ', follow up manually';
+            $lines[] = '⚠️ <b>Email failed:</b> ' . implode(' and ', array_map(static fn ($f) => "{$f} email", $failed)) . ', follow up manually';
         }
-        return $text;
+        if ($outside = $this->outside()) {
+            $lines[] = '⚠️ <b>Outside GTA:</b> ' . Telegram::e($outside);
+        }
+        $lines[] = '<b>NEW REQUEST</b>  <code>' . Telegram::e($this->ref) . '</code>';
+        $lines[] = '<b>' . $join([self::SERVICE[$r['service']], $this->route()]) . '</b>';
+        // the job at a glance: when, who it's for, then whatever the service asked (size, how often, access, load)
+        $lines[] = $join([
+            $this->whenShort() . ($r['flexible'] && $r['timing'] !== 'flexible' ? ' (flexible)' : ''),
+            $r['audience'] === 'business' ? 'Business' . ($r['company'] ? ': ' . $r['company'] : '') : 'Home',
+            $r['size'], $r['often'], $r['access'], $r['what'],
+        ]);
+        $first = Mailer::line(explode(' ', $r['name'])[0]);
+        $lines[] = $join([
+            mb_strtoupper(mb_substr($first, 0, 1)) . mb_substr($first, 1),
+            self::phone($r['phone']), // Telegram makes the number tappable itself
+            isset(self::CONTACT[$r['contact_pref'] ?? '']) ? 'prefers ' . self::CONTACT[$r['contact_pref']] : null,
+        ]);
+        $lines[] = 'Quote by <b>' . Telegram::e($this->promised) . '</b>';
+        return implode("\n", $lines);
     }
 
     // "Mississauga" or "Mississauga → Oakville"
