@@ -179,6 +179,47 @@ final class QuoteEmails
     }
 
     /**
+     * The Trello card, by email to the board's private address (context doc §7). Plain text: the subject becomes
+     * the title, its #tags the labels (they must match label names on the board; spaces become underscores), the
+     * body the card's Markdown description. Anything the customer typed loses its # and @ in the subject, and their
+     * notes are quoted, so they can never add a label or a member.
+     */
+    public function board(string $address): array
+    {
+        $r = $this->row;
+        $service = self::SERVICE[$r['service']];
+        $clean = static fn (string $v) => trim((string) preg_replace('/[#@]+/', '', Mailer::line($v)));
+        $first = $clean(explode(' ', $r['name'])[0]);
+        $tags = '#' . $service . ($this->outside() ? ' #Outside_GTA' : '');
+        $subject = "{$this->ref} · {$service} · " . $clean($this->route()) . ($first !== '' ? " · {$first}" : '') . " {$tags}";
+
+        $promisedAt = $this->promisedAt();
+        $md = static fn (string $label, ?string $value) => $value === null || $value === '' ? '' : "- **{$label}:** " . Mailer::line($value) . "\n";
+        $text = "**Ref:** {$this->ref}  \n**Received:** {$this->stamp($this->now)}  \n**Quote by:** " . ($promisedAt ? $this->stamp($promisedAt) : $this->promised) . "\n";
+        if ($outside = $this->outside()) {
+            $text .= "\n**⚠ Outside GTA:** {$outside}\n";
+        }
+        $text .= "\n## Job\n" . $md('Service', $service) . $md('For a', $r['audience'] === 'business' ? 'Business' : 'Home') . $md('Company', $r['company'])
+            . $md('Size', $r['size']) . $md('How often', $r['often']) . $md('Getting in and out', $r['access']) . $md('What’s going', $r['what']);
+        $text .= "\n## Places\n" . ($r['service'] === 'cleaning'
+            ? $md('Where', $this->place('area'))
+            : $md('From', $this->place('from')) . $md('To', $this->place('to')));
+        $text .= "\n## When\n" . $md('When', $this->when());
+        $text .= "\n## Contact\n" . $md('Name', $r['name']) . $md('Phone', self::phone($r['phone'])) . $md('Email', $r['email'])
+            . $md('Prefers', self::CONTACT[$r['contact_pref'] ?? ''] ?? null);
+        $notes = trim((string) ($r['notes'] ?? ''));
+        $text .= "\n## Notes\n" . ($notes === '' ? "—\n" : implode("\n", array_map(static fn ($l) => '> ' . $l, preg_split('/\R/', $notes))) . "\n");
+
+        return [
+            'to' => [$address, 'ONAWAY quotes board'],
+            'replyTo' => null,
+            'subject' => $subject,
+            'html' => '',
+            'text' => $text,
+        ];
+    }
+
+    /**
      * The Telegram alert (context doc §7), in Telegram's HTML with every value escaped, one idea per line so it
      * scans on a phone; warnings come first so they're never missed:
      *   ⚠️ Email failed: team email, follow up manually

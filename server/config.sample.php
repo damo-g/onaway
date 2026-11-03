@@ -49,8 +49,8 @@ return [
         'chat_id' => '',     // the group's id from getUpdates, a negative number like -1001234567890
     ],
 
-    // Step 6 · Trello, through the board's private email address
+    // Step 6 · Trello, through the board's private email address (Board menu → Email-to-board). Empty = off.
     'trello' => [
-        'board_email' => '',
+        'board_email' => '',   // like yourname+abc123xyz@boards.trello.com
     ],
 ];

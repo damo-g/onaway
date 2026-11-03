@@ -29,9 +29,16 @@ class Mailer
             $mail->addReplyTo($message['replyTo'][0], self::line($message['replyTo'][1]));
         }
         $mail->Subject = self::line($message['subject']);
-        $mail->isHTML(true);
-        $mail->Body = $message['html'];
-        $mail->AltBody = $message['text'];
+        if ($message['html'] === '') {
+            // plain text only (the Trello board reads the body as the card's Markdown description)
+            $mail->isHTML(false);
+            $mail->Body = $message['text'];
+            $mail->AltBody = '';
+        } else {
+            $mail->isHTML(true);
+            $mail->Body = $message['html'];
+            $mail->AltBody = $message['text'];
+        }
         $mail->send();
     }
 
