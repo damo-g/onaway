@@ -57,6 +57,7 @@ export default defineConfig(({ command }) => ({
         help: resolve(root, 'help.html'),
         about: resolve(root, 'about.html'),
         privacy: resolve(root, 'privacy.html'),
+        accessibility: resolve(root, 'accessibility.html'),
       },
     },
   },

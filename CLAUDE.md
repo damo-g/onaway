@@ -75,4 +75,4 @@ Leave 144 of paper between the quote and the footer.
 
 ## Before launch
 - Remove `<meta name="robots" content="noindex">` from every page and change `public/robots.txt` to allow crawling.
-- Replace the placeholder contact details in the footer (and the nav's phone number).
+- Replace the placeholder contact details in the footer (and the nav's phone number, and the one on the Accessibility page).
