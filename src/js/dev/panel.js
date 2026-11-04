@@ -155,7 +155,7 @@ const CSS = `
   .fab:focus-visible, button:focus-visible { outline: 2px solid var(--color-rust); outline-offset: 3px; }
   .pop {
     position: fixed; inset: auto 21px 76px auto; margin: 0;
-    width: min(340px, calc(100vw - 42px)); max-height: calc(100vh - 110px); overflow: auto;
+    width: min(340px, calc(100vw - 42px)); max-height: calc(100dvh - 110px); overflow: auto; overscroll-behavior: contain;
     padding: 21px; border: 1px solid var(--color-line); background: var(--color-paper); color: var(--color-carbon);
     font: 14px/1.5 var(--font-sans); font-stretch: 87.5%;
     box-shadow: 0 13px 34px color-mix(in srgb, var(--color-carbon) 18%, transparent);
@@ -202,7 +202,7 @@ function mount() {
     <button class="fab" type="button" popovertarget="pop" aria-label="Review panel" title="Review panel">
       <svg width="18" height="18" viewBox="0 0 18 18" aria-hidden="true"><path d="M2 2v14M7 2v14M11 2v14M16 2v14" stroke="currentColor" stroke-width="2"/></svg>
     </button>
-    <div class="pop" id="pop" popover role="dialog" aria-label="Review panel"></div>
+    <div class="pop" id="pop" popover role="dialog" aria-label="Review panel" data-lenis-prevent></div>
   `;
   document.body.append(host);
 

@@ -3,7 +3,10 @@ import { registerOptions } from './options.js';
 
 // After the hero, the fixed navbar either sits on paper (locked) or stays clear and
 // switches its text colour over dark sections ([data-nav-theme="dark"]). Buttons never change.
-registerOptions('nav', { after: ['paper', 'clear'], drop: ['invert', 'quiet'], panel: ['flush', 'cards'] });
+// links (exploration, nav drop + footer rows): current (locked) | swap (dot pushes the text, the arrow swaps for the page's
+// pictogram) | roll (the same, the sign rolls up like a flap board) | tile (the pictogram arrives on a small filled plate).
+// case (exploration, nav links, drop rows, buttons, hero cards): caps (locked) | sentence | mono
+registerOptions('nav', { after: ['paper', 'clear'], drop: ['invert', 'quiet'], panel: ['flush', 'cards'], links: ['current', 'swap', 'roll', 'tile'], case: ['caps', 'sentence', 'mono'] });
 
 export function initNav() {
   const nav = document.querySelector('.site-nav');

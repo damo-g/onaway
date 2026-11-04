@@ -13,6 +13,8 @@ registerOptions('services', {
   arrows: ['straight', 'angled'],
   description: ['column', 'under'],
   fact: ['fixed', 'window'],
+  // End state: board (full-bleed rows) | cards (the hanging signs settle as cards on the grid) | ledger (they open into paper rows under hairlines)
+  end: ['board', 'cards', 'ledger'],
 });
 
 // R2-E numbers, drawn at the 1512 frame. Signs hang below the beam painted into the plate.
@@ -103,21 +105,29 @@ export function init(el) {
       start = hang(k);
     }
 
-    // End: full-width board rows
-    const rowH = mobile ? 110 : 144;
+    // End: full-width board rows, or (cards, ledger) 89 rows inside the page margins
+    const endMode = opt('end', 'board');
+    const boxed = endMode !== 'board';
+    const rowH = boxed ? 89 : mobile ? 110 : 144;
+    const rowGap = endMode === 'cards' ? 13 : 0;
+    const endX = boxed ? margin : 0;
+    const endW = W - 2 * endX;
     const rowsTop = headBottom + (mobile ? 34 : 55);
-    const end = start.map((_, i) => ({ x: 0, y: rowsTop + i * rowH, w: W, h: rowH }));
+    const end = start.map((_, i) => ({ x: endX, y: rowsTop + i * (rowH + rowGap), w: endW, h: rowH }));
+    const boardBottom = end[2].y + end[2].h;
+    // Inside a sign: the board pads by the page margin, a card by 21 (34 from tablet up), the ledger not at all
+    const inset = endMode === 'board' ? margin : endMode === 'cards' ? (mobile ? 21 : 34) : 0;
 
-    // End-state contents on the grid
-    const tileEnd = mobile ? 55 : 89;
-    const nameEnd = mobile ? 26 : wide ? 55 : 42;
-    const arrowEnd = mobile ? 26 : 42;
-    const nameX = iconRight ? margin : margin + tileEnd + gutter;
-    const descX = under ? nameX : iconRight ? colX(3) : colX(4);
+    // End-state contents on the grid (x is measured from the sign's left edge)
+    const tileEnd = boxed ? (mobile ? 34 : 55) : mobile ? 55 : 89;
+    const nameEnd = boxed ? (mobile ? 26 : 42) : mobile ? 26 : wide ? 55 : 42;
+    const arrowEnd = boxed ? 26 : mobile ? 26 : 42;
+    const nameX = iconRight ? inset : inset + tileEnd + gutter;
+    const descX = under ? nameX : (iconRight ? colX(3) : colX(4)) - endX;
     // Wide: its own column; tablet: the right-hand three columns; phones: under the description
-    const factX = wide ? (iconRight ? colX(7) : colX(8)) : colX(cols - 3);
-    const descW = under ? (mobile ? W - nameX - margin - 34 : colX(cols - 3) - nameX - gutter) : colX(iconRight ? 6 : 7) - descX - gutter;
-    const pitch = 5;
+    const factX = (wide ? (iconRight ? colX(7) : colX(8)) : colX(cols - 3)) - endX;
+    const descW = under ? (mobile ? endW - nameX - inset - 34 : colX(cols - 3) - endX - nameX - gutter) : colX(iconRight ? 6 : 7) - endX - descX - gutter;
+    const pitch = boxed ? 3 : 5;
     const noFact = mobile; // phones show name and description only
     const nameGap = mobile ? 0 : 8; // tighter on phones (the description's line height gives the air)
 
@@ -140,13 +150,13 @@ export function init(el) {
     const factH = signs.map((s) => shown(s.fact, () => s.fact.offsetHeight));
 
     // At least the stage, so no paper shows under the plate while pinned
-    const height = Math.max(start[2].y + start[2].h + 89, rowsTop + 3 * rowH + 89, view);
+    const height = Math.max(start[2].y + start[2].h + 89, boardBottom + 89, view);
     el.style.height = `${height}px`;
     // Paper left under the board once it's done (the section fills the screen while pinned); the steps
     // section counts it so the gap after the board stays consistent
-    document.documentElement.style.setProperty('--services-tail', `${height - (rowsTop + 3 * rowH)}px`);
+    document.documentElement.style.setProperty('--services-tail', `${height - boardBottom}px`);
 
-    g = { W, margin, beamBottom, start, end, tileEnd, nameEnd, arrowEnd, nameX, descX, descW, factX, descH, factH, under, noFact, nameGap, iconRight, arrangement, view };
+    g = { W, margin, inset, endMode, beamBottom, start, end, tileEnd, nameEnd, arrowEnd, nameX, descX, descW, factX, descH, factH, under, noFact, nameGap, iconRight, arrangement, view };
     drawRods();
   }
 
@@ -171,6 +181,7 @@ export function init(el) {
     const lightSigns = opt('signs', 'dark') === 'light';
 
     plate.style.opacity = 1 - b;
+    el.style.setProperty('--m', p.toFixed(3)); // ledger: the signs' colours turn from Carbon to Paper with the move
     rods.style.opacity = 1 - cl(b * 1.7);
 
     signs.forEach((s, i) => {
@@ -178,7 +189,8 @@ export function init(el) {
       const e = g.end[i];
       const w = L(a.w, e.w, p);
       const h = L(a.h, e.h, p);
-      const pad = L(6, 0, p);
+      const cards = g.endMode === 'cards';
+      const pad = L(6, cards ? 6 : 0, p);
       Object.assign(s.a.style, {
         left: `${L(a.x, e.x, p)}px`,
         top: `${L(a.y, e.y, p)}px`,
@@ -188,32 +200,32 @@ export function init(el) {
         filter: a.dim < 1 ? `brightness(${L(a.dim, 1, p)})` : '',
       });
 
-      s.housing.style.borderRadius = `${L(8, 0, p)}px`;
-      s.housing.style.opacity = lightSigns ? 1 - p : 1;
+      s.housing.style.borderRadius = `${L(8, cards ? 6 : 0, p)}px`;
+      s.housing.style.opacity = lightSigns || g.endMode === 'ledger' ? 1 - p : 1;
       s.housing.style.boxShadow =
         p > 0.98
-          ? 'none'
+          ? cards ? 'inset 0 0 0 1px var(--s-edge)' : 'none'
           : g.arrangement === 'perspective'
             ? `0 ${8 - i * 2}px ${21 - i * 3}px -12px color-mix(in srgb, var(--color-carbon) ${(26 - i * 6) * (1 - p)}%, transparent), inset 0 0 0 1px var(--s-edge)`
             : `0 13px 21px -13px color-mix(in srgb, var(--color-carbon) ${55 * (1 - p)}%, transparent), inset 0 0 0 1px var(--s-edge)`;
-      Object.assign(s.face.style, { inset: `${pad}px`, borderRadius: `${L(4, 0, p)}px` });
-      s.rule.style.opacity = p;
+      Object.assign(s.face.style, { inset: `${pad}px`, borderRadius: `${L(4, cards ? 3 : 0, p)}px` });
+      s.rule.style.opacity = cards ? 0 : p;
 
       // Tile, name and arrow keep their sides for the whole scroll
       const ts = L(a.h - 2 * 6 - 12, g.tileEnd, p);
-      const ins = L(12, g.margin, p);
+      const ins = L(12, g.inset, p);
       const fs = L(a.h * 0.38, g.nameEnd, p);
       const af = L(a.h * 0.38, g.arrowEnd, p);
       const tx = g.iconRight ? w - ins - ts : ins;
       Object.assign(s.tile.style, { left: `${tx}px`, top: `${(h - ts) / 2}px`, width: `${ts}px`, height: `${ts}px`, borderRadius: `${L(4, 2, p)}px` });
 
-      const nx = g.iconRight ? L(34, g.nameX, p) : tx + ts + L(28, g.nameX - g.margin - g.tileEnd, p);
+      const nx = g.iconRight ? L(34, g.nameX, p) : tx + ts + L(28, g.nameX - g.inset - g.tileEnd, p);
       // Stacked layouts lift the name so name, description (and fact on phones) sit centred as a block
       const stack = g.under ? fs + g.nameGap + g.descH[i] : fs;
       const nameTop = g.under ? (h - L(fs, stack, c)) / 2 : (h - fs) / 2;
       Object.assign(s.name.style, { left: `${nx}px`, top: `${nameTop}px`, fontSize: `${fs}px` });
 
-      const arR = g.iconRight ? ins + ts + L(28, 34, p) : L(34, g.margin, p);
+      const arR = g.iconRight ? ins + ts + L(28, 34, p) : L(34, g.inset, p);
       Object.assign(s.arrow.style, { right: `${arR}px`, top: `${(h - af) / 2}px`, fontSize: `${af}px` });
 
       const show = c > 0.01 ? 'block' : 'none';

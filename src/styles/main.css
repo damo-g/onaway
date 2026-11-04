@@ -542,6 +542,24 @@
     --s-hbg: var(--color-carbon);
     --s-htxt: var(--color-paper);
   }
+  /* End state (panel option services.end): board (locked) | cards: quieter settled cards, the description and
+     the small dot-matrix muted | ledger: the signs turn from Carbon to Paper as they move (--m, 0→1, set by
+     services.js) and end as editorial rows under hairlines */
+  .services[data-end="cards"] .sign__desc { color: color-mix(in srgb, var(--color-paper) 62%, transparent); }
+  .services[data-end="cards"] .sign__fact { opacity: 0.72; }
+  .services[data-end="ledger"] {
+    --m: 0;
+    --s-txt: color-mix(in srgb, var(--color-carbon) calc(var(--m) * 100%), var(--color-paper));
+    --s-sub: color-mix(in srgb, var(--s-txt) 72%, transparent);
+    --s-face: color-mix(in srgb, var(--color-paper) calc(var(--m) * 100%), var(--color-carbon));
+    --s-edge: color-mix(in srgb, var(--color-paper) calc((1 - var(--m)) * 22%), transparent);
+    --s-tile: color-mix(in srgb, var(--s-txt) 7%, var(--s-face));
+    --s-glyph: var(--s-txt);
+    --s-rule: color-mix(in srgb, var(--color-carbon) 20%, transparent);
+    --s-hbg: color-mix(in srgb, var(--color-carbon) calc(var(--m) * 100%), var(--color-paper));
+    --s-htxt: color-mix(in srgb, var(--color-paper) calc(var(--m) * 100%), var(--color-carbon));
+  }
+  .services[data-end="ledger"] .sign__fact { opacity: 0.8; }
 
   /* Header sits nav height + 55 below whatever is above it: the hero as it scrolls in, the navbar once pinned */
   .services__head { position: relative; z-index: 3; padding-top: calc(var(--nav-h) + var(--spacing-34)); row-gap: var(--spacing-21); align-items: end; }
@@ -1323,6 +1341,82 @@
   .footer:is([data-hover="sweep"], [data-hover="invert"]) a.footer__row:hover .footer__k { color: var(--color-carbon); }
   .footer[data-hover="mark"] a.footer__row::before { inset: auto -4px 9px; height: 0.55em; background: color-mix(in srgb, var(--color-yellow) 50%, transparent); transform: scaleX(0); transform-origin: 0 50%; }
   .footer[data-hover="mark"] a.footer__row:hover::before { transform: scaleX(1); }
+
+  /* ---------- Link signs (exploration, panel option nav.links: the nav drop and the footer together) ----------
+     current (locked): as built. swap | roll | tile: rows read text first, arrow at the right. On hover a square
+     (yellow on Carbon in the footer, Carbon on Paper in the drop) pushes the text 21 and the arrow gives way to
+     that page's pictogram: swap crossfades, roll flips it up like a flap board, tile brings it in on a plate. */
+  .lnk-sign { position: relative; display: inline-grid; flex: none; width: 1.25em; height: 1.25em; margin-block: -0.125em; place-items: center; } /* a step bigger than the text so the pictograms read; the negative margin keeps row heights */
+  .lnk-sign > span { grid-area: 1 / 1; display: grid; place-items: center; width: 100%; height: 100%; transition: opacity 0.25s, transform 0.35s cubic-bezier(0.3, 0.7, 0.3, 1), clip-path 0.35s cubic-bezier(0.3, 0.7, 0.3, 1); }
+  .lnk-sign svg { width: 1em; height: 1em; }
+  .lnk-sign__picto svg { width: 1.25em; height: 1.25em; }
+  .lnk-sign > .lnk-sign__picto { display: none; }
+  .footer .lnk-sign { --tile: var(--ft-bg, var(--color-carbon)); }
+
+  .site-nav:is([data-links="swap"], [data-links="roll"], [data-links="tile"]) .lnk-sign > .lnk-sign__picto,
+  :root:has(.site-nav:is([data-links="swap"], [data-links="roll"], [data-links="tile"])) .footer .lnk-sign > .lnk-sign__picto { display: grid; }
+  /* The drop: text first, Paper stays Paper, a Carbon square pushes the text */
+  .site-nav:is([data-links="swap"], [data-links="roll"], [data-links="tile"]) .nav-drop__row > svg { display: none; }
+  .site-nav:is([data-links="swap"], [data-links="roll"], [data-links="tile"]) .nav-drop__row:is(:hover, :focus-visible) { --tile: var(--color-paper); background: var(--color-paper); color: var(--color-carbon); }
+  .site-nav:is([data-links="swap"], [data-links="roll"], [data-links="tile"]) .nav-drop__row::after {
+    content: ""; position: absolute; left: var(--spacing-13); top: 50%; width: 8px; height: 8px; margin-top: -4px;
+    background: var(--color-carbon); transform: scale(0) rotate(45deg); transition: transform 0.35s cubic-bezier(0.3, 0.7, 0.3, 1), opacity 0.3s;
+  }
+  .site-nav:is([data-links="swap"], [data-links="roll"], [data-links="tile"]) .nav-drop__row:is(:hover, :focus-visible)::after { transform: none; }
+  .site-nav:is([data-links="swap"], [data-links="roll"], [data-links="tile"]) .nav-drop__row:is(:hover, :focus-visible) > span:not(.nav-drop__arrow) { translate: var(--spacing-21) 0; }
+  .site-nav:is([data-links="swap"], [data-links="roll"], [data-links="tile"]) .nav-drop__row:is(:hover, :focus-visible) .nav-drop__arrow,
+  :root:has(.site-nav:is([data-links="swap"], [data-links="roll"], [data-links="tile"])) .footer a.footer__row:is(:hover, :focus-visible) .footer__arrow { translate: 0 0; transform: none; opacity: 1; }
+  .site-nav:is([data-links="swap"], [data-links="roll"], [data-links="tile"]) .nav-drop__row:focus-visible { outline-color: var(--color-carbon); }
+
+  /* swap: the arrow shrinks away, the pictogram grows in where it was */
+  .site-nav[data-links="swap"] .lnk-sign__picto,
+  :root:has(.site-nav[data-links="swap"]) .footer .lnk-sign__picto { opacity: 0; transform: scale(0.4); }
+  .site-nav[data-links="swap"] .nav-drop__row:is(:hover, :focus-visible) .lnk-sign__arrow,
+  :root:has(.site-nav[data-links="swap"]) .footer a.footer__row:is(:hover, :focus-visible) .lnk-sign__arrow { opacity: 0; transform: scale(0.4); }
+  .site-nav[data-links="swap"] .nav-drop__row:is(:hover, :focus-visible) .lnk-sign__picto,
+  :root:has(.site-nav[data-links="swap"]) .footer a.footer__row:is(:hover, :focus-visible) .lnk-sign__picto { opacity: 1; transform: none; }
+
+  /* roll: the arrow rolls up out of its window and the pictogram rolls in under it; the square glides in from the left */
+  .site-nav[data-links="roll"] .lnk-sign,
+  :root:has(.site-nav[data-links="roll"]) .footer .lnk-sign { overflow: hidden; }
+  .site-nav[data-links="roll"] .lnk-sign__picto,
+  :root:has(.site-nav[data-links="roll"]) .footer .lnk-sign__picto { transform: translateY(110%); }
+  .site-nav[data-links="roll"] .nav-drop__row:is(:hover, :focus-visible) .lnk-sign__arrow,
+  :root:has(.site-nav[data-links="roll"]) .footer a.footer__row:is(:hover, :focus-visible) .lnk-sign__arrow { transform: translateY(-110%); }
+  .site-nav[data-links="roll"] .nav-drop__row:is(:hover, :focus-visible) .lnk-sign__picto,
+  :root:has(.site-nav[data-links="roll"]) .footer a.footer__row:is(:hover, :focus-visible) .lnk-sign__picto { transform: none; }
+  .site-nav[data-links="roll"] .nav-drop__row::after,
+  :root:has(.site-nav[data-links="roll"]) .footer a.footer__row::after { transform: translateX(-13px); opacity: 0; transition: transform 0.45s cubic-bezier(0.3, 0.7, 0.3, 1), opacity 0.3s; }
+  .site-nav[data-links="roll"] .nav-drop__row:is(:hover, :focus-visible)::after,
+  :root:has(.site-nav[data-links="roll"]) .footer a.footer__row:is(:hover, :focus-visible)::after { transform: none; opacity: 1; }
+
+  /* tile: the arrow slides out to the right, a small plate wipes in carrying the pictogram
+     (Paper plate on the Carbon footer, Carbon plate in the Paper drop) */
+  .site-nav[data-links="tile"] .lnk-sign__picto,
+  :root:has(.site-nav[data-links="tile"]) .footer .lnk-sign__picto { clip-path: inset(-0.2em calc(100% + 0.2em) -0.2em -0.2em); }
+  .site-nav[data-links="tile"] .lnk-sign__picto svg,
+  :root:has(.site-nav[data-links="tile"]) .footer .lnk-sign__picto svg { width: 1em; height: 1em; }
+  .site-nav[data-links="tile"] .lnk-sign__picto::before,
+  :root:has(.site-nav[data-links="tile"]) .footer .lnk-sign__picto::before { content: ""; position: absolute; inset: -0.2em; z-index: -1; border-radius: 2px; background: var(--plate); }
+  .site-nav[data-links="tile"] .lnk-sign { --plate: var(--color-carbon); --tile: var(--color-carbon); isolation: isolate; }
+  .site-nav[data-links="tile"] .lnk-sign__picto { color: var(--color-paper); }
+  :root:has(.site-nav[data-links="tile"]) .footer .lnk-sign { --plate: var(--color-paper); --tile: var(--color-paper); isolation: isolate; }
+  :root:has(.site-nav[data-links="tile"]) .footer .lnk-sign__picto { color: var(--color-carbon); }
+  .site-nav[data-links="tile"] .nav-drop__row:is(:hover, :focus-visible) .lnk-sign__arrow,
+  :root:has(.site-nav[data-links="tile"]) .footer a.footer__row:is(:hover, :focus-visible) .lnk-sign__arrow { opacity: 0; transform: translateX(100%); }
+  .site-nav[data-links="tile"] .nav-drop__row:is(:hover, :focus-visible) .lnk-sign__picto,
+  :root:has(.site-nav[data-links="tile"]) .footer a.footer__row:is(:hover, :focus-visible) .lnk-sign__picto { clip-path: inset(-0.2em); }
+
+  /* ---------- Case (exploration, panel option nav.case) ----------
+     caps (locked): nav links, drop rows, the quote button and the hero cards in Instrument Sans caps.
+     sentence: the same in sentence case (caps stay for display headings and mono labels).
+     mono: the same in Overpass Mono caps at 14, so every caps word on the site is mono. */
+  .site-nav[data-case="sentence"] :is(.nav-links, .nav-drop__row, .nav-quote, .nav-fr),
+  :root:has(.site-nav[data-case="sentence"]) .hero-card { text-transform: none; letter-spacing: 0; }
+  .site-nav[data-case="mono"] :is(.nav-links, .nav-drop__row, .nav-quote, .nav-fr, .nav-call-number),
+  :root:has(.site-nav[data-case="mono"]) .hero-card {
+    font-family: var(--font-mono); font-size: var(--text-small); font-stretch: normal; font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase;
+  }
 
   .footer__legal {
     display: flex;
