@@ -219,5 +219,5 @@ Each step is one prompt, tested and working before the next starts.
 ## 14. Still to confirm
 
 - The real company phone number (the site still uses a placeholder).
-- Data retention for the Privacy page: 12 months for requests that don't book, 7 years for booked jobs and invoices (suggested).
-- Where the host stores data (Canada or not), for the Privacy page.
+- Data retention: confirmed 6 months for requests that don't book, 7 years for booked jobs and invoices (on the Privacy page).
+- Where the host stores data: confirmed United States (Namecheap, 198.54.116.104, on the Privacy page).
