@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="en-CA">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <script>document.documentElement.classList.add('js')</script>
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <meta name="robots" content="noindex"> <!-- pre-launch: remove at launch (CLAUDE.md "Before launch") -->
+  <title>Accessibility · ONAWAY</title>
+  <meta name="description" content="How ONAWAY makes its website and services usable for everyone, and how to reach us if something gets in your way.">
+  <link rel="preload" href="/fonts/InstrumentSans-Variable.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="/fonts/OverpassMono-Variable.woff2" as="font" type="font/woff2" crossorigin>
+  <script type="module" src="/src/js/main.js"></script>
+</head>
+<body>
+  {{> nav}}
+
+  <main id="main">
+    {{!-- Accessibility: a plain reading page, same layout as Privacy. Covers the AODA customer service feedback process. --}}
+    <article class="legal grid-site" aria-labelledby="legal-title">
+      <header class="legal__head col-span-full lg:col-span-8">
+        <h1 id="legal-title" class="legal__title text-h2 md:text-h1 uppercase">Accessibility.</h1>
+        <p class="legal__lead text-lead">Everyone should be able to get a quote and get the job done. If something gets in your way, tell us and we’ll fix it.</p>
+      </header>
+
+      <div class="legal__body col-span-full lg:col-span-7">
+        <section>
+          <h2>Our website</h2>
+          <p>We aim for this site to meet the Web Content Accessibility Guidelines (WCAG) 2.1 at level AA. That means:</p>
+          <ul>
+            <li>Every page and the quote form work with a keyboard alone, with a visible focus outline.</li>
+            <li>Pages are built so screen readers can follow them, and images have text descriptions.</li>
+            <li>Text and buttons have strong colour contrast.</li>
+            <li>If your device is set to reduce motion, animations are switched off.</li>
+            <li>Pages still work when you zoom in to 200%.</li>
+          </ul>
+        </section>
+
+        <section>
+          <h2>Get a quote another way</h2>
+          <p>If the form doesn’t work for you, you don’t need it. Call or text <a href="tel:+16478771411">+1 647 877 1411</a>, or email <a href="mailto:hello@onaway.ca">hello@onaway.ca</a>, any day from 8 AM to 8 PM, and we’ll take your request directly.</p>
+        </section>
+
+        <section>
+          <h2>On the job</h2>
+          <p>Let us know about anything that helps us serve you well: a support person or service animal coming along, a preferred way to communicate, or access needs at your home or business. We’ll plan around it.</p>
+        </section>
+
+        <section>
+          <h2>Tell us what isn’t working</h2>
+          <p>If you find a barrier on this site or with our service, email <a href="mailto:hello@onaway.ca">hello@onaway.ca</a>, call or text, or tell any member of our team. Let us know the page or situation and what happened. We’ll reply within 2 business days and tell you what we’re doing about it. We can send information in another format if you need one.</p>
+        </section>
+
+        <section>
+          <h2>Changes</h2>
+          <p>We check this site as we add to it and update this page when things change.</p>
+          <p class="legal__date label">Last reviewed: November 4, 2026</p>
+        </section>
+      </div>
+    </article>
+  </main>
+
+  {{> footer}}
+</body>
+</html>
