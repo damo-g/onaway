@@ -732,16 +732,29 @@
 
   /* Edge styles */
   /* Tear (locked): stamps on the outer edges; the seam is straight on both sides (body and tear-off) with the notch option's dashed line */
-  /* The W notch (as the emails' tear): at each end of the seam two round bites (13), one either side of the tear
-     line, so the ticket comes to a point on the line between them */
-  .ticket {
-    --wn: var(--spacing-13);
-    --wn-body: radial-gradient(circle at calc(100% - var(--wn)) 0, transparent var(--wn), var(--cut) calc(var(--wn) + 0.5px)), radial-gradient(circle at calc(100% - var(--wn)) 100%, transparent var(--wn), var(--cut) calc(var(--wn) + 0.5px));
-    --wn-tear: radial-gradient(circle at var(--wn) 0, transparent var(--wn), var(--cut) calc(var(--wn) + 0.5px)), radial-gradient(circle at var(--wn) 100%, transparent var(--wn), var(--cut) calc(var(--wn) + 0.5px));
+  .steps:not([data-ticket="stamps"], [data-ticket="stamp"], [data-ticket="pin"], [data-ticket="notch"]) .ticket { --mask-body: var(--e-t), var(--e-b), var(--e-l); --mask-tear: var(--e-t), var(--e-b), var(--e-r); }
+  /* The W notch, as the emails' tear: at each end of the seam a 13 × 13 cell either side of the tear line, each
+     holding a Paper quarter circle centred on its outer corner. The edge steps in at the far side of each cell and
+     curves back out, so the two sides mirror and the ticket comes to a point on the line; the dashed line runs
+     between the cells. (Painted, not masked: a mask layer has to cover the whole ticket.) */
+  .ticket { --wn: var(--spacing-13); }
+  .steps:not([data-ticket="stamps"], [data-ticket="stamp"], [data-ticket="pin"], [data-ticket="notch"]) :is(.ticket__body, .ticket__tear)::after {
+    content: ""; position: absolute; z-index: 1; pointer-events: none; top: 0; bottom: 0; width: var(--wn);
   }
-  .steps:not([data-ticket="stamps"], [data-ticket="stamp"], [data-ticket="pin"], [data-ticket="notch"]) .ticket { --mask-body: var(--e-t), var(--e-b), var(--e-l), var(--wn-body); --mask-tear: var(--e-t), var(--e-b), var(--e-r), var(--wn-tear); }
+  .steps:not([data-ticket="stamps"], [data-ticket="stamp"], [data-ticket="pin"], [data-ticket="notch"]) .ticket__body::after {
+    right: 0;
+    background:
+      radial-gradient(circle at 0 0, var(--color-paper) var(--wn), transparent calc(var(--wn) + 0.5px)) top / var(--wn) var(--wn) no-repeat,
+      radial-gradient(circle at 0 100%, var(--color-paper) var(--wn), transparent calc(var(--wn) + 0.5px)) bottom / var(--wn) var(--wn) no-repeat;
+  }
+  .steps:not([data-ticket="stamps"], [data-ticket="stamp"], [data-ticket="pin"], [data-ticket="notch"]) .ticket__tear::after {
+    left: 0;
+    background:
+      radial-gradient(circle at 100% 0, var(--color-paper) var(--wn), transparent calc(var(--wn) + 0.5px)) top / var(--wn) var(--wn) no-repeat,
+      radial-gradient(circle at 100% 100%, var(--color-paper) var(--wn), transparent calc(var(--wn) + 0.5px)) bottom / var(--wn) var(--wn) no-repeat;
+  }
   .steps:not([data-ticket="stamps"], [data-ticket="stamp"], [data-ticket="pin"], [data-ticket="notch"]) .ticket__tear { position: relative; }
-  .steps:not([data-ticket="stamps"], [data-ticket="stamp"], [data-ticket="pin"], [data-ticket="notch"]) .ticket__tear::before { content: ""; position: absolute; inset: 0 auto 0 0; border-left: 1.5px dashed color-mix(in srgb, var(--color-carbon) 32%, transparent); }
+  .steps:not([data-ticket="stamps"], [data-ticket="stamp"], [data-ticket="pin"], [data-ticket="notch"]) .ticket__tear::before { content: ""; position: absolute; inset: var(--wn) auto var(--wn) 0; border-left: 1.5px dashed color-mix(in srgb, var(--color-carbon) 32%, transparent); }
   .steps[data-ticket="stamp"] .ticket { --br: 5px; --bp: 15px; }
   .steps[data-ticket="stamp"] .ticket__seam { border-left: 1px solid color-mix(in srgb, var(--color-carbon) 18%, transparent); }
   .steps[data-ticket="pin"] .ticket,
@@ -769,12 +782,22 @@
     }
     .steps[data-ticket="pin"] .ticket,
     .steps[data-ticket="notch"] .ticket { --mask-body: var(--seam-b); --mask-tear: var(--seam-t); }
-    .ticket {
-      --wn-body: radial-gradient(circle at 0 calc(100% - var(--wn)), transparent var(--wn), var(--cut) calc(var(--wn) + 0.5px)), radial-gradient(circle at 100% calc(100% - var(--wn)), transparent var(--wn), var(--cut) calc(var(--wn) + 0.5px));
-      --wn-tear: radial-gradient(circle at 0 var(--wn), transparent var(--wn), var(--cut) calc(var(--wn) + 0.5px)), radial-gradient(circle at 100% var(--wn), transparent var(--wn), var(--cut) calc(var(--wn) + 0.5px));
+    .steps:not([data-ticket="stamps"], [data-ticket="stamp"], [data-ticket="pin"], [data-ticket="notch"]) .ticket { --mask-body: var(--e-l), var(--e-r), var(--e-t); --mask-tear: var(--e-l), var(--e-r), var(--e-b); }
+    /* the seam runs across: the cells sit at its left and right ends */
+    .steps:not([data-ticket="stamps"], [data-ticket="stamp"], [data-ticket="pin"], [data-ticket="notch"]) :is(.ticket__body, .ticket__tear)::after { left: 0; right: 0; width: auto; height: var(--wn); }
+    .steps:not([data-ticket="stamps"], [data-ticket="stamp"], [data-ticket="pin"], [data-ticket="notch"]) .ticket__body::after {
+      top: auto; bottom: 0;
+      background:
+        radial-gradient(circle at 0 0, var(--color-paper) var(--wn), transparent calc(var(--wn) + 0.5px)) left / var(--wn) var(--wn) no-repeat,
+        radial-gradient(circle at 100% 0, var(--color-paper) var(--wn), transparent calc(var(--wn) + 0.5px)) right / var(--wn) var(--wn) no-repeat;
     }
-    .steps:not([data-ticket="stamps"], [data-ticket="stamp"], [data-ticket="pin"], [data-ticket="notch"]) .ticket { --mask-body: var(--e-l), var(--e-r), var(--e-t), var(--wn-body); --mask-tear: var(--e-l), var(--e-r), var(--e-b), var(--wn-tear); }
-    .steps:not([data-ticket="stamps"], [data-ticket="stamp"], [data-ticket="pin"], [data-ticket="notch"]) .ticket__tear::before { inset: 0 0 auto; border-left: 0; border-top: 1.5px dashed color-mix(in srgb, var(--color-carbon) 32%, transparent); }
+    .steps:not([data-ticket="stamps"], [data-ticket="stamp"], [data-ticket="pin"], [data-ticket="notch"]) .ticket__tear::after {
+      top: 0; bottom: auto;
+      background:
+        radial-gradient(circle at 0 100%, var(--color-paper) var(--wn), transparent calc(var(--wn) + 0.5px)) left / var(--wn) var(--wn) no-repeat,
+        radial-gradient(circle at 100% 100%, var(--color-paper) var(--wn), transparent calc(var(--wn) + 0.5px)) right / var(--wn) var(--wn) no-repeat;
+    }
+    .steps:not([data-ticket="stamps"], [data-ticket="stamp"], [data-ticket="pin"], [data-ticket="notch"]) .ticket__tear::before { inset: 0 var(--wn) auto; border-left: 0; border-top: 1.5px dashed color-mix(in srgb, var(--color-carbon) 32%, transparent); }
     .ticket__inner { flex-direction: column; }
     .ticket__body { grid-template-columns: 1fr; grid-template-rows: var(--stub) auto; padding-bottom: var(--spacing-89); }
     .ticket__stub, .steps[data-symbol="centre"] .ticket__stub { align-items: center; padding-bottom: 0; }
@@ -1253,15 +1276,17 @@
     isolation: isolate;
     display: flex;
     justify-content: space-between;
-    align-items: baseline;
+    align-items: center;
     gap: var(--spacing-13);
-    padding-block: var(--spacing-8);
+    padding-block: var(--spacing-13);
     border-bottom: 1px solid var(--ft-line);
     font-size: var(--text-lead);
     line-height: 1.1;
     font-weight: 600;
     transition: color 0.3s, padding 0.3s;
   }
+  /* The words trimmed to their capitals, so they sit truly centred between the square on the left and the sign on the right */
+  .footer__row > span:not(.lnk-sign, .footer__ic, .footer__arrow) { text-box: trim-both cap alphabetic; }
   .footer__row--mono {
     font-family: var(--font-mono);
     font-size: var(--text-label);

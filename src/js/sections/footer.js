@@ -13,10 +13,15 @@ registerOptions('footer', {
 export function init(el) {
   // Live Toronto time
   const clock = el.querySelector('[data-toronto-time]');
+  // Hours (8 AM – 8 PM every day), read against the same clock
+  const hours = el.querySelector('[data-toronto-hours]');
+  const hourNow = new Intl.DateTimeFormat('en-CA', { timeZone: 'America/Toronto', hour: 'numeric', hourCycle: 'h23' });
   const fmt = new Intl.DateTimeFormat('en-CA', { timeZone: 'America/Toronto', hour: 'numeric', minute: '2-digit' });
   const tick = () => {
     clock.textContent = fmt.format(new Date()).toUpperCase();
     clock.dateTime = new Date().toISOString();
+    const h = Number(hourNow.format(new Date()));
+    hours.textContent = h >= 8 && h < 20 ? 'Open till 8 PM' : 'Opens 8 AM';
   };
   tick();
   setInterval(tick, 20000);

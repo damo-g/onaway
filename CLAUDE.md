@@ -65,6 +65,7 @@ Leave 144 of paper between the quote and the footer.
 - `npm run dev` starts the dev server on localhost:5173.
 - `npm run build` writes the static site to `dist/`.
 - `npm run preview` serves the built `dist/`.
+- `npm run mocks` serves `docs/mocks` on localhost:3123 (CSS masks need http, not file://).
 - `cloudflared tunnel --url http://localhost:5173` gives a temporary public link for a client.
 
 ## Deploy
