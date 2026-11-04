@@ -265,8 +265,6 @@
     gap: var(--spacing-34);
     font-weight: 500;
     font-size: var(--text-body);
-    letter-spacing: var(--tracking-nav);
-    text-transform: uppercase;
     white-space: nowrap;
   }
   .nav-links > a,
@@ -353,7 +351,6 @@
     color: var(--color-carbon);
     font-size: var(--text-small);
     font-weight: 600;
-    text-transform: uppercase;
     white-space: nowrap;
   }
   .nav-quote-arrow { display: none; }
@@ -390,7 +387,7 @@
   @media (width >= 768px) {
     .nav-call { display: flex; padding-inline: var(--spacing-21); }
     .nav-call-number { display: inline; }
-    .nav-quote { gap: var(--spacing-34); padding-inline: var(--spacing-21); font-size: var(--text-body); }
+    .nav-quote { gap: var(--spacing-13); padding-inline: var(--spacing-21); font-size: var(--text-body); } /* 13 like the call button beside it */
     .nav-quote-arrow { display: inline; }
   }
   @media (width >= 1024px) {
@@ -469,11 +466,9 @@
     color: var(--color-carbon);
     font-size: var(--text-body);
     font-weight: 500;
-    letter-spacing: var(--tracking-nav);
-    text-transform: uppercase;
     transition: background-color 0.2s, color 0.2s;
   }
-  /* Set like the nav: 16 uppercase at its tracking, 13 sides, 8 between icon and label. Height (panel option hero.cards): 44 (default) | 34 | 55 */
+  /* Set like the nav: 16 in sentence case, 13 sides, 8 between icon and label. Height (panel option hero.cards): 44 (default) | 34 | 55 */
   .hero-card svg { width: 1em; height: 1em; flex: none; }
   @media (width >= 768px) {
     .hero[data-cards="34"] .hero-card { height: var(--spacing-34); }
@@ -542,10 +537,14 @@
     --s-hbg: var(--color-carbon);
     --s-htxt: var(--color-paper);
   }
+  /* End state (panel option services.end): cards (locked: the hanging signs settle as cards on the grid, the
+     dot-matrix a little quieter) | board (full-bleed rows) */
+  .services:not([data-end="board"]) .sign__fact { opacity: 0.72; }
 
-  /* Header sits nav height + 55 below whatever is above it: the hero as it scrolls in, the navbar once pinned */
-  .services__head { position: relative; z-index: 3; padding-top: calc(var(--nav-h) + var(--spacing-34)); row-gap: var(--spacing-21); align-items: end; }
-  @media (width >= 768px) { .services__head { padding-top: calc(var(--nav-h) + var(--spacing-55)); } }
+  /* Header clears the navbar by 55 (34 on phones). Tall screens get more paper above the title: none up to 1080
+     tall, growing to one navbar height (89) at 1258, so shorter screens keep room for the hanging signs */
+  .services__head { --head-extra: clamp(0px, (100svh - 1080px) / 2, var(--spacing-89)); position: relative; z-index: 3; padding-top: calc(var(--nav-h) + var(--spacing-34)); row-gap: var(--spacing-21); align-items: end; }
+  @media (width >= 768px) { .services__head { padding-top: calc(var(--nav-h) + var(--spacing-55) + var(--head-extra)); } }
   .services__intro { max-width: 34ch; color: var(--svc-sub); }
 
   /* Backdrop plate: the beam the signs hang from. Fades in at its top edge, then out on scroll. */
@@ -629,6 +628,9 @@
   /* About section gap + 89 between the R2-E board and the copy, counting the paper the board already
      leaves under itself (--services-tail, set by services.js); never less than 55 of its own */
   .steps { padding-top: max(var(--spacing-55), calc(var(--section-gap) + var(--spacing-89) - var(--services-tail, 0px))); }
+  /* When the board ends high (cards) it leaves more paper than that; Steps then pulls up over it (above the pinned
+     section, whose lower part is empty paper by then), so the gap is always the section gap + 89 */
+  .steps { position: relative; z-index: 1; margin-top: min(0px, calc(var(--section-gap) + var(--spacing-89) - var(--spacing-55) - var(--services-tail, 0px))); }
   .steps .section__grid { row-gap: var(--spacing-55); align-items: start; }
   .steps__intro { display: flex; flex-direction: column; gap: var(--spacing-34); }
   .steps__lead { max-width: 30ch; color: color-mix(in srgb, var(--color-carbon) 78%, transparent); }
@@ -730,7 +732,14 @@
 
   /* Edge styles */
   /* Tear (locked): stamps on the outer edges; the seam is straight on both sides (body and tear-off) with the notch option's dashed line */
-  .steps:not([data-ticket="stamps"], [data-ticket="stamp"], [data-ticket="pin"], [data-ticket="notch"]) .ticket { --mask-body: var(--e-t), var(--e-b), var(--e-l); --mask-tear: var(--e-t), var(--e-b), var(--e-r); }
+  /* The W notch (as the emails' tear): at each end of the seam two round bites (13), one either side of the tear
+     line, so the ticket comes to a point on the line between them */
+  .ticket {
+    --wn: var(--spacing-13);
+    --wn-body: radial-gradient(circle at calc(100% - var(--wn)) 0, transparent var(--wn), var(--cut) calc(var(--wn) + 0.5px)), radial-gradient(circle at calc(100% - var(--wn)) 100%, transparent var(--wn), var(--cut) calc(var(--wn) + 0.5px));
+    --wn-tear: radial-gradient(circle at var(--wn) 0, transparent var(--wn), var(--cut) calc(var(--wn) + 0.5px)), radial-gradient(circle at var(--wn) 100%, transparent var(--wn), var(--cut) calc(var(--wn) + 0.5px));
+  }
+  .steps:not([data-ticket="stamps"], [data-ticket="stamp"], [data-ticket="pin"], [data-ticket="notch"]) .ticket { --mask-body: var(--e-t), var(--e-b), var(--e-l), var(--wn-body); --mask-tear: var(--e-t), var(--e-b), var(--e-r), var(--wn-tear); }
   .steps:not([data-ticket="stamps"], [data-ticket="stamp"], [data-ticket="pin"], [data-ticket="notch"]) .ticket__tear { position: relative; }
   .steps:not([data-ticket="stamps"], [data-ticket="stamp"], [data-ticket="pin"], [data-ticket="notch"]) .ticket__tear::before { content: ""; position: absolute; inset: 0 auto 0 0; border-left: 1.5px dashed color-mix(in srgb, var(--color-carbon) 32%, transparent); }
   .steps[data-ticket="stamp"] .ticket { --br: 5px; --bp: 15px; }
@@ -760,7 +769,11 @@
     }
     .steps[data-ticket="pin"] .ticket,
     .steps[data-ticket="notch"] .ticket { --mask-body: var(--seam-b); --mask-tear: var(--seam-t); }
-    .steps:not([data-ticket="stamps"], [data-ticket="stamp"], [data-ticket="pin"], [data-ticket="notch"]) .ticket { --mask-body: var(--e-l), var(--e-r), var(--e-t); --mask-tear: var(--e-l), var(--e-r), var(--e-b); }
+    .ticket {
+      --wn-body: radial-gradient(circle at 0 calc(100% - var(--wn)), transparent var(--wn), var(--cut) calc(var(--wn) + 0.5px)), radial-gradient(circle at 100% calc(100% - var(--wn)), transparent var(--wn), var(--cut) calc(var(--wn) + 0.5px));
+      --wn-tear: radial-gradient(circle at 0 var(--wn), transparent var(--wn), var(--cut) calc(var(--wn) + 0.5px)), radial-gradient(circle at 100% var(--wn), transparent var(--wn), var(--cut) calc(var(--wn) + 0.5px));
+    }
+    .steps:not([data-ticket="stamps"], [data-ticket="stamp"], [data-ticket="pin"], [data-ticket="notch"]) .ticket { --mask-body: var(--e-l), var(--e-r), var(--e-t), var(--wn-body); --mask-tear: var(--e-l), var(--e-r), var(--e-b), var(--wn-tear); }
     .steps:not([data-ticket="stamps"], [data-ticket="stamp"], [data-ticket="pin"], [data-ticket="notch"]) .ticket__tear::before { inset: 0 0 auto; border-left: 0; border-top: 1.5px dashed color-mix(in srgb, var(--color-carbon) 32%, transparent); }
     .ticket__inner { flex-direction: column; }
     .ticket__body { grid-template-columns: 1fr; grid-template-rows: var(--stub) auto; padding-bottom: var(--spacing-89); }
@@ -775,7 +788,8 @@
     .ticket__tear-label br { display: none; }
   }
 
-  /* Write-in: plays once on entry (steps.js adds .is-armed then .is-go). Reduced motion never arms it. */
+  /* Write-in (locked Nov 2026): plays once on entry (steps.js adds .is-armed then .is-go); the ticket is already
+     there and each step writes in, left to right. Reduced motion never arms it. */
   .ticket { --wd: 0s; }
   .ticket.is-armed .ticket__num { animation: tk-fade 0.4s ease both; }
   .ticket.is-armed .ticket__title,
@@ -795,11 +809,11 @@
   /* Fallback (Unroll + write): the ticket unrolls from the stub first */
   .steps[data-animation="unroll"] .ticket { --wd: 0.9s; }
   .steps[data-animation="unroll"] .ticket.is-armed .ticket__inner { animation: tk-open 1s cubic-bezier(0.5, 0, 0.2, 1) both; }
-  /* Print across: a print head crosses in 30 steps; no write-in */
-  .steps:not([data-animation="write"], [data-animation="unroll"]) .ticket.is-armed .ticket__inner { animation: tk-open 1.8s steps(30, end) both; }
-  .steps:not([data-animation="write"], [data-animation="unroll"]) .ticket.is-armed :is(.ticket__num, .ticket__title, .ticket__copy, .ticket__tear-label, .ticket__arrow) { animation: none; }
-  .steps:not([data-animation="write"], [data-animation="unroll"]) .ticket.is-armed .ticket__stamp { animation-delay: 2s; }
-  .steps:not([data-animation="write"], [data-animation="unroll"]) .ticket.is-armed .ticket__head {
+  /* Print across (option): a print head crosses in 30 steps; no write-in */
+  .steps[data-animation="across"] .ticket.is-armed .ticket__inner { animation: tk-open 1.8s steps(30, end) both; }
+  .steps[data-animation="across"] .ticket.is-armed :is(.ticket__num, .ticket__title, .ticket__copy, .ticket__tear-label, .ticket__arrow) { animation: none; }
+  .steps[data-animation="across"] .ticket.is-armed .ticket__stamp { animation-delay: 2s; }
+  .steps[data-animation="across"] .ticket.is-armed .ticket__head {
     display: block; position: absolute; top: -6px; bottom: -6px; width: 2px;
     background: color-mix(in srgb, var(--color-carbon) 45%, transparent);
     animation: tk-head 1.8s steps(30, end) both;
@@ -1259,11 +1273,10 @@
   }
   .footer__k { color: var(--ft-mut); transition: color 0.3s; }
   .footer__arrow { font-weight: 400; opacity: 0.5; transition: transform 0.3s, opacity 0.3s; }
-  a.footer__row:hover .footer__arrow { transform: translateX(5px); opacity: 1; }
+  a.footer__row:is(:hover, :focus-visible) .footer__arrow { opacity: 1; }
   a.footer__row:focus-visible { outline: 2px solid var(--ft-fg); outline-offset: 4px; }
 
-  /* Rows, like the hero cards: the pictogram at the text's 16, uppercase 500 at the nav's tracking, 8 between, 44 tall.
-     Hover (panel option nav.drop): invert (locked: the row turns Carbon) | quiet (the name and arrow step right). */
+  /* Rows: text first at 16 (500, sentence case), the sign at the right, 44 tall. Hover: the link sign (below). */
   .nav-drop__panel ul { display: grid; gap: var(--spacing-8); }
   .nav-drop__row {
     --tile: var(--color-paper);
@@ -1278,18 +1291,12 @@
     font-size: var(--text-body);
     line-height: 1;
     font-weight: 500;
-    letter-spacing: var(--tracking-nav);
-    text-transform: uppercase;
-    transition: background-color 0.2s, color 0.2s;
   }
   .nav-drop__row svg { width: 1em; height: 1em; flex: none; }
   .nav-drop__row > span { transition: translate 0.3s; }
   .nav-drop__arrow { margin-left: auto; opacity: 0.5; transition: translate 0.3s, opacity 0.3s; }
-  .nav-drop__row:is(:hover, :focus-visible) .nav-drop__arrow { translate: 5px 0; opacity: 1; }
-  .nav-drop__row:focus-visible { outline: 2px solid var(--color-paper); outline-offset: -2px; }
-  .site-nav:not([data-drop="quiet"]) .nav-drop__row:is(:hover, :focus-visible) { --tile: var(--color-carbon); background: var(--color-carbon); color: var(--color-paper); }
-  .site-nav[data-drop="quiet"] .nav-drop__row:is(:hover, :focus-visible) > span:not(.nav-drop__arrow) { translate: 5px 0; }
-  .site-nav[data-drop="quiet"] .nav-drop__row:focus-visible { outline-color: var(--ft-fg); }
+  .nav-drop__row:is(:hover, :focus-visible) .nav-drop__arrow { opacity: 1; }
+  .nav-drop__row:focus-visible { outline: 2px solid var(--color-carbon); outline-offset: -2px; }
   /* Flush (locked): one Paper panel, the rows edge to edge with hairlines between, no inner padding */
   .site-nav:not([data-panel="cards"]) .nav-drop__panel { background: var(--color-paper); box-shadow: 0 0 0 1px var(--ft-line), 0 13px 34px -21px color-mix(in srgb, var(--color-carbon) 45%, transparent); }
   .site-nav:not([data-panel="cards"]) .nav-drop__panel ul { gap: 0; }
@@ -1297,7 +1304,7 @@
   .site-nav:not([data-panel="cards"]) li + li > .nav-drop__row { border-top: 1px solid var(--ft-line); }
 
   /* Hover: Signal (locked) — the yellow square drops in at the start of the row and the text steps right */
-  a.footer__row::after {
+  :is(a.footer__row, .footer__row--static)::after {
     content: "";
     position: absolute;
     left: 0;
@@ -1309,10 +1316,10 @@
     transform: scale(0) rotate(45deg);
     transition: transform 0.35s cubic-bezier(0.3, 0.7, 0.3, 1);
   }
-  .footer:not([data-hover]) a.footer__row:is(:hover, :focus-visible),
-  .footer[data-hover="signal"] a.footer__row:is(:hover, :focus-visible) { padding-left: var(--spacing-21); }
-  .footer:not([data-hover]) a.footer__row:is(:hover, :focus-visible)::after,
-  .footer[data-hover="signal"] a.footer__row:is(:hover, :focus-visible)::after { transform: scale(1) rotate(0deg); }
+  .footer:not([data-hover]) :is(a.footer__row, .footer__row--static):is(:hover, :focus-visible),
+  .footer[data-hover="signal"] :is(a.footer__row, .footer__row--static):is(:hover, :focus-visible) { padding-left: var(--spacing-21); }
+  .footer:not([data-hover]) :is(a.footer__row, .footer__row--static):is(:hover, :focus-visible)::after,
+  .footer[data-hover="signal"] :is(a.footer__row, .footer__row--static):is(:hover, :focus-visible)::after { transform: scale(1) rotate(0deg); }
   .footer[data-hover]:not([data-hover="signal"]) a.footer__row::after { display: none; }
   a.footer__row::before { content: ""; position: absolute; inset: 0 -10px; z-index: -1; pointer-events: none; transition: transform 0.45s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.3s; }
   .footer[data-hover="sweep"] a.footer__row::before { background: var(--ft-fg); transform: scaleX(0); transform-origin: 0 50%; }
@@ -1323,6 +1330,40 @@
   .footer:is([data-hover="sweep"], [data-hover="invert"]) a.footer__row:hover .footer__k { color: var(--color-carbon); }
   .footer[data-hover="mark"] a.footer__row::before { inset: auto -4px 9px; height: 0.55em; background: color-mix(in srgb, var(--color-yellow) 50%, transparent); transform: scaleX(0); transform-origin: 0 50%; }
   .footer[data-hover="mark"] a.footer__row:hover::before { transform: scaleX(1); }
+
+  /* ---------- Link signs (locked: swap) ----------
+     Rows read text first with a sign at the right. On hover a square comes in from the left (yellow on the Carbon
+     footer, Carbon in the Paper drop) and pushes the text 21, while the sign at the right swaps: the arrow shrinks
+     away and the page's pictogram grows in (under Follow, the network's icon). Contact rows have no arrow: their
+     icon (call, text, email, hours) grows in at the right and nudges the detail left. */
+  .lnk-sign { position: relative; display: inline-grid; flex: none; width: 1.25em; height: 1.25em; margin-block: -0.125em; place-items: center; } /* a step bigger than the text so the pictograms read; the negative margin keeps row heights */
+  .lnk-sign > span { grid-area: 1 / 1; display: grid; place-items: center; width: 100%; height: 100%; transition: opacity 0.25s, transform 0.35s cubic-bezier(0.3, 0.7, 0.3, 1); }
+  .lnk-sign svg { width: 1em; height: 1em; }
+  .lnk-sign__picto { opacity: 0; transform: scale(0.4); }
+  .lnk-sign__picto svg { width: 1.25em; height: 1.25em; }
+  .footer__row--mono .lnk-sign__picto svg { width: 1.5em; height: 1.5em; }
+  .footer .lnk-sign { --tile: var(--color-carbon); }
+  :is(.nav-drop__row, a.footer__row):is(:hover, :focus-visible) .lnk-sign__arrow { opacity: 0; transform: scale(0.4); }
+  :is(.nav-drop__row, a.footer__row):is(:hover, :focus-visible) .lnk-sign__picto { opacity: 1; transform: none; }
+
+  /* The drop: Paper stays Paper, a Carbon square pushes the text */
+  .nav-drop__row::after {
+    content: ""; position: absolute; left: var(--spacing-13); top: 50%; width: 8px; height: 8px; margin-top: -4px;
+    background: var(--color-carbon); transform: scale(0) rotate(45deg); transition: transform 0.35s cubic-bezier(0.3, 0.7, 0.3, 1);
+  }
+  .nav-drop__row:is(:hover, :focus-visible)::after { transform: none; }
+  .nav-drop__row:is(:hover, :focus-visible) > span:not(.nav-drop__arrow) { translate: var(--spacing-21) 0; }
+
+  /* Footer contact rows: the icon grows in at the right, the detail steps left; the key lights up */
+  .footer__ic {
+    position: absolute; right: 0; top: 50%; display: grid; place-items: center; width: 1.5em; height: 1.5em; margin-top: -0.75em;
+    color: var(--ft-fg); pointer-events: none; opacity: 0; transform: scale(0.4); transition: opacity 0.25s, transform 0.35s cubic-bezier(0.3, 0.7, 0.3, 1);
+  }
+  .footer__ic svg { width: 1.5em; height: 1.5em; }
+  .footer__row:has(.footer__ic):is(:hover, :focus-visible) { padding-right: calc(1.5em + var(--spacing-13)); }
+  .footer__row:has(.footer__ic):is(:hover, :focus-visible) .footer__ic { opacity: 1; transform: none; }
+  .footer__row:is(:hover, :focus-visible) .footer__k { color: var(--ft-fg); }
+
 
   .footer__legal {
     display: flex;
@@ -1515,6 +1556,9 @@
   .qaddnote > span { text-decoration: underline; text-underline-offset: 4px; }
   .qaddnote small { font-weight: 400; color: var(--qp-mut); }
   .qsend { display: flex; flex-wrap: wrap; align-items: center; gap: var(--spacing-21) var(--spacing-34); padding-top: var(--spacing-21); }
+  /* Turnstile (under the send row) only shows when Cloudflare asks for a click; the honeypot is off-screen */
+  .qsend__ts:has(iframe) { margin-top: var(--spacing-21); }
+  .qhp { position: absolute; left: -10000px; width: 1px; height: 1px; overflow: hidden; }
   .qsend__cta { display: inline-flex; align-items: center; gap: var(--spacing-21); height: var(--spacing-55); padding-inline: var(--spacing-21); flex: none; background: var(--color-yellow); font-size: var(--text-lead); font-weight: 600; cursor: pointer; transition: opacity 0.4s; }
   .qsend__cta span { transition: transform 0.3s; }
   .qsend__cta:hover span { transform: translateX(5px); }

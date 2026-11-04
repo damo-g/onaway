@@ -222,8 +222,12 @@
                 <div class="qsend">
                   <button type="submit" class="qsend__cta"><b data-cta>Send my quote request</b> <span aria-hidden="true">{{{icon "arrow-right-02"}}}</span></button>
                   <p class="qsend__note">We’ll only use your details to reply to this request. <a href="/privacy/">Privacy →</a><span class="qsend__need label"></span></p>
+                  {{!-- Honeypot: people never see or reach it; a bot that fills it gets a fake success and nothing is saved --}}
+                  <div class="qhp" aria-hidden="true"><label for="q-website">Website</label><input id="q-website" name="website" type="text" tabindex="-1" autocomplete="off"></div>
                   <p class="qsend__fail" role="alert" hidden>That didn’t go through. Your details are still here. Try again, or call <a data-phone></a>.</p>
                 </div>
+                {{!-- Turnstile: takes room only when Cloudflare asks for a click --}}
+                <div class="qsend__ts" data-turnstile></div>
                 <p class="qcover label"><i aria-hidden="true"></i><span>We work across the City of Toronto, Peel, York, Durham and Halton.</span></p>
               </div>
             </section>
