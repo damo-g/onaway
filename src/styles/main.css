@@ -541,9 +541,10 @@
      dot-matrix a little quieter) | board (full-bleed rows) */
   .services:not([data-end="board"]) .sign__fact { opacity: 0.72; }
 
-  /* Header clears the navbar, then leaves another navbar height of paper above the title (room to breathe once pinned) */
-  .services__head { position: relative; z-index: 3; padding-top: calc(2 * var(--nav-h) + var(--spacing-34)); row-gap: var(--spacing-21); align-items: end; }
-  @media (width >= 768px) { .services__head { padding-top: calc(2 * var(--nav-h) + var(--spacing-55)); } }
+  /* Header clears the navbar by 55 (34 on phones). Tall screens get more paper above the title: none up to 1080
+     tall, growing to one navbar height (89) at 1258, so shorter screens keep room for the hanging signs */
+  .services__head { --head-extra: clamp(0px, (100svh - 1080px) / 2, var(--spacing-89)); position: relative; z-index: 3; padding-top: calc(var(--nav-h) + var(--spacing-34)); row-gap: var(--spacing-21); align-items: end; }
+  @media (width >= 768px) { .services__head { padding-top: calc(var(--nav-h) + var(--spacing-55) + var(--head-extra)); } }
   .services__intro { max-width: 34ch; color: var(--svc-sub); }
 
   /* Backdrop plate: the beam the signs hang from. Fades in at its top edge, then out on scroll. */
@@ -731,7 +732,14 @@
 
   /* Edge styles */
   /* Tear (locked): stamps on the outer edges; the seam is straight on both sides (body and tear-off) with the notch option's dashed line */
-  .steps:not([data-ticket="stamps"], [data-ticket="stamp"], [data-ticket="pin"], [data-ticket="notch"]) .ticket { --mask-body: var(--e-t), var(--e-b), var(--e-l); --mask-tear: var(--e-t), var(--e-b), var(--e-r); }
+  /* The W notch (as the emails' tear): at each end of the seam two round bites (13), one either side of the tear
+     line, so the ticket comes to a point on the line between them */
+  .ticket {
+    --wn: var(--spacing-13);
+    --wn-body: radial-gradient(circle at calc(100% - var(--wn)) 0, transparent var(--wn), var(--cut) calc(var(--wn) + 0.5px)), radial-gradient(circle at calc(100% - var(--wn)) 100%, transparent var(--wn), var(--cut) calc(var(--wn) + 0.5px));
+    --wn-tear: radial-gradient(circle at var(--wn) 0, transparent var(--wn), var(--cut) calc(var(--wn) + 0.5px)), radial-gradient(circle at var(--wn) 100%, transparent var(--wn), var(--cut) calc(var(--wn) + 0.5px));
+  }
+  .steps:not([data-ticket="stamps"], [data-ticket="stamp"], [data-ticket="pin"], [data-ticket="notch"]) .ticket { --mask-body: var(--e-t), var(--e-b), var(--e-l), var(--wn-body); --mask-tear: var(--e-t), var(--e-b), var(--e-r), var(--wn-tear); }
   .steps:not([data-ticket="stamps"], [data-ticket="stamp"], [data-ticket="pin"], [data-ticket="notch"]) .ticket__tear { position: relative; }
   .steps:not([data-ticket="stamps"], [data-ticket="stamp"], [data-ticket="pin"], [data-ticket="notch"]) .ticket__tear::before { content: ""; position: absolute; inset: 0 auto 0 0; border-left: 1.5px dashed color-mix(in srgb, var(--color-carbon) 32%, transparent); }
   .steps[data-ticket="stamp"] .ticket { --br: 5px; --bp: 15px; }
@@ -761,7 +769,11 @@
     }
     .steps[data-ticket="pin"] .ticket,
     .steps[data-ticket="notch"] .ticket { --mask-body: var(--seam-b); --mask-tear: var(--seam-t); }
-    .steps:not([data-ticket="stamps"], [data-ticket="stamp"], [data-ticket="pin"], [data-ticket="notch"]) .ticket { --mask-body: var(--e-l), var(--e-r), var(--e-t); --mask-tear: var(--e-l), var(--e-r), var(--e-b); }
+    .ticket {
+      --wn-body: radial-gradient(circle at 0 calc(100% - var(--wn)), transparent var(--wn), var(--cut) calc(var(--wn) + 0.5px)), radial-gradient(circle at 100% calc(100% - var(--wn)), transparent var(--wn), var(--cut) calc(var(--wn) + 0.5px));
+      --wn-tear: radial-gradient(circle at 0 var(--wn), transparent var(--wn), var(--cut) calc(var(--wn) + 0.5px)), radial-gradient(circle at 100% var(--wn), transparent var(--wn), var(--cut) calc(var(--wn) + 0.5px));
+    }
+    .steps:not([data-ticket="stamps"], [data-ticket="stamp"], [data-ticket="pin"], [data-ticket="notch"]) .ticket { --mask-body: var(--e-l), var(--e-r), var(--e-t), var(--wn-body); --mask-tear: var(--e-l), var(--e-r), var(--e-b), var(--wn-tear); }
     .steps:not([data-ticket="stamps"], [data-ticket="stamp"], [data-ticket="pin"], [data-ticket="notch"]) .ticket__tear::before { inset: 0 0 auto; border-left: 0; border-top: 1.5px dashed color-mix(in srgb, var(--color-carbon) 32%, transparent); }
     .ticket__inner { flex-direction: column; }
     .ticket__body { grid-template-columns: 1fr; grid-template-rows: var(--stub) auto; padding-bottom: var(--spacing-89); }
@@ -776,7 +788,8 @@
     .ticket__tear-label br { display: none; }
   }
 
-  /* Write-in: plays once on entry (steps.js adds .is-armed then .is-go). Reduced motion never arms it. */
+  /* Write-in (locked Nov 2026): plays once on entry (steps.js adds .is-armed then .is-go); the ticket is already
+     there and each step writes in, left to right. Reduced motion never arms it. */
   .ticket { --wd: 0s; }
   .ticket.is-armed .ticket__num { animation: tk-fade 0.4s ease both; }
   .ticket.is-armed .ticket__title,
@@ -796,11 +809,11 @@
   /* Fallback (Unroll + write): the ticket unrolls from the stub first */
   .steps[data-animation="unroll"] .ticket { --wd: 0.9s; }
   .steps[data-animation="unroll"] .ticket.is-armed .ticket__inner { animation: tk-open 1s cubic-bezier(0.5, 0, 0.2, 1) both; }
-  /* Print across: a print head crosses in 30 steps; no write-in */
-  .steps:not([data-animation="write"], [data-animation="unroll"]) .ticket.is-armed .ticket__inner { animation: tk-open 1.8s steps(30, end) both; }
-  .steps:not([data-animation="write"], [data-animation="unroll"]) .ticket.is-armed :is(.ticket__num, .ticket__title, .ticket__copy, .ticket__tear-label, .ticket__arrow) { animation: none; }
-  .steps:not([data-animation="write"], [data-animation="unroll"]) .ticket.is-armed .ticket__stamp { animation-delay: 2s; }
-  .steps:not([data-animation="write"], [data-animation="unroll"]) .ticket.is-armed .ticket__head {
+  /* Print across (option): a print head crosses in 30 steps; no write-in */
+  .steps[data-animation="across"] .ticket.is-armed .ticket__inner { animation: tk-open 1.8s steps(30, end) both; }
+  .steps[data-animation="across"] .ticket.is-armed :is(.ticket__num, .ticket__title, .ticket__copy, .ticket__tear-label, .ticket__arrow) { animation: none; }
+  .steps[data-animation="across"] .ticket.is-armed .ticket__stamp { animation-delay: 2s; }
+  .steps[data-animation="across"] .ticket.is-armed .ticket__head {
     display: block; position: absolute; top: -6px; bottom: -6px; width: 2px;
     background: color-mix(in srgb, var(--color-carbon) 45%, transparent);
     animation: tk-head 1.8s steps(30, end) both;

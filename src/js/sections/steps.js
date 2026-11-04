@@ -1,11 +1,12 @@
 import { registerOptions } from '../options.js';
 import { onEnterOnce, prefersReducedMotion } from '../motion.js';
 
-// Locked first: tear (stamp-bitten outer edges, a straight dashed seam), symbol at the foot, printed across.
+// Locked first: tear (stamp-bitten outer edges, a straight dashed seam with the W notch at each end), symbol at
+// the foot, written in (Nov 2026; across was too dramatic).
 registerOptions('steps', {
   ticket: ['tear', 'stamps', 'stamp', 'pin', 'notch'],
   symbol: ['foot', 'centre'],
-  animation: ['across', 'write', 'unroll'],
+  animation: ['write', 'unroll', 'across'],
 });
 
 export function init(el) {
