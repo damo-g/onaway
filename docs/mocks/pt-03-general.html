@@ -1,0 +1,112 @@
+<!doctype html>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>PT-03 General Arrivals</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wdth,wght@75..100,400..700&family=Overpass+Mono:wght@400;500;600&display=swap">
+<link rel="stylesheet" href="shared.css">
+<link rel="stylesheet" href="pt/pt.css">
+
+<body>
+<div class="top">
+  <div><div class="id">ONAWAY · Page transitions · 03 of 3 · every other page · PT-03</div><h1>PT-03 · General Arrivals</h1></div>
+  <div class="tools">
+    <span class="tg" data-k="opt"><span class="tl0">Option</span><button class="tbtn" data-v="stop" aria-pressed="true">A · Next stop</button><button class="tbtn" data-v="fade" aria-pressed="false">B · Settle</button><button class="tbtn" data-v="slats" aria-pressed="false">C · Board rows</button><button class="tbtn" data-v="doors" aria-pressed="false">D · Doors</button></span>
+    <button class="tbtn" id="play">Play</button>
+    <button class="tbtn" id="rm" aria-pressed="false">Reduced motion</button>
+  </div>
+</div>
+<p class="hint"><b>Click About, Help or the wordmark</b> inside the frame, or press Play (then Back to home, which is general too). Service and quote links use a plain crossfade here.</p>
+
+<div class="pt-shell"></div>
+
+<div class="spec">
+  <section>
+    <h2>Ranking</h2>
+    <ol>
+      <li><b>A · Next stop · 9.1</b>. A route line draws along the foot of the navbar with the yellow square at its head, the old page steps out and the new one settles 13 up into place. Quiet, quick, and it's the same square that pushes the footer links, so the system shares one signal. Works for every page, forwards and back. About 0.55s.</li>
+      <li><b>B · Settle · 7.8</b>. A plain crossfade with the new page settling 8 up. The safe baseline: never in the way, but says nothing about ONAWAY. About 0.3s.</li>
+      <li><b>C · Board rows · 6.8</b>. Paper rows rise across the page like a board refreshing, then carry on up to show the new page. Pleasant once; for the most common transition, too much movement. About 0.8s.</li>
+      <li><b>D · Doors · 5.9</b>. Two Paper panels close on a perforated seam and open again. The heaviest: it blocks the page every time, and doors suggest a vehicle more than the site's tickets and signs. About 0.85s.</li>
+    </ol>
+  </section>
+  <section>
+    <h2>When it runs</h2>
+    <ul>
+      <li>Every navigation that isn't to a service page (PT-01) or the quote page (PT-02): Home, About, Help, Privacy, Accessibility, the 404, and the browser's back and forward.</li>
+      <li>Fast enough to never feel like a wait: the new page is readable within 0.3s.</li>
+      <li>Reduced motion: a 150ms crossfade.</li>
+    </ul>
+  </section>
+  <section>
+    <h2>The system</h2>
+    <ul>
+      <li>Three types, picked from the link's address before the page leaves: <b>service</b> (/cleaning/, /moving/, /delivery/), <b>quote</b> (/quote/), <b>general</b> (everything else, and back/forward).</li>
+      <li>One mechanism for all three: native cross-document View Transitions plus about 1 KB of JS. No framework, nothing added to the page budget that matters, and Lenis and GSAP keep working.</li>
+      <li>The navbar is named once and never animates, so every transition happens under a fixed frame.</li>
+      <li>Browsers without View Transitions (Firefox today) navigate normally.</li>
+    </ul>
+  </section>
+</div>
+
+<script type="module">
+import { mount, EASE, INOUT, OUT } from './pt/pt.js';
+
+const options = {
+  // A · a route line along the navbar's foot, the yellow square at its head; the page steps out and settles in
+  stop: {
+    async run(c) {
+      const line = c.ov('left:0;top:88px;width:1512px;height:2px;background:var(--carbon);transform-origin:0 50%;transform:scaleX(0)', '', 21);
+      const head = c.ov('left:0;top:85px;width:8px;height:8px;background:var(--yellow)', '', 22);
+      c.to.style.zIndex = 3;
+      c.a(line, [{ transform: 'scaleX(0)' }, { transform: 'scaleX(1)' }], { duration: 520 });
+      c.a(head, [{ transform: 'translateX(0)' }, { transform: 'translateX(1504px)' }], { duration: 520 });
+      c.a(c.from, [{ opacity: 1 }, { opacity: 0 }], { duration: 180, easing: 'ease-out' });
+      await c.a(c.to, [{ opacity: 0, transform: 'translateY(13px)' }, { opacity: 1, transform: 'none' }], { duration: 380, delay: 170 });
+      await Promise.all([line, head].map((el) => c.a(el, [{ opacity: 1 }, { opacity: 0 }], { duration: 200, easing: 'ease-out' })));
+    },
+  },
+
+  // B · a plain crossfade, the new page settling 8 up
+  fade: {
+    async run(c) {
+      c.to.style.zIndex = 3;
+      c.a(c.from, [{ opacity: 1 }, { opacity: 0 }], { duration: 150, easing: 'ease-out' });
+      await c.a(c.to, [{ opacity: 0, transform: 'translateY(8px)' }, { opacity: 1, transform: 'none' }], { duration: 300, delay: 90 });
+    },
+  },
+
+  // C · Paper rows rise across the page like a board refreshing, then carry on up
+  slats: {
+    async run(c) {
+      const N = 5;
+      const H = 771 / N;
+      const rows = Array.from({ length: N }, (_, i) => c.ov(`left:0;width:1512px;top:${89 + i * H}px;height:${H + 1}px;background:var(--paper);box-shadow:inset 0 1px 0 rgba(32,37,33,.2)`, '', 11));
+      await Promise.all(rows.map((r, i) => c.a(r, [{ transform: `translateY(${771}px)` }, { transform: 'none' }], { duration: 360, delay: i * 45, easing: EASE })));
+      c.from.style.opacity = 0;
+      await Promise.all(rows.map((r, i) => c.a(r, [{ clipPath: 'inset(0 0 0 0)' }, { clipPath: 'inset(0 0 100% 0)' }], { duration: 320, delay: i * 45, easing: INOUT })));
+    },
+  },
+
+  // D · two Paper panels close on a perforated seam, then open
+  doors: {
+    async run(c) {
+      const l = c.ov('left:0;top:89px;bottom:0;width:756px;background:var(--paper);box-shadow:inset -1.5px 0 0 rgba(32,37,33,.2)', '', 11);
+      const r = c.ov('right:0;top:89px;bottom:0;width:756px;background:var(--paper)', '<i style="position:absolute;inset:0 auto 0 0;border-left:1.5px dashed rgba(32,37,33,.32)"></i>', 11);
+      await Promise.all([
+        c.a(l, [{ transform: 'translateX(-100%)' }, { transform: 'none' }], { duration: 380, easing: INOUT }),
+        c.a(r, [{ transform: 'translateX(100%)' }, { transform: 'none' }], { duration: 380, easing: INOUT }),
+      ]);
+      c.from.style.opacity = 0;
+      await c.wait(120);
+      await Promise.all([
+        c.a(l, [{ transform: 'none' }, { transform: 'translateX(-100%)' }], { duration: 380, easing: INOUT }),
+        c.a(r, [{ transform: 'none' }, { transform: 'translateX(100%)' }], { duration: 380, easing: INOUT }),
+      ]);
+    },
+  },
+};
+
+mount({ category: 'general', options, play: '.pt-links a[data-go="general"]' });
+</script>
+</body>

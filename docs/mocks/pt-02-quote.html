@@ -1,0 +1,116 @@
+<!doctype html>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>PT-02 Quote Arrivals</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wdth,wght@75..100,400..700&family=Overpass+Mono:wght@400;500;600&display=swap">
+<link rel="stylesheet" href="shared.css">
+<link rel="stylesheet" href="pt/pt.css">
+
+<body>
+<div class="top">
+  <div><div class="id">ONAWAY · Page transitions · 02 of 3 · only the Get a free quote page · PT-02</div><h1>PT-02 · Quote Arrivals</h1></div>
+  <div class="tools">
+    <span class="tg" data-k="opt"><span class="tl0">Option</span><button class="tbtn" data-v="tear" aria-pressed="true">A · Tear-off</button><button class="tbtn" data-v="ticket" aria-pressed="false">B · Ticket issued</button><button class="tbtn" data-v="punch" aria-pressed="false">C · Punch</button></span>
+    <button class="tbtn" id="play">Play</button>
+    <button class="tbtn" id="rm" aria-pressed="false">Reduced motion</button>
+  </div>
+</div>
+<p class="hint"><b>Click "Get a free quote"</b> in the nav (or on a service page) inside the frame, or press Play. Other links use a plain crossfade here.</p>
+
+<div class="pt-shell"></div>
+
+<div class="spec">
+  <section>
+    <h2>Ranking</h2>
+    <ol>
+      <li><b>A · Tear-off · 9.0</b>. The yellow button grows into a stub with its perforation, fills the screen, then tears away along it, and the quote form is underneath. It finishes the gesture the Steps ticket starts (its yellow "Get a free quote" tear-off), so the site's main action has one consistent signature. The only full-screen yellow on the site, and it lasts a moment. About 1s.</li>
+      <li><b>B · Ticket issued · 8.6</b>. The page settles, and the form's ticket slides up from the bottom of the screen, as if issued from a machine, and lands where it lives. Calm and clear; it puts the eye straight on the form. About 0.85s.</li>
+      <li><b>C · Punch · 7.2</b>. A conductor's punch: the quote page opens as a circle from where you clicked, and the chad drops. Quick and playful, but a circle reveal is common on the web and says less about tickets than A or B. About 0.6s.</li>
+    </ol>
+  </section>
+  <section>
+    <h2>When it runs</h2>
+    <ul>
+      <li>Only for links to /quote/: the nav's yellow button, the Steps tear-off, the quote panel, the service pages' and About's buttons, the help page's end band.</li>
+      <li>A grows from whichever button was pressed. From a link with no button shape it grows from the click point.</li>
+      <li>Leaving /quote/ uses the general transition (PT-03).</li>
+      <li>Reduced motion: a 150ms crossfade.</li>
+    </ul>
+  </section>
+  <section>
+    <h2>How it would be built</h2>
+    <ul>
+      <li>The same native View Transitions as PT-01, tagged <code>quote</code> on <code>pageswap</code>.</li>
+      <li>A: the button carries a <code>view-transition-name</code> that matches a full-screen yellow layer on the quote page, which the browser grows into; the tear is a short CSS animation on that layer. The yellow layer must never be visible without the transition (it's removed on <code>pagereveal</code>).</li>
+      <li>B: the form's ticket animates in with <code>::view-transition-new</code>. The simplest of the three.</li>
+      <li>C: a clip-path circle from the click point, passed across with <code>sessionStorage</code>.</li>
+    </ul>
+  </section>
+</div>
+
+<script type="module">
+import { mount, EASE, INOUT, OUT } from './pt/pt.js';
+
+const options = {
+  // A · the yellow button grows into a stub, fills the screen, tears off along its perforation
+  tear: {
+    async run(c) {
+      const b = c.link.classList.contains('pt-quote') || c.link.classList.contains('pt-btn') ? c.r(c.link) : { x: c.point.x - 27, y: c.point.y - 27, w: 55, h: 55 };
+      const stub = c.ov(`left:0;top:0;background:var(--yellow);box-shadow:inset 1.5px 0 0 0 transparent;transform-origin:0 100%`, '<i style="position:absolute;inset:13px auto 13px 0;border-left:1.5px dashed rgba(32,37,33,.32)"></i>', 11);
+      const full = { x: 0, y: 89, w: 1512, h: 771 };
+      await c.a(stub, [
+        { left: `${b.x}px`, top: `${b.y}px`, width: `${b.w}px`, height: `${b.h}px` },
+        { left: `${full.x}px`, top: `${full.y}px`, width: `${full.w}px`, height: `${full.h}px` },
+      ], { duration: 460, easing: INOUT });
+      c.from.style.opacity = 0;
+      await c.wait(120);
+      await c.a(stub, [
+        { transform: 'none' },
+        { transform: 'rotate(2deg) translate(8px, 8px)', offset: 0.25 },
+        { transform: 'rotate(7deg) translate(1560px, 160px)' },
+      ], { duration: 560, easing: OUT });
+    },
+  },
+
+  // B · the page settles, the form's ticket is issued from the bottom of the screen
+  ticket: {
+    async run(c) {
+      const tk = c.to.querySelector('[data-quote-ticket]');
+      const r = c.r(tk);
+      tk.style.visibility = 'hidden';
+      const clone = tk.cloneNode(true);
+      clone.removeAttribute('data-quote-ticket');
+      clone.style.cssText = `position:absolute;margin:0;left:${r.x}px;top:${r.y}px;width:${r.w}px;height:${r.h}px;visibility:visible;z-index:11`;
+      clone.classList.add('pt-ov');
+      c.frame.append(clone);
+      c.to.style.zIndex = 3;
+      c.a(c.from, [{ opacity: 1 }, { opacity: 0 }], { duration: 220, easing: 'ease-out' });
+      c.a(c.to, [{ opacity: 0 }, { opacity: 1 }], { duration: 360, delay: 120 });
+      await c.a(clone, [
+        { transform: `translateY(${860 - r.y + 21}px) rotate(-1.5deg)` },
+        { transform: 'none' },
+      ], { duration: 700, delay: 140, easing: EASE });
+      tk.style.visibility = '';
+    },
+  },
+
+  // C · the page opens as a punched hole from the click point; the chad drops
+  punch: {
+    async run(c) {
+      const p = c.point;
+      const y = p.y - 89;
+      const R = Math.hypot(Math.max(p.x, 1512 - p.x), Math.max(y, 771 - y));
+      c.to.style.zIndex = 3;
+      const ring = c.ov(`left:${p.x}px;top:${p.y}px;width:0;height:0;border-radius:50%;box-shadow:0 0 0 2px var(--carbon);transform:translate(-50%,-50%)`, '', 12);
+      const chad = c.ov(`left:${p.x - 10}px;top:${p.y - 10}px;width:21px;height:21px;border-radius:50%;background:var(--yellow)`, '', 13);
+      c.a(chad, [{ transform: 'none', opacity: 1 }, { transform: 'translate(34px, 260px) rotate(200deg)', opacity: 0 }], { duration: 700, easing: OUT });
+      c.a(ring, [{ width: '0px', height: '0px', opacity: 1 }, { width: `${R * 2}px`, height: `${R * 2}px`, opacity: 0 }], { duration: 640, easing: EASE });
+      await c.a(c.to, [{ clipPath: `circle(0px at ${p.x}px ${y}px)` }, { clipPath: `circle(${R}px at ${p.x}px ${y}px)` }], { duration: 640, easing: EASE });
+    },
+  },
+};
+
+mount({ category: 'quote', options, play: '.pt-quote' });
+</script>
+</body>

@@ -1,0 +1,125 @@
+<!doctype html>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>PT-01 Service Arrivals</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wdth,wght@75..100,400..700&family=Overpass+Mono:wght@400;500;600&display=swap">
+<link rel="stylesheet" href="shared.css">
+<link rel="stylesheet" href="pt/pt.css">
+
+<body>
+<div class="top">
+  <div><div class="id">ONAWAY · Page transitions · 01 of 3 · any link to a service page · PT-01</div><h1>PT-01 · Service Arrivals</h1></div>
+  <div class="tools">
+    <span class="tg" data-k="opt"><span class="tl0">Option</span><button class="tbtn" data-v="sign" aria-pressed="true">A · Sign arrives</button><button class="tbtn" data-v="line" aria-pressed="false">B · Route line</button><button class="tbtn" data-v="board" aria-pressed="false">C · Arrival board</button></span>
+    <button class="tbtn" id="play">Play</button>
+    <button class="tbtn" id="rm" aria-pressed="false">Reduced motion</button>
+  </div>
+</div>
+<p class="hint"><b>Click a service card</b> (or Services in the nav) inside the frame, or press Play. Other links use a plain crossfade here; they have their own mocks (PT-02 quote, PT-03 general).</p>
+
+<div class="pt-shell"></div>
+
+<div class="spec">
+  <section>
+    <h2>Ranking</h2>
+    <ol>
+      <li><b>A · Sign arrives · 9.2</b>. The card you click becomes the service page's sign: it shrinks into the hero tile while the page settles in around it. Nothing new is invented; it's the same object continuing, which reads as "you are now at this stop". About 0.7s.</li>
+      <li><b>B · Route line · 8.3</b>. A Carbon band carrying the pictogram runs across like a train passing, and the service page is there behind it. Strong and on-brand, but every service visit runs the full width, so it gets heavier on the third visit than A. About 0.75s.</li>
+      <li><b>C · Arrival board · 7.4</b>. Board slats flap down, read NOW ARRIVING · MOVING in dot matrix, then flap away. The most "transit", but it holds the visitor for over a second and hides both pages at once. Better saved for a one-off moment than a link people use often. About 1.3s.</li>
+    </ol>
+  </section>
+  <section>
+    <h2>When it runs</h2>
+    <ul>
+      <li>Any link to /cleaning/, /moving/ or /delivery/: the R2-E cards, the hero service cards, the Services drop, the footer's Get around rows, and the map's results.</li>
+      <li>A and B use the clicked service's pictogram. From a link without one (the nav), A falls back to its page settle without the moving sign.</li>
+      <li>The navbar never moves.</li>
+      <li>Reduced motion: a 150ms crossfade for every option.</li>
+    </ul>
+  </section>
+  <section>
+    <h2>How it would be built</h2>
+    <ul>
+      <li>Native cross-document View Transitions (CSS <code>@view-transition { navigation: auto }</code>), no framework. A few lines of JS on <code>pageswap</code> tag the navigation as <code>service</code> from the link's address; the CSS picks the animation with <code>:active-view-transition-type(service)</code>.</li>
+      <li>A: the card's tile and the service hero's tile share a <code>view-transition-name</code>; the browser morphs one into the other. The cheapest of the three to build.</li>
+      <li>B: a clip-path wipe on the new page plus one band element. C needs its own temporary board element, so it's the most work.</li>
+      <li>Chrome, Edge and Safari 18.2+ animate; Firefox simply navigates as today.</li>
+    </ul>
+  </section>
+</div>
+
+<script type="module">
+import { mount, EASE, INOUT, OUT } from './pt/pt.js';
+
+const options = {
+  // A · the clicked card becomes the hero tile
+  sign: {
+    async run(c) {
+      const card = c.link.closest('.pt-card');
+      const hero = c.to.querySelector('[data-hero-tile]');
+      c.to.style.zIndex = 3;
+      if (!card) {
+        return Promise.all([
+          c.a(c.from, [{ opacity: 1 }, { opacity: 0 }], { duration: 200, easing: 'ease-out' }),
+          c.a(c.to, [{ opacity: 0, transform: 'translateY(13px)' }, { opacity: 1, transform: 'none' }], { duration: 440, delay: 160 }),
+        ]);
+      }
+      const a = c.r(card);
+      const tr = c.r(card.querySelector('.pt-tile'));
+      const t = c.r(hero);
+      hero.style.visibility = 'hidden';
+      const plate = c.ov(`left:0;top:0;width:${a.w}px;height:${a.h}px;transform:translate(${a.x}px,${a.y}px);background:var(--carbon);border-radius:6px;box-shadow:inset 0 0 0 1px rgba(247,242,231,.22)`, '', 11);
+      const tile = c.ov(`left:0;top:0;display:grid;place-items:center;color:var(--paper);--tile:var(--carbon)`, card.querySelector('.pt-tile').innerHTML.replace('<svg', '<svg style="width:68%;height:68%"'), 12);
+      card.style.visibility = 'hidden';
+      const D = 720;
+      c.a(c.from, [{ opacity: 1 }, { opacity: 0 }], { duration: 220, easing: 'ease-out' });
+      c.a(plate, [
+        { width: `${a.w}px`, height: `${a.h}px`, transform: `translate(${a.x}px,${a.y}px)`, borderRadius: '6px' },
+        { width: `${t.w}px`, height: `${t.h}px`, transform: `translate(${t.x}px,${t.y}px)`, borderRadius: '4px' },
+      ], { duration: D, easing: EASE });
+      c.a(tile, [
+        { width: `${tr.w}px`, height: `${tr.h}px`, transform: `translate(${tr.x}px,${tr.y}px)` },
+        { width: `${t.w}px`, height: `${t.h}px`, transform: `translate(${t.x}px,${t.y}px)` },
+      ], { duration: D, easing: EASE });
+      await c.a(c.to, [{ opacity: 0, transform: 'translateY(13px)' }, { opacity: 1, transform: 'none' }], { duration: 460, delay: 240 });
+      await c.wait(60);
+    },
+  },
+
+  // B · a Carbon band runs across with the pictogram; the page is there behind it
+  line: {
+    async run(c) {
+      const k = c.link.dataset.svc || 'cleaning';
+      const W = 144;
+      c.to.style.zIndex = 3;
+      const band = c.ov(`left:0;top:89px;bottom:0;width:${W}px;background:var(--carbon);color:var(--paper);--tile:var(--carbon);display:grid;place-items:center`, `<div style="width:55px;height:55px">${c.PICTO[k]}</div>`, 11);
+      const D = 760;
+      await Promise.all([
+        c.a(band, [{ transform: `translateX(${-W}px)` }, { transform: 'translateX(1512px)' }], { duration: D, easing: INOUT }),
+        c.a(c.to, [{ clipPath: `inset(0 ${1512 + W / 2}px 0 0)` }, { clipPath: `inset(0 ${-W / 2}px 0 0)` }], { duration: D, easing: INOUT }),
+      ]);
+    },
+  },
+
+  // C · board slats flap down, announce the stop in dot matrix, then flap away
+  board: {
+    async run(c) {
+      const k = c.link.dataset.svc || 'cleaning';
+      const N = 6;
+      const H = 771 / N;
+      const words = { 2: 'NOW ARRIVING', 3: k.toUpperCase() };
+      const slats = Array.from({ length: N }, (_, i) => c.ov(
+        `left:0;width:1512px;top:${89 + i * H}px;height:${H + 1}px;background:var(--carbon);color:var(--yellow);display:grid;place-items:center;transform-origin:50% 0;box-shadow:inset 0 -1px 0 rgba(247,242,231,.14)`,
+        words[i] ? c.dm(words[i], i === 3 ? 9 : 6) : '', 11));
+      await Promise.all(slats.map((s, i) => c.a(s, [{ transform: 'perspective(1400px) rotateX(-90deg)' }, { transform: 'perspective(1400px) rotateX(0)' }], { duration: 280, delay: i * 55 })));
+      c.from.style.opacity = 0;
+      await c.wait(380);
+      await Promise.all(slats.map((s, i) => c.a(s, [{ transform: 'perspective(1400px) rotateX(0)' }, { transform: 'perspective(1400px) rotateX(90deg)' }], { duration: 280, delay: i * 55, easing: OUT })));
+    },
+  },
+};
+
+mount({ category: 'service', options, play: '.pt-card[data-svc="moving"]' });
+</script>
+</body>
