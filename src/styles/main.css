@@ -1265,6 +1265,16 @@
   .footer__tag { max-width: 22ch; font-size: var(--text-h3); line-height: 1.1; font-weight: 500; letter-spacing: -0.01em; }
   .footer__clock { color: var(--ft-fg); }
   .footer__clock time { font-variant-numeric: tabular-nums; }
+  /* The hours sit under the time, a step quieter: supporting information. The pictogram carries the camel (camel is
+     never text); the words are Paper at 55%. Panel option footer.hours: quiet (locked) | kraft (a camel tag, Carbon
+     words) | inline (one line after the time). */
+  .footer__when { display: flex; flex-direction: column; align-items: flex-start; gap: var(--spacing-8); }
+  .footer__hours { --tile: var(--color-carbon); display: inline-flex; align-items: center; gap: var(--spacing-8); color: color-mix(in srgb, var(--color-paper) 55%, transparent); }
+  .footer__hours svg { flex: none; width: 1.25em; height: 1.25em; color: var(--color-camel); }
+  .footer[data-hours="kraft"] .footer__hours { --tile: var(--color-camel); padding: var(--spacing-8); border-radius: 2px; background: var(--color-camel); color: var(--color-carbon); }
+  .footer[data-hours="kraft"] .footer__hours svg { color: var(--color-carbon); }
+  .footer[data-hours="inline"] .footer__when { flex-direction: row; flex-wrap: wrap; align-items: center; }
+  .footer[data-hours="inline"] .footer__clock::after { content: " ·"; }
 
   /* Hanging columns under one hairline */
   .footer__cols { margin-top: var(--spacing-55); row-gap: var(--spacing-34); }
@@ -1433,7 +1443,8 @@
   @media (width >= 1024px) {
     .footer { padding-top: var(--spacing-55); }
     .footer__tag { font-size: var(--text-h2); }
-    .footer__clock { justify-self: end; text-align: right; padding-top: var(--spacing-13); }
+    .footer__when { justify-self: end; align-items: flex-end; padding-top: var(--spacing-13); }
+    .footer[data-hours="inline"] .footer__when { justify-content: flex-end; }
     .footer__cols { margin-top: var(--spacing-55); }
     .footer__explore { grid-column: 1 / span 3; }
     .footer__contact { grid-column: 7 / span 3; }
@@ -2135,12 +2146,22 @@
   @media (prefers-reduced-motion: reduce) {
     .js .help__a, .help__qt { transition: none; }
   }
-  /* End band: the CC-02b panel; the headline and line left, a person to call right */
+  /* End band: the CC-02b panel; the headline and line left, a person to call right. Calling isn't the site's main
+     action, so the band is light: a pale tint of Carbon with a Carbon call button (no yellow). Panel option
+     helpend.tone: light (locked) | kraft (camel at 22%) | line (Paper inside a hairline). */
+  .help-end .ccta__panel { --he-bg: color-mix(in srgb, var(--color-carbon) 6%, var(--color-paper)); background: var(--he-bg); color: var(--color-carbon); }
+  .help-end[data-tone="kraft"] .ccta__panel { --he-bg: color-mix(in srgb, var(--color-camel) 22%, var(--color-paper)); }
+  .help-end[data-tone="line"] .ccta__panel { --he-bg: var(--color-paper); box-shadow: inset 0 0 0 1px var(--color-line); }
+  .help-end .ccta__lead { color: color-mix(in srgb, var(--color-carbon) 72%, transparent); }
+  .help-end .ccta__cta { background: var(--color-carbon); color: var(--color-paper); }
+  .help-end .ccta__cta:focus-visible { outline-color: var(--color-carbon); }
+  .help-end .ccta__call { text-decoration-color: color-mix(in srgb, var(--color-carbon) 40%, transparent); }
+  .help-end .ccta__call:hover { text-decoration-color: var(--color-carbon); }
   .help-end__text { grid-column: 1 / -1; display: flex; flex-direction: column; gap: var(--spacing-21); }
   .help-end__title { font-size: var(--text-h2); line-height: 1; font-weight: 600; letter-spacing: -0.01em; }
   .help-end__acts { grid-column: 1 / -1; display: flex; flex-direction: column; align-items: flex-start; gap: var(--spacing-21); }
-  .help-end__links { display: flex; flex-wrap: wrap; align-items: center; gap: var(--spacing-13); color: color-mix(in srgb, var(--color-paper) 50%, transparent); }
-  .help-end__links a { color: var(--color-paper); }
+  .help-end__links { display: flex; flex-wrap: wrap; align-items: center; gap: var(--spacing-13); color: color-mix(in srgb, var(--color-carbon) 45%, transparent); }
+  .help-end__links a { color: var(--color-carbon); }
   @media (width >= 768px) {
     .help-end__title { font-size: var(--text-h1); line-height: 0.95; }
   }

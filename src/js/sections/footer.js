@@ -8,6 +8,8 @@ registerOptions('footer', {
   signal: ['arrive', 'turn', 'still', 'off'],
   hover: ['signal', 'sweep', 'invert', 'mark'],
   tagline: ['here', 'steady', 'date', 'handled'],
+  // The hours under the clock: quiet (locked: camel pictogram, muted words) | kraft (a camel tag) | inline (one line with the time)
+  hours: ['quiet', 'kraft', 'inline'],
 });
 
 export function init(el) {
