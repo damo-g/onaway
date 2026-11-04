@@ -1543,6 +1543,9 @@
   .qaddnote > span { text-decoration: underline; text-underline-offset: 4px; }
   .qaddnote small { font-weight: 400; color: var(--qp-mut); }
   .qsend { display: flex; flex-wrap: wrap; align-items: center; gap: var(--spacing-21) var(--spacing-34); padding-top: var(--spacing-21); }
+  /* Turnstile (under the send row) only shows when Cloudflare asks for a click; the honeypot is off-screen */
+  .qsend__ts:has(iframe) { margin-top: var(--spacing-21); }
+  .qhp { position: absolute; left: -10000px; width: 1px; height: 1px; overflow: hidden; }
   .qsend__cta { display: inline-flex; align-items: center; gap: var(--spacing-21); height: var(--spacing-55); padding-inline: var(--spacing-21); flex: none; background: var(--color-yellow); font-size: var(--text-lead); font-weight: 600; cursor: pointer; transition: opacity 0.4s; }
   .qsend__cta span { transition: transform 0.3s; }
   .qsend__cta:hover span { transform: translateX(5px); }

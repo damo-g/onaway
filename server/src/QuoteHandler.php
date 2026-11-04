@@ -12,13 +12,20 @@ use Throwable;
  * POST /api/quote.php: same-origin JSON in, one saved row out.
  *   200 { ok: true, ref, promisedBy, promisedLabel }
  *   400 { ok: false, error: "invalid", fields: { field: "missing" | "email" | "phone" | "date" | "invalid" } }
+ *   403 { ok: false, error: "turnstile" }  (Cloudflare said no: show the failure state)
+ *   429 { ok: false, error: "rate", phone }  (6th request from one IP within an hour)
  *   500 { ok: false, error: "server" }  (the real error goes to logs/error.log)
  * Also 405 (not POST), 403 (another origin), 415 (not JSON), 413 (over 20 KB). No CORS, ever.
+ * Spam checks run before validation and before saving, in this order: the honeypot (a hidden "website" field)
+ * and the time trap (form_ms, the form open under 3 s) answer with a fake success and save nothing; then the
+ * rate limit; then Turnstile (turnstile_token). If Cloudflare can't be reached the request goes through (logged).
  * After a save the visitor gets the answer at once; the emails go out after the response is closed.
  */
 final class QuoteHandler
 {
     public const MAX_BYTES = 20480;
+    public const MIN_FILL_MS = 3000;   // the time trap
+    public const RATE_LIMIT = 5;       // requests per IP per hour (config.php → rate_limit overrides; 0 = off)
 
     public static function run(): void
     {
@@ -62,7 +69,7 @@ final class QuoteHandler
     }
 
     /** @return array{0: int, 1: array, 2: string[], 3?: callable} status, body, extra headers, then what runs after the response */
-    public static function handle(array $server, string $raw, DateTimeImmutable $now, ?QuoteRepository $repo = null, ?Mailer $mailer = null): array
+    public static function handle(array $server, string $raw, DateTimeImmutable $now, ?QuoteRepository $repo = null, ?Mailer $mailer = null, ?Turnstile $turnstile = null): array
     {
         try {
             if (($server['REQUEST_METHOD'] ?? '') !== 'POST') {
@@ -89,6 +96,34 @@ final class QuoteHandler
 
             $config = Config::load();
             $tz = new DateTimeZone($config['timezone'] ?: 'America/Toronto');
+            $ip = substr((string) ($server['REMOTE_ADDR'] ?? ''), 0, 45);
+
+            // Bots: a filled honeypot, or sent faster than a person could (or without the form's timer)
+            $honey = $input['website'] ?? '';
+            $filled = is_numeric($input['form_ms'] ?? null) ? (int) $input['form_ms'] : -1;
+            if ((is_string($honey) && trim($honey) !== '') || !is_string($honey) || $filled < self::MIN_FILL_MS) {
+                return [200, self::decoy($now, $tz), []];
+            }
+
+            $repo ??= new QuoteRepository(Db::connect($config['db']));
+            $limit = (int) ($config['rate_limit'] ?? self::RATE_LIMIT); // 0 = off
+            if ($limit > 0 && $repo->countFromIp($ip, $now->modify('-1 hour')) >= $limit) {
+                return [429, ['ok' => false, 'error' => 'rate', 'phone' => (string) ($config['company_phone'] ?? '')], ['Retry-After: 3600']];
+            }
+
+            $turnstile ??= new Turnstile($config['turnstile'] ?? []);
+            if ($turnstile->enabled()) {
+                $token = $input['turnstile_token'] ?? '';
+                try {
+                    $human = is_string($token) && $turnstile->verify($token, $ip);
+                } catch (Throwable $e) {
+                    Log::error($e, ['step' => 'turnstile']); // Cloudflare down: let the person through
+                    $human = true;
+                }
+                if (!$human) {
+                    return [403, ['ok' => false, 'error' => 'turnstile'], []];
+                }
+            }
 
             [$row, $bad] = Validator::check($input, $now, $tz);
             if ($bad) {
@@ -98,11 +133,10 @@ final class QuoteHandler
             $promise = Promise::at($now, $tz);
             $row += [
                 'promised_by' => $promise->by->format('Y-m-d H:i:s'),
-                'ip' => substr((string) ($server['REMOTE_ADDR'] ?? ''), 0, 45),
+                'ip' => $ip,
                 'user_agent' => mb_substr((string) ($server['HTTP_USER_AGENT'] ?? ''), 0, 255) ?: null,
             ];
 
-            $repo ??= new QuoteRepository(Db::connect($config['db']));
             ['id' => $id, 'ref' => $ref] = $repo->create($row, $now, $tz);
 
             $notifier = new Notifier($repo, $mailer ?? new Mailer($config['smtp'] ?? []), $config, $tz);
@@ -118,6 +152,18 @@ final class QuoteHandler
             Log::error($e);
             return [500, ['ok' => false, 'error' => 'server'], []];
         }
+    }
+
+    // What a bot sees instead of an error: the same shape as a real success, nothing saved, nothing sent
+    private static function decoy(DateTimeImmutable $now, DateTimeZone $tz): array
+    {
+        $promise = Promise::at($now, $tz);
+        return [
+            'ok' => true,
+            'ref' => Reference::make(random_int(1000, 9999), $now, $tz),
+            'promisedBy' => $promise->by->format('Y-m-d\TH:i:s\Z'),
+            'promisedLabel' => $promise->label,
+        ];
     }
 
     // Browsers send Origin (and Sec-Fetch-Site) on every POST: it must be this site.

@@ -69,6 +69,15 @@ final class QuoteRepository
         ]);
     }
 
+    // The rate limit: requests saved from this IP since $since (idx_ip)
+    public function countFromIp(string $ip, DateTimeImmutable $since): int
+    {
+        return (int) $this->db->run('SELECT COUNT(*) FROM quotes WHERE ip = :ip AND created_at >= :since', [
+            'ip' => $ip,
+            'since' => $since->setTimezone(new DateTimeZone('UTC'))->format('Y-m-d H:i:s'),
+        ])->fetchColumn();
+    }
+
     // A short reason per failed step, e.g. "customer_email: SMTP Error: Could not authenticate."
     public function recordError(int $id, string $reason): void
     {

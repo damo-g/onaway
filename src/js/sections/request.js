@@ -29,6 +29,10 @@ const API = '/api/quote.php';
 const PRIVACY_VERSION = '2026-11-v1';
 const PHONE = { label: '+1 647 877 1411', tel: '+16478771411' };
 const CTA = 'Send my quote request';
+// Spam: Cloudflare Turnstile (managed, shown only if Cloudflare wants a click). Dev and tunnel links use
+// Cloudflare's always-pass test key, so localhost needn't be on the widget. server/src/QuoteHandler.php checks it.
+const TURNSTILE_KEY = import.meta.env.DEV ? '1x00000000000000000000BB' : '0x4AAAAAAFzowRyLhF__zAhO';
+const TURNSTILE_JS = 'https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit';
 // The form's values in the endpoint's words
 const API_SVC = { clean: 'cleaning', move: 'moving', deliver: 'delivery' };
 const API_TIMING = { 'This week': 'this-week', 'Next week': 'next-week', 'Pick a date': 'date', 'Same day': 'same-day', Regular: 'regular' };
@@ -63,6 +67,7 @@ const dayOk = (iso) => { const d = new Date(`${iso}T12:00`); const t = new Date(
 
 export function init(el) {
   const form = el.querySelector('.qp__form');
+  const openedAt = Date.now(); // the time trap: the server drops anything sent within 3 s of the form opening
   const live = el.querySelector('[data-live]');
   const S = { svc: null, kind: 'home', area: null, from: null, to: null, size: null, often: null, access: null, what: null, timing: null, date: '', flex: false, details: '', name: '', company: '', phone: '', email: '', contact: null };
   const two = () => S.svc === 'move' || S.svc === 'deliver';
@@ -513,15 +518,53 @@ export function init(el) {
       email: S.email.trim(),
       contact_pref: S.contact,
       privacy_version: PRIVACY_VERSION,
+      website: form.querySelector('[name="website"]').value,
+      form_ms: Date.now() - openedAt,
     };
   }
+
+  // ---------- Turnstile: loads with the page, renders explicitly, runs on Send; a fresh token for every send ----------
+  const tsBox = el.querySelector('[data-turnstile]');
+  let tsWidget = null;
+  let tsPending = null;
+  const tsDone = (token) => { tsPending?.(token); tsPending = null; };
+  const tsReady = new Promise((resolve) => {
+    if (window.turnstile) return resolve(window.turnstile);
+    const script = Object.assign(document.createElement('script'), { src: TURNSTILE_JS, async: true, defer: true });
+    script.onload = () => resolve(window.turnstile ?? null);
+    script.onerror = () => resolve(null); // blocked or offline: the server answers 403 and the failure line shows
+    document.head.append(script);
+  }).then((ts) => {
+    if (!ts) return null;
+    tsWidget = ts.render(tsBox, {
+      sitekey: TURNSTILE_KEY,
+      action: 'quote',
+      execution: 'execute',
+      appearance: 'interaction-only',
+      callback: (token) => tsDone(token),
+      'error-callback': () => { tsDone(''); return true; },
+      'timeout-callback': () => tsDone(''),
+    });
+    return ts;
+  });
+  // A token, or '' (no script, an error, or no answer in 30 s: long enough for a click if Cloudflare asks for one)
+  async function turnstileToken() {
+    const ts = await Promise.race([tsReady, new Promise((r) => setTimeout(() => r(null), 8000))]);
+    if (!ts || tsWidget === null) return '';
+    return new Promise((resolve) => {
+      const timer = setTimeout(() => tsDone(''), 30000);
+      tsPending = (token) => { clearTimeout(timer); resolve(token || ''); };
+      try { ts.execute(tsWidget); } catch { tsDone(''); }
+    });
+  }
+  const turnstileReset = () => { try { if (tsWidget !== null) window.turnstile?.reset(tsWidget); } catch {} };
 
   // ---------- send: in the background, 15 s at most; answers are kept until it's in ----------
   const cta = el.querySelector('.qsend__cta');
   const fail = el.querySelector('.qsend__fail');
-  const phoneLink = fail.querySelector('[data-phone]');
-  phoneLink.href = `tel:${PHONE.tel}`;
-  phoneLink.textContent = PHONE.label;
+  const failText = fail.innerHTML;
+  const setPhone = () => fail.querySelectorAll('[data-phone]').forEach((a) => { a.href = `tel:${PHONE.tel}`; a.textContent = PHONE.label; });
+  setPhone();
   let sending = false;
   function busy(on, label) {
     cta.disabled = on;
@@ -555,17 +598,20 @@ export function init(el) {
     busy(true, 'Sending…');
     live.textContent = 'Sending your request…';
     const stop = new AbortController();
-    const timer = setTimeout(() => stop.abort(), 15000);
+    let timer; // the 15 s starts once the Turnstile token is in
     let res = null;
     let body = null;
     try {
-      res = await fetch(API, { method: 'POST', headers: { 'Content-Type': 'application/json', Accept: 'application/json' }, body: JSON.stringify(payload()), signal: stop.signal });
+      const turnstile_token = await turnstileToken();
+      timer = setTimeout(() => stop.abort(), 15000);
+      res = await fetch(API, { method: 'POST', headers: { 'Content-Type': 'application/json', Accept: 'application/json' }, body: JSON.stringify({ ...payload(), turnstile_token }), signal: stop.signal });
       body = await res.json().catch(() => null);
     } catch {
       res = null;
     }
     clearTimeout(timer);
     sending = false;
+    turnstileReset(); // tokens are single use
 
     if (res?.ok && body?.ok && body.ref) {
       live.textContent = `Sent. Your reference is ${body.ref}.`;
@@ -580,6 +626,9 @@ export function init(el) {
       return;
     }
     busy(false, 'Try again');
+    // 429: the rate limit has its own line; anything else (403 from Turnstile, 500, offline) the failure line
+    fail.innerHTML = res?.status === 429 ? 'Too many requests. Call us at <a data-phone></a>.' : failText;
+    setPhone();
     fail.hidden = false;
   }
 

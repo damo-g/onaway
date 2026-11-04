@@ -30,18 +30,24 @@ return [
     // Optional: where the emails' images live (they ship with the site, in public/email/)
     'email_assets' => 'https://onaway.ca/email/',
 
-    // Approximate place of the visitor's IP, team email only. Optional: leave as is for the free
-    // keyless lookup; 'url' => '' turns it off; {ip} is replaced. 'token' is sent as a Bearer header.
+    // Approximate place of the visitor's IP, team email only. Optional: leave as is for the free keyless
+    // lookup (ipbot, then freeipapi if ipbot fails); 'url' => '' turns it off; another URL uses only that one
+    // ({ip} is replaced). 'token' is sent as a Bearer header.
     'geoip' => [
-        'url' => 'https://free.freeipapi.com/api/v1/json/{ip}',
+        'url' => 'https://api.ipbot.com/{ip}',
         'token' => '',
     ],
 
-    // Step 4 · Cloudflare Turnstile
+    // Step 4 · Cloudflare Turnstile (dash.cloudflare.com → Turnstile → the onaway.ca widget). The secret is checked
+    // on every request; empty = off. The site key is also written into the front end (src/js/sections/request.js).
     'turnstile' => [
         'site_key' => '',
         'secret' => '',
     ],
+
+    // Requests saved per IP per hour before the form answers "Too many requests" (default 5). Raise it for a
+    // day of testing from one office; 0 turns it off.
+    'rate_limit' => 5,
 
     // Step 5 · Telegram alerts to the team group. Both empty = off.
     'telegram' => [
