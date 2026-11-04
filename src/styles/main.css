@@ -390,7 +390,7 @@
   @media (width >= 768px) {
     .nav-call { display: flex; padding-inline: var(--spacing-21); }
     .nav-call-number { display: inline; }
-    .nav-quote { gap: var(--spacing-34); padding-inline: var(--spacing-21); font-size: var(--text-body); }
+    .nav-quote { gap: var(--spacing-13); padding-inline: var(--spacing-21); font-size: var(--text-body); } /* 13 like the call button beside it */
     .nav-quote-arrow { display: inline; }
   }
   @media (width >= 1024px) {
@@ -542,24 +542,9 @@
     --s-hbg: var(--color-carbon);
     --s-htxt: var(--color-paper);
   }
-  /* End state (panel option services.end): board (locked) | cards: quieter settled cards, the description and
-     the small dot-matrix muted | ledger: the signs turn from Carbon to Paper as they move (--m, 0→1, set by
-     services.js) and end as editorial rows under hairlines */
-  .services[data-end="cards"] .sign__desc { color: color-mix(in srgb, var(--color-paper) 62%, transparent); }
-  .services[data-end="cards"] .sign__fact { opacity: 0.72; }
-  .services[data-end="ledger"] {
-    --m: 0;
-    --s-txt: color-mix(in srgb, var(--color-carbon) calc(var(--m) * 100%), var(--color-paper));
-    --s-sub: color-mix(in srgb, var(--s-txt) 72%, transparent);
-    --s-face: color-mix(in srgb, var(--color-paper) calc(var(--m) * 100%), var(--color-carbon));
-    --s-edge: color-mix(in srgb, var(--color-paper) calc((1 - var(--m)) * 22%), transparent);
-    --s-tile: color-mix(in srgb, var(--s-txt) 7%, var(--s-face));
-    --s-glyph: var(--s-txt);
-    --s-rule: color-mix(in srgb, var(--color-carbon) 20%, transparent);
-    --s-hbg: color-mix(in srgb, var(--color-carbon) calc(var(--m) * 100%), var(--color-paper));
-    --s-htxt: color-mix(in srgb, var(--color-paper) calc(var(--m) * 100%), var(--color-carbon));
-  }
-  .services[data-end="ledger"] .sign__fact { opacity: 0.8; }
+  /* End state (panel option services.end): cards (locked: the hanging signs settle as cards on the grid, the
+     dot-matrix a little quieter) | board (full-bleed rows) */
+  .services:not([data-end="board"]) .sign__fact { opacity: 0.72; }
 
   /* Header sits nav height + 55 below whatever is above it: the hero as it scrolls in, the navbar once pinned */
   .services__head { position: relative; z-index: 3; padding-top: calc(var(--nav-h) + var(--spacing-34)); row-gap: var(--spacing-21); align-items: end; }
@@ -647,6 +632,9 @@
   /* About section gap + 89 between the R2-E board and the copy, counting the paper the board already
      leaves under itself (--services-tail, set by services.js); never less than 55 of its own */
   .steps { padding-top: max(var(--spacing-55), calc(var(--section-gap) + var(--spacing-89) - var(--services-tail, 0px))); }
+  /* When the board ends high (cards) it leaves more paper than that; Steps then pulls up over it (above the pinned
+     section, whose lower part is empty paper by then), so the gap is always the section gap + 89 */
+  .steps { position: relative; z-index: 1; margin-top: min(0px, calc(var(--section-gap) + var(--spacing-89) - var(--spacing-55) - var(--services-tail, 0px))); }
   .steps .section__grid { row-gap: var(--spacing-55); align-items: start; }
   .steps__intro { display: flex; flex-direction: column; gap: var(--spacing-34); }
   .steps__lead { max-width: 30ch; color: color-mix(in srgb, var(--color-carbon) 78%, transparent); }
@@ -1343,69 +1331,74 @@
   .footer[data-hover="mark"] a.footer__row:hover::before { transform: scaleX(1); }
 
   /* ---------- Link signs (exploration, panel option nav.links: the nav drop and the footer together) ----------
-     current (locked): as built. swap | roll | tile: rows read text first, arrow at the right. On hover a square
-     (yellow on Carbon in the footer, Carbon on Paper in the drop) pushes the text 21 and the arrow gives way to
-     that page's pictogram: swap crossfades, roll flips it up like a flap board, tile brings it in on a plate. */
+     current (locked): as built. swap | roll: rows read text first, arrow at the right. On hover a square (yellow
+     on Carbon in the footer, Carbon on Paper in the drop) pushes the text 21 and the arrow gives way to that
+     page's pictogram: swap crossfades, roll turns it up slowly like a flap board. The footer's contact and follow
+     rows have no page to point to, so their own icon (call, text, email, hours, each network) is the sign that
+     arrives and pushes the text. */
   .lnk-sign { position: relative; display: inline-grid; flex: none; width: 1.25em; height: 1.25em; margin-block: -0.125em; place-items: center; } /* a step bigger than the text so the pictograms read; the negative margin keeps row heights */
-  .lnk-sign > span { grid-area: 1 / 1; display: grid; place-items: center; width: 100%; height: 100%; transition: opacity 0.25s, transform 0.35s cubic-bezier(0.3, 0.7, 0.3, 1), clip-path 0.35s cubic-bezier(0.3, 0.7, 0.3, 1); }
+  .lnk-sign > span { grid-area: 1 / 1; display: grid; place-items: center; width: 100%; height: 100%; transition: opacity 0.25s, transform 0.35s cubic-bezier(0.3, 0.7, 0.3, 1); }
   .lnk-sign svg { width: 1em; height: 1em; }
   .lnk-sign__picto svg { width: 1.25em; height: 1.25em; }
-  .lnk-sign > .lnk-sign__picto { display: none; }
-  .footer .lnk-sign { --tile: var(--ft-bg, var(--color-carbon)); }
+  .lnk-sign > .lnk-sign__picto,
+  .footer__ic { display: none; }
+  .footer .lnk-sign { --tile: var(--color-carbon); }
 
-  .site-nav:is([data-links="swap"], [data-links="roll"], [data-links="tile"]) .lnk-sign > .lnk-sign__picto,
-  :root:has(.site-nav:is([data-links="swap"], [data-links="roll"], [data-links="tile"])) .footer .lnk-sign > .lnk-sign__picto { display: grid; }
+  .site-nav:is([data-links="swap"], [data-links="roll"]) .lnk-sign > .lnk-sign__picto,
+  :root:has(.site-nav:is([data-links="swap"], [data-links="roll"])) .footer .lnk-sign > .lnk-sign__picto { display: grid; }
   /* The drop: text first, Paper stays Paper, a Carbon square pushes the text */
-  .site-nav:is([data-links="swap"], [data-links="roll"], [data-links="tile"]) .nav-drop__row > svg { display: none; }
-  .site-nav:is([data-links="swap"], [data-links="roll"], [data-links="tile"]) .nav-drop__row:is(:hover, :focus-visible) { --tile: var(--color-paper); background: var(--color-paper); color: var(--color-carbon); }
-  .site-nav:is([data-links="swap"], [data-links="roll"], [data-links="tile"]) .nav-drop__row::after {
+  .site-nav:is([data-links="swap"], [data-links="roll"]) .nav-drop__row > svg { display: none; }
+  .site-nav:is([data-links="swap"], [data-links="roll"]) .nav-drop__row:is(:hover, :focus-visible) { --tile: var(--color-paper); background: var(--color-paper); color: var(--color-carbon); }
+  .site-nav:is([data-links="swap"], [data-links="roll"]) .nav-drop__row::after {
     content: ""; position: absolute; left: var(--spacing-13); top: 50%; width: 8px; height: 8px; margin-top: -4px;
     background: var(--color-carbon); transform: scale(0) rotate(45deg); transition: transform 0.35s cubic-bezier(0.3, 0.7, 0.3, 1), opacity 0.3s;
   }
-  .site-nav:is([data-links="swap"], [data-links="roll"], [data-links="tile"]) .nav-drop__row:is(:hover, :focus-visible)::after { transform: none; }
-  .site-nav:is([data-links="swap"], [data-links="roll"], [data-links="tile"]) .nav-drop__row:is(:hover, :focus-visible) > span:not(.nav-drop__arrow) { translate: var(--spacing-21) 0; }
-  .site-nav:is([data-links="swap"], [data-links="roll"], [data-links="tile"]) .nav-drop__row:is(:hover, :focus-visible) .nav-drop__arrow,
-  :root:has(.site-nav:is([data-links="swap"], [data-links="roll"], [data-links="tile"])) .footer a.footer__row:is(:hover, :focus-visible) .footer__arrow { translate: 0 0; transform: none; opacity: 1; }
-  .site-nav:is([data-links="swap"], [data-links="roll"], [data-links="tile"]) .nav-drop__row:focus-visible { outline-color: var(--color-carbon); }
+  .site-nav:is([data-links="swap"], [data-links="roll"]) .nav-drop__row:is(:hover, :focus-visible)::after { transform: none; }
+  .site-nav:is([data-links="swap"], [data-links="roll"]) .nav-drop__row:is(:hover, :focus-visible) > span:not(.nav-drop__arrow) { translate: var(--spacing-21) 0; }
+  .site-nav:is([data-links="swap"], [data-links="roll"]) .nav-drop__row:is(:hover, :focus-visible) .nav-drop__arrow,
+  :root:has(.site-nav:is([data-links="swap"], [data-links="roll"])) .footer a.footer__row:is(:hover, :focus-visible) .footer__arrow { translate: 0 0; transform: none; opacity: 1; }
+  .site-nav:is([data-links="swap"], [data-links="roll"]) .nav-drop__row:focus-visible { outline-color: var(--color-carbon); }
 
-  /* swap: the arrow shrinks away, the pictogram grows in where it was */
+  /* The footer's contact and follow rows (hours too): the icon replaces the yellow square and pushes the text */
+  :root:has(.site-nav:is([data-links="swap"], [data-links="roll"])) .footer .footer__row:has(.footer__ic)::after { display: none; }
+  :root:has(.site-nav:is([data-links="swap"], [data-links="roll"])) .footer .footer__ic {
+    position: absolute; left: 0; top: 50%; display: grid; place-items: center; width: 1.5em; height: 1.5em; margin-top: -0.75em;
+    color: var(--ft-fg); pointer-events: none; transition: opacity 0.25s, transform 0.35s cubic-bezier(0.3, 0.7, 0.3, 1);
+  }
+  :root:has(.site-nav:is([data-links="swap"], [data-links="roll"])) .footer .footer__ic svg { width: 1.5em; height: 1.5em; }
+  :root:has(.site-nav:is([data-links="swap"], [data-links="roll"])) .footer .footer__row--static { transition: color 0.3s, padding 0.3s; }
+  :root:has(.site-nav:is([data-links="swap"], [data-links="roll"])) .footer .footer__row:has(.footer__ic):is(:hover, :focus-visible) { padding-left: calc(1.5em + var(--spacing-13)); }
+  :root:has(.site-nav:is([data-links="swap"], [data-links="roll"])) .footer .footer__row:has(.footer__ic):is(:hover, :focus-visible) .footer__k { color: var(--ft-fg); }
+
+  /* swap: the arrow shrinks away, the pictogram (or icon) grows in */
   .site-nav[data-links="swap"] .lnk-sign__picto,
-  :root:has(.site-nav[data-links="swap"]) .footer .lnk-sign__picto { opacity: 0; transform: scale(0.4); }
+  :root:has(.site-nav[data-links="swap"]) .footer :is(.lnk-sign__picto, .footer__ic) { opacity: 0; transform: scale(0.4); }
   .site-nav[data-links="swap"] .nav-drop__row:is(:hover, :focus-visible) .lnk-sign__arrow,
   :root:has(.site-nav[data-links="swap"]) .footer a.footer__row:is(:hover, :focus-visible) .lnk-sign__arrow { opacity: 0; transform: scale(0.4); }
   .site-nav[data-links="swap"] .nav-drop__row:is(:hover, :focus-visible) .lnk-sign__picto,
-  :root:has(.site-nav[data-links="swap"]) .footer a.footer__row:is(:hover, :focus-visible) .lnk-sign__picto { opacity: 1; transform: none; }
+  :root:has(.site-nav[data-links="swap"]) .footer a.footer__row:is(:hover, :focus-visible) .lnk-sign__picto,
+  :root:has(.site-nav[data-links="swap"]) .footer .footer__row:is(:hover, :focus-visible) .footer__ic { opacity: 1; transform: none; }
 
-  /* roll: the arrow rolls up out of its window and the pictogram rolls in under it; the square glides in from the left */
+  /* roll: slower and softer than swap. The arrow turns up out of its window, the pictogram follows a beat later;
+     the square (or icon) glides in from the left as the text eases over */
   .site-nav[data-links="roll"] .lnk-sign,
   :root:has(.site-nav[data-links="roll"]) .footer .lnk-sign { overflow: hidden; }
+  .site-nav[data-links="roll"] .lnk-sign > span,
+  :root:has(.site-nav[data-links="roll"]) .footer .lnk-sign > span { transition: opacity 0.4s, transform 0.65s cubic-bezier(0.22, 1, 0.36, 1); }
   .site-nav[data-links="roll"] .lnk-sign__picto,
-  :root:has(.site-nav[data-links="roll"]) .footer .lnk-sign__picto { transform: translateY(110%); }
+  :root:has(.site-nav[data-links="roll"]) .footer .lnk-sign__picto { transform: translateY(110%); transition-delay: 0s; }
   .site-nav[data-links="roll"] .nav-drop__row:is(:hover, :focus-visible) .lnk-sign__arrow,
   :root:has(.site-nav[data-links="roll"]) .footer a.footer__row:is(:hover, :focus-visible) .lnk-sign__arrow { transform: translateY(-110%); }
   .site-nav[data-links="roll"] .nav-drop__row:is(:hover, :focus-visible) .lnk-sign__picto,
-  :root:has(.site-nav[data-links="roll"]) .footer a.footer__row:is(:hover, :focus-visible) .lnk-sign__picto { transform: none; }
+  :root:has(.site-nav[data-links="roll"]) .footer a.footer__row:is(:hover, :focus-visible) .lnk-sign__picto { transform: none; transition-delay: 0.08s; }
   .site-nav[data-links="roll"] .nav-drop__row::after,
-  :root:has(.site-nav[data-links="roll"]) .footer a.footer__row::after { transform: translateX(-13px); opacity: 0; transition: transform 0.45s cubic-bezier(0.3, 0.7, 0.3, 1), opacity 0.3s; }
+  :root:has(.site-nav[data-links="roll"]) .footer a.footer__row::after,
+  :root:has(.site-nav[data-links="roll"]) .footer .footer__ic { transform: translateX(-13px); opacity: 0; transition: transform 0.65s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.45s; }
   .site-nav[data-links="roll"] .nav-drop__row:is(:hover, :focus-visible)::after,
-  :root:has(.site-nav[data-links="roll"]) .footer a.footer__row:is(:hover, :focus-visible)::after { transform: none; opacity: 1; }
-
-  /* tile: the arrow slides out to the right, a small plate wipes in carrying the pictogram
-     (Paper plate on the Carbon footer, Carbon plate in the Paper drop) */
-  .site-nav[data-links="tile"] .lnk-sign__picto,
-  :root:has(.site-nav[data-links="tile"]) .footer .lnk-sign__picto { clip-path: inset(-0.2em calc(100% + 0.2em) -0.2em -0.2em); }
-  .site-nav[data-links="tile"] .lnk-sign__picto svg,
-  :root:has(.site-nav[data-links="tile"]) .footer .lnk-sign__picto svg { width: 1em; height: 1em; }
-  .site-nav[data-links="tile"] .lnk-sign__picto::before,
-  :root:has(.site-nav[data-links="tile"]) .footer .lnk-sign__picto::before { content: ""; position: absolute; inset: -0.2em; z-index: -1; border-radius: 2px; background: var(--plate); }
-  .site-nav[data-links="tile"] .lnk-sign { --plate: var(--color-carbon); --tile: var(--color-carbon); isolation: isolate; }
-  .site-nav[data-links="tile"] .lnk-sign__picto { color: var(--color-paper); }
-  :root:has(.site-nav[data-links="tile"]) .footer .lnk-sign { --plate: var(--color-paper); --tile: var(--color-paper); isolation: isolate; }
-  :root:has(.site-nav[data-links="tile"]) .footer .lnk-sign__picto { color: var(--color-carbon); }
-  .site-nav[data-links="tile"] .nav-drop__row:is(:hover, :focus-visible) .lnk-sign__arrow,
-  :root:has(.site-nav[data-links="tile"]) .footer a.footer__row:is(:hover, :focus-visible) .lnk-sign__arrow { opacity: 0; transform: translateX(100%); }
-  .site-nav[data-links="tile"] .nav-drop__row:is(:hover, :focus-visible) .lnk-sign__picto,
-  :root:has(.site-nav[data-links="tile"]) .footer a.footer__row:is(:hover, :focus-visible) .lnk-sign__picto { clip-path: inset(-0.2em); }
+  :root:has(.site-nav[data-links="roll"]) .footer a.footer__row:is(:hover, :focus-visible)::after,
+  :root:has(.site-nav[data-links="roll"]) .footer .footer__row:is(:hover, :focus-visible) .footer__ic { transform: none; opacity: 1; }
+  .site-nav[data-links="roll"] .nav-drop__row > span:not(.nav-drop__arrow),
+  :root:has(.site-nav[data-links="roll"]) .footer .footer__row { transition: color 0.4s, padding 0.6s cubic-bezier(0.22, 1, 0.36, 1), translate 0.6s cubic-bezier(0.22, 1, 0.36, 1); }
 
   /* ---------- Case (exploration, panel option nav.case) ----------
      caps (locked): nav links, drop rows, the quote button and the hero cards in Instrument Sans caps.

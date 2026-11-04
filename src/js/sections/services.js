@@ -4,17 +4,17 @@ import { renderDotMatrix } from '../dotmatrix.js';
 import { icon } from '../icons.js';
 
 // Locked first: light environment (EL-01), dark signs, chained, icon left, straight arrows,
-// description in its own column, fixed facts.
+// description under the name, fixed facts, settling as cards.
 registerOptions('services', {
   env: ['el01', 'el02', 'ed03', 'ed04'],
   signs: ['dark', 'light'],
   arrangement: ['chain', 'perspective'],
   icon: ['left', 'right'],
   arrows: ['straight', 'angled'],
-  description: ['column', 'under'],
+  description: ['under', 'column'],
   fact: ['fixed', 'window'],
-  // End state: board (full-bleed rows) | cards (the hanging signs settle as cards on the grid) | ledger (they open into paper rows under hairlines)
-  end: ['board', 'cards', 'ledger'],
+  // End state: cards (the hanging signs settle as cards on the grid) | board (full-bleed rows)
+  end: ['cards', 'board'],
 });
 
 // R2-E numbers, drawn at the 1512 frame. Signs hang below the beam painted into the plate.
@@ -64,7 +64,7 @@ export function init(el) {
     const mobile = W < 768;
     const arrangement = opt('arrangement', 'chain');
     const iconRight = opt('icon', 'left') === 'right';
-    const under = !wide || opt('description', 'column') === 'under';
+    const under = !wide || opt('description', 'under') === 'under';
 
     // Pinned at the top; the header's padding clears the navbar, so the stage is the whole viewport
     const view = window.innerHeight;
@@ -105,31 +105,33 @@ export function init(el) {
       start = hang(k);
     }
 
-    // End: full-width board rows, or (cards, ledger) 89 rows inside the page margins
-    const endMode = opt('end', 'board');
-    const boxed = endMode !== 'board';
-    const rowH = boxed ? 89 : mobile ? 110 : 144;
-    const rowGap = endMode === 'cards' ? 13 : 0;
-    const endX = boxed ? margin : 0;
+    // End: 89 cards inside the page margins, 13 apart (locked), or full-width board rows
+    const cards = opt('end', 'cards') === 'cards';
+    const rowH = cards ? 89 : mobile ? 110 : 144;
+    const rowGap = cards ? 13 : 0;
+    const endX = cards ? margin : 0;
     const endW = W - 2 * endX;
     const rowsTop = headBottom + (mobile ? 34 : 55);
     const end = start.map((_, i) => ({ x: endX, y: rowsTop + i * (rowH + rowGap), w: endW, h: rowH }));
     const boardBottom = end[2].y + end[2].h;
-    // Inside a sign: the board pads by the page margin, a card by 21 (34 from tablet up), the ledger not at all
-    const inset = endMode === 'board' ? margin : endMode === 'cards' ? (mobile ? 21 : 34) : 0;
 
-    // End-state contents on the grid (x is measured from the sign's left edge)
-    const tileEnd = boxed ? (mobile ? 34 : 55) : mobile ? 55 : 89;
-    const nameEnd = boxed ? (mobile ? 26 : 42) : mobile ? 26 : wide ? 55 : 42;
-    const arrowEnd = boxed ? 26 : mobile ? 26 : 42;
+    // End-state contents (x is measured from the sign's left edge)
+    const tileEnd = cards ? (mobile ? 34 : 55) : mobile ? 55 : 89;
+    const nameEnd = cards ? (mobile ? 26 : 42) : mobile ? 26 : wide ? 55 : 42;
+    const arrowEnd = cards ? (mobile ? 26 : 34) : mobile ? 26 : 42;
+    // A card's tile sits as far in from the side as from the top and bottom; the board pads by the page margin
+    const inset = cards ? (rowH - tileEnd) / 2 : margin;
+    // The arrow mirrors the tile: its centre as far from the right edge as the tile's is from the left
+    const arrowInset = cards ? inset + (tileEnd - arrowEnd) / 2 : margin;
     const nameX = iconRight ? inset : inset + tileEnd + gutter;
     const descX = under ? nameX : (iconRight ? colX(3) : colX(4)) - endX;
     // Wide: its own column; tablet: the right-hand three columns; phones: under the description
     const factX = (wide ? (iconRight ? colX(7) : colX(8)) : colX(cols - 3)) - endX;
     const descW = under ? (mobile ? endW - nameX - inset - 34 : colX(cols - 3) - endX - nameX - gutter) : colX(iconRight ? 6 : 7) - endX - descX - gutter;
-    const pitch = boxed ? 3 : 5;
+    const pitch = cards ? 4 : 5;
     const noFact = mobile; // phones show name and description only
-    const nameGap = mobile ? 0 : 8; // tighter on phones (the description's line height gives the air)
+    // Name and description read as one block: tight on cards and phones (the description's line height gives the air)
+    const nameGap = cards || mobile ? 0 : 8;
 
     // Dot-matrix size follows the screen; description height at its end width decides the stack
     signs.forEach((s) => s.fact.querySelectorAll('[data-dm]').forEach((d) => (d.dataset.pitch = pitch)));
@@ -144,7 +146,7 @@ export function init(el) {
     };
     const descH = signs.map((s) => {
       s.desc.style.width = `${descW}px`;
-      s.desc.style.fontSize = mobile ? 'var(--text-small)' : 'var(--text-body)';
+      s.desc.style.fontSize = mobile || (cards && under) ? 'var(--text-small)' : 'var(--text-body)';
       return shown(s.desc, () => s.desc.offsetHeight);
     });
     const factH = signs.map((s) => shown(s.fact, () => s.fact.offsetHeight));
@@ -156,7 +158,7 @@ export function init(el) {
     // section counts it so the gap after the board stays consistent
     document.documentElement.style.setProperty('--services-tail', `${height - boardBottom}px`);
 
-    g = { W, margin, inset, endMode, beamBottom, start, end, tileEnd, nameEnd, arrowEnd, nameX, descX, descW, factX, descH, factH, under, noFact, nameGap, iconRight, arrangement, view };
+    g = { W, margin, inset, arrowInset, cards, beamBottom, start, end, tileEnd, nameEnd, arrowEnd, nameX, descX, descW, factX, descH, factH, under, noFact, nameGap, iconRight, arrangement, view };
     drawRods();
   }
 
@@ -181,7 +183,6 @@ export function init(el) {
     const lightSigns = opt('signs', 'dark') === 'light';
 
     plate.style.opacity = 1 - b;
-    el.style.setProperty('--m', p.toFixed(3)); // ledger: the signs' colours turn from Carbon to Paper with the move
     rods.style.opacity = 1 - cl(b * 1.7);
 
     signs.forEach((s, i) => {
@@ -189,7 +190,7 @@ export function init(el) {
       const e = g.end[i];
       const w = L(a.w, e.w, p);
       const h = L(a.h, e.h, p);
-      const cards = g.endMode === 'cards';
+      const { cards } = g;
       const pad = L(6, cards ? 6 : 0, p);
       Object.assign(s.a.style, {
         left: `${L(a.x, e.x, p)}px`,
@@ -201,7 +202,7 @@ export function init(el) {
       });
 
       s.housing.style.borderRadius = `${L(8, cards ? 6 : 0, p)}px`;
-      s.housing.style.opacity = lightSigns || g.endMode === 'ledger' ? 1 - p : 1;
+      s.housing.style.opacity = lightSigns ? 1 - p : 1;
       s.housing.style.boxShadow =
         p > 0.98
           ? cards ? 'inset 0 0 0 1px var(--s-edge)' : 'none'
@@ -225,7 +226,7 @@ export function init(el) {
       const nameTop = g.under ? (h - L(fs, stack, c)) / 2 : (h - fs) / 2;
       Object.assign(s.name.style, { left: `${nx}px`, top: `${nameTop}px`, fontSize: `${fs}px` });
 
-      const arR = g.iconRight ? ins + ts + L(28, 34, p) : L(34, g.inset, p);
+      const arR = g.iconRight ? ins + ts + L(28, 34, p) : L(34, g.arrowInset, p);
       Object.assign(s.arrow.style, { right: `${arR}px`, top: `${(h - af) / 2}px`, fontSize: `${af}px` });
 
       const show = c > 0.01 ? 'block' : 'none';
