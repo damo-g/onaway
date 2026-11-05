@@ -8,7 +8,8 @@
     "build": "vite build",
     "preview": "vite preview",
     "shots": "node scripts/screenshot.mjs",
-    "mocks": "npx --yes serve docs/mocks -l 3123"
+    "mocks": "npx --yes serve docs/mocks -l 3123",
+    "site": "node scripts/serve-dist.mjs"
   },
   "devDependencies": {
     "@tailwindcss/vite": "^4.3.3",
