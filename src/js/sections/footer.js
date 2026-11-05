@@ -18,7 +18,8 @@ export function init(el) {
   // Hours (8 AM – 8 PM every day), read against the same clock
   const hours = el.querySelector('[data-toronto-hours]');
   const hourNow = new Intl.DateTimeFormat('en-CA', { timeZone: 'America/Toronto', hour: 'numeric', hourCycle: 'h23' });
-  const fmt = new Intl.DateTimeFormat('en-CA', { timeZone: 'America/Toronto', hour: 'numeric', minute: '2-digit' });
+  // en-US for '3:03 PM', the same PM as the hours line (en-CA writes 'p.m.')
+  const fmt = new Intl.DateTimeFormat('en-US', { timeZone: 'America/Toronto', hour: 'numeric', minute: '2-digit' });
   const tick = () => {
     clock.textContent = fmt.format(new Date()).toUpperCase();
     clock.dateTime = new Date().toISOString();

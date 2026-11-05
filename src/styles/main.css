@@ -2147,16 +2147,17 @@
     .js .help__a, .help__qt { transition: none; }
   }
   /* End band: the CC-02b panel; the headline and line left, a person to call right. Calling isn't the site's main
-     action, so the band is light: a pale tint of Carbon with a Carbon call button (no yellow). Panel option
-     helpend.tone: light (locked) | kraft (camel at 22%) | line (Paper inside a hairline). */
-  .help-end .ccta__panel { --he-bg: color-mix(in srgb, var(--color-carbon) 6%, var(--color-paper)); background: var(--he-bg); color: var(--color-carbon); }
-  .help-end[data-tone="kraft"] .ccta__panel { --he-bg: color-mix(in srgb, var(--color-camel) 22%, var(--color-paper)); }
+     action, so the band is light: a warm kraft tint (camel at 22% on Paper) with a Carbon call button (no yellow).
+     Panel option helpend.tone: kraft (locked) | light (Carbon at 6%) | line (Paper inside a hairline). */
+  .help-end .ccta__panel { --he-bg: color-mix(in srgb, var(--color-camel) 22%, var(--color-paper)); background: var(--he-bg); color: var(--color-carbon); }
+  .help-end[data-tone="light"] .ccta__panel { --he-bg: color-mix(in srgb, var(--color-carbon) 6%, var(--color-paper)); }
   .help-end[data-tone="line"] .ccta__panel { --he-bg: var(--color-paper); box-shadow: inset 0 0 0 1px var(--color-line); }
   .help-end .ccta__lead { color: color-mix(in srgb, var(--color-carbon) 72%, transparent); }
   .help-end .ccta__cta { background: var(--color-carbon); color: var(--color-paper); }
   .help-end .ccta__cta:focus-visible { outline-color: var(--color-carbon); }
-  .help-end .ccta__call { text-decoration-color: color-mix(in srgb, var(--color-carbon) 40%, transparent); }
-  .help-end .ccta__call:hover { text-decoration-color: var(--color-carbon); }
+  /* the secondary links underline on hover (and focus), not before */
+  .help-end .ccta__call { text-decoration-color: transparent; transition: text-decoration-color 0.2s; }
+  .help-end .ccta__call:is(:hover, :focus-visible) { text-decoration-color: var(--color-carbon); }
   .help-end__text { grid-column: 1 / -1; display: flex; flex-direction: column; gap: var(--spacing-21); }
   .help-end__title { font-size: var(--text-h2); line-height: 1; font-weight: 600; letter-spacing: -0.01em; }
   .help-end__acts { grid-column: 1 / -1; display: flex; flex-direction: column; align-items: flex-start; gap: var(--spacing-21); }

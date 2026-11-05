@@ -26,3 +26,63 @@ export const F = {
   '/': '00001 00010 00010 00100 01000 01000 10000', '+': '00000 00100 00100 11111 00100 00100 00000',
   '>': '01000 00100 00010 00001 00010 00100 01000', ' ': '000 000 000 000 000 000 000',
 };
+// The real service-page heroes (cleaning.html, moving.html, delivery.html): title, lead, the hanging band, the doors
+export const SVCPAGE = {
+ "cleaning": {
+  "title": "A clean space,<br> on your schedule.",
+  "lead": "Homes and workplaces across the GTA, once or on a schedule. The same standard every visit.",
+  "tile": "<svg viewBox=\"0 0 96 96\"><g fill=\"currentColor\"><path d=\"M30 14h34a8 8 0 0 1 8 8v4a4 4 0 0 1-4 4H54v8H40V30H30a4 4 0 0 1-4-4v-8a4 4 0 0 1 4-4z\"/><path d=\"M72 16h8v8h-8z\"/><path d=\"M40 30h10l-6 16h-6z\"/><path d=\"M36 40h22v4c8 4 12 10 12 18v20a6 6 0 0 1-6 6H32a6 6 0 0 1-6-6V62c0-8 4-14 10-18z\"/></g><rect x=\"34\" y=\"60\" width=\"28\" height=\"14\" rx=\"2\" style=\"fill:var(--band-tile)\"/></svg>",
+  "name": "Cleaning",
+  "fact": "HOMES + WORK",
+  "doors": [
+   {
+    "svg": "<svg viewBox=\"0 0 96 96\"><g fill=\"currentColor\"><path d=\"M66 16h10v20l-10-8z\"/><path d=\"M45.4 13.2a4 4 0 0 1 5.2 0l35 30A4 4 0 0 1 83 50.3H78V80a6 6 0 0 1-6 6H24a6 6 0 0 1-6-6V50.3h-5a4 4 0 0 1-2.6-7.1z\"/></g><rect x=\"40\" y=\"60\" width=\"16\" height=\"26\" rx=\"2\" style=\"fill:var(--door-tile)\"/><rect x=\"25\" y=\"56\" width=\"10\" height=\"10\" rx=\"1.5\" style=\"fill:var(--door-tile)\"/><rect x=\"61\" y=\"56\" width=\"10\" height=\"10\" rx=\"1.5\" style=\"fill:var(--door-tile)\"/></svg>",
+    "name": "Home",
+    "sub": "Condo, house or rental."
+   },
+   {
+    "svg": "<svg viewBox=\"0 0 96 96\"><g fill=\"currentColor\"><path d=\"M16 16a6 6 0 0 1 6-6h30a6 6 0 0 1 6 6v70H16z\"/><path d=\"M58 36h16a6 6 0 0 1 6 6v44H58z\"/><rect x=\"10\" y=\"82\" width=\"76\" height=\"6\" rx=\"3\"/></g><g style=\"fill:var(--door-tile)\"><rect x=\"24\" y=\"20\" width=\"9\" height=\"8\" rx=\"1.5\"/><rect x=\"41\" y=\"20\" width=\"9\" height=\"8\" rx=\"1.5\"/><rect x=\"24\" y=\"34\" width=\"9\" height=\"8\" rx=\"1.5\"/><rect x=\"41\" y=\"34\" width=\"9\" height=\"8\" rx=\"1.5\"/><rect x=\"24\" y=\"48\" width=\"9\" height=\"8\" rx=\"1.5\"/><rect x=\"41\" y=\"48\" width=\"9\" height=\"8\" rx=\"1.5\"/><rect x=\"64\" y=\"46\" width=\"10\" height=\"8\" rx=\"1.5\"/><rect x=\"64\" y=\"60\" width=\"10\" height=\"8\" rx=\"1.5\"/><rect x=\"30\" y=\"66\" width=\"14\" height=\"16\" rx=\"2\"/></g></svg>",
+    "name": "Workplace",
+    "sub": "Offices, shops, clinics, studios."
+   }
+  ]
+ },
+ "moving": {
+  "title": "Moving, planned<br> before it starts.",
+  "lead": "Condos, houses and offices across the GTA. A trained crew, a written plan, one person to call.",
+  "tile": "<svg viewBox=\"0 0 96 96\"><g transform=\"translate(8 2) rotate(-14 40 80)\"><g fill=\"currentColor\"><path d=\"M22 8h20a5 5 0 0 1 5 5v4H40v-1h-6v48h44a5 5 0 0 1 5 5v5a5 5 0 0 1-5 5H31a6 6 0 0 1-6-6V16h-3a4 4 0 0 1 0-8z\"/><path d=\"M40 16h7v8a4 4 0 0 1-4 4h-3z\"/><circle cx=\"36\" cy=\"82\" r=\"11\"/></g><circle cx=\"36\" cy=\"82\" r=\"4\" style=\"fill:var(--band-tile)\"/></g></svg>",
+  "name": "Moving",
+  "fact": "HOMES + OFFICES",
+  "doors": [
+   {
+    "svg": "<svg viewBox=\"0 0 96 96\"><g fill=\"currentColor\"><path d=\"M66 16h10v20l-10-8z\"/><path d=\"M45.4 13.2a4 4 0 0 1 5.2 0l35 30A4 4 0 0 1 83 50.3H78V80a6 6 0 0 1-6 6H24a6 6 0 0 1-6-6V50.3h-5a4 4 0 0 1-2.6-7.1z\"/></g><rect x=\"40\" y=\"60\" width=\"16\" height=\"26\" rx=\"2\" style=\"fill:var(--door-tile)\"/><rect x=\"25\" y=\"56\" width=\"10\" height=\"10\" rx=\"1.5\" style=\"fill:var(--door-tile)\"/><rect x=\"61\" y=\"56\" width=\"10\" height=\"10\" rx=\"1.5\" style=\"fill:var(--door-tile)\"/></svg>",
+    "name": "Homes",
+    "sub": "Studio to four-bedroom, planned around your stairs, elevator and parking."
+   },
+   {
+    "svg": "<svg viewBox=\"0 0 96 96\"><g fill=\"currentColor\"><path d=\"M16 16a6 6 0 0 1 6-6h30a6 6 0 0 1 6 6v70H16z\"/><path d=\"M58 36h16a6 6 0 0 1 6 6v44H58z\"/><rect x=\"10\" y=\"82\" width=\"76\" height=\"6\" rx=\"3\"/></g><g style=\"fill:var(--door-tile)\"><rect x=\"24\" y=\"20\" width=\"9\" height=\"8\" rx=\"1.5\"/><rect x=\"41\" y=\"20\" width=\"9\" height=\"8\" rx=\"1.5\"/><rect x=\"24\" y=\"34\" width=\"9\" height=\"8\" rx=\"1.5\"/><rect x=\"41\" y=\"34\" width=\"9\" height=\"8\" rx=\"1.5\"/><rect x=\"24\" y=\"48\" width=\"9\" height=\"8\" rx=\"1.5\"/><rect x=\"41\" y=\"48\" width=\"9\" height=\"8\" rx=\"1.5\"/><rect x=\"64\" y=\"46\" width=\"10\" height=\"8\" rx=\"1.5\"/><rect x=\"64\" y=\"60\" width=\"10\" height=\"8\" rx=\"1.5\"/><rect x=\"30\" y=\"66\" width=\"14\" height=\"16\" rx=\"2\"/></g></svg>",
+    "name": "Businesses",
+    "sub": "Office moves on evenings or weekends, every item labelled to its spot."
+   }
+  ]
+ },
+ "delivery": {
+  "title": "Delivered when<br> we said.",
+  "lead": "Same-day or scheduled, across the GTA. A single item or regular drop-offs, for homes and businesses.",
+  "tile": "<svg viewBox=\"0 0 96 96\"><g fill=\"currentColor\"><path d=\"M14 18h68a3 3 0 0 1 3 3v9H11v-9a3 3 0 0 1 3-3z\"/><path d=\"M16 34h64v44a5 5 0 0 1-5 5H21a5 5 0 0 1-5-5z\"/></g><rect x=\"43\" y=\"18\" width=\"10\" height=\"34\" style=\"fill:var(--band-tile)\"/><rect x=\"28\" y=\"62\" width=\"18\" height=\"5\" rx=\"1\" style=\"fill:var(--band-tile)\"/></svg>",
+  "name": "Delivery",
+  "fact": "SAME-DAY OR SCHEDULED",
+  "doors": [
+   {
+    "svg": "<svg viewBox=\"0 0 96 96\"><g fill=\"currentColor\"><path d=\"M66 16h10v20l-10-8z\"/><path d=\"M45.4 13.2a4 4 0 0 1 5.2 0l35 30A4 4 0 0 1 83 50.3H78V80a6 6 0 0 1-6 6H24a6 6 0 0 1-6-6V50.3h-5a4 4 0 0 1-2.6-7.1z\"/></g><rect x=\"40\" y=\"60\" width=\"16\" height=\"26\" rx=\"2\" style=\"fill:var(--door-tile)\"/><rect x=\"25\" y=\"56\" width=\"10\" height=\"10\" rx=\"1.5\" style=\"fill:var(--door-tile)\"/><rect x=\"61\" y=\"56\" width=\"10\" height=\"10\" rx=\"1.5\" style=\"fill:var(--door-tile)\"/></svg>",
+    "name": "Homes",
+    "sub": "Marketplace finds, store pickups, a piece from across town. Carried in and placed where you want it."
+   },
+   {
+    "svg": "<svg viewBox=\"0 0 96 96\"><g fill=\"currentColor\"><path d=\"M16 16a6 6 0 0 1 6-6h30a6 6 0 0 1 6 6v70H16z\"/><path d=\"M58 36h16a6 6 0 0 1 6 6v44H58z\"/><rect x=\"10\" y=\"82\" width=\"76\" height=\"6\" rx=\"3\"/></g><g style=\"fill:var(--door-tile)\"><rect x=\"24\" y=\"20\" width=\"9\" height=\"8\" rx=\"1.5\"/><rect x=\"41\" y=\"20\" width=\"9\" height=\"8\" rx=\"1.5\"/><rect x=\"24\" y=\"34\" width=\"9\" height=\"8\" rx=\"1.5\"/><rect x=\"41\" y=\"34\" width=\"9\" height=\"8\" rx=\"1.5\"/><rect x=\"24\" y=\"48\" width=\"9\" height=\"8\" rx=\"1.5\"/><rect x=\"41\" y=\"48\" width=\"9\" height=\"8\" rx=\"1.5\"/><rect x=\"64\" y=\"46\" width=\"10\" height=\"8\" rx=\"1.5\"/><rect x=\"64\" y=\"60\" width=\"10\" height=\"8\" rx=\"1.5\"/><rect x=\"30\" y=\"66\" width=\"14\" height=\"16\" rx=\"2\"/></g></svg>",
+    "name": "Businesses",
+    "sub": "Customer drop-offs, supplier pickups and regular routes for shops, showrooms and offices."
+   }
+  ]
+ }
+};
