@@ -1,4 +1,4 @@
-import '../styles/main.css';
+// The stylesheet is a <link> in each page's head (render-blocking in dev too, so no page ever paints unstyled)
 import Alpine from 'alpinejs';
 import { initLenis } from './lenis.js';
 import { ScrollTrigger } from './motion.js';
