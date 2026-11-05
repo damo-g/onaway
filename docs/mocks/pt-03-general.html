@@ -9,45 +9,49 @@
 
 <body>
 <div class="top">
-  <div><div class="id">ONAWAY · Page transitions · round 2 · 03 of 3 · every other page · PT-03</div><h1>PT-03 · General Arrivals</h1></div>
+  <div><div class="id">ONAWAY · Page transitions · round 3 · 03 of 3 · every other page · PT-03</div><h1>PT-03 · General Arrivals</h1></div>
   <div class="tools">
-    <span class="tg" data-k="opt"><span class="tl0">Option</span><button class="tbtn" data-v="stop" aria-pressed="true">A · Next stop</button><button class="tbtn" data-v="timetable" aria-pressed="false">D · Timetable</button><button class="tbtn" data-v="sweep" aria-pressed="false">C · Signal sweep</button><button class="tbtn" data-v="rows" aria-pressed="false">B · Board rows</button><button class="tbtn" data-v="depart" aria-pressed="false">E · Departure</button></span>
+    <span class="tg" data-k="opt"></span>
     <button class="tbtn" id="play">Play</button>
     <button class="tbtn" id="rm" aria-pressed="false">Reduced motion</button>
   </div>
 </div>
-<p class="hint"><b>Click About, Help or the wordmark</b> inside the frame, or press Play (then Back to home, which is general too). Everything here is slower and softer than round 1: everyman and caregiver, never in a hurry, never in the way.</p>
-<p class="retired">Retired in round 1: Settle · Doors</p>
+<div class="stagebar">
+  <div class="left">
+    <p class="hint"><b>Between Next stop and Timetable, iterated.</b> Nothing here depends on the navbar any more (on the homepage it docks at the foot of the hero, and it can be out of view): the signal uses the top edge of the screen or the page's own margin. Click About, Help or the wordmark, or press Play.</p>
+    <p class="retired">Retired: Settle · Doors · Signal sweep · Board rows · Departure</p>
+  </div>
+  <div class="verdict" aria-live="polite"></div>
+</div>
 
 <div class="pt-shell"></div>
 
 <div class="spec">
   <section>
-    <h2>Ranking · round 2</h2>
+    <h2>Ranking · round 3</h2>
     <ol>
-      <li><b>A · Next stop · 9.2</b>. Reconsidered: the route line now draws along the foot of the navbar over a full second on an even curve, the yellow square leading and resting at the end before it fades; the page you leave lifts away gently and the new one settles over 0.8s. Unhurried, but the new page is readable at 0.6s. The square is the same signal as the footer rows, so the system shares one mark.</li>
-      <li><b>D · Timetable · 9.0</b>. Content first: the old page fades, and the new page fills in block by block (heading, lead, image), each rising a little, like a timetable being filled in. No device of its own, which is its strength for the most common transition; pairs well with A.</li>
-      <li><b>C · Signal sweep · 8.5</b>. A hairline with the yellow square glides down the page and leaves the new page above it, like a departure board refreshing from the top. Calm and legible; a touch more "effect" than A.</li>
-      <li><b>B · Board rows · 8.1</b>. Reworked: the old page's rows lift off top to bottom on an overlapping, even stagger, each with a hairline that fades, while the new page settles underneath. Much smoother than round 1, still more motion than the everyday link needs.</li>
-      <li><b>E · Departure · 7.9</b>. The old page's blocks leave to the left, the new ones arrive from the right, the way the site moves (left to right). Clear direction, but sideways motion every time gets tiring.</li>
+      <li><b>D2 · Timetable, written · 9.4 · recommended</b>. Timetable's calm, made noticeable: each block of the new page is written in left to right (heading, lead, the wordmark, the painting), 0.14s apart, the way a timetable row fills in; a small yellow marker sits at the heading while it writes and leaves when it's done. Content-first, no device that depends on where the navbar is, and you can't miss it.</li>
+      <li><b>H · Timetable, signal led · 9.1</b>. The same writing, led by the yellow square stepping down the page's left margin to each block. More character, a little busier: the square asks to be watched.</li>
+      <li><b>A2 · Next stop, edge · 8.9</b>. Next stop, lightened: no full line, just the yellow square gliding along the very top edge of the screen with a short fading trail, while the page settles. Always in view, quiet. On its own it's almost a loading bar; best as a companion, not the transition.</li>
+      <li><b>D · Timetable (round 2) · 8.6</b>. Considered, but too subtle to notice.</li>
+      <li><b>A · Next stop (round 2) · 8.4</b>. Considered, but busy, and it needs the navbar at the top of the screen.</li>
     </ol>
   </section>
   <section>
     <h2>When it runs</h2>
     <ul>
       <li>Every navigation that isn't to a service page (PT-01) or the quote page (PT-02): Home, About, Help, Privacy, Accessibility, the 404, and back and forward.</li>
-      <li>A and D can combine: the route line along the navbar while the new page fills in like D. That's my recommendation.</li>
+      <li>The blocks are each page's main pieces (heading, lead, image, first section), marked once in the templates.</li>
       <li>Reduced motion: a 150ms crossfade.</li>
     </ul>
   </section>
   <section>
     <h2>The system</h2>
     <ul>
-      <li>Three types, picked from the link's address before the page leaves: <b>service</b>, <b>quote</b>, <b>general</b> (everything else, and back/forward).</li>
+      <li>Three types, picked from the link's address before the page leaves: <b>service</b>, <b>quote</b>, <b>general</b>.</li>
       <li>One mechanism: native cross-document View Transitions plus about 1 KB of JS. No framework; Lenis and GSAP keep working.</li>
-      <li>The navbar is named once and never animates.</li>
-      <li>One easing family across all three: a long, soft ease-out for arrivals, an even curve for things that travel, nothing that bounces.</li>
-      <li>Browsers without View Transitions (Firefox today) navigate normally.</li>
+      <li>The navbar is named once and never animates; no transition relies on it being in view.</li>
+      <li>One easing family: an even curve for things that travel, a long soft ease-out for things settling, nothing that bounces.</li>
     </ul>
   </section>
 </div>
@@ -55,85 +59,99 @@
 <script type="module">
 import { mount, EASE, SOFT, INOUT, OUT } from './pt/pt.js';
 
-const leave = (c, d = 520) => c.a(c.from, [{ opacity: 1, transform: 'none' }, { opacity: 0, transform: 'translateY(-8px)' }], { duration: d, easing: SOFT });
+const leave = (c, d = 460) => c.a(c.from, [{ opacity: 1, transform: 'none' }, { opacity: 0, transform: 'translateY(-8px)' }], { duration: d, easing: SOFT });
+// a block written in left to right, rising a touch
+const write = (c, b, delay) => c.a(b, [{ clipPath: 'inset(0 100% 0 0)', opacity: 0.2, transform: 'translateY(8px)' }, { clipPath: 'inset(0 0 0 0)', opacity: 1, transform: 'none' }], { duration: 950, delay, easing: INOUT });
+const ready = (c) => {
+  const blocks = c.blocks(c.to);
+  blocks.forEach((b) => (b.style.opacity = 0));
+  c.to.style.zIndex = 3;
+  c.to.style.background = 'transparent';
+  return blocks;
+};
 
 const options = {
-  // A · the route line draws along the navbar's foot, the yellow square leading; the page lifts away and settles
-  stop: {
+  // D2 · each block written in left to right, a yellow marker at the heading while it writes
+  written: {
+    label: 'D2 · Timetable, written', score: 9.4, rec: true,
+    verdict: 'Calm and content-first, and now you see it happen: the page fills in like a timetable row by row.',
+    pros: ['Noticeable without a device of its own', 'Doesn\'t depend on the navbar being in view', 'The heading arrives first, so you know where you are at once'],
+    cons: ['Each page needs its blocks marked once'],
     async run(c) {
-      const line = c.ov('left:0;top:88px;width:1512px;height:2px;background:var(--carbon);transform-origin:0 50%;transform:scaleX(0)', '', 21);
-      const head = c.ov('left:0;top:85px;width:8px;height:8px;background:var(--yellow)', '', 22);
-      c.to.style.zIndex = 3;
-      const D = 1050;
-      c.a(line, [{ transform: 'scaleX(0)' }, { transform: 'scaleX(1)' }], { duration: D, easing: INOUT });
-      c.a(head, [{ transform: 'translateX(0)' }, { transform: 'translateX(1504px)' }], { duration: D, easing: INOUT });
+      const blocks = ready(c);
       leave(c);
-      await c.a(c.to, [{ opacity: 0, transform: 'translateY(13px)' }, { opacity: 1, transform: 'none' }], { duration: 850, delay: 320 });
-      await c.wait(Math.max(0, D + 180 - 320 - 850));
-      await Promise.all([line, head].map((el) => c.a(el, [{ opacity: 1 }, { opacity: 0 }], { duration: 450, easing: SOFT })));
+      const h = blocks[0];
+      const hr = c.r(h);
+      const mark = c.ov(`left:${hr.x - 16}px;top:${hr.y + 21}px;width:8px;height:8px;background:var(--yellow)`, '', 12);
+      c.a(mark, [{ transform: 'scale(0)', opacity: 1 }, { transform: 'scale(1)', opacity: 1, offset: 0.2 }, { transform: 'scale(1)', opacity: 1, offset: 0.75 }, { transform: 'scale(1)', opacity: 0 }], { duration: 1500, delay: 200, easing: SOFT });
+      await Promise.all(blocks.map((b, i) => write(c, b, 260 + i * 140)));
     },
   },
 
-  // D · the new page fills in block by block, like a timetable
-  timetable: {
+  // H · the yellow square steps down the left margin; each block writes in as it arrives
+  led: {
+    label: 'H · Timetable, signal led', score: 9.1,
+    verdict: 'The writing, guided by the site\'s signal: more character, a little more to watch.',
+    pros: ['The square and the writing tell one story', 'Still independent of the navbar'],
+    cons: ['The moving square pulls the eye from the content'],
     async run(c) {
-      const blocks = c.blocks(c.to);
-      blocks.forEach((b) => (b.style.opacity = 0));
+      const blocks = ready(c);
+      leave(c);
+      const at = blocks.map((b) => c.r(b).y + 13);
+      const sq = c.ov('left:6px;top:0;width:8px;height:8px;background:var(--yellow)', '', 12);
+      const step = 220;
+      const kf = [{ transform: `translateY(${at[0]}px)`, opacity: 0 }, { transform: `translateY(${at[0]}px)`, opacity: 1, offset: 0.05 }];
+      at.forEach((y, i) => kf.push({ transform: `translateY(${y}px)`, opacity: 1, offset: Math.min(0.95, 0.05 + (i / Math.max(1, at.length - 1)) * 0.85) }));
+      kf.push({ transform: `translateY(${at[at.length - 1]}px)`, opacity: 0 });
+      c.a(sq, kf, { duration: 300 + at.length * step + 400, delay: 200, easing: SOFT });
+      await Promise.all(blocks.map((b, i) => write(c, b, 260 + i * step)));
+    },
+  },
+
+  // A2 · the yellow square glides along the top edge of the screen with a short fading trail; the page settles
+  edge: {
+    label: 'A2 · Next stop, edge', score: 8.9,
+    verdict: 'Next stop, lightened and freed from the navbar; on its own it is close to a loading bar.',
+    pros: ['Always in view (the top edge of the screen)', 'Much quieter than round 2'],
+    cons: ['Reads as progress more than arrival'],
+    async run(c) {
+      const sq = c.ov('left:0;top:0;width:8px;height:3px;background:var(--yellow);box-shadow:-89px 0 0 0 transparent', '<i style="position:absolute;right:8px;top:1px;width:144px;height:1px;background:linear-gradient(90deg,transparent,rgba(32,37,33,.45))"></i>', 30);
       c.to.style.zIndex = 3;
-      c.to.style.background = 'transparent'; // the old page shows through until its blocks are gone
+      c.a(sq, [{ transform: 'translateX(-8px)', opacity: 1 }, { transform: 'translateX(1512px)', opacity: 1 }], { duration: 1200, easing: INOUT });
+      leave(c);
+      await c.a(c.to, [{ opacity: 0, transform: 'translateY(13px)' }, { opacity: 1, transform: 'none' }], { duration: 900, delay: 300 });
+      await c.wait(300);
+    },
+  },
+
+  // D · round 2, for comparison
+  timetable: {
+    label: 'D · Timetable (r2)', score: 8.6,
+    verdict: 'Considered, but so subtle it can go unnoticed.',
+    pros: ['Content-first'],
+    cons: ['Fades alone don\'t register as arrival'],
+    async run(c) {
+      const blocks = ready(c);
       leave(c, 420);
       await Promise.all(blocks.map((b, i) => c.a(b, [{ opacity: 0, transform: 'translateY(13px)' }, { opacity: 1, transform: 'none' }], { duration: 900, delay: 260 + i * 110 })));
     },
   },
 
-  // C · a hairline with the yellow square glides down the page, the new page above it
-  sweep: {
+  // A · round 2, for comparison
+  stop: {
+    label: 'A · Next stop (r2)', score: 8.4,
+    verdict: 'Considered, but busy, and it needs the navbar at the top of the screen.',
+    pros: ['Shares the yellow square with the footer'],
+    cons: ['Breaks where the navbar isn\'t at the top (the homepage hero)'],
     async run(c) {
-      const H = 771;
-      const D = 1150;
+      const line = c.ov('left:0;top:88px;width:1512px;height:2px;background:var(--carbon);transform-origin:0 50%;transform:scaleX(0)', '', 21);
+      const head = c.ov('left:0;top:85px;width:8px;height:8px;background:var(--yellow)', '', 22);
       c.to.style.zIndex = 3;
-      const line = c.ov('left:0;top:89px;width:1512px;height:1px;background:rgba(32,37,33,.35)', '<i style="position:absolute;left:20px;top:-4px;width:8px;height:8px;background:var(--yellow)"></i>', 12);
-      c.a(c.from, [{ opacity: 1 }, { opacity: 0.35 }], { duration: D, easing: SOFT });
-      c.a(line, [{ transform: 'translateY(0)' }, { transform: `translateY(${H}px)` }], { duration: D, easing: INOUT });
-      await c.a(c.to, [{ clipPath: `inset(0 0 ${H}px 0)` }, { clipPath: 'inset(0 0 0 0)' }], { duration: D, easing: INOUT });
-      await c.a(line, [{ opacity: 1 }, { opacity: 0 }], { duration: 250, easing: SOFT });
-    },
-  },
-
-  // B · the old page's rows lift off top to bottom, a hairline under each, the new page settles underneath
-  rows: {
-    async run(c) {
-      const N = 6;
-      const H = 771 / N;
-      // the old page, cut into rows (copies), over the new one
-      const slices = Array.from({ length: N }, (_, i) => {
-        const s = c.from.cloneNode(true);
-        s.classList.add('pt-ov');
-        s.removeAttribute('data-page');
-        s.style.cssText = `position:absolute;inset:89px 0 0;display:block;z-index:${11 + i};clip-path:inset(${i * H}px 0 ${771 - (i + 1) * H}px 0)`;
-        c.frame.append(s);
-        const rule = c.ov(`left:20px;right:20px;top:${89 + (i + 1) * H}px;height:1px;background:rgba(32,37,33,.2);opacity:0`, '', 20);
-        return { s, rule };
-      });
-      c.from.style.opacity = 0;
-      c.a(c.to, [{ opacity: 0, transform: 'translateY(8px)' }, { opacity: 1, transform: 'none' }], { duration: 1000, delay: 200 });
-      await Promise.all(slices.map(({ s, rule }, i) => Promise.all([
-        c.a(s, [{ opacity: 1, transform: 'none' }, { opacity: 0, transform: 'translateY(-21px)' }], { duration: 760, delay: i * 85, easing: INOUT }),
-        c.a(rule, [{ opacity: 0 }, { opacity: 1, offset: 0.4 }, { opacity: 0 }], { duration: 900, delay: i * 85, easing: SOFT }),
-      ])));
-    },
-  },
-
-  // E · the old page's blocks leave to the left, the new ones arrive from the right
-  depart: {
-    async run(c) {
-      const gone = c.blocks(c.from);
-      const come = c.blocks(c.to);
-      come.forEach((b) => (b.style.opacity = 0));
-      c.to.style.zIndex = 3;
-      c.to.style.background = 'transparent';
-      gone.forEach((b, i) => c.a(b, [{ opacity: 1, transform: 'none' }, { opacity: 0, transform: 'translateX(-34px)' }], { duration: 520, delay: i * 50, easing: SOFT }));
-      await Promise.all(come.map((b, i) => c.a(b, [{ opacity: 0, transform: 'translateX(34px)' }, { opacity: 1, transform: 'none' }], { duration: 900, delay: 300 + i * 90 })));
+      c.a(line, [{ transform: 'scaleX(0)' }, { transform: 'scaleX(1)' }], { duration: 1050, easing: INOUT });
+      c.a(head, [{ transform: 'translateX(0)' }, { transform: 'translateX(1504px)' }], { duration: 1050, easing: INOUT });
+      leave(c, 520);
+      await c.a(c.to, [{ opacity: 0, transform: 'translateY(13px)' }, { opacity: 1, transform: 'none' }], { duration: 850, delay: 320 });
+      await Promise.all([line, head].map((el) => c.a(el, [{ opacity: 1 }, { opacity: 0 }], { duration: 450, easing: SOFT })));
     },
   },
 };

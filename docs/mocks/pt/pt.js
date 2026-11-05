@@ -83,6 +83,23 @@ const about = () => `<div class="in">
 
 export function mount({ category, options, play }) {
   const shell = document.querySelector('.pt-shell');
+  // Round 3: the option buttons come from the options (the recommended one marked and chosen first), and the
+  // verdict card shows the chosen option's score, sentiment, and what works and what doesn't
+  const optBox = document.querySelector('[data-k="opt"]');
+  const ids = Object.keys(options);
+  const recId = ids.find((k) => options[k].rec) ?? ids[0];
+  if (optBox && options[recId].score !== undefined) {
+    optBox.innerHTML = '<span class="tl0">Option</span>' + ids.map((k) => `<button class="tbtn${options[k].rec ? ' rec' : ''}" data-v="${k}" aria-pressed="${k === recId}">${options[k].label}${options[k].rec ? '<span class="recb">Rec</span>' : ''}</button>`).join('');
+  }
+  const verdict = document.querySelector('.verdict');
+  const showVerdict = () => {
+    const o = options[document.querySelector('[data-k="opt"] [aria-pressed="true"]')?.dataset.v];
+    if (!verdict || !o || o.score === undefined) return;
+    verdict.innerHTML = `<div class="v-top"><span class="v-name">${o.label}</span><span class="v-score">${o.score.toFixed(1)}<small> / 10</small></span></div>`
+      + (o.rec ? '<p class="v-rec">Recommended</p>' : '')
+      + `<p class="v-sent">${o.verdict}</p><ul>${(o.pros || []).map((x) => `<li class="pro">${x}</li>`).join('')}${(o.cons || []).map((x) => `<li class="con">${x}</li>`).join('')}</ul>`;
+  };
+  showVerdict();
   shell.innerHTML = `
     <div class="pt-frame" data-view="r2e">
       <header class="pt-nav">
@@ -228,6 +245,7 @@ export function mount({ category, options, play }) {
     const g = b.closest('.tg');
     if (g) g.querySelectorAll('.tbtn').forEach((x) => x.setAttribute('aria-pressed', String(x === b)));
     else if (b.id === 'rm') b.setAttribute('aria-pressed', String(b.getAttribute('aria-pressed') !== 'true'));
+    if (g?.dataset.k === 'opt') showVerdict();
     if (g?.dataset.k === 'opt' || g?.dataset.k === 'from') document.getElementById('play')?.click();
   });
 }

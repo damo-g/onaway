@@ -9,33 +9,36 @@
 
 <body>
 <div class="top">
-  <div><div class="id">ONAWAY · Page transitions · round 2 · 02 of 3 · only the Get a free quote page · PT-02</div><h1>PT-02 · Quote Arrivals</h1></div>
+  <div><div class="id">ONAWAY · Page transitions · round 3 · 02 of 3 · only the Get a free quote page · PT-02</div><h1>PT-02 · Quote Arrivals</h1></div>
   <div class="tools">
-    <span class="tg" data-k="opt"><span class="tl0">Option</span><button class="tbtn" data-v="issued" aria-pressed="true">A · Ticket issued</button><button class="tbtn" data-v="feed" aria-pressed="false">B · Ticket feed</button><button class="tbtn" data-v="stub" aria-pressed="false">C · Button to ticket</button><button class="tbtn" data-v="hand" aria-pressed="false">D · Handed over</button></span>
+    <span class="tg" data-k="opt"></span>
     <button class="tbtn" id="play">Play</button>
     <button class="tbtn" id="rm" aria-pressed="false">Reduced motion</button>
   </div>
 </div>
-<p class="hint"><b>Click "Get a free quote"</b> in the nav inside the frame, or press Play. Every option lands on the real quote page: the headline, step 01 The job, and the Quote request ticket.</p>
-<p class="retired">Retired in round 1: Tear-off (the full-screen yellow) · Punch</p>
+<div class="stagebar">
+  <div class="left">
+    <p class="hint"><b>One refined idea and one new concept.</b> Click "Get a free quote" in the nav inside the frame, or press Play. Both land on the real quote page.</p>
+    <p class="retired">Retired: Tear-off · Punch · Ticket issued · Ticket feed · Handed over (too alike; their best part, the lines filling in, lives on in C2)</p>
+  </div>
+  <div class="verdict" aria-live="polite"></div>
+</div>
 
 <div class="pt-shell"></div>
 
 <div class="spec">
   <section>
-    <h2>Ranking · round 2</h2>
+    <h2>Ranking · round 3</h2>
     <ol>
-      <li><b>C · Button to ticket · 9.1</b>. The yellow button you pressed becomes the top of your ticket: it travels and settles as the ticket's header (the yellow fades to the ticket's colour on the way), then the ticket unrolls down from it and its lines fill in. Cause and effect in one object, and the yellow never grows past the button. About 1.5s; the form is usable at 0.6s.</li>
-      <li><b>A · Ticket issued · 8.9</b>. Round 1's favourite, taken further and slowed down: the page you leave steps back, the headline wipes in left to right, the ticket rises from below and settles without a bounce, then its lines fill in one by one. The most subtle of the four.</li>
-      <li><b>B · Ticket feed · 8.4</b>. The ticket feeds up through a slot in four short steps, like a ticket machine printing it for you, a print line flickering at each step. The most character, a little more time (about 1.6s).</li>
-      <li><b>D · Handed over · 7.8</b>. The ticket slides in from the side with a slight tilt, as if passed across a counter. Warm, but sideways motion competes with the left-to-right reading of the page.</li>
+      <li><b>C2 · Button to ticket, one motion · 9.4 · recommended</b>. Round 2's C, rebuilt as one continuous motion: the button travels on an even curve, warms from yellow to the ticket's colour on the way, and its header (W · Quote request · 0 of 5) fades in before it lands. The ticket starts unrolling before the travel ends, and each line fills in as the unroll edge reaches it. No pauses, no swaps, about 1.4s.</li>
+      <li><b>E · Signal to ticket · 9.0</b>. A different idea: the yellow square, the site's one signal (the footer and nav squares), leaves the button, travels to the ticket's W badge and becomes it; the ticket opens out from that point. Lighter than C2, and it ties the quote to the site's signal; less literal about "your button became your ticket".</li>
+      <li><b>C · Button to ticket (round 2) · 8.6</b>. The idea was right; it stopped, swapped and started again. Kept here so you can see the difference.</li>
     </ol>
   </section>
   <section>
     <h2>When it runs</h2>
     <ul>
-      <li>Only for links to /quote/: the nav's yellow button, the Steps tear-off, the quote panel, the service pages' doors and buttons, About's and Help's end bands.</li>
-      <li>C needs a button to start from; from a plain text link it plays A.</li>
+      <li>Only for links to /quote/. C2 starts from whichever button was pressed (the nav's, the Steps tear-off, the quote panel's, the doors); a plain text link plays E, which needs only a point.</li>
       <li>Leaving /quote/ uses the general transition (PT-03).</li>
       <li>Reduced motion: a 150ms crossfade.</li>
     </ul>
@@ -43,9 +46,8 @@
   <section>
     <h2>How it would be built</h2>
     <ul>
-      <li>Native View Transitions tagged <code>quote</code> on <code>pageswap</code>.</li>
-      <li>C: the pressed button and the ticket's header share a <code>view-transition-name</code>, so the browser carries one into the other; the unroll is a clip-path on the ticket, the lines a short stagger.</li>
-      <li>A and B: <code>::view-transition-new</code> on the ticket plus the same line stagger; B's slot is one temporary element.</li>
+      <li>C2: the pressed button and the ticket's header share a <code>view-transition-name</code>; the unroll is a clip-path on the ticket, and the lines are timed to it.</li>
+      <li>E: the square is a tiny element carried by name to the W badge; the opening is a clip-path circle from the badge.</li>
     </ul>
   </section>
 </div>
@@ -53,93 +55,121 @@
 <script type="module">
 import { mount, EASE, SOFT, INOUT, OUT } from './pt/pt.js';
 
+const TRAVEL = 'cubic-bezier(.5,0,.15,1)';
 const head = (c) => c.to.querySelector('.q-head');
-const steps = (c) => c.to.querySelector('.q-steps');
 const ticketOf = (c) => c.to.querySelector('[data-quote-ticket]');
-// the page you leave steps back; the headline wipes in left to right; step 01 settles
 function settlePage(c, at = 200) {
   c.to.style.zIndex = 3;
-  c.a(c.from, [{ opacity: 1, transform: 'none' }, { opacity: 0, transform: 'translateY(-13px)' }], { duration: 480, easing: SOFT });
-  c.a(c.to, [{ opacity: 0 }, { opacity: 1 }], { duration: 300, delay: at });
-  c.a(head(c).querySelector('.h1'), [{ clipPath: 'inset(0 100% 0 0)' }, { clipPath: 'inset(0 0 0 0)' }], { duration: 900, delay: at, easing: INOUT });
-  c.a(head(c).querySelectorAll('.lead, small')[0], [{ opacity: 0, transform: 'translateY(8px)' }, { opacity: 1, transform: 'none' }], { duration: 700, delay: at + 350 });
-  c.a(head(c).querySelector('small'), [{ opacity: 0 }, { opacity: 1 }], { duration: 600, delay: at + 450 });
-  return c.a(steps(c), [{ opacity: 0, transform: 'translateY(13px)' }, { opacity: 1, transform: 'none' }], { duration: 900, delay: at + 300 });
+  c.a(c.from, [{ opacity: 1, transform: 'none' }, { opacity: 0, transform: 'translateY(-13px)' }], { duration: 520, easing: SOFT });
+  c.a(c.to, [{ opacity: 0 }, { opacity: 1 }], { duration: 360, delay: at });
+  c.a(head(c).querySelector('.h1'), [{ clipPath: 'inset(0 100% 0 0)' }, { clipPath: 'inset(0 0 0 0)' }], { duration: 1000, delay: at, easing: INOUT });
+  c.a(head(c).querySelector('.lead'), [{ opacity: 0, transform: 'translateY(8px)' }, { opacity: 1, transform: 'none' }], { duration: 800, delay: at + 380 });
+  c.a(head(c).querySelector('small'), [{ opacity: 0 }, { opacity: 1 }], { duration: 700, delay: at + 480 });
+  c.a(c.to.querySelector('.q-steps'), [{ opacity: 0, transform: 'translateY(13px)' }, { opacity: 1, transform: 'none' }], { duration: 1000, delay: at + 320 });
 }
-// the ticket's lines fill in, one by one
-const fillLines = (c, at = 0) => Promise.all([...ticketOf(c).querySelectorAll('.qt-row')].map((row, i) => c.a(row, [{ opacity: 0, transform: 'translateX(-8px)' }, { opacity: 1, transform: 'none' }], { duration: 500, delay: at + i * 70 })));
+// each line fills in as the unroll edge reaches it
+function linesWithUnroll(c, tk, start, dur, headH) {
+  const rows = [...tk.querySelectorAll('.qt-row')];
+  const h = c.r(tk).h;
+  rows.forEach((row) => {
+    const y = row.offsetTop + row.offsetHeight / 2;
+    const p = Math.min(1, Math.max(0, (y - headH) / (h - headH)));
+    row.style.opacity = 0;
+    c.a(row, [{ opacity: 0, transform: 'translateX(-8px)' }, { opacity: 1, transform: 'none' }], { duration: 520, delay: start + dur * p * 0.9 });
+  });
+}
 
 const options = {
-  // A · the ticket rises from below and settles, then its lines fill in
-  issued: {
-    async run(c) {
-      const tk = ticketOf(c);
-      const r = c.r(tk);
-      settlePage(c);
-      tk.querySelectorAll('.qt-row').forEach((row) => (row.style.opacity = 0));
-      await c.a(tk, [{ transform: `translateY(${860 - r.y + 34}px) rotate(-1deg)` }, { transform: 'none' }], { duration: 1100, delay: 280 });
-      await fillLines(c, -150);
-    },
-  },
-
-  // B · the ticket feeds up through a slot in four steps, a print line at each
-  feed: {
-    async run(c) {
-      const tk = ticketOf(c);
-      const r = c.r(tk);
-      settlePage(c);
-      const slotY = 846;
-      const slot = c.ov(`left:${r.x - 21}px;top:${slotY}px;width:${r.w + 42}px;height:8px;border-radius:4px;background:var(--carbon)`, '', 12);
-      const print = c.ov(`left:${r.x}px;top:${slotY - 2}px;width:${r.w}px;height:2px;background:var(--camel)`, '', 12);
-      // below the slot, Paper: the ticket only shows once it has come through
-      c.ov(`left:${r.x - 21}px;top:${slotY + 4}px;width:${r.w + 42}px;bottom:0;background:var(--paper)`, '', 11);
-      c.a(slot, [{ opacity: 0 }, { opacity: 1 }], { duration: 200 });
-      const dist = slotY - r.y;
-      const kf = [{ transform: `translateY(${dist}px)` }];
-      [0.25, 0.5, 0.78, 1].forEach((p, i, all) => {
-        kf.push({ transform: `translateY(${dist * (1 - p)}px)`, offset: (i + 0.7) / all.length });
-        if (i < all.length - 1) kf.push({ transform: `translateY(${dist * (1 - p)}px)`, offset: (i + 1) / all.length });
-      });
-      const D = 1500;
-      c.a(print, [{ opacity: 0 }, { opacity: 1, offset: 0.1 }, { opacity: 0, offset: 0.25 }, { opacity: 1, offset: 0.35 }, { opacity: 0, offset: 0.5 }, { opacity: 1, offset: 0.6 }, { opacity: 0, offset: 0.75 }, { opacity: 1, offset: 0.85 }, { opacity: 0 }], { duration: D, delay: 200, easing: 'linear' });
-      await c.a(tk, kf, { duration: D, delay: 200, easing: SOFT });
-      await c.a(slot, [{ opacity: 1 }, { opacity: 0 }], { duration: 300, easing: SOFT });
-    },
-  },
-
-  // C · the pressed button becomes the ticket's header; the ticket unrolls down from it, its lines fill in
-  stub: {
+  // C2 · one continuous motion: the button travels, warms into the ticket header, the ticket unrolls from it
+  c2: {
+    label: 'C2 · Button to ticket, one motion', score: 9.4, rec: true,
+    verdict: 'The right idea, now smooth: what you pressed becomes the top of your ticket, and the ticket unfolds from it in one breath.',
+    pros: ['Cause and effect in a single object', 'No stops or swaps: everything overlaps on one curve', 'Yellow never grows past the button'],
+    cons: ['Needs a button to start from (text links play E)'],
     async run(c) {
       const btn = c.link.classList.contains('pt-quote') ? c.link : null;
-      if (!btn) return options.issued.run(c);
+      if (!btn) return options.signal.run(c);
+      const tk = ticketOf(c);
+      const hd = tk.querySelector('[data-qt-head]');
+      const th = c.r(hd);
+      const b = c.r(btn);
+      settlePage(c);
+      tk.style.clipPath = `inset(0 0 100% 0)`;
+      // the travelling piece carries the button's words out and the header's in
+      const cap = c.ov('left:0;top:0;overflow:hidden', `<span class="cw" style="position:absolute;left:21px;top:50%;translate:0 -50%;font-size:16px;font-weight:600;white-space:nowrap">Get a free quote</span><div class="ch" style="position:absolute;inset:0;opacity:0">${hd.outerHTML}</div>`, 21);
+      const D = 1000;
+      const unrollAt = D * 0.86; // the unroll starts as the header lands, from fully closed, so there is only ever one header
+      const U = 900;
+      c.a(cap, [
+        { width: `${b.w}px`, height: `${b.h}px`, transform: `translate(${b.x}px,${b.y}px)`, background: 'var(--yellow)' },
+        { background: 'color-mix(in srgb,var(--yellow) 40%,#EDE6D8)', offset: 0.45 },
+        { width: `${th.w}px`, height: `${th.h}px`, transform: `translate(${th.x}px,${th.y}px)`, background: '#EDE6D8' },
+      ], { duration: D, delay: 100, easing: TRAVEL });
+      c.a(cap.querySelector('.cw'), [{ opacity: 1 }, { opacity: 0 }], { duration: 380, delay: 160, easing: SOFT });
+      c.a(cap.querySelector('.ch'), [{ opacity: 0 }, { opacity: 1 }], { duration: 420, delay: 100 + D * 0.5, easing: SOFT });
+      // the ticket unrolls from its header, starting before the cap lands
+      c.a(tk, [{ clipPath: 'inset(0 0 100% 0)' }, { clipPath: 'inset(0 0 0 0)' }], { duration: U, delay: 100 + unrollAt, easing: INOUT });
+      linesWithUnroll(c, tk, 100 + unrollAt, U, 0);
+      await c.wait(100 + D);
+      cap.remove();
+      await c.wait(unrollAt + U - D + 300);
+    },
+  },
+
+  // E · the yellow square leaves the button, becomes the ticket's W badge; the ticket opens out from it
+  signal: {
+    label: 'E · Signal to ticket', score: 9.0,
+    verdict: 'A lighter, different concept: the site\'s one signal carries you to your ticket.',
+    pros: ['Ties the quote to the square used across the site', 'Works from any link, button or not', 'Very little on screen at once'],
+    cons: ['Less literal than C2: the ticket doesn\'t come from what you pressed'],
+    async run(c) {
+      const tk = ticketOf(c);
+      const badge = tk.querySelector('.w');
+      const w = c.r(badge);
+      const start = c.link.classList.contains('pt-quote') ? (() => { const b = c.r(c.link); return { x: b.x + b.w - 34, y: b.y + b.h / 2 - 4 }; })() : { x: c.point.x - 4, y: c.point.y - 4 };
+      settlePage(c);
+      tk.style.clipPath = `circle(0px at ${w.x - c.r(tk).x + w.w / 2}px ${w.y - c.r(tk).y + w.h / 2}px)`;
+      tk.querySelectorAll('.qt-row').forEach((row) => (row.style.opacity = 0));
+      const sq = c.ov('left:0;top:0;width:8px;height:8px;background:var(--yellow)', '', 22);
+      const D = 1000;
+      const mid = { transform: `translate(${(start.x + w.x) / 2}px,${(start.y + w.y) / 2 - 55}px)`, offset: 0.5 };
+      await c.a(sq, [
+        { transform: `translate(${start.x}px,${start.y}px)`, width: '8px', height: '8px', borderRadius: '0', background: 'var(--yellow)' },
+        mid,
+        { transform: `translate(${w.x}px,${w.y}px)`, width: `${w.w}px`, height: `${w.h}px`, borderRadius: '50%', background: 'rgba(32,37,33,.62)' },
+      ], { duration: D, delay: 120, easing: TRAVEL });
+      const cx = w.x - c.r(tk).x + w.w / 2;
+      const cy = w.y - c.r(tk).y + w.h / 2;
+      sq.remove();
+      await c.a(tk, [{ clipPath: `circle(0px at ${cx}px ${cy}px)` }, { clipPath: `circle(${Math.hypot(480, 620)}px at ${cx}px ${cy}px)` }], { duration: 900, easing: INOUT });
+      await Promise.all([...tk.querySelectorAll('.qt-row')].map((row, i) => c.a(row, [{ opacity: 0, transform: 'translateX(-8px)' }, { opacity: 1, transform: 'none' }], { duration: 520, delay: i * 70 })));
+    },
+  },
+
+  // C · round 2, for comparison: it stops, swaps and starts again
+  c: {
+    label: 'C · Button to ticket (r2)', score: 8.6,
+    verdict: 'The idea was right; the motion stopped, swapped and started again.',
+    pros: ['Clear cause and effect'],
+    cons: ['Three separate steps with visible joins'],
+    async run(c) {
+      const btn = c.link.classList.contains('pt-quote') ? c.link : null;
+      if (!btn) return options.signal.run(c);
       const tk = ticketOf(c);
       const th = c.r(tk.querySelector('[data-qt-head]'));
       const b = c.r(btn);
       settlePage(c);
       tk.style.visibility = 'hidden';
-      const cap = c.ov('left:0;top:0;overflow:hidden;display:flex;align-items:center;padding:0 21px;font-size:16px;font-weight:600;white-space:nowrap', `<span>Get a free quote</span>`, 21);
-      const D = 760;
+      const cap = c.ov('left:0;top:0;overflow:hidden;display:flex;align-items:center;padding:0 21px;font-size:16px;font-weight:600;white-space:nowrap', '<span>Get a free quote</span>', 21);
       await c.a(cap, [
         { width: `${b.w}px`, height: `${b.h}px`, transform: `translate(${b.x}px,${b.y}px)`, background: 'var(--yellow)', color: 'var(--carbon)' },
         { width: `${th.w}px`, height: `${th.h}px`, transform: `translate(${th.x}px,${th.y}px)`, background: '#EDE6D8', color: 'rgba(32,37,33,0)' },
-      ], { duration: D, delay: 120 });
+      ], { duration: 760, delay: 120 });
       tk.style.visibility = '';
       cap.remove();
       tk.querySelectorAll('.qt-row').forEach((row) => (row.style.opacity = 0));
       await c.a(tk, [{ clipPath: `inset(0 0 calc(100% - ${th.h}px) 0)` }, { clipPath: 'inset(0 0 0 0)' }], { duration: 800, easing: INOUT });
-      await fillLines(c, -350);
-    },
-  },
-
-  // D · the ticket slides in from the side with a slight tilt, as if handed across a counter
-  hand: {
-    async run(c) {
-      const tk = ticketOf(c);
-      const r = c.r(tk);
-      settlePage(c);
-      tk.querySelectorAll('.qt-row').forEach((row) => (row.style.opacity = 0));
-      await c.a(tk, [{ transform: `translateX(${1512 - r.x + 34}px) rotate(3deg)` }, { transform: 'none' }], { duration: 1100, delay: 260 });
-      await fillLines(c, -200);
+      await Promise.all([...tk.querySelectorAll('.qt-row')].map((row, i) => c.a(row, [{ opacity: 0, transform: 'translateX(-8px)' }, { opacity: 1, transform: 'none' }], { duration: 500, delay: i * 70 - 350 })));
     },
   },
 };

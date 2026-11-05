@@ -9,43 +9,47 @@
 
 <body>
 <div class="top">
-  <div><div class="id">ONAWAY · Page transitions · round 2 · 01 of 3 · any link to a service page · PT-01</div><h1>PT-01 · Service Arrivals</h1></div>
+  <div><div class="id">ONAWAY · Page transitions · round 3 · 01 of 3 · any link to a service page · PT-01</div><h1>PT-01 · Service Arrivals</h1></div>
   <div class="tools">
     <span class="tg" data-k="from"><span class="tl0">From</span><button class="tbtn" data-v="r2e" aria-pressed="true">R2-E cards</button><button class="tbtn" data-v="hero" aria-pressed="false">Hero cards</button><button class="tbtn" data-v="nav" aria-pressed="false">Services drop</button></span>
-    <span class="tg" data-k="opt"><span class="tl0">Option</span><button class="tbtn" data-v="sign" aria-pressed="true">A · Sign arrives</button><button class="tbtn" data-v="rail" aria-pressed="false">D · Rail run</button><button class="tbtn" data-v="hang" aria-pressed="false">E · Hang &amp; settle</button><button class="tbtn" data-v="flip" aria-pressed="false">F · Flip sign</button><button class="tbtn" data-v="line" aria-pressed="false">B · Route line</button><button class="tbtn" data-v="board" aria-pressed="false">C · Arrival board</button></span>
+    <span class="tg" data-k="opt"></span>
     <button class="tbtn" id="play">Play</button>
     <button class="tbtn" id="rm" aria-pressed="false">Reduced motion</button>
   </div>
 </div>
-<p class="hint"><b>Pick where you start</b> (the R2-E cards, the hero's mini cards, or the Services drop) and an option; it plays. Or click any service link inside the frame. Every option lands on the real service hero: breadcrumb, headline, the rail, the hanging band and the two doors.</p>
+<div class="stagebar">
+  <div class="left">
+    <p class="hint"><b>Two ideas left, each with its round 2 version and a round 3 iteration.</b> Pick where you start and an option; it plays. Every option lands on the real service hero.</p>
+    <p class="retired">Retired: Hang &amp; settle · Flip sign · Route line · Arrival board (kept in mind for the 404)</p>
+  </div>
+  <div class="verdict" aria-live="polite"></div>
+</div>
 
 <div class="pt-shell"></div>
 
 <div class="spec">
   <section>
-    <h2>Ranking · round 2</h2>
+    <h2>Ranking · round 3</h2>
     <ol>
-      <li><b>A · Sign arrives · 9.3</b>. The card you click becomes the service page's hanging band: it travels and reshapes into the band, the rail draws in above it, and the doors hang down and settle. Now it lands on the real page, so the story is complete: you picked a sign, you're standing under it. About 1.6s, but the page is readable at 0.5s.</li>
-      <li><b>E · Hang &amp; settle · 8.9</b>. No shared object: the page you leave lifts away, the headline settles, the rail draws left to right and the band hangs down with a soft swing, then the doors. The same from every link (nav, footer, map), so it's the fallback for A wherever there's no card to carry.</li>
-      <li><b>D · Rail run · 8.6</b>. The card collapses into a line and the line becomes the page's rail; the sign then hangs from it. Clever and very "route", but the card disappears into a line before the sign comes back, so it reads as two ideas rather than one.</li>
-      <li><b>F · Flip sign · 8.0</b>. The card flips edge-on like a board flap and flips back as the band. Crisp and transit-like; the flip is quicker and more mechanical than the brand's caregiver side wants.</li>
-      <li><b>B · Route line · 7.2</b>. My take: a good mark, the wrong job. The band crossing the screen is a generic wipe that hides the page and doesn't land anywhere on it. D keeps its idea (a line that takes you somewhere) and makes it the page's own rail, so B can retire.</li>
-      <li><b>C · Arrival board · 7.0</b>. Charming once, too long and too covering for a link people use often. Best kept as a one-off (the 404, or launch day).</li>
+      <li><b>D2 · Rail run, continuous · 9.5 · recommended</b>. The two ideas made one. The card never disappears: its top edge peels off as the rail and runs out to the full width, while the body travels beneath it, hanging on two rods, and becomes the band. You watch a card become a sign on its line. It answers round 2's weakness (two ideas in a row) and keeps everything that made A clear.</li>
+      <li><b>A2 · Sign arrives, held · 9.4</b>. A with care: the card answers your press (it gives a little), travels on a gentle arc instead of a straight slide, and the rail grows out from where it will hang, so it arrives to a line that's waiting for it. A soft settle on landing, then the doors.</li>
+      <li><b>A · Sign arrives (round 2) · 9.3</b>. Still the clearest single gesture. The rail drawing on its own is the part that A2 and D2 improve.</li>
+      <li><b>D · Rail run (round 2) · 8.8</b>. Beautiful line, but the card vanishes into it before the sign returns.</li>
     </ol>
   </section>
   <section>
-    <h2>The hero's mini cards</h2>
+    <h2>What changed in round 3</h2>
     <ul>
-      <li><b>Yes, the same interaction.</b> They are the same three links, so they should arrive the same way. Switch From to Hero cards: the Paper card darkens to Carbon as it travels, then becomes the band. The colour change does the explaining.</li>
-      <li>The Services drop and the footer rows carry it too (From: Services drop): the row becomes the band.</li>
-      <li>Links with no object of their own (Services in the nav, the map's results) use E.</li>
+      <li>One curve for anything that travels (an even ease, so the eye can follow it), a long soft ease-out for things settling.</li>
+      <li>The rail is never drawn in empty space any more: in A2 it grows out from the sign's spot, in D2 it comes out of the card itself.</li>
+      <li>The hero's mini cards and the drop rows do exactly the same (From toggle); links without a card get a short crossfade with the rail and doors.</li>
     </ul>
   </section>
   <section>
     <h2>How it would be built</h2>
     <ul>
-      <li>A: each card, mini card and drop row gets <code>view-transition-name: sign-cleaning</code> (etc.); the service page's band has the same name. The browser carries one into the other; the rail and doors are a normal entrance animation on the new page (the one it has today, softened).</li>
-      <li>Only the clicked card is named at the moment of leaving (set on <code>pageswap</code>), so the three never compete.</li>
+      <li>The card and the band share a <code>view-transition-name</code>; D2's rail is a second named piece (the card's top edge ↔ the page's rail), so the browser carries both at once.</li>
+      <li>The doors' hang is the page's own entrance animation, softened.</li>
       <li>Reduced motion: a 150ms crossfade. Firefox: a normal page load.</li>
     </ul>
   </section>
@@ -54,79 +58,178 @@
 <script type="module">
 import { mount, EASE, SOFT, INOUT, OUT } from './pt/pt.js';
 
-// The band and the doors hang down and settle: a soft pendulum, the brand's steadiness rather than a bounce
+const TRAVEL = 'cubic-bezier(.5,0,.15,1)'; // even: the eye can follow it
 const SWING = (a = 1) => [
   { transform: `translateY(${-34 * a}px) rotate(${-2.4 * a}deg)`, opacity: 0 },
   { transform: `translateY(${3 * a}px) rotate(${1 * a}deg)`, opacity: 1, offset: 0.55 },
   { transform: `translateY(${-1 * a}px) rotate(${-0.35 * a}deg)`, opacity: 1, offset: 0.8 },
   { transform: 'none', opacity: 1 },
 ];
-const parts = (c) => ({
-  band: c.to.querySelector('[data-band]'),
-  rail: c.to.querySelector('[data-rail]'),
-  doors: [...c.to.querySelectorAll('[data-door]')],
-  head: [...c.to.querySelectorAll('.sv-crumb, .sv-head')],
-});
-const hangDoors = (c, doors, at) => Promise.all(doors.map((d, i) => c.a(d, SWING(0.7), { duration: 1100, delay: at + i * 120, easing: 'cubic-bezier(.33,0,.25,1)' })));
-const drawRail = (c, rail, at, origin = '0 50%') => { rail.style.transformOrigin = origin; return c.a(rail, [{ transform: 'scaleX(0)' }, { transform: 'scaleX(1)' }], { duration: 800, delay: at, easing: INOUT }); };
+const parts = (c) => ({ band: c.to.querySelector('[data-band]'), rail: c.to.querySelector('[data-rail]'), doors: [...c.to.querySelectorAll('[data-door]')] });
+const hangDoors = (c, doors, at) => Promise.all(doors.map((d, i) => c.a(d, SWING(0.7), { duration: 1100, delay: Math.max(0, at + i * 120), easing: 'cubic-bezier(.33,0,.25,1)' })));
 const srcOf = (c) => c.link.closest('[data-src]');
-const light = (src) => !src.classList.contains('r2-card'); // hero cards and drop rows start on Paper
+const light = (src) => !src.classList.contains('r2-card');
+
+// The pieces of the travelling sign: the plate, its tile and its name, from the clicked card to the band
+function sign(c, src, band) {
+  const s = c.r(src);
+  const b = c.r(band);
+  const srcTile = src.querySelector('[data-tile]') || src.querySelector('svg');
+  const st = srcTile && !src.classList.contains('nd-row') ? c.r(srcTile) : { x: s.x + 13, y: s.y + s.h / 2, w: 0, h: 0 };
+  const bt = c.r(band.querySelector('[data-tile]'));
+  const srcName = src.querySelector('[data-name]');
+  const sn = c.r(srcName);
+  const bn = c.r(band.querySelector('[data-name]'));
+  const fs = getComputedStyle(srcName);
+  const lt = light(src);
+  const k = c.to.dataset.svc;
+  const plate = c.ov('left:0;top:0;box-shadow:inset 0 0 0 1px rgba(247,242,231,.14)', '', 11);
+  const tile = c.ov('left:0;top:0;display:grid;place-items:center;border-radius:1px;--tile:color-mix(in srgb,var(--paper) 7%,var(--carbon))', c.PICTO[k].replace('<svg', '<svg style="width:62%;height:62%"'), 12);
+  const name = c.ov('left:0;top:0;white-space:nowrap;line-height:1;letter-spacing:-.01em', srcName.textContent, 12);
+  const from = {
+    plate: { width: `${s.w}px`, height: `${s.h}px`, transform: `translate(${s.x}px,${s.y}px)`, borderRadius: lt ? '0' : '6px', background: lt ? 'var(--paper)' : 'var(--carbon)' },
+    tile: { width: `${st.w}px`, height: `${st.h}px`, transform: `translate(${st.x}px,${st.y}px)`, color: lt ? 'var(--carbon)' : 'var(--paper)', background: lt ? 'transparent' : 'color-mix(in srgb,var(--paper) 7%,var(--carbon))' },
+    name: { transform: `translate(${sn.x}px,${sn.y}px)`, fontSize: fs.fontSize, fontWeight: fs.fontWeight, color: lt ? 'var(--carbon)' : 'var(--paper)' },
+  };
+  const to = {
+    plate: { width: `${b.w}px`, height: `${b.h}px`, transform: `translate(${b.x}px,${b.y}px)`, borderRadius: '2px', background: 'var(--carbon)' },
+    tile: { width: `${bt.w}px`, height: `${bt.h}px`, transform: `translate(${bt.x}px,${bt.y}px)`, color: 'var(--paper)', background: 'color-mix(in srgb,var(--paper) 7%,var(--carbon))' },
+    name: { transform: `translate(${bn.x}px,${bn.y}px)`, fontSize: '26px', fontWeight: 600, color: 'var(--paper)' },
+  };
+  return { s, b, plate, tile, name, from, to, remove: () => [plate, tile, name].forEach((o) => o.remove()) };
+}
+// a midpoint lifted by `lift`, so the travel is a gentle arc
+const arc = (a, b, lift) => {
+  const m = (t) => t.match(/translate\(([-\d.]+)px,([-\d.]+)px\)/).slice(1).map(Number);
+  const [ax, ay] = m(a.transform);
+  const [bx, by] = m(b.transform);
+  return { transform: `translate(${(ax + bx) / 2}px,${(ay + by) / 2 - lift}px)`, offset: 0.5 };
+};
+const begin = (c, src, band, doors, rail) => {
+  src.style.visibility = 'hidden';
+  band.style.visibility = 'hidden';
+  doors.forEach((d) => (d.style.opacity = 0));
+  c.to.style.zIndex = 3;
+  c.a(c.from, [{ opacity: 1 }, { opacity: 0 }], { duration: 380, easing: SOFT });
+};
 
 const options = {
-  // A · the clicked card becomes the page's hanging band; the rail draws in, the doors hang down
-  sign: {
+  // D2 · the card peels its top edge off as the rail and hangs beneath it all the way to the band
+  railc: {
+    label: 'D2 · Rail run, continuous', score: 9.5, rec: true,
+    verdict: 'The strongest idea, made whole: the card becomes a sign on its own line, in one unbroken move.',
+    pros: ['Never loses the card: you can follow it from start to finish', 'The rail has a source (the card), so it means something', 'Works from the R2-E cards, the hero cards and the drop alike'],
+    cons: ['The most pieces to build (two named elements carried at once)'],
     async run(c) {
       const src = srcOf(c);
-      if (!src) return options.hang.run(c);
+      if (!src) return c.crossfade(400);
       const { band, rail, doors } = parts(c);
-      const s = c.r(src);
-      const b = c.r(band);
-      const srcTile = src.querySelector('[data-tile]') || src.querySelector('svg');
-      const st = srcTile && !src.classList.contains('nd-row') ? c.r(srcTile) : { x: s.x + 13, y: s.y + s.h / 2, w: 0, h: 0 };
-      const bt = c.r(band.querySelector('[data-tile]'));
-      const srcName = src.querySelector('[data-name]');
-      const sn = c.r(srcName);
-      const bn = c.r(band.querySelector('[data-name]'));
-      const fs = getComputedStyle(srcName);
-      const lt = light(src);
-      src.style.visibility = 'hidden';
-      band.style.visibility = 'hidden';
-      doors.forEach((d) => (d.style.opacity = 0));
-      rail.style.transform = 'scaleX(0)';
-      c.to.style.zIndex = 3;
-      const k = c.to.dataset.svc;
-      const plate = c.ov(`left:0;top:0;box-shadow:inset 0 0 0 1px rgba(247,242,231,.14)`, '', 11);
-      const tile = c.ov('left:0;top:0;display:grid;place-items:center;border-radius:1px;--tile:color-mix(in srgb,var(--paper) 7%,var(--carbon))', c.PICTO[k].replace('<svg', '<svg style="width:62%;height:62%"'), 12);
-      const name = c.ov(`left:0;top:0;white-space:nowrap;line-height:1;letter-spacing:-.01em`, srcName.textContent, 12);
-      const D = 950; // an even curve, so the journey from card to band is easy to follow
-      const TRAVEL = 'cubic-bezier(.5,0,.15,1)';
-      c.a(c.from, [{ opacity: 1 }, { opacity: 0 }], { duration: 300, easing: SOFT });
-      c.a(c.to, [{ opacity: 0 }, { opacity: 1 }], { duration: 600, delay: 220 });
-      c.a(plate, [
-        { width: `${s.w}px`, height: `${s.h}px`, transform: `translate(${s.x}px,${s.y}px)`, borderRadius: lt ? '0' : '6px', background: lt ? 'var(--paper)' : 'var(--carbon)' },
-        { width: `${b.w}px`, height: `${b.h}px`, transform: `translate(${b.x}px,${b.y}px)`, borderRadius: '2px', background: 'var(--carbon)' },
-      ], { duration: D, easing: TRAVEL });
-      c.a(tile, [
-        { width: `${st.w}px`, height: `${st.h}px`, transform: `translate(${st.x}px,${st.y}px)`, color: lt ? 'var(--carbon)' : 'var(--paper)', background: lt ? 'transparent' : 'color-mix(in srgb,var(--paper) 7%,var(--carbon))' },
-        { width: `${bt.w}px`, height: `${bt.h}px`, transform: `translate(${bt.x}px,${bt.y}px)`, color: 'var(--paper)', background: 'color-mix(in srgb,var(--paper) 7%,var(--carbon))' },
-      ], { duration: D, easing: TRAVEL });
-      c.a(name, [
-        { transform: `translate(${sn.x}px,${sn.y}px)`, fontSize: fs.fontSize, fontWeight: fs.fontWeight, color: lt ? 'var(--carbon)' : 'var(--paper)' },
-        { transform: `translate(${bn.x}px,${bn.y}px)`, fontSize: '26px', fontWeight: 600, color: 'var(--paper)' },
-      ], { duration: D, easing: TRAVEL });
-      drawRail(c, rail, 380, '50% 50%');
-      await c.wait(D);
+      const r = c.r(rail);
+      const g = sign(c, src, band);
+      begin(c, src, band, doors, rail);
+      rail.style.visibility = 'hidden';
+      c.a(c.to, [{ opacity: 0 }, { opacity: 1 }], { duration: 700, delay: 260 });
+      // the rail: from the card's top edge to full width; two rods keep the plate hanging from it
+      const line = c.ov('left:0;top:0;height:8px;background:var(--carbon)', '', 12);
+      const rods = [0, 1].map(() => c.ov('left:0;top:0;width:4px;background:var(--carbon)', '', 11));
+      const D = 1150;
+      const s = g.s;
+      const b = g.b;
+      const lineFrom = { width: `${s.w}px`, transform: `translate(${s.x}px,${s.y}px)` };
+      const lineTo = { width: `${r.w}px`, transform: `translate(${r.x}px,${r.y}px)` };
+      const plateFrom = { ...g.from.plate, transform: `translate(${s.x}px,${s.y + 8}px)`, height: `${s.h - 8}px` };
+      const rod = (side) => [
+        { height: '0px', transform: `translate(${side ? s.x + s.w - 89 - 4 : s.x + 89}px,${s.y + 8}px)` },
+        { height: '34px', transform: `translate(${side ? b.x + b.w - 89 - 4 : b.x + 89}px,${r.y + 8}px)` },
+      ];
+      // first beat: the edge lifts off the card (the card stays where it is)
+      await c.a(line, [{ ...lineFrom, opacity: 0.0 }, { ...lineFrom, opacity: 1 }], { duration: 160, easing: SOFT });
+      await Promise.all([
+        c.a(line, [lineFrom, lineTo], { duration: D, easing: TRAVEL }),
+        c.a(g.plate, [plateFrom, g.to.plate], { duration: D, easing: TRAVEL }),
+        c.a(g.tile, [g.from.tile, g.to.tile], { duration: D, easing: TRAVEL }),
+        c.a(g.name, [g.from.name, g.to.name], { duration: D, easing: TRAVEL }),
+        ...rods.map((el, i) => c.a(el, rod(i), { duration: D, easing: TRAVEL })),
+      ]);
+      rail.style.visibility = '';
       band.style.visibility = '';
-      [plate, tile, name].forEach((o) => o.remove());
+      [line, ...rods].forEach((o) => o.remove());
+      g.remove();
+      // a soft settle, as a hung sign takes its weight
+      c.a(band, [{ transform: 'translateY(0)' }, { transform: 'translateY(2px)', offset: 0.4 }, { transform: 'translateY(0)' }], { duration: 600, easing: SOFT });
+      await hangDoors(c, doors, 120);
+    },
+  },
+
+  // A2 · the card answers the press, travels on an arc, and lands under a rail growing from its spot
+  held: {
+    label: 'A2 · Sign arrives, held', score: 9.4,
+    verdict: 'A, with care in every beat: it acknowledges you, takes a considered path and lands somewhere ready for it.',
+    pros: ['The press is answered before anything moves', 'The arc reads as carried, not slid', 'The rail grows from where the sign will hang'],
+    cons: ['The rail still appears on its own; D2 gives it a source'],
+    async run(c) {
+      const src = srcOf(c);
+      if (!src) return c.crossfade(400);
+      const { band, rail, doors } = parts(c);
+      const g = sign(c, src, band);
+      // the press: the card gives a little before it leaves
+      const press = c.clone(src);
+      await c.a(press, [{ transform: 'scale(1)' }, { transform: 'scale(.985)', offset: 0.4 }, { transform: 'scale(1)' }], { duration: 240, easing: SOFT });
+      press.remove();
+      begin(c, src, band, doors, rail);
+      rail.style.transformOrigin = `${g.b.x + g.b.w / 2 - 20}px 50%`;
+      rail.style.transform = 'scaleX(0)';
+      c.a(c.to, [{ opacity: 0 }, { opacity: 1 }], { duration: 700, delay: 220 });
+      const D = 1100;
+      c.a(rail, [{ transform: 'scaleX(0)' }, { transform: 'scaleX(1)' }], { duration: 900, delay: 300, easing: INOUT });
+      await Promise.all([
+        c.a(g.plate, [g.from.plate, arc(g.from.plate, g.to.plate, 34), g.to.plate], { duration: D, easing: TRAVEL }),
+        c.a(g.tile, [g.from.tile, arc(g.from.tile, g.to.tile, 34), g.to.tile], { duration: D, easing: TRAVEL }),
+        c.a(g.name, [g.from.name, arc(g.from.name, g.to.name, 34), g.to.name], { duration: D, easing: TRAVEL }),
+      ]);
+      band.style.visibility = '';
+      g.remove();
+      c.a(band, [{ transform: 'translateY(0)' }, { transform: 'translateY(3px)', offset: 0.4 }, { transform: 'translateY(0)' }], { duration: 600, easing: SOFT });
+      await hangDoors(c, doors, 100);
+    },
+  },
+
+  // A · round 2, for comparison
+  sign: {
+    label: 'A · Sign arrives (r2)', score: 9.3,
+    verdict: 'The clearest single gesture; round 3 improves the moments around it.',
+    pros: ['Instantly understood', 'Lands exactly on the page'],
+    cons: ['The rail draws on its own, unconnected to the sign'],
+    async run(c) {
+      const src = srcOf(c);
+      if (!src) return c.crossfade(400);
+      const { band, rail, doors } = parts(c);
+      const g = sign(c, src, band);
+      begin(c, src, band, doors, rail);
+      rail.style.transformOrigin = '50% 50%';
+      c.a(c.to, [{ opacity: 0 }, { opacity: 1 }], { duration: 600, delay: 220 });
+      c.a(rail, [{ transform: 'scaleX(0)' }, { transform: 'scaleX(1)' }], { duration: 800, delay: 380, easing: INOUT });
+      const D = 950;
+      await Promise.all([
+        c.a(g.plate, [g.from.plate, g.to.plate], { duration: D, easing: TRAVEL }),
+        c.a(g.tile, [g.from.tile, g.to.tile], { duration: D, easing: TRAVEL }),
+        c.a(g.name, [g.from.name, g.to.name], { duration: D, easing: TRAVEL }),
+      ]);
+      band.style.visibility = '';
+      g.remove();
       await hangDoors(c, doors, -120);
     },
   },
 
-  // D · the card collapses to a line, the line becomes the rail, the sign hangs from it
+  // D · round 2, for comparison
   rail: {
+    label: 'D · Rail run (r2)', score: 8.8,
+    verdict: 'A beautiful line, but the card disappears into it before the sign comes back.',
+    pros: ['The most "route" of all'],
+    cons: ['Reads as two ideas: a line, then a sign'],
     async run(c) {
       const src = srcOf(c);
-      if (!src) return options.hang.run(c);
+      if (!src) return c.crossfade(400);
       const { band, rail, doors } = parts(c);
       const s = c.r(src);
       const r = c.r(rail);
@@ -139,93 +242,12 @@ const options = {
       c.a(c.from, [{ opacity: 1 }, { opacity: 0 }], { duration: 300, easing: SOFT });
       c.a(c.to, [{ opacity: 0 }, { opacity: 1 }], { duration: 600, delay: 300 });
       const mid = { width: `${s.w}px`, height: '8px', transform: `translate(${s.x}px,${s.y + s.h / 2 - 4}px)`, background: 'var(--carbon)', borderRadius: '0' };
-      await c.a(line, [
-        { width: `${s.w}px`, height: `${s.h}px`, transform: `translate(${s.x}px,${s.y}px)`, background: lt ? 'var(--paper)' : 'var(--carbon)', borderRadius: lt ? '0' : '6px' },
-        mid,
-      ], { duration: 420, easing: INOUT });
+      await c.a(line, [{ width: `${s.w}px`, height: `${s.h}px`, transform: `translate(${s.x}px,${s.y}px)`, background: lt ? 'var(--paper)' : 'var(--carbon)', borderRadius: lt ? '0' : '6px' }, mid], { duration: 420, easing: INOUT });
       await c.a(line, [mid, { width: `${r.w}px`, height: '8px', transform: `translate(${r.x}px,${r.y}px)`, background: 'var(--carbon)', borderRadius: '0' }], { duration: 620 });
       rail.style.visibility = '';
       line.remove();
       band.style.opacity = '';
-      await Promise.all([
-        c.a(band, SWING(1), { duration: 1150, easing: 'cubic-bezier(.33,0,.25,1)' }),
-        hangDoors(c, doors, 220),
-      ]);
-    },
-  },
-
-  // E · no shared object: the page lifts away, the headline settles, the rail draws, the band and doors hang down
-  hang: {
-    async run(c) {
-      const { band, rail, doors, head } = parts(c);
-      [band, ...doors].forEach((el) => (el.style.opacity = 0));
-      rail.style.transform = 'scaleX(0)';
-      c.to.style.zIndex = 3;
-      c.a(c.from, [{ opacity: 1, transform: 'none' }, { opacity: 0, transform: 'translateY(-13px)' }], { duration: 500, easing: SOFT });
-      head.forEach((h, i) => c.a(h, [{ opacity: 0, transform: 'translateY(13px)' }, { opacity: 1, transform: 'none' }], { duration: 900, delay: 260 + i * 90 }));
-      drawRail(c, rail, 320);
-      await Promise.all([
-        c.a(band, SWING(1), { duration: 1150, delay: 760, easing: 'cubic-bezier(.33,0,.25,1)' }),
-        hangDoors(c, doors, 960),
-      ]);
-    },
-  },
-
-  // F · the card flips edge-on like a board flap and flips back as the band
-  flip: {
-    async run(c) {
-      const src = srcOf(c);
-      if (!src) return options.hang.run(c);
-      const { band, rail, doors } = parts(c);
-      const out = c.clone(src);
-      src.style.visibility = 'hidden';
-      band.style.visibility = 'hidden';
-      doors.forEach((d) => (d.style.opacity = 0));
-      rail.style.transform = 'scaleX(0)';
-      c.to.style.zIndex = 3;
-      c.a(c.from, [{ opacity: 1 }, { opacity: 0 }], { duration: 320, easing: SOFT });
-      c.a(c.to, [{ opacity: 0 }, { opacity: 1 }], { duration: 600, delay: 220 });
-      await c.a(out, [{ transform: 'perspective(900px) rotateX(0)' }, { transform: 'perspective(900px) rotateX(90deg)' }], { duration: 300, easing: OUT });
-      out.remove();
-      const bin = c.clone(band);
-      bin.style.visibility = 'visible';
-      drawRail(c, rail, 0, '50% 50%');
-      await c.a(bin, [{ transform: 'perspective(900px) rotateX(-90deg)' }, { transform: 'perspective(900px) rotateX(0)' }], { duration: 520 });
-      band.style.visibility = '';
-      bin.remove();
-      await hangDoors(c, doors, 0);
-    },
-  },
-
-  // B · a Carbon band runs across with the pictogram; the page is there behind it (kept for comparison)
-  line: {
-    async run(c) {
-      const k = c.to.dataset.svc;
-      const W = 144;
-      c.to.style.zIndex = 3;
-      const band = c.ov(`left:0;top:89px;bottom:0;width:${W}px;background:var(--carbon);color:var(--paper);--tile:var(--carbon);display:grid;place-items:center`, `<div style="width:55px;height:55px">${c.PICTO[k]}</div>`, 11);
-      const D = 900;
-      await Promise.all([
-        c.a(band, [{ transform: `translateX(${-W}px)` }, { transform: 'translateX(1512px)' }], { duration: D, easing: INOUT }),
-        c.a(c.to, [{ clipPath: `inset(0 ${1512 + W / 2}px 0 0)` }, { clipPath: `inset(0 ${-W / 2}px 0 0)` }], { duration: D, easing: INOUT }),
-      ]);
-    },
-  },
-
-  // C · board slats flap down, announce the stop in dot matrix, then flap away (kept for comparison)
-  board: {
-    async run(c) {
-      const k = c.to.dataset.svc;
-      const N = 6;
-      const H = 771 / N;
-      const words = { 2: 'NOW ARRIVING', 3: k.toUpperCase() };
-      const slats = Array.from({ length: N }, (_, i) => c.ov(
-        `left:0;width:1512px;top:${89 + i * H}px;height:${H + 1}px;background:var(--carbon);color:var(--yellow);display:grid;place-items:center;transform-origin:50% 0;box-shadow:inset 0 -1px 0 rgba(247,242,231,.14)`,
-        words[i] ? c.dm(words[i], i === 3 ? 9 : 6) : '', 11));
-      await Promise.all(slats.map((s, i) => c.a(s, [{ transform: 'perspective(1400px) rotateX(-90deg)' }, { transform: 'perspective(1400px) rotateX(0)' }], { duration: 320, delay: i * 60, easing: SOFT })));
-      c.from.style.opacity = 0;
-      await c.wait(420);
-      await Promise.all(slats.map((s, i) => c.a(s, [{ transform: 'perspective(1400px) rotateX(0)' }, { transform: 'perspective(1400px) rotateX(90deg)' }], { duration: 320, delay: i * 60, easing: OUT })));
+      await Promise.all([c.a(band, SWING(1), { duration: 1150, easing: 'cubic-bezier(.33,0,.25,1)' }), hangDoors(c, doors, 220)]);
     },
   },
 };

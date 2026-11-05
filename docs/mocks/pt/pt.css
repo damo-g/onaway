@@ -140,3 +140,23 @@
 .pt-back{position:absolute;left:20px;bottom:21px;z-index:30;font-family:var(--mono);font-size:12px;letter-spacing:.08em;text-transform:uppercase;padding:8px 13px;background:var(--carbon);color:var(--paper);border:0;cursor:pointer;display:none}
 .pt-back.is-on{display:block}
 .q-for{margin-top:21px!important}
+
+/* round 3: the verdict card (top right of the stage) and the recommended option */
+.stagebar{max-width:1512px;margin:0 auto 13px;display:flex;flex-wrap:wrap;gap:13px 34px;justify-content:space-between;align-items:flex-start}
+.stagebar .hint,.stagebar .retired{margin:0}
+.stagebar .left{flex:1;min-width:280px;display:flex;flex-direction:column;gap:8px}
+.verdict{width:min(100%,480px);padding:13px 21px 13px;background:var(--card);box-shadow:0 0 0 1px var(--line)}
+.v-top{display:flex;justify-content:space-between;align-items:baseline;gap:13px}
+.v-name{font-family:var(--display);font-stretch:87.5%;font-weight:600;font-size:20px;letter-spacing:-.01em}
+.v-score{font-family:var(--display);font-stretch:87.5%;font-weight:650;font-size:34px;line-height:1;white-space:nowrap}
+.v-score small{font-size:14px;font-weight:500;color:var(--muted)}
+.v-rec{display:flex;align-items:center;gap:8px;margin:8px 0 0;font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase}
+.v-rec::before{content:"";width:8px;height:8px;background:var(--yellow)}
+.v-sent{margin:8px 0 0;font-size:15px;line-height:1.5}
+.verdict ul{margin:8px 0 0;padding:0;list-style:none;font-size:14px;line-height:1.5}
+.verdict li{position:relative;padding-left:21px;color:var(--muted)}
+.verdict li::before{position:absolute;left:0;font-weight:700}
+.verdict li.pro::before{content:"+";color:var(--fg)}
+.verdict li.con::before{content:"–";color:var(--rust)}
+.tbtn.rec{box-shadow:inset 0 -3px 0 var(--yellow)}
+.recb{margin-left:8px;padding:1px 5px;background:var(--yellow);color:#202521;font-size:10px;letter-spacing:.08em}
