@@ -9,31 +9,33 @@
 
 <body>
 <div class="top">
-  <div><div class="id">ONAWAY · Page transitions · 02 of 3 · only the Get a free quote page · PT-02</div><h1>PT-02 · Quote Arrivals</h1></div>
+  <div><div class="id">ONAWAY · Page transitions · round 2 · 02 of 3 · only the Get a free quote page · PT-02</div><h1>PT-02 · Quote Arrivals</h1></div>
   <div class="tools">
-    <span class="tg" data-k="opt"><span class="tl0">Option</span><button class="tbtn" data-v="tear" aria-pressed="true">A · Tear-off</button><button class="tbtn" data-v="ticket" aria-pressed="false">B · Ticket issued</button><button class="tbtn" data-v="punch" aria-pressed="false">C · Punch</button></span>
+    <span class="tg" data-k="opt"><span class="tl0">Option</span><button class="tbtn" data-v="issued" aria-pressed="true">A · Ticket issued</button><button class="tbtn" data-v="feed" aria-pressed="false">B · Ticket feed</button><button class="tbtn" data-v="stub" aria-pressed="false">C · Button to ticket</button><button class="tbtn" data-v="hand" aria-pressed="false">D · Handed over</button></span>
     <button class="tbtn" id="play">Play</button>
     <button class="tbtn" id="rm" aria-pressed="false">Reduced motion</button>
   </div>
 </div>
-<p class="hint"><b>Click "Get a free quote"</b> in the nav (or on a service page) inside the frame, or press Play. Other links use a plain crossfade here.</p>
+<p class="hint"><b>Click "Get a free quote"</b> in the nav inside the frame, or press Play. Every option lands on the real quote page: the headline, step 01 The job, and the Quote request ticket.</p>
+<p class="retired">Retired in round 1: Tear-off (the full-screen yellow) · Punch</p>
 
 <div class="pt-shell"></div>
 
 <div class="spec">
   <section>
-    <h2>Ranking</h2>
+    <h2>Ranking · round 2</h2>
     <ol>
-      <li><b>A · Tear-off · 9.0</b>. The yellow button grows into a stub with its perforation, fills the screen, then tears away along it, and the quote form is underneath. It finishes the gesture the Steps ticket starts (its yellow "Get a free quote" tear-off), so the site's main action has one consistent signature. The only full-screen yellow on the site, and it lasts a moment. About 1s.</li>
-      <li><b>B · Ticket issued · 8.6</b>. The page settles, and the form's ticket slides up from the bottom of the screen, as if issued from a machine, and lands where it lives. Calm and clear; it puts the eye straight on the form. About 0.85s.</li>
-      <li><b>C · Punch · 7.2</b>. A conductor's punch: the quote page opens as a circle from where you clicked, and the chad drops. Quick and playful, but a circle reveal is common on the web and says less about tickets than A or B. About 0.6s.</li>
+      <li><b>C · Button to ticket · 9.1</b>. The yellow button you pressed becomes the top of your ticket: it travels and settles as the ticket's header (the yellow fades to the ticket's colour on the way), then the ticket unrolls down from it and its lines fill in. Cause and effect in one object, and the yellow never grows past the button. About 1.5s; the form is usable at 0.6s.</li>
+      <li><b>A · Ticket issued · 8.9</b>. Round 1's favourite, taken further and slowed down: the page you leave steps back, the headline wipes in left to right, the ticket rises from below and settles without a bounce, then its lines fill in one by one. The most subtle of the four.</li>
+      <li><b>B · Ticket feed · 8.4</b>. The ticket feeds up through a slot in four short steps, like a ticket machine printing it for you, a print line flickering at each step. The most character, a little more time (about 1.6s).</li>
+      <li><b>D · Handed over · 7.8</b>. The ticket slides in from the side with a slight tilt, as if passed across a counter. Warm, but sideways motion competes with the left-to-right reading of the page.</li>
     </ol>
   </section>
   <section>
     <h2>When it runs</h2>
     <ul>
-      <li>Only for links to /quote/: the nav's yellow button, the Steps tear-off, the quote panel, the service pages' and About's buttons, the help page's end band.</li>
-      <li>A grows from whichever button was pressed. From a link with no button shape it grows from the click point.</li>
+      <li>Only for links to /quote/: the nav's yellow button, the Steps tear-off, the quote panel, the service pages' doors and buttons, About's and Help's end bands.</li>
+      <li>C needs a button to start from; from a plain text link it plays A.</li>
       <li>Leaving /quote/ uses the general transition (PT-03).</li>
       <li>Reduced motion: a 150ms crossfade.</li>
     </ul>
@@ -41,72 +43,103 @@
   <section>
     <h2>How it would be built</h2>
     <ul>
-      <li>The same native View Transitions as PT-01, tagged <code>quote</code> on <code>pageswap</code>.</li>
-      <li>A: the button carries a <code>view-transition-name</code> that matches a full-screen yellow layer on the quote page, which the browser grows into; the tear is a short CSS animation on that layer. The yellow layer must never be visible without the transition (it's removed on <code>pagereveal</code>).</li>
-      <li>B: the form's ticket animates in with <code>::view-transition-new</code>. The simplest of the three.</li>
-      <li>C: a clip-path circle from the click point, passed across with <code>sessionStorage</code>.</li>
+      <li>Native View Transitions tagged <code>quote</code> on <code>pageswap</code>.</li>
+      <li>C: the pressed button and the ticket's header share a <code>view-transition-name</code>, so the browser carries one into the other; the unroll is a clip-path on the ticket, the lines a short stagger.</li>
+      <li>A and B: <code>::view-transition-new</code> on the ticket plus the same line stagger; B's slot is one temporary element.</li>
     </ul>
   </section>
 </div>
 
 <script type="module">
-import { mount, EASE, INOUT, OUT } from './pt/pt.js';
+import { mount, EASE, SOFT, INOUT, OUT } from './pt/pt.js';
+
+const head = (c) => c.to.querySelector('.q-head');
+const steps = (c) => c.to.querySelector('.q-steps');
+const ticketOf = (c) => c.to.querySelector('[data-quote-ticket]');
+// the page you leave steps back; the headline wipes in left to right; step 01 settles
+function settlePage(c, at = 200) {
+  c.to.style.zIndex = 3;
+  c.a(c.from, [{ opacity: 1, transform: 'none' }, { opacity: 0, transform: 'translateY(-13px)' }], { duration: 480, easing: SOFT });
+  c.a(c.to, [{ opacity: 0 }, { opacity: 1 }], { duration: 300, delay: at });
+  c.a(head(c).querySelector('.h1'), [{ clipPath: 'inset(0 100% 0 0)' }, { clipPath: 'inset(0 0 0 0)' }], { duration: 900, delay: at, easing: INOUT });
+  c.a(head(c).querySelectorAll('.lead, small')[0], [{ opacity: 0, transform: 'translateY(8px)' }, { opacity: 1, transform: 'none' }], { duration: 700, delay: at + 350 });
+  c.a(head(c).querySelector('small'), [{ opacity: 0 }, { opacity: 1 }], { duration: 600, delay: at + 450 });
+  return c.a(steps(c), [{ opacity: 0, transform: 'translateY(13px)' }, { opacity: 1, transform: 'none' }], { duration: 900, delay: at + 300 });
+}
+// the ticket's lines fill in, one by one
+const fillLines = (c, at = 0) => Promise.all([...ticketOf(c).querySelectorAll('.qt-row')].map((row, i) => c.a(row, [{ opacity: 0, transform: 'translateX(-8px)' }, { opacity: 1, transform: 'none' }], { duration: 500, delay: at + i * 70 })));
 
 const options = {
-  // A · the yellow button grows into a stub, fills the screen, tears off along its perforation
-  tear: {
+  // A · the ticket rises from below and settles, then its lines fill in
+  issued: {
     async run(c) {
-      const b = c.link.classList.contains('pt-quote') || c.link.classList.contains('pt-btn') ? c.r(c.link) : { x: c.point.x - 27, y: c.point.y - 27, w: 55, h: 55 };
-      const stub = c.ov(`left:0;top:0;background:var(--yellow);box-shadow:inset 1.5px 0 0 0 transparent;transform-origin:0 100%`, '<i style="position:absolute;inset:13px auto 13px 0;border-left:1.5px dashed rgba(32,37,33,.32)"></i>', 11);
-      const full = { x: 0, y: 89, w: 1512, h: 771 };
-      await c.a(stub, [
-        { left: `${b.x}px`, top: `${b.y}px`, width: `${b.w}px`, height: `${b.h}px` },
-        { left: `${full.x}px`, top: `${full.y}px`, width: `${full.w}px`, height: `${full.h}px` },
-      ], { duration: 460, easing: INOUT });
-      c.from.style.opacity = 0;
-      await c.wait(120);
-      await c.a(stub, [
-        { transform: 'none' },
-        { transform: 'rotate(2deg) translate(8px, 8px)', offset: 0.25 },
-        { transform: 'rotate(7deg) translate(1560px, 160px)' },
-      ], { duration: 560, easing: OUT });
-    },
-  },
-
-  // B · the page settles, the form's ticket is issued from the bottom of the screen
-  ticket: {
-    async run(c) {
-      const tk = c.to.querySelector('[data-quote-ticket]');
+      const tk = ticketOf(c);
       const r = c.r(tk);
-      tk.style.visibility = 'hidden';
-      const clone = tk.cloneNode(true);
-      clone.removeAttribute('data-quote-ticket');
-      clone.style.cssText = `position:absolute;margin:0;left:${r.x}px;top:${r.y}px;width:${r.w}px;height:${r.h}px;visibility:visible;z-index:11`;
-      clone.classList.add('pt-ov');
-      c.frame.append(clone);
-      c.to.style.zIndex = 3;
-      c.a(c.from, [{ opacity: 1 }, { opacity: 0 }], { duration: 220, easing: 'ease-out' });
-      c.a(c.to, [{ opacity: 0 }, { opacity: 1 }], { duration: 360, delay: 120 });
-      await c.a(clone, [
-        { transform: `translateY(${860 - r.y + 21}px) rotate(-1.5deg)` },
-        { transform: 'none' },
-      ], { duration: 700, delay: 140, easing: EASE });
-      tk.style.visibility = '';
+      settlePage(c);
+      tk.querySelectorAll('.qt-row').forEach((row) => (row.style.opacity = 0));
+      await c.a(tk, [{ transform: `translateY(${860 - r.y + 34}px) rotate(-1deg)` }, { transform: 'none' }], { duration: 1100, delay: 280 });
+      await fillLines(c, -150);
     },
   },
 
-  // C · the page opens as a punched hole from the click point; the chad drops
-  punch: {
+  // B · the ticket feeds up through a slot in four steps, a print line at each
+  feed: {
     async run(c) {
-      const p = c.point;
-      const y = p.y - 89;
-      const R = Math.hypot(Math.max(p.x, 1512 - p.x), Math.max(y, 771 - y));
-      c.to.style.zIndex = 3;
-      const ring = c.ov(`left:${p.x}px;top:${p.y}px;width:0;height:0;border-radius:50%;box-shadow:0 0 0 2px var(--carbon);transform:translate(-50%,-50%)`, '', 12);
-      const chad = c.ov(`left:${p.x - 10}px;top:${p.y - 10}px;width:21px;height:21px;border-radius:50%;background:var(--yellow)`, '', 13);
-      c.a(chad, [{ transform: 'none', opacity: 1 }, { transform: 'translate(34px, 260px) rotate(200deg)', opacity: 0 }], { duration: 700, easing: OUT });
-      c.a(ring, [{ width: '0px', height: '0px', opacity: 1 }, { width: `${R * 2}px`, height: `${R * 2}px`, opacity: 0 }], { duration: 640, easing: EASE });
-      await c.a(c.to, [{ clipPath: `circle(0px at ${p.x}px ${y}px)` }, { clipPath: `circle(${R}px at ${p.x}px ${y}px)` }], { duration: 640, easing: EASE });
+      const tk = ticketOf(c);
+      const r = c.r(tk);
+      settlePage(c);
+      const slotY = 846;
+      const slot = c.ov(`left:${r.x - 21}px;top:${slotY}px;width:${r.w + 42}px;height:8px;border-radius:4px;background:var(--carbon)`, '', 12);
+      const print = c.ov(`left:${r.x}px;top:${slotY - 2}px;width:${r.w}px;height:2px;background:var(--camel)`, '', 12);
+      // below the slot, Paper: the ticket only shows once it has come through
+      c.ov(`left:${r.x - 21}px;top:${slotY + 4}px;width:${r.w + 42}px;bottom:0;background:var(--paper)`, '', 11);
+      c.a(slot, [{ opacity: 0 }, { opacity: 1 }], { duration: 200 });
+      const dist = slotY - r.y;
+      const kf = [{ transform: `translateY(${dist}px)` }];
+      [0.25, 0.5, 0.78, 1].forEach((p, i, all) => {
+        kf.push({ transform: `translateY(${dist * (1 - p)}px)`, offset: (i + 0.7) / all.length });
+        if (i < all.length - 1) kf.push({ transform: `translateY(${dist * (1 - p)}px)`, offset: (i + 1) / all.length });
+      });
+      const D = 1500;
+      c.a(print, [{ opacity: 0 }, { opacity: 1, offset: 0.1 }, { opacity: 0, offset: 0.25 }, { opacity: 1, offset: 0.35 }, { opacity: 0, offset: 0.5 }, { opacity: 1, offset: 0.6 }, { opacity: 0, offset: 0.75 }, { opacity: 1, offset: 0.85 }, { opacity: 0 }], { duration: D, delay: 200, easing: 'linear' });
+      await c.a(tk, kf, { duration: D, delay: 200, easing: SOFT });
+      await c.a(slot, [{ opacity: 1 }, { opacity: 0 }], { duration: 300, easing: SOFT });
+    },
+  },
+
+  // C · the pressed button becomes the ticket's header; the ticket unrolls down from it, its lines fill in
+  stub: {
+    async run(c) {
+      const btn = c.link.classList.contains('pt-quote') ? c.link : null;
+      if (!btn) return options.issued.run(c);
+      const tk = ticketOf(c);
+      const th = c.r(tk.querySelector('[data-qt-head]'));
+      const b = c.r(btn);
+      settlePage(c);
+      tk.style.visibility = 'hidden';
+      const cap = c.ov('left:0;top:0;overflow:hidden;display:flex;align-items:center;padding:0 21px;font-size:16px;font-weight:600;white-space:nowrap', `<span>Get a free quote</span>`, 21);
+      const D = 760;
+      await c.a(cap, [
+        { width: `${b.w}px`, height: `${b.h}px`, transform: `translate(${b.x}px,${b.y}px)`, background: 'var(--yellow)', color: 'var(--carbon)' },
+        { width: `${th.w}px`, height: `${th.h}px`, transform: `translate(${th.x}px,${th.y}px)`, background: '#EDE6D8', color: 'rgba(32,37,33,0)' },
+      ], { duration: D, delay: 120 });
+      tk.style.visibility = '';
+      cap.remove();
+      tk.querySelectorAll('.qt-row').forEach((row) => (row.style.opacity = 0));
+      await c.a(tk, [{ clipPath: `inset(0 0 calc(100% - ${th.h}px) 0)` }, { clipPath: 'inset(0 0 0 0)' }], { duration: 800, easing: INOUT });
+      await fillLines(c, -350);
+    },
+  },
+
+  // D · the ticket slides in from the side with a slight tilt, as if handed across a counter
+  hand: {
+    async run(c) {
+      const tk = ticketOf(c);
+      const r = c.r(tk);
+      settlePage(c);
+      tk.querySelectorAll('.qt-row').forEach((row) => (row.style.opacity = 0));
+      await c.a(tk, [{ transform: `translateX(${1512 - r.x + 34}px) rotate(3deg)` }, { transform: 'none' }], { duration: 1100, delay: 260 });
+      await fillLines(c, -200);
     },
   },
 };

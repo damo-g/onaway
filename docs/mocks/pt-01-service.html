@@ -9,92 +9,202 @@
 
 <body>
 <div class="top">
-  <div><div class="id">ONAWAY · Page transitions · 01 of 3 · any link to a service page · PT-01</div><h1>PT-01 · Service Arrivals</h1></div>
+  <div><div class="id">ONAWAY · Page transitions · round 2 · 01 of 3 · any link to a service page · PT-01</div><h1>PT-01 · Service Arrivals</h1></div>
   <div class="tools">
-    <span class="tg" data-k="opt"><span class="tl0">Option</span><button class="tbtn" data-v="sign" aria-pressed="true">A · Sign arrives</button><button class="tbtn" data-v="line" aria-pressed="false">B · Route line</button><button class="tbtn" data-v="board" aria-pressed="false">C · Arrival board</button></span>
+    <span class="tg" data-k="from"><span class="tl0">From</span><button class="tbtn" data-v="r2e" aria-pressed="true">R2-E cards</button><button class="tbtn" data-v="hero" aria-pressed="false">Hero cards</button><button class="tbtn" data-v="nav" aria-pressed="false">Services drop</button></span>
+    <span class="tg" data-k="opt"><span class="tl0">Option</span><button class="tbtn" data-v="sign" aria-pressed="true">A · Sign arrives</button><button class="tbtn" data-v="rail" aria-pressed="false">D · Rail run</button><button class="tbtn" data-v="hang" aria-pressed="false">E · Hang &amp; settle</button><button class="tbtn" data-v="flip" aria-pressed="false">F · Flip sign</button><button class="tbtn" data-v="line" aria-pressed="false">B · Route line</button><button class="tbtn" data-v="board" aria-pressed="false">C · Arrival board</button></span>
     <button class="tbtn" id="play">Play</button>
     <button class="tbtn" id="rm" aria-pressed="false">Reduced motion</button>
   </div>
 </div>
-<p class="hint"><b>Click a service card</b> (or Services in the nav) inside the frame, or press Play. Other links use a plain crossfade here; they have their own mocks (PT-02 quote, PT-03 general).</p>
+<p class="hint"><b>Pick where you start</b> (the R2-E cards, the hero's mini cards, or the Services drop) and an option; it plays. Or click any service link inside the frame. Every option lands on the real service hero: breadcrumb, headline, the rail, the hanging band and the two doors.</p>
 
 <div class="pt-shell"></div>
 
 <div class="spec">
   <section>
-    <h2>Ranking</h2>
+    <h2>Ranking · round 2</h2>
     <ol>
-      <li><b>A · Sign arrives · 9.2</b>. The card you click becomes the service page's sign: it shrinks into the hero tile while the page settles in around it. Nothing new is invented; it's the same object continuing, which reads as "you are now at this stop". About 0.7s.</li>
-      <li><b>B · Route line · 8.3</b>. A Carbon band carrying the pictogram runs across like a train passing, and the service page is there behind it. Strong and on-brand, but every service visit runs the full width, so it gets heavier on the third visit than A. About 0.75s.</li>
-      <li><b>C · Arrival board · 7.4</b>. Board slats flap down, read NOW ARRIVING · MOVING in dot matrix, then flap away. The most "transit", but it holds the visitor for over a second and hides both pages at once. Better saved for a one-off moment than a link people use often. About 1.3s.</li>
+      <li><b>A · Sign arrives · 9.3</b>. The card you click becomes the service page's hanging band: it travels and reshapes into the band, the rail draws in above it, and the doors hang down and settle. Now it lands on the real page, so the story is complete: you picked a sign, you're standing under it. About 1.6s, but the page is readable at 0.5s.</li>
+      <li><b>E · Hang &amp; settle · 8.9</b>. No shared object: the page you leave lifts away, the headline settles, the rail draws left to right and the band hangs down with a soft swing, then the doors. The same from every link (nav, footer, map), so it's the fallback for A wherever there's no card to carry.</li>
+      <li><b>D · Rail run · 8.6</b>. The card collapses into a line and the line becomes the page's rail; the sign then hangs from it. Clever and very "route", but the card disappears into a line before the sign comes back, so it reads as two ideas rather than one.</li>
+      <li><b>F · Flip sign · 8.0</b>. The card flips edge-on like a board flap and flips back as the band. Crisp and transit-like; the flip is quicker and more mechanical than the brand's caregiver side wants.</li>
+      <li><b>B · Route line · 7.2</b>. My take: a good mark, the wrong job. The band crossing the screen is a generic wipe that hides the page and doesn't land anywhere on it. D keeps its idea (a line that takes you somewhere) and makes it the page's own rail, so B can retire.</li>
+      <li><b>C · Arrival board · 7.0</b>. Charming once, too long and too covering for a link people use often. Best kept as a one-off (the 404, or launch day).</li>
     </ol>
   </section>
   <section>
-    <h2>When it runs</h2>
+    <h2>The hero's mini cards</h2>
     <ul>
-      <li>Any link to /cleaning/, /moving/ or /delivery/: the R2-E cards, the hero service cards, the Services drop, the footer's Get around rows, and the map's results.</li>
-      <li>A and B use the clicked service's pictogram. From a link without one (the nav), A falls back to its page settle without the moving sign.</li>
-      <li>The navbar never moves.</li>
-      <li>Reduced motion: a 150ms crossfade for every option.</li>
+      <li><b>Yes, the same interaction.</b> They are the same three links, so they should arrive the same way. Switch From to Hero cards: the Paper card darkens to Carbon as it travels, then becomes the band. The colour change does the explaining.</li>
+      <li>The Services drop and the footer rows carry it too (From: Services drop): the row becomes the band.</li>
+      <li>Links with no object of their own (Services in the nav, the map's results) use E.</li>
     </ul>
   </section>
   <section>
     <h2>How it would be built</h2>
     <ul>
-      <li>Native cross-document View Transitions (CSS <code>@view-transition { navigation: auto }</code>), no framework. A few lines of JS on <code>pageswap</code> tag the navigation as <code>service</code> from the link's address; the CSS picks the animation with <code>:active-view-transition-type(service)</code>.</li>
-      <li>A: the card's tile and the service hero's tile share a <code>view-transition-name</code>; the browser morphs one into the other. The cheapest of the three to build.</li>
-      <li>B: a clip-path wipe on the new page plus one band element. C needs its own temporary board element, so it's the most work.</li>
-      <li>Chrome, Edge and Safari 18.2+ animate; Firefox simply navigates as today.</li>
+      <li>A: each card, mini card and drop row gets <code>view-transition-name: sign-cleaning</code> (etc.); the service page's band has the same name. The browser carries one into the other; the rail and doors are a normal entrance animation on the new page (the one it has today, softened).</li>
+      <li>Only the clicked card is named at the moment of leaving (set on <code>pageswap</code>), so the three never compete.</li>
+      <li>Reduced motion: a 150ms crossfade. Firefox: a normal page load.</li>
     </ul>
   </section>
 </div>
 
 <script type="module">
-import { mount, EASE, INOUT, OUT } from './pt/pt.js';
+import { mount, EASE, SOFT, INOUT, OUT } from './pt/pt.js';
+
+// The band and the doors hang down and settle: a soft pendulum, the brand's steadiness rather than a bounce
+const SWING = (a = 1) => [
+  { transform: `translateY(${-34 * a}px) rotate(${-2.4 * a}deg)`, opacity: 0 },
+  { transform: `translateY(${3 * a}px) rotate(${1 * a}deg)`, opacity: 1, offset: 0.55 },
+  { transform: `translateY(${-1 * a}px) rotate(${-0.35 * a}deg)`, opacity: 1, offset: 0.8 },
+  { transform: 'none', opacity: 1 },
+];
+const parts = (c) => ({
+  band: c.to.querySelector('[data-band]'),
+  rail: c.to.querySelector('[data-rail]'),
+  doors: [...c.to.querySelectorAll('[data-door]')],
+  head: [...c.to.querySelectorAll('.sv-crumb, .sv-head')],
+});
+const hangDoors = (c, doors, at) => Promise.all(doors.map((d, i) => c.a(d, SWING(0.7), { duration: 1100, delay: at + i * 120, easing: 'cubic-bezier(.33,0,.25,1)' })));
+const drawRail = (c, rail, at, origin = '0 50%') => { rail.style.transformOrigin = origin; return c.a(rail, [{ transform: 'scaleX(0)' }, { transform: 'scaleX(1)' }], { duration: 800, delay: at, easing: INOUT }); };
+const srcOf = (c) => c.link.closest('[data-src]');
+const light = (src) => !src.classList.contains('r2-card'); // hero cards and drop rows start on Paper
 
 const options = {
-  // A · the clicked card becomes the hero tile
+  // A · the clicked card becomes the page's hanging band; the rail draws in, the doors hang down
   sign: {
     async run(c) {
-      const card = c.link.closest('.pt-card');
-      const hero = c.to.querySelector('[data-hero-tile]');
+      const src = srcOf(c);
+      if (!src) return options.hang.run(c);
+      const { band, rail, doors } = parts(c);
+      const s = c.r(src);
+      const b = c.r(band);
+      const srcTile = src.querySelector('[data-tile]') || src.querySelector('svg');
+      const st = srcTile && !src.classList.contains('nd-row') ? c.r(srcTile) : { x: s.x + 13, y: s.y + s.h / 2, w: 0, h: 0 };
+      const bt = c.r(band.querySelector('[data-tile]'));
+      const srcName = src.querySelector('[data-name]');
+      const sn = c.r(srcName);
+      const bn = c.r(band.querySelector('[data-name]'));
+      const fs = getComputedStyle(srcName);
+      const lt = light(src);
+      src.style.visibility = 'hidden';
+      band.style.visibility = 'hidden';
+      doors.forEach((d) => (d.style.opacity = 0));
+      rail.style.transform = 'scaleX(0)';
       c.to.style.zIndex = 3;
-      if (!card) {
-        return Promise.all([
-          c.a(c.from, [{ opacity: 1 }, { opacity: 0 }], { duration: 200, easing: 'ease-out' }),
-          c.a(c.to, [{ opacity: 0, transform: 'translateY(13px)' }, { opacity: 1, transform: 'none' }], { duration: 440, delay: 160 }),
-        ]);
-      }
-      const a = c.r(card);
-      const tr = c.r(card.querySelector('.pt-tile'));
-      const t = c.r(hero);
-      hero.style.visibility = 'hidden';
-      const plate = c.ov(`left:0;top:0;width:${a.w}px;height:${a.h}px;transform:translate(${a.x}px,${a.y}px);background:var(--carbon);border-radius:6px;box-shadow:inset 0 0 0 1px rgba(247,242,231,.22)`, '', 11);
-      const tile = c.ov(`left:0;top:0;display:grid;place-items:center;color:var(--paper);--tile:var(--carbon)`, card.querySelector('.pt-tile').innerHTML.replace('<svg', '<svg style="width:68%;height:68%"'), 12);
-      card.style.visibility = 'hidden';
-      const D = 720;
-      c.a(c.from, [{ opacity: 1 }, { opacity: 0 }], { duration: 220, easing: 'ease-out' });
+      const k = c.to.dataset.svc;
+      const plate = c.ov(`left:0;top:0;box-shadow:inset 0 0 0 1px rgba(247,242,231,.14)`, '', 11);
+      const tile = c.ov('left:0;top:0;display:grid;place-items:center;border-radius:1px;--tile:color-mix(in srgb,var(--paper) 7%,var(--carbon))', c.PICTO[k].replace('<svg', '<svg style="width:62%;height:62%"'), 12);
+      const name = c.ov(`left:0;top:0;white-space:nowrap;line-height:1;letter-spacing:-.01em`, srcName.textContent, 12);
+      const D = 950; // an even curve, so the journey from card to band is easy to follow
+      const TRAVEL = 'cubic-bezier(.5,0,.15,1)';
+      c.a(c.from, [{ opacity: 1 }, { opacity: 0 }], { duration: 300, easing: SOFT });
+      c.a(c.to, [{ opacity: 0 }, { opacity: 1 }], { duration: 600, delay: 220 });
       c.a(plate, [
-        { width: `${a.w}px`, height: `${a.h}px`, transform: `translate(${a.x}px,${a.y}px)`, borderRadius: '6px' },
-        { width: `${t.w}px`, height: `${t.h}px`, transform: `translate(${t.x}px,${t.y}px)`, borderRadius: '4px' },
-      ], { duration: D, easing: EASE });
+        { width: `${s.w}px`, height: `${s.h}px`, transform: `translate(${s.x}px,${s.y}px)`, borderRadius: lt ? '0' : '6px', background: lt ? 'var(--paper)' : 'var(--carbon)' },
+        { width: `${b.w}px`, height: `${b.h}px`, transform: `translate(${b.x}px,${b.y}px)`, borderRadius: '2px', background: 'var(--carbon)' },
+      ], { duration: D, easing: TRAVEL });
       c.a(tile, [
-        { width: `${tr.w}px`, height: `${tr.h}px`, transform: `translate(${tr.x}px,${tr.y}px)` },
-        { width: `${t.w}px`, height: `${t.h}px`, transform: `translate(${t.x}px,${t.y}px)` },
-      ], { duration: D, easing: EASE });
-      await c.a(c.to, [{ opacity: 0, transform: 'translateY(13px)' }, { opacity: 1, transform: 'none' }], { duration: 460, delay: 240 });
-      await c.wait(60);
+        { width: `${st.w}px`, height: `${st.h}px`, transform: `translate(${st.x}px,${st.y}px)`, color: lt ? 'var(--carbon)' : 'var(--paper)', background: lt ? 'transparent' : 'color-mix(in srgb,var(--paper) 7%,var(--carbon))' },
+        { width: `${bt.w}px`, height: `${bt.h}px`, transform: `translate(${bt.x}px,${bt.y}px)`, color: 'var(--paper)', background: 'color-mix(in srgb,var(--paper) 7%,var(--carbon))' },
+      ], { duration: D, easing: TRAVEL });
+      c.a(name, [
+        { transform: `translate(${sn.x}px,${sn.y}px)`, fontSize: fs.fontSize, fontWeight: fs.fontWeight, color: lt ? 'var(--carbon)' : 'var(--paper)' },
+        { transform: `translate(${bn.x}px,${bn.y}px)`, fontSize: '26px', fontWeight: 600, color: 'var(--paper)' },
+      ], { duration: D, easing: TRAVEL });
+      drawRail(c, rail, 380, '50% 50%');
+      await c.wait(D);
+      band.style.visibility = '';
+      [plate, tile, name].forEach((o) => o.remove());
+      await hangDoors(c, doors, -120);
     },
   },
 
-  // B · a Carbon band runs across with the pictogram; the page is there behind it
+  // D · the card collapses to a line, the line becomes the rail, the sign hangs from it
+  rail: {
+    async run(c) {
+      const src = srcOf(c);
+      if (!src) return options.hang.run(c);
+      const { band, rail, doors } = parts(c);
+      const s = c.r(src);
+      const r = c.r(rail);
+      const lt = light(src);
+      src.style.visibility = 'hidden';
+      [band, ...doors].forEach((el) => (el.style.opacity = 0));
+      rail.style.visibility = 'hidden';
+      c.to.style.zIndex = 3;
+      const line = c.ov('left:0;top:0', '', 11);
+      c.a(c.from, [{ opacity: 1 }, { opacity: 0 }], { duration: 300, easing: SOFT });
+      c.a(c.to, [{ opacity: 0 }, { opacity: 1 }], { duration: 600, delay: 300 });
+      const mid = { width: `${s.w}px`, height: '8px', transform: `translate(${s.x}px,${s.y + s.h / 2 - 4}px)`, background: 'var(--carbon)', borderRadius: '0' };
+      await c.a(line, [
+        { width: `${s.w}px`, height: `${s.h}px`, transform: `translate(${s.x}px,${s.y}px)`, background: lt ? 'var(--paper)' : 'var(--carbon)', borderRadius: lt ? '0' : '6px' },
+        mid,
+      ], { duration: 420, easing: INOUT });
+      await c.a(line, [mid, { width: `${r.w}px`, height: '8px', transform: `translate(${r.x}px,${r.y}px)`, background: 'var(--carbon)', borderRadius: '0' }], { duration: 620 });
+      rail.style.visibility = '';
+      line.remove();
+      band.style.opacity = '';
+      await Promise.all([
+        c.a(band, SWING(1), { duration: 1150, easing: 'cubic-bezier(.33,0,.25,1)' }),
+        hangDoors(c, doors, 220),
+      ]);
+    },
+  },
+
+  // E · no shared object: the page lifts away, the headline settles, the rail draws, the band and doors hang down
+  hang: {
+    async run(c) {
+      const { band, rail, doors, head } = parts(c);
+      [band, ...doors].forEach((el) => (el.style.opacity = 0));
+      rail.style.transform = 'scaleX(0)';
+      c.to.style.zIndex = 3;
+      c.a(c.from, [{ opacity: 1, transform: 'none' }, { opacity: 0, transform: 'translateY(-13px)' }], { duration: 500, easing: SOFT });
+      head.forEach((h, i) => c.a(h, [{ opacity: 0, transform: 'translateY(13px)' }, { opacity: 1, transform: 'none' }], { duration: 900, delay: 260 + i * 90 }));
+      drawRail(c, rail, 320);
+      await Promise.all([
+        c.a(band, SWING(1), { duration: 1150, delay: 760, easing: 'cubic-bezier(.33,0,.25,1)' }),
+        hangDoors(c, doors, 960),
+      ]);
+    },
+  },
+
+  // F · the card flips edge-on like a board flap and flips back as the band
+  flip: {
+    async run(c) {
+      const src = srcOf(c);
+      if (!src) return options.hang.run(c);
+      const { band, rail, doors } = parts(c);
+      const out = c.clone(src);
+      src.style.visibility = 'hidden';
+      band.style.visibility = 'hidden';
+      doors.forEach((d) => (d.style.opacity = 0));
+      rail.style.transform = 'scaleX(0)';
+      c.to.style.zIndex = 3;
+      c.a(c.from, [{ opacity: 1 }, { opacity: 0 }], { duration: 320, easing: SOFT });
+      c.a(c.to, [{ opacity: 0 }, { opacity: 1 }], { duration: 600, delay: 220 });
+      await c.a(out, [{ transform: 'perspective(900px) rotateX(0)' }, { transform: 'perspective(900px) rotateX(90deg)' }], { duration: 300, easing: OUT });
+      out.remove();
+      const bin = c.clone(band);
+      bin.style.visibility = 'visible';
+      drawRail(c, rail, 0, '50% 50%');
+      await c.a(bin, [{ transform: 'perspective(900px) rotateX(-90deg)' }, { transform: 'perspective(900px) rotateX(0)' }], { duration: 520 });
+      band.style.visibility = '';
+      bin.remove();
+      await hangDoors(c, doors, 0);
+    },
+  },
+
+  // B · a Carbon band runs across with the pictogram; the page is there behind it (kept for comparison)
   line: {
     async run(c) {
-      const k = c.link.dataset.svc || 'cleaning';
+      const k = c.to.dataset.svc;
       const W = 144;
       c.to.style.zIndex = 3;
       const band = c.ov(`left:0;top:89px;bottom:0;width:${W}px;background:var(--carbon);color:var(--paper);--tile:var(--carbon);display:grid;place-items:center`, `<div style="width:55px;height:55px">${c.PICTO[k]}</div>`, 11);
-      const D = 760;
+      const D = 900;
       await Promise.all([
         c.a(band, [{ transform: `translateX(${-W}px)` }, { transform: 'translateX(1512px)' }], { duration: D, easing: INOUT }),
         c.a(c.to, [{ clipPath: `inset(0 ${1512 + W / 2}px 0 0)` }, { clipPath: `inset(0 ${-W / 2}px 0 0)` }], { duration: D, easing: INOUT }),
@@ -102,24 +212,28 @@ const options = {
     },
   },
 
-  // C · board slats flap down, announce the stop in dot matrix, then flap away
+  // C · board slats flap down, announce the stop in dot matrix, then flap away (kept for comparison)
   board: {
     async run(c) {
-      const k = c.link.dataset.svc || 'cleaning';
+      const k = c.to.dataset.svc;
       const N = 6;
       const H = 771 / N;
       const words = { 2: 'NOW ARRIVING', 3: k.toUpperCase() };
       const slats = Array.from({ length: N }, (_, i) => c.ov(
         `left:0;width:1512px;top:${89 + i * H}px;height:${H + 1}px;background:var(--carbon);color:var(--yellow);display:grid;place-items:center;transform-origin:50% 0;box-shadow:inset 0 -1px 0 rgba(247,242,231,.14)`,
         words[i] ? c.dm(words[i], i === 3 ? 9 : 6) : '', 11));
-      await Promise.all(slats.map((s, i) => c.a(s, [{ transform: 'perspective(1400px) rotateX(-90deg)' }, { transform: 'perspective(1400px) rotateX(0)' }], { duration: 280, delay: i * 55 })));
+      await Promise.all(slats.map((s, i) => c.a(s, [{ transform: 'perspective(1400px) rotateX(-90deg)' }, { transform: 'perspective(1400px) rotateX(0)' }], { duration: 320, delay: i * 60, easing: SOFT })));
       c.from.style.opacity = 0;
-      await c.wait(380);
-      await Promise.all(slats.map((s, i) => c.a(s, [{ transform: 'perspective(1400px) rotateX(0)' }, { transform: 'perspective(1400px) rotateX(90deg)' }], { duration: 280, delay: i * 55, easing: OUT })));
+      await c.wait(420);
+      await Promise.all(slats.map((s, i) => c.a(s, [{ transform: 'perspective(1400px) rotateX(0)' }, { transform: 'perspective(1400px) rotateX(90deg)' }], { duration: 320, delay: i * 60, easing: OUT })));
     },
   },
 };
 
-mount({ category: 'service', options, play: '.pt-card[data-svc="moving"]' });
+mount({
+  category: 'service',
+  options,
+  play: (v) => (v === 'hero' ? '.hc-card[data-svc="moving"]' : v === 'nav' ? '.nd-row[data-svc="moving"]' : '.r2-card[data-svc="moving"]'),
+});
 </script>
 </body>
