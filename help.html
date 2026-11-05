@@ -4,6 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <script>document.documentElement.classList.add('js')</script>
+  {{> vt}}
   <link rel="icon" href="/favicon.svg" type="image/svg+xml">
   <meta name="robots" content="noindex"> <!-- pre-launch: remove at launch (CLAUDE.md "Before launch") -->
   <title>Help · ONAWAY</title>
@@ -11,6 +12,7 @@
   <link rel="preload" href="/fonts/InstrumentSans-Variable.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="preload" href="/fonts/OverpassMono-Variable.woff2" as="font" type="font/woff2" crossorigin>
   <script type="application/ld+json">{{{faqJsonLd}}}</script>
+  <link rel="stylesheet" href="/src/styles/main.css">
   <script type="module" src="/src/js/main.js"></script>
 </head>
 <body>
@@ -46,7 +48,7 @@
     </section>
 
     {{!-- End band: the Cleaning closing panel shell (CC-02b), a person to call --}}
-    <section class="ccta help-end" data-nav-theme="dark" aria-labelledby="help-end-title">
+    <section class="ccta help-end" data-section="helpend" aria-labelledby="help-end-title">
       <div class="ccta__panel">
         <div class="help-end__text">
           <h2 id="help-end-title" class="help-end__title">Still have a question?</h2>

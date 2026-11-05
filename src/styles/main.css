@@ -732,16 +732,29 @@
 
   /* Edge styles */
   /* Tear (locked): stamps on the outer edges; the seam is straight on both sides (body and tear-off) with the notch option's dashed line */
-  /* The W notch (as the emails' tear): at each end of the seam two round bites (13), one either side of the tear
-     line, so the ticket comes to a point on the line between them */
-  .ticket {
-    --wn: var(--spacing-13);
-    --wn-body: radial-gradient(circle at calc(100% - var(--wn)) 0, transparent var(--wn), var(--cut) calc(var(--wn) + 0.5px)), radial-gradient(circle at calc(100% - var(--wn)) 100%, transparent var(--wn), var(--cut) calc(var(--wn) + 0.5px));
-    --wn-tear: radial-gradient(circle at var(--wn) 0, transparent var(--wn), var(--cut) calc(var(--wn) + 0.5px)), radial-gradient(circle at var(--wn) 100%, transparent var(--wn), var(--cut) calc(var(--wn) + 0.5px));
+  .steps:not([data-ticket="stamps"], [data-ticket="stamp"], [data-ticket="pin"], [data-ticket="notch"]) .ticket { --mask-body: var(--e-t), var(--e-b), var(--e-l); --mask-tear: var(--e-t), var(--e-b), var(--e-r); }
+  /* The W notch, as the emails' tear: at each end of the seam a 13 × 13 cell either side of the tear line, each
+     holding a Paper quarter circle centred on its outer corner. The edge steps in at the far side of each cell and
+     curves back out, so the two sides mirror and the ticket comes to a point on the line; the dashed line runs
+     between the cells. (Painted, not masked: a mask layer has to cover the whole ticket.) */
+  .ticket { --wn: var(--spacing-13); }
+  .steps:not([data-ticket="stamps"], [data-ticket="stamp"], [data-ticket="pin"], [data-ticket="notch"]) :is(.ticket__body, .ticket__tear)::after {
+    content: ""; position: absolute; z-index: 1; pointer-events: none; top: 0; bottom: 0; width: var(--wn);
   }
-  .steps:not([data-ticket="stamps"], [data-ticket="stamp"], [data-ticket="pin"], [data-ticket="notch"]) .ticket { --mask-body: var(--e-t), var(--e-b), var(--e-l), var(--wn-body); --mask-tear: var(--e-t), var(--e-b), var(--e-r), var(--wn-tear); }
+  .steps:not([data-ticket="stamps"], [data-ticket="stamp"], [data-ticket="pin"], [data-ticket="notch"]) .ticket__body::after {
+    right: 0;
+    background:
+      radial-gradient(circle at 0 0, var(--color-paper) var(--wn), transparent calc(var(--wn) + 0.5px)) top / var(--wn) var(--wn) no-repeat,
+      radial-gradient(circle at 0 100%, var(--color-paper) var(--wn), transparent calc(var(--wn) + 0.5px)) bottom / var(--wn) var(--wn) no-repeat;
+  }
+  .steps:not([data-ticket="stamps"], [data-ticket="stamp"], [data-ticket="pin"], [data-ticket="notch"]) .ticket__tear::after {
+    left: 0;
+    background:
+      radial-gradient(circle at 100% 0, var(--color-paper) var(--wn), transparent calc(var(--wn) + 0.5px)) top / var(--wn) var(--wn) no-repeat,
+      radial-gradient(circle at 100% 100%, var(--color-paper) var(--wn), transparent calc(var(--wn) + 0.5px)) bottom / var(--wn) var(--wn) no-repeat;
+  }
   .steps:not([data-ticket="stamps"], [data-ticket="stamp"], [data-ticket="pin"], [data-ticket="notch"]) .ticket__tear { position: relative; }
-  .steps:not([data-ticket="stamps"], [data-ticket="stamp"], [data-ticket="pin"], [data-ticket="notch"]) .ticket__tear::before { content: ""; position: absolute; inset: 0 auto 0 0; border-left: 1.5px dashed color-mix(in srgb, var(--color-carbon) 32%, transparent); }
+  .steps:not([data-ticket="stamps"], [data-ticket="stamp"], [data-ticket="pin"], [data-ticket="notch"]) .ticket__tear::before { content: ""; position: absolute; inset: var(--wn) auto var(--wn) 0; border-left: 1.5px dashed color-mix(in srgb, var(--color-carbon) 32%, transparent); }
   .steps[data-ticket="stamp"] .ticket { --br: 5px; --bp: 15px; }
   .steps[data-ticket="stamp"] .ticket__seam { border-left: 1px solid color-mix(in srgb, var(--color-carbon) 18%, transparent); }
   .steps[data-ticket="pin"] .ticket,
@@ -769,12 +782,22 @@
     }
     .steps[data-ticket="pin"] .ticket,
     .steps[data-ticket="notch"] .ticket { --mask-body: var(--seam-b); --mask-tear: var(--seam-t); }
-    .ticket {
-      --wn-body: radial-gradient(circle at 0 calc(100% - var(--wn)), transparent var(--wn), var(--cut) calc(var(--wn) + 0.5px)), radial-gradient(circle at 100% calc(100% - var(--wn)), transparent var(--wn), var(--cut) calc(var(--wn) + 0.5px));
-      --wn-tear: radial-gradient(circle at 0 var(--wn), transparent var(--wn), var(--cut) calc(var(--wn) + 0.5px)), radial-gradient(circle at 100% var(--wn), transparent var(--wn), var(--cut) calc(var(--wn) + 0.5px));
+    .steps:not([data-ticket="stamps"], [data-ticket="stamp"], [data-ticket="pin"], [data-ticket="notch"]) .ticket { --mask-body: var(--e-l), var(--e-r), var(--e-t); --mask-tear: var(--e-l), var(--e-r), var(--e-b); }
+    /* the seam runs across: the cells sit at its left and right ends */
+    .steps:not([data-ticket="stamps"], [data-ticket="stamp"], [data-ticket="pin"], [data-ticket="notch"]) :is(.ticket__body, .ticket__tear)::after { left: 0; right: 0; width: auto; height: var(--wn); }
+    .steps:not([data-ticket="stamps"], [data-ticket="stamp"], [data-ticket="pin"], [data-ticket="notch"]) .ticket__body::after {
+      top: auto; bottom: 0;
+      background:
+        radial-gradient(circle at 0 0, var(--color-paper) var(--wn), transparent calc(var(--wn) + 0.5px)) left / var(--wn) var(--wn) no-repeat,
+        radial-gradient(circle at 100% 0, var(--color-paper) var(--wn), transparent calc(var(--wn) + 0.5px)) right / var(--wn) var(--wn) no-repeat;
     }
-    .steps:not([data-ticket="stamps"], [data-ticket="stamp"], [data-ticket="pin"], [data-ticket="notch"]) .ticket { --mask-body: var(--e-l), var(--e-r), var(--e-t), var(--wn-body); --mask-tear: var(--e-l), var(--e-r), var(--e-b), var(--wn-tear); }
-    .steps:not([data-ticket="stamps"], [data-ticket="stamp"], [data-ticket="pin"], [data-ticket="notch"]) .ticket__tear::before { inset: 0 0 auto; border-left: 0; border-top: 1.5px dashed color-mix(in srgb, var(--color-carbon) 32%, transparent); }
+    .steps:not([data-ticket="stamps"], [data-ticket="stamp"], [data-ticket="pin"], [data-ticket="notch"]) .ticket__tear::after {
+      top: 0; bottom: auto;
+      background:
+        radial-gradient(circle at 0 100%, var(--color-paper) var(--wn), transparent calc(var(--wn) + 0.5px)) left / var(--wn) var(--wn) no-repeat,
+        radial-gradient(circle at 100% 100%, var(--color-paper) var(--wn), transparent calc(var(--wn) + 0.5px)) right / var(--wn) var(--wn) no-repeat;
+    }
+    .steps:not([data-ticket="stamps"], [data-ticket="stamp"], [data-ticket="pin"], [data-ticket="notch"]) .ticket__tear::before { inset: 0 var(--wn) auto; border-left: 0; border-top: 1.5px dashed color-mix(in srgb, var(--color-carbon) 32%, transparent); }
     .ticket__inner { flex-direction: column; }
     .ticket__body { grid-template-columns: 1fr; grid-template-rows: var(--stub) auto; padding-bottom: var(--spacing-89); }
     .ticket__stub, .steps[data-symbol="centre"] .ticket__stub { align-items: center; padding-bottom: 0; }
@@ -1242,6 +1265,16 @@
   .footer__tag { max-width: 22ch; font-size: var(--text-h3); line-height: 1.1; font-weight: 500; letter-spacing: -0.01em; }
   .footer__clock { color: var(--ft-fg); }
   .footer__clock time { font-variant-numeric: tabular-nums; }
+  /* The hours sit under the time, a step quieter: supporting information. The pictogram carries the camel (camel is
+     never text); the words are Paper at 55%. Panel option footer.hours: quiet (locked) | kraft (a camel tag, Carbon
+     words) | inline (one line after the time). */
+  .footer__when { display: flex; flex-direction: column; align-items: flex-start; gap: var(--spacing-8); }
+  .footer__hours { --tile: var(--color-carbon); display: inline-flex; align-items: center; gap: var(--spacing-8); color: color-mix(in srgb, var(--color-paper) 55%, transparent); }
+  .footer__hours svg { flex: none; width: 1.25em; height: 1.25em; color: var(--color-camel); }
+  .footer[data-hours="kraft"] .footer__hours { --tile: var(--color-camel); padding: var(--spacing-8); border-radius: 2px; background: var(--color-camel); color: var(--color-carbon); }
+  .footer[data-hours="kraft"] .footer__hours svg { color: var(--color-carbon); }
+  .footer[data-hours="inline"] .footer__when { flex-direction: row; flex-wrap: wrap; align-items: center; }
+  .footer[data-hours="inline"] .footer__clock::after { content: " ·"; }
 
   /* Hanging columns under one hairline */
   .footer__cols { margin-top: var(--spacing-55); row-gap: var(--spacing-34); }
@@ -1253,15 +1286,17 @@
     isolation: isolate;
     display: flex;
     justify-content: space-between;
-    align-items: baseline;
+    align-items: center;
     gap: var(--spacing-13);
-    padding-block: var(--spacing-8);
+    padding-block: var(--spacing-13);
     border-bottom: 1px solid var(--ft-line);
     font-size: var(--text-lead);
     line-height: 1.1;
     font-weight: 600;
     transition: color 0.3s, padding 0.3s;
   }
+  /* The words trimmed to their capitals, so they sit truly centred between the square on the left and the sign on the right */
+  .footer__row > span:not(.lnk-sign, .footer__ic, .footer__arrow) { text-box: trim-both cap alphabetic; }
   .footer__row--mono {
     font-family: var(--font-mono);
     font-size: var(--text-label);
@@ -1408,7 +1443,8 @@
   @media (width >= 1024px) {
     .footer { padding-top: var(--spacing-55); }
     .footer__tag { font-size: var(--text-h2); }
-    .footer__clock { justify-self: end; text-align: right; padding-top: var(--spacing-13); }
+    .footer__when { justify-self: end; align-items: flex-end; padding-top: var(--spacing-13); }
+    .footer[data-hours="inline"] .footer__when { justify-content: flex-end; }
     .footer__cols { margin-top: var(--spacing-55); }
     .footer__explore { grid-column: 1 / span 3; }
     .footer__contact { grid-column: 7 / span 3; }
@@ -2110,12 +2146,23 @@
   @media (prefers-reduced-motion: reduce) {
     .js .help__a, .help__qt { transition: none; }
   }
-  /* End band: the CC-02b panel; the headline and line left, a person to call right */
+  /* End band: the CC-02b panel; the headline and line left, a person to call right. Calling isn't the site's main
+     action, so the band is light: a warm kraft tint (camel at 22% on Paper) with a Carbon call button (no yellow).
+     Panel option helpend.tone: kraft (locked) | light (Carbon at 6%) | line (Paper inside a hairline). */
+  .help-end .ccta__panel { --he-bg: color-mix(in srgb, var(--color-camel) 22%, var(--color-paper)); background: var(--he-bg); color: var(--color-carbon); }
+  .help-end[data-tone="light"] .ccta__panel { --he-bg: color-mix(in srgb, var(--color-carbon) 6%, var(--color-paper)); }
+  .help-end[data-tone="line"] .ccta__panel { --he-bg: var(--color-paper); box-shadow: inset 0 0 0 1px var(--color-line); }
+  .help-end .ccta__lead { color: color-mix(in srgb, var(--color-carbon) 72%, transparent); }
+  .help-end .ccta__cta { background: var(--color-carbon); color: var(--color-paper); }
+  .help-end .ccta__cta:focus-visible { outline-color: var(--color-carbon); }
+  /* the secondary links underline on hover (and focus), not before */
+  .help-end .ccta__call { text-decoration-color: transparent; transition: text-decoration-color 0.2s; }
+  .help-end .ccta__call:is(:hover, :focus-visible) { text-decoration-color: var(--color-carbon); }
   .help-end__text { grid-column: 1 / -1; display: flex; flex-direction: column; gap: var(--spacing-21); }
   .help-end__title { font-size: var(--text-h2); line-height: 1; font-weight: 600; letter-spacing: -0.01em; }
   .help-end__acts { grid-column: 1 / -1; display: flex; flex-direction: column; align-items: flex-start; gap: var(--spacing-21); }
-  .help-end__links { display: flex; flex-wrap: wrap; align-items: center; gap: var(--spacing-13); color: color-mix(in srgb, var(--color-paper) 50%, transparent); }
-  .help-end__links a { color: var(--color-paper); }
+  .help-end__links { display: flex; flex-wrap: wrap; align-items: center; gap: var(--spacing-13); color: color-mix(in srgb, var(--color-carbon) 45%, transparent); }
+  .help-end__links a { color: var(--color-carbon); }
   @media (width >= 768px) {
     .help-end__title { font-size: var(--text-h1); line-height: 0.95; }
   }
@@ -2551,3 +2598,80 @@
 @keyframes qs-blink { 50% { opacity: 0; } }
 @keyframes qs-dot { 0%, 60%, 100% { opacity: 0.2; translate: 0 0; } 30% { opacity: 1; translate: 0 -3px; } }
 @keyframes tk-head { from { left: 0; opacity: 1; } 95% { opacity: 1; } to { left: 100%; opacity: 0; } }
+
+/* ---------- Page transitions (locked: PT-01 A2 · PT-02 C2 · PT-03 D2; docs/mocks/pt-0*.html) ----------
+   Native cross-document View Transitions. src/js/transitions.js names what leaves (the clicked sign, the pressed
+   quote button, the navbar if it's at the top); src/partials/vt.hbs names what arrives and sets data-vt on <html>
+   (service | quote | general) plus data-vt-carry (sign | quote) when something travels. One easing family: an
+   even curve for things that travel, a long soft ease-out for things settling, nothing that bounces.
+   Reduced motion and browsers without View Transitions navigate as before. */
+/* (the opt-in, @view-transition, is inline in src/partials/vt.hbs so it applies from the first frame) */
+::view-transition-group(nav) { animation: none; }
+
+/* service and quote: the page you leave steps away, the new one settles in behind what travels */
+html:active-view-transition-type(service, quote)::view-transition-old(root) { animation: vt-out 0.38s cubic-bezier(0.4, 0, 0.2, 1) both; }
+html:active-view-transition-type(service, quote)::view-transition-new(root) { animation: vt-in 0.6s cubic-bezier(0.16, 1, 0.3, 1) 0.22s both; }
+
+/* PT-01 A2 · the sign (an R2-E card, a hero card, a drop, menu or footer row) travels on an arc to the band
+   (the arc is set in vt.hbs); the card fades as the band appears, neither stretched */
+::view-transition-group(sign) { animation-duration: 1.1s; animation-timing-function: cubic-bezier(0.5, 0, 0.15, 1); overflow: clip; }
+::view-transition-old(sign),
+::view-transition-new(sign) { width: 100%; height: 100%; object-fit: none; object-position: left center; }
+/* the card holds through the first part of the flight, the band takes over mid-way: you watch one become the other */
+::view-transition-old(sign) { animation: vt-out 0.4s ease 0.4s both; }
+::view-transition-new(sign) { animation: vt-in 0.4s ease 0.35s both; }
+/* the rail grows out from where the sign hangs; the band settles as it takes its weight; then the doors hang */
+html[data-vt-carry="sign"] .svc-hang__rail { transform-origin: 50% 50%; animation: vt-rail 0.9s cubic-bezier(0.65, 0, 0.35, 1) 0.3s both; }
+html[data-vt-carry="sign"] .svc-hero.is-go .svc-band { animation: vt-settle 0.6s cubic-bezier(0.4, 0, 0.2, 1) 1.1s both; }
+/* the doors stay hidden until the sign has landed, then hang in from above and settle */
+html[data-vt-carry="sign"] .svc-hero .svc-door:nth-child(n) { animation: vt-hang 1.1s cubic-bezier(0.33, 0, 0.25, 1) 1s both; }
+html[data-vt-carry="sign"] .svc-hero .svc-door:nth-child(2) { animation-delay: 1.12s; }
+/* the press, before it leaves; an R2-E card drops its hover inversion so the dark sign is what travels */
+.is-vt-press { animation: vt-press 0.24s cubic-bezier(0.4, 0, 0.2, 1); }
+.services .sign.is-live.is-vt-press {
+  --s-txt: var(--color-paper); --s-sub: color-mix(in srgb, var(--color-paper) 78%, transparent); --s-face: var(--color-carbon);
+  --s-tile: color-mix(in srgb, var(--color-paper) 7%, var(--color-carbon)); --s-glyph: var(--color-paper);
+}
+
+/* PT-02 C2 · the pressed button travels and warms into the ticket's header; the ticket unrolls from it as it
+   lands and each line fills in as the edge reaches it */
+::view-transition-group(quote-head) { animation-duration: 1s; animation-timing-function: cubic-bezier(0.5, 0, 0.15, 1); overflow: clip; }
+::view-transition-old(quote-head),
+::view-transition-new(quote-head) { width: 100%; height: 100%; object-fit: none; object-position: left center; }
+::view-transition-old(quote-head) { animation: vt-out 0.45s ease 0.1s both; }
+::view-transition-new(quote-head) { animation: vt-in 0.45s ease 0.5s both; }
+@media (width >= 1024px) {
+  html[data-vt-carry="quote"] .qticket__body { animation: vt-unroll 0.9s cubic-bezier(0.65, 0, 0.35, 1) 0.86s backwards; }
+  html[data-vt-carry="quote"] .qticket__row { animation: vt-line 0.52s cubic-bezier(0.16, 1, 0.3, 1) backwards; animation-delay: calc(0.95s + var(--row, 0) * 0.09s); }
+  html[data-vt-carry="quote"] .qticket__row:nth-child(2) { --row: 1; }
+  html[data-vt-carry="quote"] .qticket__row:nth-child(3) { --row: 2; }
+  html[data-vt-carry="quote"] .qticket__row:nth-child(4) { --row: 3; }
+  html[data-vt-carry="quote"] .qticket__row:nth-child(5) { --row: 4; }
+  html[data-vt-carry="quote"] .qticket__row:nth-child(6) { --row: 5; }
+  html[data-vt-carry="quote"] .qticket__row:nth-child(7) { --row: 6; }
+}
+
+/* PT-03 D2 · the page you leave lifts away; the new page's hero pieces are written in, left to right, 0.14s
+   apart, a yellow marker beside the heading while it writes. A page with none of those pieces (the homepage)
+   simply fades in. */
+html:active-view-transition-type(general)::view-transition-old(root) { animation: vt-lift 0.42s cubic-bezier(0.4, 0, 0.2, 1) both; }
+html:active-view-transition-type(general)::view-transition-new(root) { animation: none; }
+/* the old page lifts away above the new one, so its blocks write in as it fades (the new page is opaque Paper,
+   and on top it would hide the old page at once) */
+html:active-view-transition-type(general)::view-transition-old(root) { z-index: 1; }
+html[data-vt-plain]:active-view-transition-type(general)::view-transition-new(root) { animation: vt-in 0.6s cubic-bezier(0.16, 1, 0.3, 1) 0.2s both; }
+html[data-vt="general"] [data-vt-block] { animation: vt-write 0.9s cubic-bezier(0.3, 0, 0.2, 1) backwards; animation-delay: calc(0.24s + var(--vt-i, 0) * 0.14s); } /* starts as the old page fades (it lifts away above), a quick start so the page never sits empty */
+.vt-mark { position: absolute; z-index: 40; width: 8px; height: 8px; background: var(--color-yellow); pointer-events: none; animation: vt-mark 1.4s cubic-bezier(0.4, 0, 0.2, 1) 0.25s both; }
+
+@keyframes vt-out { to { opacity: 0; } }
+@keyframes vt-in { from { opacity: 0; } }
+@keyframes vt-lift { to { opacity: 0; transform: translateY(-8px); } }
+@keyframes vt-rail { from { transform: scaleX(0); } }
+@keyframes vt-settle { 40% { translate: 0 3px; } }
+@keyframes vt-hang { 0% { opacity: 0; translate: 0 -21px; rotate: -1.6deg; } 55% { opacity: 1; translate: 0 2px; rotate: 0.6deg; } 80% { translate: 0 -1px; rotate: -0.2deg; } 100% { opacity: 1; translate: 0 0; rotate: 0deg; } }
+@keyframes vt-press { 40% { scale: 0.985; } }
+/* clip-path needs an explicit end: from an inset to "none" it can't blend and would jump halfway */
+@keyframes vt-unroll { from { clip-path: inset(0 0 100% 0); } to { clip-path: inset(0 0 0 0); } }
+@keyframes vt-line { from { opacity: 0; translate: -8px 0; } }
+@keyframes vt-write { from { clip-path: inset(0 100% 0 0); opacity: 0.2; translate: 0 8px; } to { clip-path: inset(0 0 0 0); opacity: 1; translate: 0 0; } }
+@keyframes vt-mark { 0% { transform: scale(0); } 20%, 75% { transform: scale(1); opacity: 1; } 100% { transform: scale(1); opacity: 0; } }

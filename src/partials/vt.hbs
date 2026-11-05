@@ -1,0 +1,80 @@
+{{!-- Page transitions, the arriving side (the leaving side is src/js/transitions.js; styles in main.css "Page
+     transitions"). Inline so it runs before the first frame; rendering waits for #footer, so the page above it
+     exists when pagereveal fires. service: the clicked sign lands as the hanging band (on a gentle arc) ·
+     quote: the pressed button lands as the ticket's header · general: the page's hero pieces write in. --}}
+{{!-- The opt-in sits here, not in main.css: a page has to opt in from its first frame (in dev, Vite adds the CSS later) --}}
+<style>@media (prefers-reduced-motion: no-preference) { @view-transition { navigation: auto; } }</style>
+<link rel="expect" href="#footer" blocking="render">
+<script>
+(() => {
+  if (!('onpagereveal' in window) || matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  const kind = (u) => {
+    const p = new URL(u).pathname.replace(/(\.html|\/)$/, '');
+    return /^\/(cleaning|moving|delivery)$/.test(p) ? 'service' : p === '/quote' ? 'quote' : 'general';
+  };
+  // the hero pieces that write in on a general arrival (those in view)
+  const BLOCKS = '.svc-hero__crumb, .svc-hero__title, .svc-hero__side, .svc-hang, .about-hero__title, .about-hero__lead, .about-name, .about-hero__fig, .help-hero__title, .help-hero__lead, .help, .legal__title, .legal__lead, .legal__body, .notfound .label, .notfound__title, .notfound__lead, .notfound__actions, .qp__title, .qp__lead, .qp__form, .qticket';
+  const TRAVEL = 'cubic-bezier(.5,0,.15,1)';
+  addEventListener('pagereveal', (e) => {
+    const vt = e.viewTransition;
+    const act = window.navigation && navigation.activation;
+    if (!vt || !act || !act.entry) return;
+    const html = document.documentElement;
+    const type = act.navigationType === 'traverse' ? 'general' : kind(act.entry.url);
+    vt.ready.catch(() => {}); // an aborted transition is harmless (the page simply shows)
+    vt.types.add(type);
+    html.dataset.vt = type;
+    let carry = '';
+    try { carry = sessionStorage.getItem('onaway:vt') || ''; sessionStorage.removeItem('onaway:vt'); } catch (_) {}
+    const named = [];
+    const name = (el, n) => { el.style.viewTransitionName = n; named.push(el); };
+    const nav = document.querySelector('.site-nav');
+    if (nav && Math.round(nav.getBoundingClientRect().top) === 0) name(nav, 'nav');
+
+    if (type === 'service' && carry === 'sign') {
+      const band = document.querySelector('.svc-band');
+      if (band) {
+        name(band, 'sign');
+        html.dataset.vtCarry = 'sign';
+        // A2: the sign travels on a gentle arc (a lifted midpoint) on one even curve
+        vt.ready.then(() => {
+          const anim = document.getAnimations().find((a) => a.effect && a.effect.pseudoElement === '::view-transition-group(sign)');
+          if (!anim) return;
+          const kf = anim.effect.getKeyframes();
+          const m = (t) => { const v = /matrix\(([^)]+)\)/.exec(t || ''); return v && v[1].split(',').map(Number); };
+          const a = m(kf[0].transform);
+          const b = m(kf[kf.length - 1].transform);
+          if (!a || !b) return;
+          const avg = (i) => (a[i] + b[i]) / 2;
+          const px = (k) => (parseFloat(kf[0][k]) + parseFloat(kf[kf.length - 1][k])) / 2 + 'px';
+          const clean = (k) => ({ transform: k.transform, width: k.width, height: k.height, backdropFilter: k.backdropFilter, easing: 'linear' });
+          anim.effect.setKeyframes([clean(kf[0]), { offset: 0.5, transform: `matrix(${avg(0)},${avg(1)},${avg(2)},${avg(3)},${avg(4)},${avg(5) - 34})`, width: px('width'), height: px('height'), easing: 'linear' }, clean(kf[kf.length - 1])]);
+          anim.effect.updateTiming({ easing: TRAVEL });
+        }).catch(() => {});
+      }
+    }
+    if (type === 'quote' && carry === 'quote') {
+      const strip = document.querySelector('.qticket__strip');
+      if (strip) { name(strip, 'quote-head'); html.dataset.vtCarry = 'quote'; }
+    }
+    if (type === 'general') {
+      const blocks = [...document.querySelectorAll(BLOCKS)].filter((el) => { const r = el.getBoundingClientRect(); return r.height > 0 && r.bottom > 0 && r.top < innerHeight; });
+      if (!blocks.length) html.dataset.vtPlain = '';
+      blocks.forEach((el, i) => { el.setAttribute('data-vt-block', ''); el.style.setProperty('--vt-i', i); });
+      // a yellow marker beside the heading while it writes
+      const h = blocks.find((el) => /^H1$/.test(el.tagName) || el.querySelector('h1')) || blocks[0];
+      if (h) {
+        const r = h.getBoundingClientRect();
+        const mark = document.createElement('i');
+        mark.className = 'vt-mark';
+        mark.setAttribute('aria-hidden', 'true');
+        mark.style.top = `${r.top + scrollY + Math.min(21, r.height / 3)}px`;
+        mark.style.left = `${Math.max(4, r.left - 16)}px`;
+        document.body.append(mark);
+        setTimeout(() => mark.remove(), 2200);
+      }
+    }
+    vt.finished.finally(() => named.forEach((el) => (el.style.viewTransitionName = '')));
+  });
+})();
+</script>

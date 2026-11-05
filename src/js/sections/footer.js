@@ -8,15 +8,23 @@ registerOptions('footer', {
   signal: ['arrive', 'turn', 'still', 'off'],
   hover: ['signal', 'sweep', 'invert', 'mark'],
   tagline: ['here', 'steady', 'date', 'handled'],
+  // The hours under the clock: quiet (locked: camel pictogram, muted words) | kraft (a camel tag) | inline (one line with the time)
+  hours: ['quiet', 'kraft', 'inline'],
 });
 
 export function init(el) {
   // Live Toronto time
   const clock = el.querySelector('[data-toronto-time]');
-  const fmt = new Intl.DateTimeFormat('en-CA', { timeZone: 'America/Toronto', hour: 'numeric', minute: '2-digit' });
+  // Hours (8 AM – 8 PM every day), read against the same clock
+  const hours = el.querySelector('[data-toronto-hours]');
+  const hourNow = new Intl.DateTimeFormat('en-CA', { timeZone: 'America/Toronto', hour: 'numeric', hourCycle: 'h23' });
+  // en-US for '3:03 PM', the same PM as the hours line (en-CA writes 'p.m.')
+  const fmt = new Intl.DateTimeFormat('en-US', { timeZone: 'America/Toronto', hour: 'numeric', minute: '2-digit' });
   const tick = () => {
     clock.textContent = fmt.format(new Date()).toUpperCase();
     clock.dateTime = new Date().toISOString();
+    const h = Number(hourNow.format(new Date()));
+    hours.textContent = h >= 8 && h < 20 ? 'Open till 8 PM' : 'Opens 8 AM';
   };
   tick();
   setInterval(tick, 20000);
