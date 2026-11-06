@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="en-CA">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex">
+  <title>GT-10 A · MapLibre</title>
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="/src/styles/main.css">
+  <link rel="stylesheet" href="./gt10.css">
+  <script type="module" src="./a-maplibre.js"></script>
+</head>
+<body class="g10">
+  <!-- Review toolbar: exploration only, never shipped -->
+  <div class="g10-bar" role="toolbar" aria-label="Review options">
+    <div class="g10-bar__id"><b>GT-10 · A</b> MapLibre + OpenFreeMap <button class="g10-btn g10-bar__toggle" type="button" aria-expanded="false">Review</button></div>
+    <div class="g10-bar__tools">
+      <span class="g10-tg" data-k="layout"><span>Layout</span><button data-v="veil">Veil</button><button data-v="card">Card</button></span>
+      <span class="g10-tg" data-k="buildings"><span>Buildings</span><button data-v="shaded">Shaded</button><button data-v="flat">Flat greys</button></span>
+      <span class="g10-tg" data-k="pitch"><span>Pitch</span><button data-v="45">45°</button><button data-v="60">60°</button></span>
+      <span class="g10-tg" data-k="orbit"><span>Orbit</span><button data-v="on">On</button><button data-v="off">Off</button></span>
+      <span class="g10-tg" data-k="speed"><span>Speed</span><button data-v="1">Normal</button><button data-v="0.6">Slow</button></span>
+      <button class="g10-btn" id="g10-rm" aria-pressed="false">Reduced motion</button>
+      <button class="g10-btn" id="g10-replay">Replay intro</button>
+      <span class="g10-meter" id="g10-fps" title="Frames per second, last second">— fps</span>
+      <span class="g10-meter" id="g10-perf" title="Library loaded · first map frame · tiles settled, from page start">—</span>
+    </div>
+  </div>
+
+  <section class="g10-filler" aria-label="Previous section (placeholder)">
+    <p class="label">Section 04 · Promises (placeholder)</p>
+    <p class="g10-filler__big">Scroll down. The map must never take the scroll.</p>
+  </section>
+
+  <section class="g10-sec" id="gta3d" aria-label="Across the GTA">
+    <div class="g10-map" aria-hidden="true"></div>
+    <div class="g10-panel">
+      <p class="gta__kick label">Across the GTA</p>
+      <h2 class="gta__sentence g10-sentence">We’ll be in <br><span class="gta__slot is-idle"><span class="gta__hl" aria-hidden="true"></span><span class="gta__place">the GTA</span></span> <br>on your date.</h2>
+      <p class="gta__lead text-lead">The City of Toronto and the four regions around it. The same crew and the same promises, wherever you are.</p>
+      <form class="gta__check" novalidate>
+        <label class="label" for="g10-postcode">Do we cover you?</label>
+        <div class="gta__row">
+          <input id="g10-postcode" name="postcode" maxlength="7" placeholder="Postal code, e.g. M6K 1A1" autocomplete="postal-code" spellcheck="false">
+          <button type="submit">Check <span aria-hidden="true">→</span></button>
+        </div>
+        <p class="gta__result" aria-live="polite"></p>
+      </form>
+    </div>
+  </section>
+
+  <section class="g10-filler" aria-label="Next section (placeholder)">
+    <p class="label">Section 06 · Quote (placeholder)</p>
+    <p class="g10-filler__big">Where: <b id="g10-carry">—</b></p>
+    <p class="g10-filler__note">A matched place carries into the quote below, as on the live site.</p>
+  </section>
+</body>
+</html>

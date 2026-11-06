@@ -1,0 +1,69 @@
+/* GT-10 exploration pages: the review toolbar, the full-bleed section and its two panel layouts, the map labels.
+   Tokens and the panel's type (sentence, highlighter, input, result) come from the live main.css. */
+.g10 { background: var(--color-paper); color: var(--color-carbon); }
+
+/* ---- review toolbar (exploration only) ---- */
+.g10-bar {
+  position: fixed; inset: 0 0 auto; z-index: 50; display: flex; flex-wrap: wrap; gap: 8px 21px; align-items: center; justify-content: space-between;
+  padding: 8px var(--grid-margin); background: color-mix(in srgb, var(--color-paper) 94%, transparent); backdrop-filter: blur(8px);
+  box-shadow: 0 1px 0 var(--color-line); font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; font-stretch: normal;
+}
+.g10-bar__id b { font-weight: 600; margin-right: 8px; }
+.g10-bar__tools { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+.g10-tg { display: inline-flex; align-items: center; }
+.g10-tg > span { margin-right: 8px; color: color-mix(in srgb, var(--color-carbon) 62%, transparent); }
+.g10-tg button, .g10-btn { font: inherit; letter-spacing: inherit; text-transform: inherit; padding: 6px 10px; border: 1px solid var(--color-line); background: transparent; color: inherit; cursor: pointer; }
+.g10-tg button + button { border-left: 0; }
+.g10-tg button[aria-pressed="true"], .g10-btn[aria-pressed="true"] { background: var(--color-carbon); color: var(--color-paper); border-color: var(--color-carbon); }
+.g10-bar__toggle { display: none; margin-left: 8px; }
+/* phones: the tools fold behind Review so the map stays visible */
+@media (width < 768px) {
+  .g10-bar__toggle { display: inline-block; }
+  .g10-bar__tools { display: none; width: 100%; }
+  .g10-bar.is-open .g10-bar__tools { display: flex; }
+}
+.g10-meter { padding: 6px 10px; background: color-mix(in srgb, var(--color-carbon) 6%, transparent); font-variant-numeric: tabular-nums; }
+
+/* ---- placeholders above and below, so scrolling passes through the map ---- */
+.g10-filler { min-height: 80svh; display: flex; flex-direction: column; justify-content: center; gap: 21px; padding: 144px var(--grid-margin); }
+.g10-filler__big { font-size: var(--text-h2); line-height: 1; font-weight: 600; letter-spacing: -0.02em; max-width: 20ch; }
+.g10-filler__note { color: color-mix(in srgb, var(--color-carbon) 62%, transparent); }
+
+/* ---- the section: full bleed, the map behind everything ---- */
+.g10-sec { position: relative; height: clamp(640px, 100svh, 920px); overflow: hidden; background: var(--color-paper); }
+/* (two classes: maplibre-gl.css loads later and sets .maplibregl-map to position: relative) */
+.g10-sec .g10-map { position: absolute; inset: 0; }
+.g10-map .maplibregl-ctrl-attrib, .g10-map .mapboxgl-ctrl-attrib { font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.04em; background: color-mix(in srgb, var(--color-paper) 85%, transparent); }
+.g10-panel { position: absolute; z-index: 2; display: flex; flex-direction: column; gap: var(--spacing-21); }
+.g10-sentence { font-size: var(--text-h1); }
+
+/* Layout · Veil (recommended): no box. The left of the map fades into Paper and the words sit on it, so the
+   city runs on under them; one surface, like a printed page with a photograph bleeding off it. */
+.g10[data-layout="veil"] .g10-panel {
+  inset: 0 auto 0 0; width: min(46vw, 640px); justify-content: center; padding: var(--spacing-89) var(--spacing-89) var(--spacing-89) var(--grid-margin);
+  background: linear-gradient(90deg, var(--color-paper) 0%, var(--color-paper) 58%, color-mix(in srgb, var(--color-paper) 70%, transparent) 78%, transparent 100%);
+}
+/* Layout · Card: a Paper card floats over the map, inset by the margin, with a hairline and a soft shadow */
+.g10[data-layout="card"] .g10-panel {
+  left: var(--grid-margin); top: 50%; translate: 0 -50%; width: min(calc(100vw - 2 * var(--grid-margin)), 500px); padding: var(--spacing-34);
+  background: var(--color-paper); box-shadow: 0 0 0 1px var(--color-line), 0 21px 55px -34px color-mix(in srgb, var(--color-carbon) 50%, transparent);
+}
+
+/* Phones: the map first (60% of the screen), the panel under it on Paper. Same in both layouts. */
+@media (width < 768px) {
+  .g10-sec { height: auto; overflow: visible; }
+  .g10-sec .g10-map { position: relative; height: 62svh; }
+  .g10[data-layout] .g10-panel { position: static; inset: auto; translate: none; width: auto; padding: var(--spacing-34) var(--grid-margin) var(--spacing-55); background: var(--color-paper); box-shadow: none; }
+  .g10-sentence { font-size: var(--text-h2); }
+}
+
+/* ---- labels on the map (HTML, in the brand fonts) ---- */
+.g10-region { font-family: var(--font-sans); font-stretch: 87.5%; font-size: 13px; font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase; color: color-mix(in srgb, var(--color-carbon) 60%, transparent); text-shadow: 0 0 3px var(--color-paper), 0 0 8px var(--color-paper); pointer-events: none; transition: opacity 0.6s; white-space: nowrap; }
+.g10-place {
+  display: flex; align-items: center; gap: 8px; font-family: var(--font-sans); font-stretch: 87.5%; font-size: 16px; font-weight: 600; color: var(--color-carbon);
+  padding: 6px 10px; background: var(--color-paper); box-shadow: 0 0 0 1px var(--color-line); white-space: nowrap; pointer-events: none;
+  opacity: 0; translate: 0 6px; transition: opacity 0.5s, translate 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.g10-place i { width: 8px; height: 8px; background: var(--color-yellow); flex: none; }
+.g10-place.is-on { opacity: 1; translate: 0 0; }
+.g10.is-reduced .g10-place, .g10.is-reduced .g10-region { transition: none; }

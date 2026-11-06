@@ -43,7 +43,8 @@ export default defineConfig(({ command }) => ({
       helpers: { eq: (a, b) => a === b, picture: img.picture, faqJsonLd, icon },
     }),
   ],
-  server: { port: 5173, strictPort: true },
+  // allowedHosts: client demos and phone checks through `cloudflared tunnel --url http://localhost:5173`
+  server: { port: 5173, strictPort: true, allowedHosts: ['.trycloudflare.com'] },
   build: {
     rollupOptions: {
       // tokens.html is a dev review page (served by `npm run dev`), not part of the site build
