@@ -1,6 +1,7 @@
 // Fills the GT-10 dev tile cache (see tile-cache.js): the whole GTA at z9–11, and the ten tour places at
-// z12–13 (z13 tiles carry the buildings; stops stay under z14, so z14 is never needed). About 900 tiles,
-// roughly 50 MB in node_modules/.cache/gt10-tiles. Run once: `node explore/gt10/seed-tiles.mjs`.
+// z12–13 (z13 tiles carry the buildings; stops stay under z14, so z14 is never needed), plus the relief's
+// elevation tiles. About 1,250 tiles, roughly 10 MB in node_modules/.cache/gt10-tiles.
+// Run once: `node explore/gt10/seed-tiles.mjs`.
 import { resolve } from 'node:path';
 import { getTile } from './tile-cache.js';
 import { PLACES, TOUR } from './places.js';
