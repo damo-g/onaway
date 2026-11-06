@@ -9,12 +9,14 @@ const EASE = {
   linear: (t) => t,
 };
 
-// Zoom per place: closer downtown, where the towers are, a little wider in the suburbs
-const CLOSE = { Downtown: 14.7, 'North York': 14.4, Mississauga: 14.3, Etobicoke: 14.1, Scarborough: 14.1, Vaughan: 14.2 };
-export const zoomFor = (name, kind = 'match') => (CLOSE[name] ?? 13.9) - (kind === 'tour' ? 0.4 : 0);
+// Zoom per place: close, but just under 14. Above 14 the map switches to full-detail z14 tiles, about four times
+// as many and far heavier, and at 60° they take over a second to draw after arrival (the empty 'skipped' frames).
+// Under 14 it draws z13 tiles, which still carry every building; the lifted heights keep them standing.
+const CLOSE = { Downtown: 13.95, 'North York': 13.95, Mississauga: 13.95 };
+export const zoomFor = (name, kind = 'match') => (CLOSE[name] ?? 13.9) - (kind === 'tour' ? 0.1 : 0);
 
 export function createCamera(map, initial = {}) {
-  const s = { pitch: 45, speed: 1, orbit: true, reduced: false, padding: { top: 0, right: 0, bottom: 0, left: 0 }, ...initial };
+  const s = { pitch: 60, speed: 0.6, orbit: true, reduced: false, padding: { top: 0, right: 0, bottom: 0, left: 0 }, ...initial };
   let token = 0;
 
   // Runs one camera call and resolves when it settles: true if it finished, false if a newer move replaced it
@@ -34,7 +36,7 @@ export function createCamera(map, initial = {}) {
   function gtaView(extra = {}) {
     const w = map.getContainer().clientWidth - (s.padding.left || 0) - (s.padding.right || 0);
     const zoom = 9.15 + Math.log2(Math.max(320, w) / 1100);
-    return { center: [-79.42, 43.79], zoom, pitch: Math.min(s.pitch, 50), bearing: 0, padding: s.padding, ...extra };
+    return { center: [-79.42, 43.79], zoom, pitch: Math.min(s.pitch, 55), bearing: 0, padding: s.padding, ...extra };
   }
 
   return {
@@ -45,17 +47,26 @@ export function createCamera(map, initial = {}) {
 
     // Intro: from high over Lake Ontario, descend and tilt into the GTA (2.5s, ease-out)
     intro() {
-      const end = gtaView({ bearing: -12, pitch: Math.min(s.pitch, 50) });
+      const end = gtaView({ bearing: -12 });
       if (s.reduced) return move(() => map.jumpTo(end));
       map.jumpTo({ center: [-79.3, 43.18], zoom: 7.3, pitch: 0, bearing: -28, padding: s.padding });
       return move(() => map.easeTo({ ...end, duration: dur(2500), easing: EASE.out, essential: true }));
     },
 
-    // Fly-to: a curved path (out, across, in), 1.6–2.2s, ease-in-out
-    fly(center, { zoom = 14, duration = 1900 } = {}) {
+    // Fly-to: a curved path (out, across, in), 1.6–2.2s, ease-in-out. minZoom caps how far out the arc rises:
+    // tour hops stay at z13+, where the tiles carry buildings, so the city stays in view the whole way
+    fly(center, { zoom = 14, duration = 1900, minZoom = 10.2 } = {}) {
       const end = { center, zoom, pitch: s.pitch, bearing: map.getBearing(), padding: s.padding };
       if (s.reduced) return move(() => map.jumpTo(end));
-      return move(() => map.flyTo({ ...end, curve: 1.4, duration: dur(duration), easing: EASE.inOut, essential: true }));
+      return move(() => map.flyTo({ ...end, curve: 1.4, minZoom, duration: dur(duration), easing: EASE.inOut, essential: true }));
+    },
+
+    // Region: frame a whole area (west, south, east, north), north up, so its outline can be drawn
+    region(bounds, { duration = 1800 } = {}) {
+      const fit = map.cameraForBounds(bounds, { padding: s.padding, bearing: 0 }) || {};
+      const end = { center: fit.center, zoom: (fit.zoom ?? 10) - 0.2, pitch: Math.min(s.pitch, 50), bearing: 0, padding: s.padding };
+      if (s.reduced) return move(() => map.jumpTo(end));
+      return move(() => map.flyTo({ ...end, curve: 1.4, minZoom: 9.2, duration: dur(duration), easing: EASE.inOut, essential: true }));
     },
 
     // Orbit: slowly circle the place so the buildings show their depth (linear, so it never lurches)
@@ -76,4 +87,4 @@ export function createCamera(map, initial = {}) {
 }
 
 // Tour and match timings (§3), in one place for every option
-export const TIMING = { tourStop: 3400, tourFly: 1600, tourOrbit: 8, matchFly: 2000, matchOrbit: 90, matchOrbitMs: 6000, pullBack: 1600 };
+export const TIMING = { tourStop: 3400, tourFly: 1600, tourOrbit: 8, matchRegion: 1800, matchHold: 1200, matchFly: 2000, matchOrbit: 90, matchOrbitMs: 6000, pullBack: 1600 };

@@ -5,6 +5,7 @@ import handlebars from 'vite-plugin-handlebars';
 import { existsSync, readFileSync, readdirSync } from 'node:fs';
 import { images } from './scripts/vite-images.js';
 import { faq, faqJsonLd } from './src/data/faq.js';
+import { gt10TileCache } from './explore/gt10/tile-cache.js';
 
 const root = import.meta.dirname;
 // Hugeicons (iconify.design/hugeicons), vendored in src/icons: {{{icon "arrow-right-02"}}} inlines one at 1em
@@ -22,6 +23,8 @@ const img = images({
 export default defineConfig(({ command }) => ({
   plugins: [
     img.plugin,
+    // Dev only: the GT-10 map exploration's local tile cache (explore/gt10/tile-cache.js)
+    gt10TileCache(root),
     // Dev only: clean URLs like the server's .htaccess (/quote and /quote/ serve quote.html)
     {
       name: 'onaway-clean-urls',
