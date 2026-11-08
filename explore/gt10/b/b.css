@@ -1,0 +1,34 @@
+/* GT-10 option B: what differs from option A's section styles (../gt10.css): the screen textures, Mapbox's
+   attribution and logo, and the dev-only map editor. */
+
+/* ---- screen texture: two layers over the map, multiply then soft-light (opacity from the options). Under the panel
+   (z 1, the panel is 2), so the veil fades it out with the map and the words stay clean. ---- */
+.g10b-tex { position: absolute; inset: 0; z-index: 1; pointer-events: none; background-size: 384px; opacity: 0; }
+.g10b-tex--multiply { mix-blend-mode: multiply; }
+.g10b-tex--soft-light { mix-blend-mode: soft-light; }
+
+/* ---- Mapbox attribution and logo: required, bottom right, in the brand's mono ---- */
+.g10-sec .g10-map .mapboxgl-ctrl-attrib {
+  font-family: var(--font-mono); font-size: var(--text-label); letter-spacing: 0.02em; color: var(--g10-fg);
+  background: color-mix(in srgb, var(--g10-bg) 85%, transparent);
+}
+.g10-sec .g10-map .mapboxgl-ctrl-attrib a { color: inherit; }
+.g10-sec .g10-map .mapboxgl-ctrl-bottom-right { z-index: 4; }
+
+/* ---- the map editor (dev only): bottom left, above the meter ---- */
+.g10b-editor {
+  position: fixed; left: var(--spacing-21); bottom: calc(var(--spacing-21) + var(--spacing-55)); z-index: 60; width: 300px;
+  background: var(--color-paper); color: var(--color-carbon); box-shadow: 0 0 0 1px var(--color-line), 0 13px 34px -21px color-mix(in srgb, var(--color-carbon) 50%, transparent);
+}
+.g10b-editor summary { cursor: pointer; padding: var(--spacing-8) var(--spacing-13); }
+.g10b-editor__body { display: grid; gap: var(--spacing-8); padding: 0 var(--spacing-13) var(--spacing-13); }
+.g10b-editor label { display: flex; align-items: center; gap: var(--spacing-8); }
+.g10b-editor label span { flex: 1; }
+.g10b-editor input[type="color"] { width: var(--spacing-55); height: var(--spacing-21); padding: 0; border: 1px solid var(--color-line); background: none; }
+.g10b-editor input[type="range"] { width: 120px; }
+.g10b-editor output { width: 4ch; text-align: right; }
+.g10b-editor__light { margin: 0; text-transform: none; letter-spacing: 0.02em; }
+.g10b-editor__row { display: flex; gap: var(--spacing-8); }
+.g10b-editor button { flex: 1; padding: var(--spacing-8); background: var(--color-carbon); color: var(--color-paper); font: inherit; letter-spacing: inherit; text-transform: inherit; cursor: pointer; }
+.g10b-editor button + button { background: none; color: inherit; box-shadow: inset 0 0 0 1px var(--color-line); }
+.g10b-editor textarea { width: 100%; font-family: var(--font-mono); font-size: var(--text-label); text-transform: none; letter-spacing: 0; border: 1px solid var(--color-line); background: color-mix(in srgb, var(--color-carbon) 4%, var(--color-paper)); padding: var(--spacing-8); }
