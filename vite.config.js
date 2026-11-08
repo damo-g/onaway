@@ -5,7 +5,6 @@ import handlebars from 'vite-plugin-handlebars';
 import { existsSync, readFileSync, readdirSync } from 'node:fs';
 import { images } from './scripts/vite-images.js';
 import { faq, faqJsonLd } from './src/data/faq.js';
-import { gt10TileCache } from './explore/gt10/tile-cache.js';
 
 const root = import.meta.dirname;
 // Hugeicons (iconify.design/hugeicons), vendored in src/icons: {{{icon "arrow-right-02"}}} inlines one at 1em
@@ -20,11 +19,12 @@ const img = images({
   cache: resolve(root, 'node_modules/.cache/onaway-images'),
 });
 
-export default defineConfig(({ command }) => ({
+export default defineConfig(async ({ command }) => ({
   plugins: [
     img.plugin,
-    // Dev only: the GT-10 map exploration's local tile cache (explore/gt10/tile-cache.js)
-    gt10TileCache(root),
+    // Dev only: the GT-10 map exploration's local tile cache (explore/gt10/tile-cache.js). Imported only by the dev
+    // server, so the site's build never depends on the exploration folder.
+    command === 'serve' && (await import('./explore/gt10/tile-cache.js')).gt10TileCache(root),
     // Dev only: clean URLs like the server's .htaccess (/quote and /quote/ serve quote.html)
     {
       name: 'onaway-clean-urls',
