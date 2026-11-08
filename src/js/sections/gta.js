@@ -1,6 +1,7 @@
 import { registerOptions } from '../options.js';
 import { onEnterOnce, prefersReducedMotion } from '../motion.js';
 import { lookupPostcode } from '../data/postcodes.js';
+import { REGION_CENTRE, TOUR } from '../data/places.js';
 
 // Locked first: overlay layout, drawn map, light tone, idle tour, place zoom, coverage check on.
 registerOptions('gta', {
@@ -21,8 +22,6 @@ const PLACES = {
   Newmarket: [790, 70], Aurora: [760, 130], Stouffville: [1010, 140], Pickering: [1110, 452], Ajax: [1180, 432],
   Whitby: [1270, 420], Oshawa: [1360, 410], Clarington: [1435, 380],
 };
-const REGION_CENTRE = { Toronto: 'Downtown', Peel: 'Mississauga', York: 'Markham', Durham: 'Oshawa', Halton: 'Oakville' };
-const TOUR = ['Downtown', 'Mississauga', 'Markham', 'Oakville', 'Scarborough', 'Brampton', 'Pickering', 'Vaughan', 'Burlington', 'Oshawa'];
 const STOP = 3400; // per tour stop
 const ZOOM = { place: 2.2, area: 1.6 };
 
