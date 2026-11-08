@@ -1,69 +1,85 @@
-/* GT-10 exploration pages: the review toolbar, the full-bleed section and its two panel layouts, the map labels.
-   Tokens and the panel's type (sentence, highlighter, input, result) come from the live main.css. */
-.g10 { background: var(--color-paper); color: var(--color-carbon); }
-
-/* ---- review toolbar (exploration only) ---- */
-.g10-bar {
-  position: fixed; inset: 0 0 auto; z-index: 50; display: flex; flex-wrap: wrap; gap: 8px 21px; align-items: center; justify-content: space-between;
-  padding: 8px var(--grid-margin); background: color-mix(in srgb, var(--color-paper) 94%, transparent); backdrop-filter: blur(8px);
-  box-shadow: 0 1px 0 var(--color-line); font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; font-stretch: normal;
-}
-.g10-bar__id b { font-weight: 600; margin-right: 8px; }
-.g10-bar__tools { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
-.g10-tg { display: inline-flex; align-items: center; }
-.g10-tg > span { margin-right: 8px; color: color-mix(in srgb, var(--color-carbon) 62%, transparent); }
-.g10-tg button, .g10-btn { font: inherit; letter-spacing: inherit; text-transform: inherit; padding: 6px 10px; border: 1px solid var(--color-line); background: transparent; color: inherit; cursor: pointer; }
-.g10-tg button + button { border-left: 0; }
-.g10-tg button[aria-pressed="true"], .g10-btn[aria-pressed="true"] { background: var(--color-carbon); color: var(--color-paper); border-color: var(--color-carbon); }
-.g10-bar__toggle { display: none; margin-left: 8px; }
-/* phones: the tools fold behind Review so the map stays visible */
-@media (width < 768px) {
-  .g10-bar__toggle { display: inline-block; }
-  .g10-bar__tools { display: none; width: 100%; }
-  .g10-bar.is-open .g10-bar__tools { display: flex; }
-}
-.g10-meter { padding: 6px 10px; background: color-mix(in srgb, var(--color-carbon) 6%, transparent); font-variant-numeric: tabular-nums; }
-
-/* ---- placeholders above and below, so scrolling passes through the map ---- */
-.g10-filler { min-height: 80svh; display: flex; flex-direction: column; justify-content: center; gap: 21px; padding: 144px var(--grid-margin); }
-.g10-filler__big { font-size: var(--text-h2); line-height: 1; font-weight: 600; letter-spacing: -0.02em; max-width: 20ch; }
-.g10-filler__note { color: color-mix(in srgb, var(--color-carbon) 62%, transparent); }
+/* GT-10 exploration pages: the full-bleed section, its two panel layouts, the palettes' panel colours, the map
+   labels and the dev meter. The panel itself (sentence, highlighter, input, result) is the live section's
+   partial and styles (src/partials/gta-panel.hbs, main.css .gta__*); only what differs is here. */
 
 /* ---- the section: full bleed, the map behind everything ---- */
-.g10-sec { position: relative; height: clamp(640px, 100svh, 920px); overflow: hidden; background: var(--color-paper); }
+.g10-sec {
+  --g10-bg: var(--color-paper);
+  --g10-fg: var(--color-carbon);
+  position: relative; height: clamp(640px, 100svh, 920px); overflow: hidden; background: var(--g10-bg); color: var(--g10-fg);
+}
 /* (two classes: maplibre-gl.css loads later and sets .maplibregl-map to position: relative) */
 .g10-sec .g10-map { position: absolute; inset: 0; }
-.g10-map .maplibregl-ctrl-attrib, .g10-map .mapboxgl-ctrl-attrib { font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.04em; background: color-mix(in srgb, var(--color-paper) 85%, transparent); }
-.g10-panel { position: absolute; z-index: 2; display: flex; flex-direction: column; gap: var(--spacing-21); }
-.g10-sentence { font-size: var(--text-h1); }
-
-/* Layout · Veil (recommended): no box. The left of the map fades into Paper and the words sit on it, so the
-   city runs on under them; one surface, like a printed page with a photograph bleeding off it. */
-.g10[data-layout="veil"] .g10-panel {
-  inset: 0 auto 0 0; width: min(46vw, 640px); justify-content: center; padding: var(--spacing-89) var(--spacing-89) var(--spacing-89) var(--grid-margin);
-  background: linear-gradient(90deg, var(--color-paper) 0%, var(--color-paper) 58%, color-mix(in srgb, var(--color-paper) 70%, transparent) 78%, transparent 100%);
+.g10-sec .g10-map .maplibregl-ctrl-attrib {
+  font-family: var(--font-mono); font-size: var(--text-label); letter-spacing: 0.02em; color: var(--g10-fg);
+  background: color-mix(in srgb, var(--g10-bg) 85%, transparent);
 }
-/* Layout · Card: a Paper card floats over the map, inset by the margin, with a hairline and a soft shadow */
-.g10[data-layout="card"] .g10-panel {
-  left: var(--grid-margin); top: 50%; translate: 0 -50%; width: min(calc(100vw - 2 * var(--grid-margin)), 500px); padding: var(--spacing-34);
-  background: var(--color-paper); box-shadow: 0 0 0 1px var(--color-line), 0 21px 55px -34px color-mix(in srgb, var(--color-carbon) 50%, transparent);
-}
+.g10-sec .g10-map .maplibregl-ctrl-attrib a { color: inherit; }
 
-/* Phones: the map first (60% of the screen), the panel under it on Paper. Same in both layouts. */
-@media (width < 768px) {
-  .g10-sec { height: auto; overflow: visible; }
-  .g10-sec .g10-map { position: relative; height: 62svh; }
-  .g10[data-layout] .g10-panel { position: static; inset: auto; translate: none; width: auto; padding: var(--spacing-34) var(--grid-margin) var(--spacing-55); background: var(--color-paper); box-shadow: none; }
-  .g10-sentence { font-size: var(--text-h2); }
+/* The panel: the live partial, freed from GT-09's plate position */
+.g10-sec .gta__panel { position: absolute; z-index: 2; display: flex; flex-direction: column; justify-content: center; gap: var(--spacing-21); background: none; }
+
+/* Layout · Veil (recommended): no box. The left of the map fades into the section's ground and the words sit on
+   it, so the city runs on under them, like a printed page with a photograph bleeding off it. */
+.g10-sec[data-layout="veil"] .gta__panel, .g10-sec:not([data-layout]) .gta__panel {
+  inset: 0 auto 0 0; width: min(46vw, 640px); padding: var(--spacing-144) var(--spacing-89) var(--spacing-89) var(--grid-margin);
+  background: linear-gradient(90deg, var(--g10-bg) 0%, var(--g10-bg) 58%, color-mix(in srgb, var(--g10-bg) 70%, transparent) 78%, transparent 100%);
+}
+/* Layout · Card: a card floats over the map, inset by the margin, with a hairline and a soft shadow */
+.g10-sec[data-layout="card"] .gta__panel {
+  left: var(--grid-margin); top: calc(50% + var(--nav-h) / 2); translate: 0 -50%; width: min(calc(100vw - 2 * var(--grid-margin)), 520px); padding: var(--spacing-34);
+  background: var(--g10-bg); box-shadow: 0 0 0 1px var(--color-line), 0 21px 55px -34px color-mix(in srgb, var(--color-carbon) 50%, transparent);
 }
 
-/* ---- labels on the map (HTML, in the brand fonts) ---- */
-.g10-region { font-family: var(--font-sans); font-stretch: 87.5%; font-size: 13px; font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase; color: color-mix(in srgb, var(--color-carbon) 60%, transparent); text-shadow: 0 0 3px var(--color-paper), 0 0 8px var(--color-paper); pointer-events: none; transition: opacity 0.6s; white-space: nowrap; }
-.g10-place {
-  display: flex; align-items: center; gap: 8px; font-family: var(--font-sans); font-stretch: 87.5%; font-size: 16px; font-weight: 600; color: var(--color-carbon);
-  padding: 6px 10px; background: var(--color-paper); box-shadow: 0 0 0 1px var(--color-line); white-space: nowrap; pointer-events: none;
-  opacity: 0; translate: 0 6px; transition: opacity 0.5s, translate 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+/* ---- palette · Carbon: the section turns dark, the panel inverts (the navbar switches over it on its own) ---- */
+.g10-sec[data-palette="carbon"] { --g10-bg: var(--color-carbon); --g10-fg: var(--color-paper); }
+.g10-sec[data-palette="carbon"] .gta__slot.is-idle .gta__place { color: color-mix(in srgb, var(--color-paper) 45%, transparent); }
+.g10-sec[data-palette="carbon"] :is(.gta__lead, .gta__result) { color: color-mix(in srgb, var(--color-paper) 80%, transparent); }
+.g10-sec[data-palette="carbon"] .gta__result b { color: var(--color-paper); }
+.g10-sec[data-palette="carbon"] .gta__row input { background: color-mix(in srgb, var(--color-paper) 8%, var(--color-carbon)); color: var(--color-paper); border-bottom-color: var(--color-paper); }
+.g10-sec[data-palette="carbon"] .gta__row input::placeholder { color: color-mix(in srgb, var(--color-paper) 50%, transparent); }
+.g10-sec[data-palette="carbon"] .gta__row input:focus-visible { box-shadow: inset 0 0 0 2px var(--color-paper); }
+.g10-sec[data-palette="carbon"] .gta__row button { background: var(--color-paper); color: var(--color-carbon); }
+.g10-sec[data-palette="carbon"] .gta__row button:focus-visible { outline-color: var(--color-paper); }
+/* paper type on a yellow half-bar fails contrast: on Carbon the highlighter fills the word and the word turns Carbon */
+.g10-sec[data-palette="carbon"] .gta__hl { inset: 0.1em 0 0.02em; }
+.g10-sec[data-palette="carbon"] .gta__slot.is-lit .gta__place { color: var(--color-carbon); transition: color 0.3s 0.35s; }
+.g10-sec[data-palette="carbon"][data-layout="card"] .gta__panel { box-shadow: 0 0 0 1px var(--color-line-dark); }
+
+/* ---- paper grain (dev panel → grain): over the whole section, words included, so it reads as one sheet ---- */
+.g10-grain {
+  position: absolute; inset: 0; z-index: 3; pointer-events: none;
+  background-image: var(--g10-grain-dark); background-size: 220px; mix-blend-mode: multiply; opacity: 0.7;
 }
-.g10-place i { width: 8px; height: 8px; background: var(--color-yellow); flex: none; }
-.g10-place.is-on { opacity: 1; translate: 0 0; }
-.g10.is-reduced .g10-place, .g10.is-reduced .g10-region { transition: none; }
+.g10-sec[data-palette="carbon"] .g10-grain { background-image: var(--g10-grain-light); mix-blend-mode: screen; opacity: 0.4; }
+.g10-sec[data-grain="off"] .g10-grain { display: none; }
+
+/* ---- labels on the map (HTML, Overpass Mono) ---- */
+.g10-region {
+  color: color-mix(in srgb, var(--g10-fg) 62%, transparent); white-space: nowrap; pointer-events: none;
+  text-shadow: 0 0 3px var(--g10-bg), 0 0 8px var(--g10-bg); opacity: 0; transition: opacity 0.6s;
+}
+.g10-region.is-on { opacity: 1; }
+/* The pin: a label on a stem, dropped onto a yellow stop at the place */
+.g10-place { display: flex; flex-direction: column; align-items: center; pointer-events: none; }
+.g10-place__chip {
+  display: flex; align-items: center; gap: var(--spacing-8); padding: var(--spacing-8) var(--spacing-13); white-space: nowrap;
+  background: var(--color-paper); color: var(--color-carbon); box-shadow: 0 0 0 1px var(--color-line), 0 13px 21px -13px color-mix(in srgb, var(--color-carbon) 45%, transparent);
+  opacity: 0; translate: 0 calc(-1 * var(--spacing-13)); transition: opacity 0.4s, translate 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.g10-place__chip i { width: var(--spacing-8); height: var(--spacing-8); background: var(--color-yellow); flex: none; }
+.g10-place__stem { position: relative; width: 1px; height: var(--spacing-34); background: var(--color-carbon); transform: scaleY(0); transform-origin: 50% 0; transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1); }
+.g10-place__stem::after {
+  content: ""; position: absolute; left: 50%; bottom: 0; width: var(--spacing-13); height: var(--spacing-13); translate: -50% 50%;
+  background: var(--color-yellow); box-shadow: 0 0 0 1.5px var(--color-carbon); border-radius: 50%; transform: scaleY(1);
+}
+.g10-place.is-on .g10-place__chip { opacity: 1; translate: 0 0; transition-delay: 0.12s; }
+.g10-place.is-on .g10-place__stem { transform: scaleY(1); }
+.g10-sec[data-palette="carbon"] .g10-place__stem { background: var(--color-paper); }
+.g10-sec[data-palette="carbon"] .g10-place__stem::after { box-shadow: 0 0 0 1.5px var(--color-paper); }
+
+/* ---- dev meter (exploration only): FPS and load timings, bottom left ---- */
+.g10-meter {
+  position: fixed; left: var(--spacing-21); bottom: var(--spacing-21); z-index: 60; margin: 0; padding: var(--spacing-8) var(--spacing-13);
+  background: var(--color-carbon); color: var(--color-paper); font-variant-numeric: tabular-nums; pointer-events: none;
+}

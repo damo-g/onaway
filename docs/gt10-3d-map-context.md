@@ -41,7 +41,7 @@ The behaviour and copy stay; the map layer and the composition are open.
 | **Pull-back** | Outside the area, or reset: rise to the whole GTA, north up | 1.6s |
 | **Reduced motion** | Jump straight to each end state; no orbit, no drift | — |
 
-**Rules:** one move at a time; never orbit and fly together. The pin drops only after arrival, the region tint fades in after the pin, and the highlighter writes 0.5s later. No bounce, no shake.
+**Rules:** one move at a time; never orbit and fly together. On a match the camera frames the whole area first, the area lights up, and the highlighter writes 0.5s later; then the camera goes down to the place and the pin drops only after arrival (agreed in round 2). A region-only answer stays on the area. No bounce, no shake.
 
 **Page scroll comes first.** The site uses Lenis smooth scroll, so the map must never capture the scroll wheel. Scroll-zoom is off; on touch, use two-finger (cooperative) gestures or no gestures. Dragging to look around is optional, never required.
 
@@ -81,8 +81,9 @@ The behaviour and copy stay; the map layer and the composition are open.
 
 - `explore/gt10/` in the repo: a separate Vite page per option, never linked from the live site.
   - `a-maplibre.html`, then `b-mapbox.html`
-  - shared: `places.js`, `postcodes.js`, `regions.geojson`, `camera.js` (the §3 moves), and the panel and sentence from the live section
-- Each page has a small review toolbar like the mocks (option toggles, replay intro, reduced-motion switch, FPS readout), never shipped.
+  - shared: `section.js` (the behaviour, engine-neutral, through a small adapter per option), `camera.js` (the §3 moves), `places.js` (map-only label positions), `regions.geojson`, and the Overpass Mono map glyphs (`glyphs/`)
+  - imported from the live site, never copied: the panel partial (`src/partials/gta-panel.hbs`), the places, coordinates and tour (`src/js/data/places.js`), the postal table and the town lookup (`src/js/data/area.js`)
+- Each page is the real homepage around the section (navbar, sections 04 and 06, footer, `main.js`). Options live in the site's dev review panel (with its replay and reduced-motion switch), plus an FPS readout; never shipped.
 - **Keys:** the Mapbox public token lives in `.env.local` (git-ignored), restricted to localhost, the tunnel and onaway.ca in the Mapbox account.
 
 ---

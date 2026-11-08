@@ -5,51 +5,98 @@ Exploration pages for homepage section 05 (docs/gt10-3d-map-context.md). Never l
 ## Run
 
 - `npm run dev`, then http://localhost:5173/explore/gt10/a-maplibre.html
-- On a phone: `cloudflared tunnel --url http://localhost:5173`, then open the printed `https://….trycloudflare.com` address with `/explore/gt10/a-maplibre.html` on the end. (Vite allows `*.trycloudflare.com`, see vite.config.js.)
-- Options can go in the URL, e.g. `?layout=card&buildings=flat&pitch=65&speed=0.45`; the toolbar remembers them in this browser.
-- **Tiles:** in dev the map loads its tiles through the dev server (`/__tiles`, `/__dem`, see `tile-cache.js`), which keeps each one on disk in `node_modules/.cache/gt10-tiles`. Run `node explore/gt10/seed-tiles.mjs` once (about 1,250 tiles, 10 MB, a few minutes) so the first flights are already smooth. Without seeding, the first visit to each place fills the cache.
+- The page is the real homepage around the section: the site's navbar, Promises (04) above, the Quote (06) below with its real pre-fill, the footer and `main.js` (Lenis, page transitions).
+- **Options** are in the site's dev review panel (round button, bottom right) under `gt10` while the section is in view. The first value of each is the pick. They go in the URL too, e.g. `?gt10.palette=carbon&gt10.highlight=spotlight`. "Replay section" in the panel replays the intro; "Reduced motion" there simulates the setting.
+- **Tiles:** in dev the map loads its tiles through the dev server (`/__tiles`, `/__dem`, see `tile-cache.js`), which keeps each one on disk in `node_modules/.cache/gt10-tiles`. Run `node explore/gt10/seed-tiles.mjs` once so the first flights are already smooth.
+- Why here and not in `docs/mocks`: the page needs Vite (npm imports such as MapLibre, the site's partials and JS, the tile cache), and `docs/mocks` is served as plain static files.
+
+## Options (dev panel → gt10)
+
+| Option | Values (pick first) | What it changes |
+|---|---|---|
+| palette | **kraft** · tonal · carbon · quiet | Kraft: camel-led kraft ground, paper-light parks, lake and houses, rust-warm employment land, towers warming through rust. Tonal: the whole range of each brand colour. Carbon: the city at night (the section and panel turn dark). Quiet: round 2 |
+| depth | **on** · off | Cast shadows by building height, engraved contour lines off the shore, park edges, a paper casing on highways |
+| grain | **on** · off | A paper grain (fine tooth, a few fibres) over the whole section, words included, so it reads as one printed sheet |
+| highlight | **spotlight** · tint · glow · hatch · outline · dim | How the matched area lights up. Spotlight: two-way, the outside dims and the area glows evenly. Tint: a yellow wash. Glow: light along the inside of the border. Hatch: drawn yellow lines. Outline: round 2's border. Dim: the outside dims only. Every fill fades close up so buildings keep their colours |
+| match | **area** · close | After framing the area: a calm pan towards the place that stays at area level (about z11, tilt 50°, slow 20° drift), or down among the buildings with a 90° circle like the tour |
+| layout | **veil** · card | The panel on a fade of the ground, or a floating card |
+| pitch | **60** · 45 · 55 · 65 · 70 | Camera tilt at tour stops (area views cap it at 45–50) |
+| speed | **0.75** · 0.6 · 1 · 0.45 · 0.35 | Divides every camera duration. 0.75: a tour stop is about 6.7s, a match about 8s to the pin |
+| orbit | **on** · off | The slow circle at each place |
+| buildings | **shaded** · flat | Height-graded colours and light, or one colour |
+| relief | **on** · off | Terrain shading (strong on the wide views, faded close up) |
 
 ## Files
 
 | File | What it is |
 |---|---|
-| `a-maplibre.html`, `a-maplibre.js` | Option A: MapLibre GL v5 + OpenFreeMap tiles, its review toolbar |
-| `maplibre-style.js` | Option A's map style (context §5) |
-| `camera.js` | The camera moves of context §3 (intro, fly-to, orbit, tour, pull-back, reduced motion). Engine-neutral: option B reuses it |
-| `places.js` | The live section's places as real coordinates, its tour and region centres, region label positions |
-| `postcodes.js` | Re-exports the live postal table (one source of truth) |
-| `regions.geojson` | The five areas |
-| `gt10.css` | Toolbar, the section, the two panel layouts, the map labels |
-| `tile-cache.js`, `seed-tiles.mjs` | Dev only: a disk cache for map and elevation tiles, standing in for self-hosted tiles, and the script that fills it |
+| `a-maplibre.html`, `a-maplibre.js` | Option A: MapLibre GL v5 + OpenFreeMap. The page, its options, the map, the area highlight, labels, tile preloading |
+| `maplibre-style.js` | Option A's style: four palettes, every colour mixed from the five brand tokens; the highlight layers |
+| `section.js` | **Shared**: the section's behaviour, engine-neutral (intro, tour, "Do we cover you?", hand-off to the quote, pausing, replay). Each option gives it a small adapter |
+| `camera.js` | **Shared**: the camera moves of context §3, engine-neutral, with region framing that accounts for the tilt |
+| `places.js` | **Shared**: map-only label positions. The places, coordinates, tour and region centres are the site's own (`src/js/data/places.js`) |
+| `regions.geojson` | **Shared**: the five areas |
+| `glyphs/`, `build-glyphs.mjs` | Map text glyphs in Overpass Mono, built from the self-hosted font (`node explore/gt10/build-glyphs.mjs`) |
+| `gt10.css` | The section, the two layouts, the palettes' panel colours, the map labels and pin, the dev meter |
+| `tile-cache.js`, `seed-tiles.mjs` | Dev only: a disk cache for map and elevation tiles, standing in for self-hosted tiles |
 
-Each option gets its own page (b-mapbox next), sharing only the data and the camera, so their settings can diverge freely.
+Imported from the live site (one source of truth, nothing copied): the panel markup (`src/partials/gta-panel.hbs`, also used by the live section 05), its styles (`main.css .gta__*`), the places and tour (`src/js/data/places.js`), the postal table (`src/js/data/postcodes.js`) and the town lookup (`src/js/data/area.js`).
+
+## "Do we cover you?": postal code or town
+
+`src/js/data/area.js`. Postal codes go through the FSA table. Towns match the 28 places we serve, their communities (Georgetown, Bolton, Woodbridge, Port Credit, Bowmanville…), the region names ("York" means York Region; "York, Toronto" is the old city) and about 35 nearby towns we don't serve yet (Hamilton, Barrie, Guelph…). It forgives case, accents, "City of", a short start ("missis") and one slipped letter ("oakvile"). A region-only answer (a region name, or a postal code that only knows its region) frames the area and stays there. Unknown input gets a nudge, and the camera doesn't move.
 
 ## Data and licences
 
-- **Map tiles:** [OpenFreeMap](https://openfreemap.org) (OpenMapTiles schema), from OpenStreetMap. Free, no key, no usage limits; donation-funded with no service guarantee, so production should self-host a GTA extract (Protomaps PMTiles on cPanel). Attribution: © OpenStreetMap contributors, OpenFreeMap, OpenMapTiles (shown by the map).
-- **regions.geojson:** the five boundary relations from OpenStreetMap (Toronto 324211, Peel Region 4198907, York Region 324214, Halton Region 7034889, Durham Region 2408843), fetched through the Overpass API on 2026-11-06, converted with osmtogeojson and simplified to 18% with mapshaper (16 KB, 4 KB gzipped). © OpenStreetMap contributors, ODbL 1.0 (attribution shown on the map: "Regions © OpenStreetMap contributors"). The lake trims them to the shore because the region layers sit under the water layer. (Statistics Canada's census division file was the first choice; its download refuses non-browser clients.)
-- **Postal table:** the live one, still a placeholder until checked against Canada Post.
+- **Map tiles:** [OpenFreeMap](https://openfreemap.org) (OpenMapTiles schema), from OpenStreetMap. Free, no key, no usage limits; donation-funded with no service guarantee, so production should self-host a GTA extract (PMTiles). Shown: © OpenStreetMap contributors · OpenFreeMap · © OpenMapTiles.
+- **Terrain:** Mapzen terrarium tiles (AWS Open Data); in Canada built from NRCan's CDEM (Open Government Licence – Canada), NASA SRTM elsewhere. Shown on the map.
+- **regions.geojson:** the five OpenStreetMap boundary relations (Toronto 324211, Peel 4198907, York 324214, Halton 7034889, Durham 2408843), fetched through Overpass on 2026-11-06, simplified with mapshaper (16 KB). © OpenStreetMap contributors, ODbL 1.0. (Toronto Islands are dropped by the simplification.)
+- **Overpass Mono glyphs:** from the site's own font file, under its OFL licence (`public/fonts/OverpassMono-OFL.txt`).
+- **Postal table:** still a placeholder until checked against Canada Post.
 
-## Round 2 (after review)
+## Round 6 · a continuous tour
 
-- **Angles:** pitch 45 · 55 · 60 (default) · 65 · 70. **Speeds:** Normal 1 · Calm .75 · Slow .6 (default) · Slower .45 · Slowest .35.
-- **The flicker between places:** the camera outran the tiles. OpenFreeMap serves each tile in 0.6–1.4 s, six at a time, and a 60° close-up needs about a hundred; MapLibre also only keeps about 60 tiles out of view, so it threw away the ones fetched ahead. Fixes: tiles come from a local cache; each next stop is loaded into the map's memory while the current one is on screen (and the whole GTA after the intro); the map keeps up to 40 views' worth of tiles; flights rise to zoom 10.8 between places, where the whole GTA is already loaded. Measured on 26 s of tour flights: frames that are mostly empty went from **15.3% to 0%**.
-- **Buildings only in Toronto:** they were drawn only from zoom 13.8, and other stops sat lower. Every stop now sits at about 13.9 and buildings stand at full height from 13.1. Low suburban houses are lifted a little (6 m reads as 11 m) so Oshawa and Brampton have relief.
-- **Match:** the column and the region tint are gone. The camera frames the whole area and draws its outline in yellow on a soft Carbon casing, the highlighter writes the place, then the camera goes down to it and circles slowly.
-- **Palette:** quiet land-use tones (homes, work, parks in camel-warmed steps), terrain shading from open elevation data (the Escarpment, the Oak Ridges Moraine), a camel shoreline, a wider building ramp to a deep warm grey, pencil footprints close up.
-- **Production:** the preloading uses MapLibre internals (`_loadTile`, the out-of-view cache), so the version must be pinned. It also needs self-hosted tiles: a GTA extract as PMTiles (vector and elevation) beside the site, served from onaway.ca over HTTP/2.
+- **One motion, never stop-and-go.** The tour's camera is driven frame by frame (`camera.spin`, `camera.leg`): a slow turn runs the whole way through stops and flights and only eases to a halt when the tour pauses; each flight is laid over it. Before, every stop was orbit → dead stop → flight from rest → dead stop → orbit.
+- **The flight path is flyTo's own** (van Wijk & Nuij), computed in `camera.js` (engine-neutral), with smootherstep easing (no jolt at take-off or landing), a shallower arc (peaks at z11.6 instead of 10.8, with z11 preloaded for the middle of every flight), and a duration matched to each leg's length, so long and short legs move at the same calm speed on screen. The camera lifts 15° more upright at the top of the arc and settles as it lands.
+- **Hitches absorbed:** the animation's clock trims a frame that's much slower than recent ones, so a slow frame is a moment's slow-down, not a jump. A steadily slow machine keeps its normal pace.
+- **Lighter per-frame updates** on MapLibre (straight on the transform, as its own animations do; internals, `jumpTo` is the fallback for other engines).
+- **Measured** over the same 40s of tour, Intel UHD 630, on mains power:
 
-## Scorecard · option A (context §8)
-
-Measured 2026-11-06 on a production build of this page served gzipped. Desktop: Intel UHD 620 laptop GPU. Phone: Pixel 7 emulation on the same machine (real phone numbers: read the FPS meter through the tunnel).
-
-| Criterion | Score | Notes |
+| | Round 5 | Round 6 |
 |---|---|---|
-| Brand fit | 88 | Paper land, quiet lake, camel rivers, Carbon highways, warm-grey buildings, no POIs. Place and region names in Instrument Sans (HTML labels). Road numbers are Noto Sans until Overpass Mono glyphs are self-hosted |
-| Immersion | 90 | Round 2: 60° default, terrain shading and lifted suburban heights; every stop has buildings. Downtown is still the richest |
-| Clarity | 92 | Round 2: frame the area → yellow outline → highlighter → down to the place → label; outside the area pulls back to the whole GTA |
-| Motion | 92 | Round 2: flights stay drawn the whole way (0% empty frames, with the local cache and preloading); one move at a time, no bounce |
-| Performance | 80 | MapLibre 273 KB gzipped (220 KB brotli), loaded only near the section, so outside the 120 KB page budget; page code 12.7 KB. First frame 0.40s desktop, 0.97s phone on 4G, 5.1s worst case (4× slower CPU on 1.6 Mbps). FPS median 60 desktop, 59 phone on 4G, 12 in the worst case while tiles stream |
-| Cost and licensing | 95 | Free, no account, no key, no logo; OSM attribution only |
-| Build effort | 85 | The behaviour is done here. For production: self-hosted tiles and glyphs, a poster image and no-WebGL fallback, wiring into section 05 |
-| **Overall** | **89** | Round 1 was 87 |
+| Frames where the turn stops dead | 413 | 0 |
+| Peak zoom speed | 24 zoom/s | 5.8 zoom/s |
+| Biggest frame-to-frame jump in turn speed | 3.8°/s | 1.5°/s |
+| FPS in flight | 31 | 41–43 |
+| FPS overall | 47 | 47–48 |
+
+- Cold, at 1874 px with the CPU slowed 2×: every stop still arrives fully drawn, a stop every 8–9s.
+
+## Round 5
+
+- **No more half-drawn arrivals.** MapLibre 5 parses every tile on one worker unless told otherwise (more only on Safari): the city came in a tile at a time, worst on battery. It now uses half the cores (2–6). The first two tour stops load while the visitor is still on the section above, and the tour never leaves a stop until the next one is loaded (up to 6s longer if it must). Tested at 1874 px, cold, CPU slowed 2×: five stops in a row, all 21–25 close-up tiles loaded at the moment each pin drops, an even 6.8s a stop.
+- **Shadows** in two height bands instead of four (each band re-processes every building).
+- **Paper grain** (`grain`).
+- **Cost, on mains power, Downtown orbit (the densest view), Intel UHD 630:** 53 fps with everything on; depth costs about 3.5 fps, grain about 1.3 (58 with both off). First frame 0.4s.
+
+## Round 4
+
+- **Kraft is the pick, with depth.** Richer contrast (homes, rust-warm employment land, paper parks), cast shadows in four height bands, engraved lake contours, park edges and highway casings (`depth` toggles them all).
+- **Two-way spotlight** (the pick): the outside dims (warmed with rust on Kraft) and the area glows evenly. The old one-way version is `dim`.
+- **Area-level matches** (the pick): after framing and lighting the area, the camera pans calmly towards the place at about z11 and drifts; it no longer dives to street level (`match: close` keeps that).
+- **Speed 0.75** is the new pick: calm without the 10s orbits of 0.6.
+- Measuring note: on battery, Edge caps every page at 30 fps (a blank page included), so this round's frame rates read 30. Re-measure on mains power; round 3 ran at 58–60.
+
+## Round 3 (polish before option B)
+
+- **Real page:** the section runs inside the homepage (navbar, 04, 06, footer, `main.js`); options in the site's dev panel; the matched place pre-fills the real Quote ("Where"), by event and sessionStorage.
+- **One source of truth:** places, coordinates, tour and region centres moved into `src/js/data/places.js` (the live section imports them too); the panel is a partial shared with the live section, which renders byte-identical.
+- **Postal code or town,** as above.
+- **Palettes** from the brand tokens, with Tonal the new pick. **Labels** all in Overpass Mono (HTML labels in the label style, highway numbers through our own glyphs).
+- **Area highlight** in five styles, drawn from feature-state: the right area lights at once and fades in. The round-2 bug, where the previous area flashed yellow for up to 1.4s, is gone.
+- **Camera:** areas are framed by their outline at the real tilt (centred in the open map); the intro waits for its first view to be drawn; the first stop waits (3s at most) for its tiles.
+- **Tiles:** a priority pool (close-up tiles first, newest place first, the first two stops during the intro): stops arrive fully drawn and the pin drops within about 0.4s, no more 2.5s still holds. The pause after arrival is capped at 1.2s.
+- **Pausing:** the tour pauses over the panel or the form, not the whole full-bleed section (it used to never start with the cursor over the map).
+- **Pin:** a mono label on a stem, dropped onto a yellow stop.
+- **Attribution:** shown in full on one line, with the terrain sources credited.
+- **Site build:** `vite.config.js` loads the tile cache only for the dev server, so the build no longer depends on this folder.

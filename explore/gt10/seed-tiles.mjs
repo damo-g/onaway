@@ -4,7 +4,7 @@
 // Run once: `node explore/gt10/seed-tiles.mjs`.
 import { resolve } from 'node:path';
 import { getTile } from './tile-cache.js';
-import { PLACES, TOUR } from './places.js';
+import { PLACE_AT as PLACES, TOUR } from '../../src/js/data/places.js';
 
 const root = resolve(import.meta.dirname, '../..');
 const tx = (lng, z) => Math.floor(((lng + 180) / 360) * 2 ** z);
