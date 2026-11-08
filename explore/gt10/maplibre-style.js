@@ -4,13 +4,9 @@
 // the matched area and the pin, nothing else. No POIs or transit; few labels, in Overpass Mono (our own glyphs).
 // The area highlight layers live in the style too, so switching palette or highlight is a live style diff.
 
-export const T = { paper: '#F7F2E7', carbon: '#202521', yellow: '#E4BB3F', rust: '#A9503E', camel: '#B49A78' };
+import { T, mix, alpha } from './colors.js';
 
-const rgb = (h) => [1, 3, 5].map((i) => parseInt(h.slice(i, i + 2), 16));
-const hex = (c) => `#${c.map((v) => Math.round(v).toString(16).padStart(2, '0')).join('')}`;
-// t of b into a (as CSS color-mix(in srgb, b t, a))
-export const mix = (a, b, t) => hex(rgb(T[a] ?? a).map((v, i) => v + (rgb(T[b] ?? b)[i] - v) * t));
-export const alpha = (c, a) => `rgba(${rgb(T[c] ?? c).join(', ')}, ${a})`;
+export { T, mix, alpha };
 
 // ---------- palettes ----------
 // Each fills the same roles. Building stops follow the (lifted) height: 0, 15, 40, 100, 200, 320 m.

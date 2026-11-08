@@ -32,26 +32,26 @@
 }
 
 /* ---- palette · Carbon: the section turns dark, the panel inverts (the navbar switches over it on its own) ---- */
-.g10-sec[data-palette="carbon"] { --g10-bg: var(--color-carbon); --g10-fg: var(--color-paper); }
-.g10-sec[data-palette="carbon"] .gta__slot.is-idle .gta__place { color: color-mix(in srgb, var(--color-paper) 45%, transparent); }
-.g10-sec[data-palette="carbon"] :is(.gta__lead, .gta__result) { color: color-mix(in srgb, var(--color-paper) 80%, transparent); }
-.g10-sec[data-palette="carbon"] .gta__result b { color: var(--color-paper); }
-.g10-sec[data-palette="carbon"] .gta__row input { background: color-mix(in srgb, var(--color-paper) 8%, var(--color-carbon)); color: var(--color-paper); border-bottom-color: var(--color-paper); }
-.g10-sec[data-palette="carbon"] .gta__row input::placeholder { color: color-mix(in srgb, var(--color-paper) 50%, transparent); }
-.g10-sec[data-palette="carbon"] .gta__row input:focus-visible { box-shadow: inset 0 0 0 2px var(--color-paper); }
-.g10-sec[data-palette="carbon"] .gta__row button { background: var(--color-paper); color: var(--color-carbon); }
-.g10-sec[data-palette="carbon"] .gta__row button:focus-visible { outline-color: var(--color-paper); }
+.g10-sec:is([data-palette="carbon"], [data-dark]) { --g10-bg: var(--color-carbon); --g10-fg: var(--color-paper); }
+.g10-sec:is([data-palette="carbon"], [data-dark]) .gta__slot.is-idle .gta__place { color: color-mix(in srgb, var(--color-paper) 45%, transparent); }
+.g10-sec:is([data-palette="carbon"], [data-dark]) :is(.gta__lead, .gta__result) { color: color-mix(in srgb, var(--color-paper) 80%, transparent); }
+.g10-sec:is([data-palette="carbon"], [data-dark]) .gta__result b { color: var(--color-paper); }
+.g10-sec:is([data-palette="carbon"], [data-dark]) .gta__row input { background: color-mix(in srgb, var(--color-paper) 8%, var(--color-carbon)); color: var(--color-paper); border-bottom-color: var(--color-paper); }
+.g10-sec:is([data-palette="carbon"], [data-dark]) .gta__row input::placeholder { color: color-mix(in srgb, var(--color-paper) 50%, transparent); }
+.g10-sec:is([data-palette="carbon"], [data-dark]) .gta__row input:focus-visible { box-shadow: inset 0 0 0 2px var(--color-paper); }
+.g10-sec:is([data-palette="carbon"], [data-dark]) .gta__row button { background: var(--color-paper); color: var(--color-carbon); }
+.g10-sec:is([data-palette="carbon"], [data-dark]) .gta__row button:focus-visible { outline-color: var(--color-paper); }
 /* paper type on a yellow half-bar fails contrast: on Carbon the highlighter fills the word and the word turns Carbon */
-.g10-sec[data-palette="carbon"] .gta__hl { inset: 0.1em 0 0.02em; }
-.g10-sec[data-palette="carbon"] .gta__slot.is-lit .gta__place { color: var(--color-carbon); transition: color 0.3s 0.35s; }
-.g10-sec[data-palette="carbon"][data-layout="card"] .gta__panel { box-shadow: 0 0 0 1px var(--color-line-dark); }
+.g10-sec:is([data-palette="carbon"], [data-dark]) .gta__hl { inset: 0.1em 0 0.02em; }
+.g10-sec:is([data-palette="carbon"], [data-dark]) .gta__slot.is-lit .gta__place { color: var(--color-carbon); transition: color 0.3s 0.35s; }
+.g10-sec:is([data-palette="carbon"], [data-dark])[data-layout="card"] .gta__panel { box-shadow: 0 0 0 1px var(--color-line-dark); }
 
 /* ---- paper grain (dev panel → grain): over the whole section, words included, so it reads as one sheet ---- */
 .g10-grain {
   position: absolute; inset: 0; z-index: 3; pointer-events: none;
   background-image: var(--g10-grain-dark); background-size: 220px; mix-blend-mode: multiply; opacity: 0.7;
 }
-.g10-sec[data-palette="carbon"] .g10-grain { background-image: var(--g10-grain-light); mix-blend-mode: screen; opacity: 0.4; }
+.g10-sec:is([data-palette="carbon"], [data-dark]) .g10-grain { background-image: var(--g10-grain-light); mix-blend-mode: screen; opacity: 0.4; }
 .g10-sec[data-grain="off"] .g10-grain { display: none; }
 
 /* ---- labels on the map (HTML, Overpass Mono) ---- */
@@ -75,8 +75,8 @@
 }
 .g10-place.is-on .g10-place__chip { opacity: 1; translate: 0 0; transition-delay: 0.12s; }
 .g10-place.is-on .g10-place__stem { transform: scaleY(1); }
-.g10-sec[data-palette="carbon"] .g10-place__stem { background: var(--color-paper); }
-.g10-sec[data-palette="carbon"] .g10-place__stem::after { box-shadow: 0 0 0 1.5px var(--color-paper); }
+.g10-sec:is([data-palette="carbon"], [data-dark]) .g10-place__stem { background: var(--color-paper); }
+.g10-sec:is([data-palette="carbon"], [data-dark]) .g10-place__stem::after { box-shadow: 0 0 0 1.5px var(--color-paper); }
 
 /* ---- dev meter (exploration only): FPS and load timings, bottom left ---- */
 .g10-meter {

@@ -34,6 +34,8 @@ Exploration pages for homepage section 05 (docs/gt10-3d-map-context.md). Never l
 | `maplibre-style.js` | Option A's style: four palettes, every colour mixed from the five brand tokens; the highlight layers |
 | `section.js` | **Shared**: the section's behaviour, engine-neutral (intro, tour, "Do we cover you?", hand-off to the quote, pausing, replay). Each option gives it a small adapter |
 | `camera.js` | **Shared**: the camera moves of context §3, engine-neutral, with region framing that accounts for the tilt |
+| `areas.js`, `overlays.js`, `texture.js`, `meter.js`, `colors.js` | **Shared**: the five areas as GeoJSON (with spotlight masks); the highlight fade, labels and pin, panel padding; the paper grain, airbrush and tileable textures; the dev meter; the five brand colours and mixing |
+| `b/` | **Option B** (Mapbox Standard), in its own folder: see `b/README.md` |
 | `places.js` | **Shared**: map-only label positions. The places, coordinates, tour and region centres are the site's own (`src/js/data/places.js`) |
 | `regions.geojson` | **Shared**: the five areas |
 | `glyphs/`, `build-glyphs.mjs` | Map text glyphs in Overpass Mono, built from the self-hosted font (`node explore/gt10/build-glyphs.mjs`) |
