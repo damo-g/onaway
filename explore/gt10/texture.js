@@ -161,3 +161,32 @@ export function neutral(c, mode) {
   g.putImageData(img, 0, 0);
   return out;
 }
+
+// Soft gradient grain, after airbrushed illustration (spray paint on paper): broad, soft gradients of tone, and
+// a fine stipple of grain that gathers where the tone is deepest, so shading is built from grain, not flat fill.
+// ink: the grain's colour (a warm brown mixed from rust and carbon); tint: the soft tone under it.
+export function softGrainTile({ n = 768, scale = 2, seed = 9, ink = INK.rust.map((v, i) => v + (INK.carbon[i] - v) * 0.45), tint = INK.camel, density = 0.26, shade = 0.26 } = {}) {
+  const c = canvas(n);
+  const g = c.getContext('2d', { willReadFrequently: true });
+  const img = g.createImageData(n, n);
+  const lo = periodicNoise(scale, seed);
+  const hi = periodicNoise(scale * 2, seed + 3);
+  const smooth = (e0, e1, x) => { const t = Math.max(0, Math.min(1, (x - e0) / (e1 - e0))); return t * t * (3 - 2 * t); };
+  for (let y = 0; y < n; y++) {
+    for (let x = 0; x < n; x++) {
+      const u = (x / n) * scale;
+      const v = (y / n) * scale;
+      const b = smooth(0.22, 0.82, 0.68 * lo(u, v) + 0.32 * hi(u * 2, v * 2, scale * 2)); // the soft gradient, 0–1
+      const i = (y * n + x) * 4;
+      if (Math.random() < 0.004 + density * b ** 2.2) { // a speck of spray, likelier where the tone is deep
+        img.data.set(ink, i);
+        img.data[i + 3] = 40 + Math.random() * 80;
+      } else {
+        img.data.set(tint, i);
+        img.data[i + 3] = b * shade * 255;
+      }
+    }
+  }
+  g.putImageData(img, 0, 0);
+  return c;
+}

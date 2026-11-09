@@ -9,6 +9,7 @@
 //   adapter.zoomFor(placeName, 'tour' | 'match')
 //   adapter.outline(region)           the area's outline points, for framing it
 //   adapter.areaZoom()                the camera's zoom now (after framing an area)
+//   adapter.tourFloor                 optional: how high the tour's flights rise (zoom; default 11.6)
 //
 // Words and data come from the live site: the panel partial (src/partials/gta-panel.hbs), the places, the tour and
 // the region centres (src/js/data/places.js), the postal table and the town lookup (src/js/data/area.js).
@@ -72,7 +73,7 @@ export function createSection(el, adapter, { speed = () => 0.6, orbitOn = () => 
     write(name);
     adapter.unpin();
     camera.spin(orbitOn());
-    const ok = await camera.leg(PLACE_AT[name], { zoom: adapter.zoomFor(name, 'tour'), minZoom: 11.6 });
+    const ok = await camera.leg(PLACE_AT[name], { zoom: adapter.zoomFor(name, 'tour'), minZoom: adapter.tourFloor ?? 11.6 });
     if (!ok || mine !== running || !touring) return;
     // the next stop loads while this one is on screen; the camera only leaves once it's in
     const next = TOUR[k] ? adapter.warm?.(PLACE_AT[TOUR[k]]) : null;

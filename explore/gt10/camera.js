@@ -48,7 +48,7 @@ export const TIMING = { tourStop: 3400, tourOrbit: 8, matchRegion: 1800, matchHo
 export const INTRO_FROM = { center: [-79.3, 43.18], zoom: 7.6, pitch: 0, bearing: -28 };
 
 export function createCamera(map, initial = {}) {
-  const s = { pitch: 60, speed: 0.6, orbit: true, reduced: false, pitchDip: 15, padding: { top: 0, right: 0, bottom: 0, left: 0 }, ...initial };
+  const s = { pitch: 60, speed: 0.6, orbit: true, reduced: false, pitchDip: 15, drift: 0, padding: { top: 0, right: 0, bottom: 0, left: 0 }, ...initial };
   let token = 0;
   let busy = false;
 
@@ -60,7 +60,9 @@ export function createCamera(map, initial = {}) {
   // finished move (start, move and end events, the map believing it's at rest), which costs frames; an engine page
   // can pass a lighter path that updates the camera the way the engine's own animations do (initial.apply).
   const apply = initial.apply ?? { start() {}, frame: (cam) => map.jumpTo(cam), end() {} };
-  const drive = { raf: 0, last: 0, avg: 0, spin: 0, target: 0, leg: null, active: false };
+  const drive = { raf: 0, last: 0, avg: 0, spin: 0, target: 0, drift: 0, driftTarget: 0, leg: null, active: false };
+  // move a lng/lat by metres along a bearing
+  const advance = ([lng, lat], m, bearing) => { const r = (bearing * Math.PI) / 180; return [lng + (m * Math.sin(r)) / (111320 * Math.cos((lat * Math.PI) / 180)), lat + (m * Math.cos(r)) / 111320]; };
   function frame(now) {
     // the animation's own clock: it advances by the frame's time, but a frame much slower than the recent ones (a
     // tile going to the GPU) only counts as a little more than usual, so a spike becomes a moment's slow-down instead
@@ -70,6 +72,7 @@ export function createCamera(map, initial = {}) {
     const dt = Math.min(raw, Math.max(20, (drive.avg || 16.7) * 1.5));
     drive.last = now;
     drive.spin += (drive.target - drive.spin) * Math.min(1, dt / 900); // the turn eases in and out over ~1s
+    drive.drift += (drive.driftTarget - drive.drift) * Math.min(1, dt / 900); // and so does the glide (m/s)
     const cam = { bearing: map.getBearing() + drive.spin * dt, padding: s.padding };
     const leg = drive.leg;
     if (leg) {
@@ -79,10 +82,18 @@ export function createCamera(map, initial = {}) {
       // the camera eases a little more upright at the top of the arc and settles back as it lands (less horizon
       // to draw mid-flight, and a gentler, more cinematic arrival)
       Object.assign(cam, leg.path.at(e), { pitch: leg.pitch0 + (s.pitch - leg.pitch0) * e - leg.dip * Math.sin(Math.PI * e) });
+      // the glide carries on into the flight and fades out by the landing (no jolt at take-off, lands on the place)
+      if (drive.drift > 0.01 || leg.off) {
+        leg.off ??= [0, 0];
+        const [lng2, lat2] = advance([0, cam.center[1]], (drive.drift * dt) / 1000, cam.bearing); // (from lng 0: lng2 is the change)
+        leg.off[0] += lng2; leg.off[1] += lat2 - cam.center[1];
+        cam.center = [cam.center[0] + leg.off[0] * (1 - e), cam.center[1] + leg.off[1] * (1 - e)];
+      }
       if (t >= 1) { drive.leg = null; busy = false; leg.done(true); }
     }
+    if (!leg && drive.drift > 0.01) cam.center = advance(map.getCenter().toArray(), (drive.drift * dt) / 1000, cam.bearing);
     apply.frame(cam);
-    if (drive.leg || Math.abs(drive.spin) > 1e-5 || drive.target) drive.raf = requestAnimationFrame(frame);
+    if (drive.leg || Math.abs(drive.spin) > 1e-5 || drive.target || drive.drift > 0.01 || drive.driftTarget) drive.raf = requestAnimationFrame(frame);
     else { drive.raf = 0; drive.last = 0; drive.active = false; apply.end(); }
   }
   const run = () => {
@@ -97,6 +108,8 @@ export function createCamera(map, initial = {}) {
     drive.last = 0;
     drive.spin = 0;
     drive.target = 0;
+    drive.drift = 0;
+    drive.driftTarget = 0;
     if (drive.active) { drive.active = false; apply.end(); }
     if (drive.leg) { const l = drive.leg; drive.leg = null; l.done(false); }
   }
@@ -166,7 +179,8 @@ export function createCamera(map, initial = {}) {
     spin(on) {
       if (s.reduced) return;
       drive.target = on && s.orbit ? (TIMING.tourOrbit / TIMING.tourStop) * s.speed : 0;
-      if (drive.target || drive.spin) run();
+      drive.driftTarget = on ? s.drift * s.speed : 0; // the glide, if the page sets one (metres a second)
+      if (drive.target || drive.spin || drive.driftTarget || drive.drift) run();
     },
 
     // One tour leg along the flight path, carried by the driver (the turn continues through it). Its duration

@@ -56,7 +56,7 @@ export function createLabels(map, Marker) {
   const placeMarker = new Marker({ element: p, anchor: 'bottom' }).setLngLat([-79.38, 43.65]).addTo(map);
   const placeEl = () => placeMarker.getElement().firstChild;
   return {
-    pin(label, at) { placeMarker.setLngLat(at); placeEl().querySelector('.label').textContent = label; placeEl().classList.add('is-on'); },
+    pin(label, at, { sign = false } = {}) { placeMarker.setLngLat(at); placeEl().querySelector('.label').textContent = label; placeEl().classList.toggle('g10-place--sign', sign); placeEl().classList.add('is-on'); },
     unpin() { placeEl().classList.remove('is-on'); },
     regions(on) { regionsOn = on; show(); },
   };
