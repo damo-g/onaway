@@ -48,7 +48,18 @@ export function createLabels(map, Marker) {
     regionMarkers.push(new Marker({ element: m }).setLngLat(r.at).addTo(map));
   }
   let regionsOn = true;
-  const show = () => regionMarkers.forEach((m) => m.getElement().firstChild.classList.toggle('is-on', regionsOn && map.getZoom() < 10.6));
+  // The matched area's name (a match lights an area): one step up the type scale from the place names under it,
+  // so the area reads above its towns. Fades as the camera goes down into the city.
+  const z = document.createElement('div');
+  z.innerHTML = '<div class="g10-zone" aria-hidden="true"></div>';
+  const zoneMarker = new Marker({ element: z }).setLngLat([-79.38, 43.65]).addTo(map);
+  const zoneEl = () => zoneMarker.getElement().firstChild;
+  let zoned = null;
+  const show = () => {
+    const zoom = map.getZoom();
+    regionMarkers.forEach((m, i) => m.getElement().firstChild.classList.toggle('is-on', regionsOn && zoom < 10.6 && Object.keys(REGION_LABELS)[i] !== zoned));
+    zoneEl().classList.toggle('is-on', !!zoned && zoom < 12.2);
+  };
   map.on('zoom', show);
   show();
   const p = document.createElement('div');
@@ -59,6 +70,13 @@ export function createLabels(map, Marker) {
     pin(label, at, { sign = false } = {}) { placeMarker.setLngLat(at); placeEl().querySelector('.label').textContent = label; placeEl().classList.toggle('g10-place--sign', sign); placeEl().classList.add('is-on'); },
     unpin() { placeEl().classList.remove('is-on'); },
     regions(on) { regionsOn = on; show(); },
+    // zone(region, style): show the area's name large ('mono' Overpass Mono, 'sans' Instrument Sans), or clear it
+    zone(region, style = 'mono') {
+      const r = REGION_LABELS[region];
+      zoned = r && style !== 'off' ? region : null;
+      if (zoned) { zoneMarker.setLngLat(r.at); zoneEl().textContent = r.text; zoneEl().dataset.style = style; }
+      show();
+    },
   };
 }
 

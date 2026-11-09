@@ -60,6 +60,17 @@
   text-shadow: 0 0 3px var(--g10-bg), 0 0 8px var(--g10-bg); opacity: 0; transition: opacity 0.6s;
 }
 .g10-region.is-on { opacity: 1; }
+/* The matched area's name: h3 size, above the place names (12–16) under it */
+.g10-zone {
+  font-family: var(--font-mono); font-size: var(--text-h3); font-weight: 600; line-height: 1; letter-spacing: 0.12em; text-transform: uppercase;
+  color: var(--color-carbon); white-space: nowrap; pointer-events: none;
+  text-shadow: 0 0 3px var(--color-paper), 0 0 13px var(--color-paper), 0 0 21px var(--color-paper);
+  opacity: 0; translate: 0 var(--spacing-8); transition: opacity 0.6s, translate 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.g10-zone[data-style="sans"] { font-family: var(--font-sans); font-stretch: var(--font-stretch-semicondensed); letter-spacing: 0.02em; }
+.g10-zone.is-on { opacity: 1; translate: 0 0; }
+.g10-sec[data-dark] .g10-zone { color: var(--color-paper); text-shadow: 0 0 3px var(--color-carbon), 0 0 13px var(--color-carbon), 0 0 21px var(--color-carbon); }
+@media (prefers-reduced-motion: reduce) { .g10-zone { transition: none; translate: none; } }
 /* The pin: a label on a stem, dropped onto a yellow stop at the place */
 .g10-place { display: flex; flex-direction: column; align-items: center; pointer-events: none; }
 .g10-place__chip {

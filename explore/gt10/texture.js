@@ -162,29 +162,44 @@ export function neutral(c, mode) {
   return out;
 }
 
-// Soft gradient grain, after airbrushed illustration (spray paint on paper): broad, soft gradients of tone, and
-// a fine stipple of grain that gathers where the tone is deepest, so shading is built from grain, not flat fill.
+// Soft gradient grain, after airbrushed illustration (spray paint on paper): broad, soft gradients of tone, built
+// from grain rather than flat fill. Round 2: a balance of the spray and the paper grain. The grain is a continuous
+// fine tooth (every pixel a little, deeper where the tone is deep), softened by a light blur so it reads as tooth,
+// not sprinkled dots; only a few true specks remain, in the deepest tone.
 // ink: the grain's colour (a warm brown mixed from rust and carbon); tint: the soft tone under it.
-export function softGrainTile({ n = 768, scale = 2, seed = 9, ink = INK.rust.map((v, i) => v + (INK.carbon[i] - v) * 0.45), tint = INK.camel, density = 0.26, shade = 0.26 } = {}) {
+export function softGrainTile({ n = 768, scale = 2, seed = 9, ink = INK.rust.map((v, i) => v + (INK.carbon[i] - v) * 0.45), tint = INK.camel, tooth = 0.5, specks = 0.05, shade = 0.22 } = {}) {
   const c = canvas(n);
   const g = c.getContext('2d', { willReadFrequently: true });
   const img = g.createImageData(n, n);
   const lo = periodicNoise(scale, seed);
   const hi = periodicNoise(scale * 2, seed + 3);
   const smooth = (e0, e1, x) => { const t = Math.max(0, Math.min(1, (x - e0) / (e1 - e0))); return t * t * (3 - 2 * t); };
+  const B = new Float32Array(n * n); // the soft gradient, 0–1
+  const G = new Float32Array(n * n); // the grain's strength
   for (let y = 0; y < n; y++) {
     for (let x = 0; x < n; x++) {
       const u = (x / n) * scale;
       const v = (y / n) * scale;
-      const b = smooth(0.22, 0.82, 0.68 * lo(u, v) + 0.32 * hi(u * 2, v * 2, scale * 2)); // the soft gradient, 0–1
+      const b = smooth(0.22, 0.82, 0.68 * lo(u, v) + 0.32 * hi(u * 2, v * 2, scale * 2));
+      const j = y * n + x;
+      B[j] = b;
+      let a = tooth * Math.random() ** 2.5 * (0.2 + 0.8 * b); // the tooth, everywhere, deeper with the tone
+      if (Math.random() < 0.0015 + specks * b ** 2.2) a += 0.35; // a speck of spray, only where the tone is deep
+      G[j] = a;
+    }
+  }
+  // soften the grain (a 3×3 blur that wraps, so the tile stays seamless)
+  const W = [1, 2, 1];
+  for (let y = 0; y < n; y++) {
+    for (let x = 0; x < n; x++) {
+      let a = 0;
+      for (let dy = -1; dy <= 1; dy++) for (let dx = -1; dx <= 1; dx++) a += G[((y + dy + n) % n) * n + ((x + dx + n) % n)] * W[dx + 1] * W[dy + 1];
+      a = Math.min(1, (a / 16) * 1.6);
+      const t = B[y * n + x] * shade; // the soft tone under the grain
+      const out = 1 - (1 - a) * (1 - t);
       const i = (y * n + x) * 4;
-      if (Math.random() < 0.004 + density * b ** 2.2) { // a speck of spray, likelier where the tone is deep
-        img.data.set(ink, i);
-        img.data[i + 3] = 40 + Math.random() * 80;
-      } else {
-        img.data.set(tint, i);
-        img.data[i + 3] = b * shade * 255;
-      }
+      for (let k = 0; k < 3; k++) img.data[i + k] = out ? (ink[k] * a + tint[k] * t * (1 - a)) / out : tint[k];
+      img.data[i + 3] = out * 255;
     }
   }
   g.putImageData(img, 0, 0);

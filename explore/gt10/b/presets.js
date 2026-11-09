@@ -68,6 +68,12 @@ export const GRADES = {
     const yel = hueWeight(h, 48, 18) * s;
     return lerp(lerp(lerp(ramp, P.rust, red * 0.5), P.yellow, yel * 0.6), c, 0.12);
   },
+  // Brand, richer (round 2): the brand ramp with some of each colour's own hue kept (parks a sage camel, water a
+  // slate paper) and a gentle S-curve, so the city has more depth and the land and buildings separate
+  brandRich: (c) => {
+    const out = lerp(GRADES.brand(c), GRADES.gentle(c), 0.3);
+    return out.map((v) => Math.max(0, Math.min(255, 128 + (v - 128) * 1.1))); // a touch more contrast
+  },
   // Night: blues and greens to carbon greys, warm lights kept
   night: (c) => {
     let [h, s, l] = hsl(c);
@@ -98,16 +104,6 @@ export function lutData(grade, N = 32) {
 // light: the light preset that suits it (used when the light option is 'palette') · fog: haze for the horizon ·
 // ground: the paper/land tone a texture is mixed for · dark: the section turns dark with it
 export const PALETTES = {
-  // Kraft (like option A's pick): camel-warm land, paper-light parks and lake, carbon motorways
-  kraft: {
-    label: 'Kraft', grade: 'gentle', light: 'day',
-    colors: {
-      colorLand: mix('paper', 'camel', 0.24), colorWater: mix('paper', 'camel', 0.06), colorGreenspace: mix('paper', 'camel', 0.1),
-      colorCommercial: mix(mix('paper', 'camel', 0.42), 'rust', 0.08), colorIndustrial: mix('paper', 'camel', 0.4), colorEducation: mix('paper', 'camel', 0.3), colorMedical: mix('paper', 'camel', 0.3),
-      colorBuildings: mix('paper', 'camel', 0.12), colorMotorways: T.carbon, colorTrunks: mix('carbon', 'camel', 0.45), colorRoads: mix('paper', 'camel', 0.06),
-      colorPlaceLabels: T.carbon, colorRoadLabels: mix('carbon', 'camel', 0.3), colorPointOfInterestLabels: mix('camel', 'carbon', 0.45), roadsBrightness: 0.2,
-    },
-  },
   // Overcast, after OV-01 (the hero's painted Toronto): grey-green ground, slate water, autumn trees, a soft haze
   overcast: {
     label: 'Overcast', grade: 'autumn', light: 'day', fog: { color: mix('paper', 'carbon', 0.12), 'high-color': mix('paper', 'carbon', 0.08), 'horizon-blend': 0.18, range: [0.8, 9], 'space-color': mix('paper', 'carbon', 0.1), 'star-intensity': 0 },
@@ -116,16 +112,6 @@ export const PALETTES = {
       colorCommercial: mix('paper', 'carbon', 0.16), colorIndustrial: mix('paper', 'carbon', 0.2), colorEducation: mix(mix('paper', 'camel', 0.3), 'rust', 0.08), colorMedical: mix('paper', 'camel', 0.25),
       colorBuildings: mix('paper', 'carbon', 0.1), colorMotorways: mix('paper', 'carbon', 0.42), colorTrunks: mix('paper', 'carbon', 0.32), colorRoads: mix('paper', 'carbon', 0.2),
       colorPlaceLabels: T.carbon, colorRoadLabels: mix('carbon', 'paper', 0.3), colorPointOfInterestLabels: mix('carbon', 'camel', 0.4), roadsBrightness: 0.3,
-    },
-  },
-  // Ticket paper: paper land, a quiet lake, carbon roads, like the brand's tickets and signs
-  ticket: {
-    label: 'Ticket paper', grade: 'gentle', light: 'day',
-    colors: {
-      colorLand: T.paper, colorWater: mix('paper', 'camel', 0.2), colorGreenspace: mix('paper', 'camel', 0.18),
-      colorCommercial: mix('paper', 'camel', 0.1), colorIndustrial: mix('paper', 'carbon', 0.06), colorEducation: mix('paper', 'camel', 0.08), colorMedical: mix('paper', 'camel', 0.08),
-      colorBuildings: mix('paper', 'camel', 0.1), colorMotorways: T.carbon, colorTrunks: mix('carbon', 'paper', 0.35), colorRoads: mix('paper', 'carbon', 0.28),
-      colorPlaceLabels: T.carbon, colorRoadLabels: mix('carbon', 'paper', 0.25), colorPointOfInterestLabels: mix('camel', 'carbon', 0.4), roadsBrightness: 0,
     },
   },
   // Carbon night: carbon land, paper lines, camel water edges, the city lit (night light suits it)
@@ -140,17 +126,37 @@ export const PALETTES = {
   },
   // Brand LUT: Standard's own colours, all re-drawn through a grade made from the five brand colours
   brandlut: { label: 'Brand LUT', grade: 'brand', light: 'day', colors: {} },
+  // Brand LUT, richer (proposed, round 2): the brand grade keeping some of each colour's own hue, with the land
+  // lifted towards paper and the parks and water given a tone of their own, for more depth
+  brandrich: {
+    label: 'Brand LUT, richer', grade: 'brandRich', light: 'day',
+    colors: { colorLand: mix('paper', 'camel', 0.08), colorGreenspace: mix(mix('paper', 'camel', 0.35), 'carbon', 0.08), colorWater: mix(mix('paper', 'carbon', 0.3), 'camel', 0.12) },
+  },
+  // Overcast × Brand (proposed, round 2): Overcast's quiet grey-green ground and slate lake, drawn through the brand
+  // grade instead of the autumn one (between the two favourites)
+  overbrand: { label: 'Overcast × Brand', grade: 'brand', light: 'day', colors: 'overcast' },
   // Mapbox's built-in themes, for reference
-  faded: { label: 'Mapbox Faded', theme: 'faded', light: 'day', colors: {} },
   monochrome: { label: 'Mapbox Monochrome', theme: 'monochrome', light: 'day', colors: {} },
   standard: { label: 'Mapbox default', theme: 'default', light: 'day', colors: {} },
 };
 
+PALETTES.overbrand.colors = PALETTES.overcast.colors; // the same colours (imported, not copied)
+PALETTES.overbrand.fog = PALETTES.overcast.fog;
+
+// Building colours (dev panel → buildings), mixed from the tokens; each passes through the palette's grade like
+// everything else. palette: the palette's own. Dark palettes keep their own whatever the option.
+export const BUILDINGS = {
+  stone: mix(mix('paper', 'camel', 0.45), 'carbon', 0.1), // warm grey stone, a clear step darker than the land, so every block reads as volume
+  sand: mix('paper', 'camel', 0.3),
+  brick: mix(mix('paper', 'camel', 0.45), 'rust', 0.22), // a soft terracotta city
+  paper: T.paper, // pale blocks on the land: the light does the shaping
+};
+
 const lutCache = {};
 // The full basemap config for a palette (+ any editor overrides)
-export function paletteConfig(name, overrides = {}) {
-  const p = PALETTES[name] ?? PALETTES.kraft;
-  const config = { ...DEFAULTS, ...p.colors, ...overrides };
+export function paletteConfig(name, overrides = {}, buildings = 'palette') {
+  const p = PALETTES[name] ?? PALETTES.brandlut;
+  const config = { ...DEFAULTS, ...p.colors, ...(BUILDINGS[buildings] && !p.dark ? { colorBuildings: BUILDINGS[buildings] } : {}), ...overrides };
   if (p.grade) {
     lutCache[p.grade] ??= lutData(GRADES[p.grade]);
     config.theme = 'custom';

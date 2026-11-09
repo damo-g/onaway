@@ -21,17 +21,19 @@ const LOGO = Object.fromEntries(Object.entries(import.meta.glob('./textures/*.{p
   .map(([path, url]) => [path.split('/').pop().replace(/\.\w+$/, '').toLowerCase().replace(/[^a-z0-9]+/g, '-'), url]));
 
 const OPTIONS = {
-  palette: ['brandlut', ...Object.keys(PALETTES).filter((p) => p !== 'brandlut')],
+  palette: ['brandrich', 'brandlut', 'overcast', 'overbrand', 'monochrome', 'carbon', 'standard'],
+  buildings: ['stone', 'palette', 'sand', 'brick', 'paper'],
   light: ['live', 'palette', 'day', 'dawn', 'dusk', 'night'],
   objects: ['all', 'facades', 'no-trees', 'flat'],
   labels: ['places', 'none', 'all'],
   poi: ['on', 'landmarks', 'off'],
   names: ['off', 'ours'],
-  font: ['din', 'mono'],
+  zone: ['mono', 'sans', 'off'],
+  font: ['mono', 'din'],
   texture: ['soft-grain', 'grain', 'airbrush', 'none', ...Object.keys(LOGO)],
-  placement: ['screen', 'ground', 'both'],
-  opacity: ['10', '20', '30', '40', '0'],
-  mark: ['lit', 'glow', 'label', 'sign', 'pin', 'none'],
+  placement: ['ground', 'screen', 'both'],
+  opacity: ['0', '5', '10', '20', '30'],
+  mark: ['lit+sign', 'lit+label', 'glow+sign', 'lit', 'glow', 'label', 'sign', 'pin', 'none'],
   highlight: ['spotlight', 'tint', 'outline'],
   match: ['close', 'area'],
   closeness: ['16', '16.5', '15.5', '15'],
@@ -40,7 +42,7 @@ const OPTIONS = {
   card: ['light', 'auto'],
   pitch: ['60', '50', '45'],
   orbit: ['on', 'off'],
-  speed: ['0.75', '1', '0.6'],
+  speed: ['0.7', '0.75', '1', '0.6'],
 };
 registerOptions('gt10b', OPTIONS);
 await import('../../../src/js/main.js');
@@ -130,7 +132,7 @@ function scheduleLive() {
   liveTimer = setTimeout(() => { applyConfig(); scheduleLive(); }, next - now + 500);
 }
 function config() {
-  const c = paletteConfig(opt('palette'), editor.overrides);
+  const c = paletteConfig(opt('palette'), editor.overrides, opt('buildings'));
   const objects = opt('objects');
   Object.assign(c, {
     lightPreset: lightPreset(),
@@ -139,8 +141,8 @@ function config() {
     showPlaceLabels: opt('labels') !== 'none', showRoadLabels: opt('labels') === 'all', showTransitLabels: false, showPedestrianRoads: opt('labels') === 'all',
     showPointOfInterestLabels: opt('poi') === 'on', showLandmarkIcons: opt('poi') !== 'off', showLandmarkIconLabels: opt('poi') !== 'off',
     showAdminBoundaries: false, // the five areas are ours
-    colorBuildingSelect: mix('paper', 'yellow', 0.55), colorBuildingHighlight: mix('paper', 'yellow', 0.35), colorPlaceLabelSelect: T.rust, // the place marks
-    font: opt('font') === 'mono' ? 'Roboto Mono' : 'DIN Pro',
+    colorBuildingSelect: mix('paper', 'yellow', 0.45), colorBuildingHighlight: mix('paper', 'yellow', 0.3), colorPlaceLabelSelect: T.rust, // the place marks
+    font: 'DIN Pro', // (mono: every label drawn in Overpass Mono by the browser instead, see fontFamily())
   });
   return c;
 }
@@ -152,6 +154,22 @@ function applyConfig() {
   map.setFog(fog ?? null);
   paintOverlays();
   syncEditor();
+}
+
+// ---------- the label font ----------
+// Standard only offers Mapbox's hosted fonts. font=mono draws every map label in Overpass Mono, the site's own
+// self-hosted font: Mapbox's localFontFamily has the browser draw the glyphs from a CSS font (weights from the
+// style's Regular, Medium and Bold), so no font has to be uploaded to Mapbox.
+const fontFamily = () => (opt('font') === 'mono' ? '"Overpass Mono", monospace' : null);
+const fontsReady = () => (opt('font') === 'mono' ? Promise.all(['400', '500', '700'].map((w) => document.fonts.load(`${w} 16px "Overpass Mono"`))).catch(() => {}) : Promise.resolve());
+// A new label font needs the style rebuilt (our layers and the highlight are added back)
+async function rebuildStyle() {
+  await fontsReady();
+  map.setStyle('mapbox://styles/mapbox/standard', { config: { basemap: config() }, localFontFamily: fontFamily(), diff: false });
+  await new Promise((r) => map.once('style.load', r));
+  addOverlays();
+  applyConfig();
+  hl?.paint();
 }
 
 // ---------- the map, loaded only when the section nears the screen ----------
@@ -227,7 +245,7 @@ const adapter = {
   get camera() { return camera; },
   drawn,
   warm,
-  highlight: (region) => hl?.set(region),
+  highlight: (region) => { hl?.set(region); labels?.zone(region, opt('zone')); },
   zoomFor,
   outline: (region) => outlines[region],
   areaZoom: () => map.getZoom(),
@@ -245,13 +263,14 @@ const PLACE_LABELS = { featuresetId: 'place-labels', importId: 'basemap' };
 let markRun = 0;
 function markOn(label, at) {
   if (!map) return;
-  const m = opt('mark');
+  const parts = new Set(opt('mark').split('+')); // a mark, or two together (lit+sign)
+  const has = (p) => parts.has(p);
   const run = ++markRun;
   map.getSource('g10-place')?.setData({ type: 'FeatureCollection', features: [{ type: 'Feature', properties: {}, geometry: { type: 'Point', coordinates: at } }] });
-  if (m === 'pin' || m === 'sign') labels.pin(label, at, { sign: m === 'sign' });
-  map.setPaintProperty('mark-glow', 'circle-opacity', m === 'glow' ? 0.5 : m === 'lit' || m === 'label' ? 0.22 : 0);
-  map.setPaintProperty('mark-core', 'circle-opacity', m === 'glow' ? 0.45 : 0);
-  if (m === 'lit') {
+  if (has('pin') || has('sign')) labels.pin(label, at, { sign: has('sign') });
+  map.setPaintProperty('mark-glow', 'circle-opacity', has('glow') ? 0.5 : has('lit') || has('label') ? 0.22 : 0);
+  map.setPaintProperty('mark-core', 'circle-opacity', has('glow') ? 0.45 : 0);
+  if (has('lit')) {
     // the buildings in a box around the place on screen, lit in eight waves from the centre outwards
     const p = map.project(at);
     const R = 210;
@@ -269,7 +288,7 @@ function markOn(label, at) {
     }
     window.__gt10.lit = near.length;
   }
-  if (m === 'label') {
+  if (has('label')) {
     let onScreen = [];
     try { onScreen = map.queryRenderedFeatures({ target: PLACE_LABELS }); } catch {}
     const key = label.toLowerCase();
@@ -292,6 +311,7 @@ async function boot() {
   [{ default: mapboxgl }] = await Promise.all([import('mapbox-gl'), import('mapbox-gl/dist/mapbox-gl.css')]);
   perf.lib = performance.now();
   mapboxgl.accessToken = import.meta.env.VITE_MAPBOX_TOKEN;
+  await fontsReady();
   map = new mapboxgl.Map({
     container: el.querySelector('.g10-map'),
     style: 'mapbox://styles/mapbox/standard',
@@ -305,6 +325,7 @@ async function boot() {
     interactive: false, // no wheel, no drag, no touch: the page always scrolls
     attributionControl: false,
     logoPosition: 'bottom-right',
+    localFontFamily: fontFamily(),
   });
   map.addControl(new mapboxgl.AttributionControl({ compact: false }), 'bottom-right');
   window.__gt10.map = map;
@@ -351,7 +372,9 @@ el.addEventListener('section:options', () => {
   if (changed('palette')) editor.overrides = {};
   if (changed('opacity')) editor.opacity = null;
   theme();
-  if (['palette', 'light', 'objects', 'labels', 'poi', 'font', 'card'].some(changed)) { applyConfig(); scheduleLive(); }
+  if (changed('font') && map) rebuildStyle();
+  else if (['palette', 'buildings', 'light', 'objects', 'labels', 'poi', 'card'].some(changed)) { applyConfig(); scheduleLive(); }
+  if (changed('zone')) labels?.zone(null); // the next match shows it in the new style
   if (['highlight', 'names'].some(changed)) paintOverlays();
   if (['texture', 'placement', 'opacity'].some(changed)) applyTexture();
   if (!map || !camera) return;
