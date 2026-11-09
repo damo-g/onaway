@@ -25,7 +25,7 @@ Option B of the GT-10 exploration (docs/gt10-3d-map-context.md): the same sectio
 | texture | **soft-grain** · grain · airbrush · none · (each logo texture) | Soft gradient grain (the pick), after airbrushed illustration: broad soft tones built from a fine spray of grain that gathers where the tone deepens. Grain: option A's paper grain. Airbrush: broad soft clouds |
 | placement | **screen** · ground · both | Over the map (multiply, then soft-light, each made neutral) or laid on the ground in Standard's bottom slot |
 | opacity | **10** · 20 · 30 · 40 · 0 | Texture strength (%); the map editor's slider sets it finely |
-| mark | **lit** · glow · label · sign · pin · none | How the place is marked once the camera is there. lit: the buildings around it light up, nearest first, over a soft pool of light. glow: a pool of light on the ground. label: Standard's own label for the town turns rust. sign: the name floating. pin: the name on a stem (option A's). none |
+| mark | **glow+sign** · lit+sign · lit+label · lit · glow · label · sign · pin · none | How the place is marked once the camera is there, alone or two together. glow: a pool of light on the ground. sign: the name floating. lit: the buildings around it light up, nearest first. label: Standard's own label for the town turns rust. pin: the name on a stem (option A's) |
 | highlight | **spotlight** · tint · outline | The matched area, as option A |
 | match | **close** · area | After framing the area: down into the city (close, the pick here: the 3D is the point of B), or option A's calm area-level pan |
 | closeness | **16** · 16.5 · 15.5 · 15 | How close the stops sit. Standard draws its everyday buildings from z15 and stands them fully, with trees, from about z16 |
