@@ -144,17 +144,22 @@ PALETTES.overbrand.colors = PALETTES.overcast.colors; // the same colours (impor
 PALETTES.overbrand.fog = PALETTES.overcast.fog;
 
 // Building colours (dev panel → buildings), mixed from the tokens; each passes through the palette's grade like
-// everything else. palette: the palette's own. Dark palettes keep their own whatever the option.
+// everything else. The brand grades turn every grey, blue and green warm, so a colour only stands apart from the
+// palette by its lightness (ink, umber, paper) or by a red (clay); a cool slate comes out as stone. Dark palettes
+// keep their own whatever the option.
 export const BUILDINGS = {
-  stone: mix(mix('paper', 'camel', 0.45), 'carbon', 0.1), // warm grey stone, a clear step darker than the land, so every block reads as volume
-  sand: mix('paper', 'camel', 0.3),
-  brick: mix(mix('paper', 'camel', 0.45), 'rust', 0.22), // a soft terracotta city
+  stone: mix(mix('paper', 'camel', 0.38), 'carbon', 0.08), // warm grey stone, a step darker than the land, so every block reads as volume
+  sand: mix(mix('paper', 'camel', 0.44), 'yellow', 0.14), // as light as stone, warmer and golder: sunlit sandstone
+  camel: T.camel, // the brand's camel, full strength: a mid-tone city
+  clay: mix(mix('paper', 'rust', 0.3), 'camel', 0.15), // against the palette: a clean light terracotta
+  umber: mix('carbon', 'camel', 0.58), // against the palette: a deep warm brown, softer than ink
+  ink: mix('carbon', 'camel', 0.25), // against the palette: dark blocks on paper, the most graphic
   paper: T.paper, // pale blocks on the land: the light does the shaping
 };
 
 const lutCache = {};
 // The full basemap config for a palette (+ any editor overrides)
-export function paletteConfig(name, overrides = {}, buildings = 'palette') {
+export function paletteConfig(name, overrides = {}, buildings = 'stone') {
   const p = PALETTES[name] ?? PALETTES.brandlut;
   const config = { ...DEFAULTS, ...p.colors, ...(BUILDINGS[buildings] && !p.dark ? { colorBuildings: BUILDINGS[buildings] } : {}), ...overrides };
   if (p.grade) {
