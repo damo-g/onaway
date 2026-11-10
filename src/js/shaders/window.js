@@ -1,5 +1,7 @@
 // FT-02 wordmark fills, drawn live in WebGL in the brand palette with film grain (from the locked mock).
-// Windows (locked): the city's towers with lights coming on. Also Sky, Lake, Traffic and Flap for review.
+// Windows (locked): the city's towers with lights coming on. For review (Nov 2026; lake, traffic and flap retired):
+// Sky; Route (a transit map: coloured lines with 45° jogs, stations, trains running); Platform (a subway station's tile
+// wall, a camel band, a train's light passing); Kraft (a moving box: corrugated card and a strip of tape catching light).
 // Animates only while visible; reduced motion draws one still frame; no WebGL → returns null (flat fill).
 const FS = `precision mediump float;uniform vec2 r;uniform float t;uniform int m;
 float h(vec2 p){return fract(sin(dot(p,vec2(127.1,311.7)))*43758.5453);}
@@ -11,19 +13,33 @@ void main(){vec2 px=gl_FragCoord.xy;vec2 uv=px/r.y;vec3 c;
   float q=fb(uv*vec2(1.2,2.2)+vec2(t*.03,0.));float w=fb(uv*2.6+q+vec2(t*.05,0.));
   c=mix(vec3(.47,.47,.45),vec3(.86,.84,.8),smoothstep(.3,.78,w));c=mix(c,CA,smoothstep(.7,.95,q)*.25);
  } else if(m==1){
-  float d=fb(vec2(uv.x*1.5-t*.04,uv.y*6.));float b=sin(uv.y*90.+d*9.+t*.6);
-  c=mix(vec3(.17,.2,.19),vec3(.32,.33,.3),.5+.5*b);float gl=smoothstep(.93,1.,b)*smoothstep(.55,.8,fb(uv*3.+t*.05));c=mix(c,PA,gl*.7);
+  c=PA*(.96+.04*fb(uv*6.));
+  for(int i=0;i<4;i++){float fi=float(i);
+   float base=.2+fi*.2;float x0=.4+h(vec2(fi,4.))*2.;float d=(h(vec2(fi,8.))-.5)*.36;float sd=sign(d);
+   float yl=base+clamp((uv.x-x0)*sd,0.,abs(d))*sd;float jog=step(x0,uv.x)*step(uv.x,x0+abs(d));
+   float dist=abs(uv.y-yl)*mix(1.,.7071,jog);
+   vec3 lc=i==0?YE:i==1?RU:i==2?CB:CA;
+   c=mix(c,lc,smoothstep(.034,.026,dist));
+   float sx=(fract(uv.x*1.6+fi*.37)-.5)/1.6;float st=length(vec2(sx,uv.y-yl));
+   c=mix(c,CB,smoothstep(.034,.027,st)*step(dist,.04));c=mix(c,PA,smoothstep(.02,.014,st)*step(dist,.04));
+   float tx=mod(t*(.08+fi*.025)+h(vec2(fi,2.))*6.,r.x/r.y+.4)-.2;float ty=base+clamp((tx-x0)*sd,0.,abs(d))*sd;
+   float tr=length((uv-vec2(tx,ty))*vec2(.35,1.));c=mix(c,CB,smoothstep(.03,.02,tr));
+  }
  } else if(m==2){
-  float L=14.;float ln=floor(uv.y*L);float dir=mod(ln,2.)<1.?1.:-1.;float sp=.08+h(vec2(ln,3.))*.12;
-  float x=uv.x*(1.2+h(vec2(ln,7.)))-t*sp*dir+h(vec2(ln,1.))*9.;float cell=floor(x*3.);float f=fract(x*3.);
-  float on=step(.45,h(vec2(cell,ln)));float s=on*smoothstep(0.,.05,f)*smoothstep(.55,.2,f);
-  float lane=smoothstep(.0,.12,fract(uv.y*L))*smoothstep(1.,.88,fract(uv.y*L));
-  c=CB+vec3(.04);c=mix(c,dir>0.?YE:RU,s*lane);c=mix(c,PA,s*lane*smoothstep(.15,.05,f)*.6);
+  float rows=9.;vec2 p=uv*rows;vec2 id=floor(p);vec2 f=fract(p);
+  float tile=step(.06,f.x)*step(f.x,.94)*step(.06,f.y)*step(f.y,.94);
+  float band=step(abs(uv.y-.5),.12);
+  vec3 tc=mix(PA*.94,CA,band)*(.95+.07*h(id));
+  float pass=smoothstep(.5,0.,abs(fract(uv.x*.12-t*.05)-.5)*3.);tc+=pass*.07;
+  tc*=1.-.06*smoothstep(.2,.9,f.y);
+  c=mix(mix(CA,CB,.45),tc,tile);
  } else if(m==3){
-  vec2 g=vec2(26.,9.);vec2 id=floor(uv*g);vec2 f=fract(uv*g);float ph=t*.35+h(id)*6.;float k=floor(ph);float tr=fract(ph);
-  float pick=h(id+k);vec3 a=pick<.4?CB:pick<.7?CA:pick<.9?PA:RU;
-  float fl=smoothstep(.0,.12,tr);float sq=abs(f.y-.5)*2.;float closing=1.-fl;c=mix(CB,a,step(sq,1.-closing*.9));
-  c*=1.-smoothstep(.04,.0,abs(f.y-.5))*.5;c*=1.-(step(f.x,.06)+step(.94,f.x)+step(f.y,.06)+step(.94,f.y))*.6;
+  float fl=.5+.5*sin(uv.x*150.);float fib=fb(uv*vec2(34.,7.));
+  c=CA*(.84+.1*fl+.16*(fib-.5));
+  float tp=abs(uv.y-.52);float tape=step(tp,.13);
+  vec3 tcol=mix(CA,PA,.42)*(.94+.06*fb(uv*vec2(5.,46.)));
+  float sheen=smoothstep(.3,0.,abs(fract(uv.x*.1-t*.03)-.5))*.14;
+  c=mix(c,tcol+sheen,tape);c*=1.-.18*smoothstep(.006,0.,abs(tp-.13));
  } else {
   vec2 g=vec2(64.,30.);vec2 id=floor(uv*g);vec2 f=fract(uv*g);float col=floor(id.x/4.);float bld=step(.25,h(vec2(col,2.)));
   float lit=step(.62,h(id+floor(t*.12+h(id)*5.)));float win=step(.18,f.x)*step(f.x,.82)*step(.2,f.y)*step(f.y,.8);
@@ -31,7 +47,7 @@ void main(){vec2 px=gl_FragCoord.xy;vec2 uv=px/r.y;vec3 c;
  }
  c+=(h(px+fract(t)*91.)-.5)*.08;gl_FragColor=vec4(c,1.);}`;
 const VS = 'attribute vec2 p;void main(){gl_Position=vec4(p,0,1);}';
-export const FILLS = { sky: 0, lake: 1, traffic: 2, flap: 3, windows: 4 };
+export const FILLS = { sky: 0, route: 1, platform: 2, kraft: 3, windows: 4 };
 
 /**
  * Draws a fill into canvas. Returns { setFill(name), stop() } or null without WebGL.

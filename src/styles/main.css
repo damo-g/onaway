@@ -1396,7 +1396,7 @@
   html[data-motion="reduce"] .qc-blank.is-next { animation: none; }
   html[data-motion="reduce"] .qc-route .mv { display: none; }
   /* ---------- Footer (FT-02 Window) ---------- */
-  /* Options (dev panel): data-fill windows (locked) | sky | lake | traffic | flap | flat · data-signal arrive (locked)
+  /* Options (dev panel): data-fill windows (locked) | sky | flat | route | platform | kraft · data-signal arrive (locked)
      | turn | still | off · data-hover signal (locked) | sweep | invert | mark */
   .footer {
     --ft-fg: var(--color-paper);
