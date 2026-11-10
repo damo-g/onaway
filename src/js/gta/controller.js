@@ -47,12 +47,19 @@ export function createSection(el, adapter, { speed = () => 0.6, orbitOn = () => 
   // ---------- state ----------
   let touring = false;
   let k = 0;
-  let hovered = false; // over the panel (the map itself never pauses the tour: it fills the screen)
+  let hovered = false; // the pointer moved over the panel (the map itself never pauses the tour: it fills the screen)
   let focused = false;
   let visible = false;
   let started = false;
   let running = 0; // bumps when a match or replay takes over, so an older tour or match step bails
   let chain = 0; // the one live tour chain; resuming while a stop is still playing never starts a second
+  let pending = false; // entered, but already scrolled past (a jump to the quote): the intro waits for the section
+  // On screen right now (40% of the section, as the observer below), read from the layout: the observer's word
+  // arrives a frame late, and a tour step must never start off screen
+  const inView = () => {
+    const r = el.getBoundingClientRect();
+    return Math.min(r.bottom, innerHeight) - Math.max(r.top, 0) >= Math.min(r.height, innerHeight) * 0.4;
+  };
 
   // ---------- the idle tour: one continuous motion, once through, then rest on the whole GTA ----------
   // The view turns slowly the whole way (camera.spin) and each leg is laid over that turn (camera.leg), so a stop
@@ -61,7 +68,7 @@ export function createSection(el, adapter, { speed = () => 0.6, orbitOn = () => 
   async function step() {
     const mine = running;
     const me = ++chain;
-    if (!touring || hovered || focused || !visible) { camera.spin(false); return; }
+    if (!touring || hovered || focused || !visible || !inView()) { camera.spin(false); return; }
     if (k >= TOUR.length) {
       touring = false;
       write('the GTA');
@@ -86,7 +93,7 @@ export function createSection(el, adapter, { speed = () => 0.6, orbitOn = () => 
     if (mine === running && me === chain) step();
   }
   function resume() {
-    if (touring && !hovered && !focused && visible && !camera.busy) step();
+    if (touring && !hovered && !focused && visible && inView() && !camera.busy) step();
   }
 
   async function start() {
@@ -122,20 +129,25 @@ export function createSection(el, adapter, { speed = () => 0.6, orbitOn = () => 
     result.textContent = '';
   }
 
-  panel.addEventListener('pointerenter', () => { hovered = true; });
-  panel.addEventListener('pointerleave', () => { hovered = false; resume(); });
+  // Hover pauses the tour only when the pointer really moves over the card: a resting pointer the card scrolls in
+  // under (the browser's synthetic moves carry no movement) leaves it running
+  panel.addEventListener('pointermove', (e) => { if (e.pointerType === 'mouse' && (e.movementX || e.movementY)) hovered = true; });
+  panel.addEventListener('pointerleave', () => { if (hovered) { hovered = false; resume(); } });
   form.addEventListener('focusin', () => { focused = true; });
   form.addEventListener('focusout', (e) => { if (!form.contains(e.relatedTarget)) { focused = false; resume(); } });
   new IntersectionObserver(([e]) => {
     const was = visible;
     visible = e.isIntersecting;
+    if (visible && !was && pending) { pending = false; begin(); return; }
     if (visible && !was && started) resume();
+    // gone: a flight under way stops where it is (nothing drawn off screen); the stop it was heading for plays on return
+    if (!visible && was && touring) { running++; camera.stop(); camera.spin(false); k = Math.max(0, k - 1); }
   }, { threshold: 0.4 }).observe(el);
 
   // The panel writes in (the live section's entrance), then the map's intro plays. The dev panel's
   // "Replay section" runs it again from the top.
   if (!reduced) el.classList.add('is-armed');
-  onEnterOnce(el, () => {
+  function begin() {
     if (started) reset();
     if (!reduced) {
       el.classList.remove('is-go');
@@ -144,7 +156,8 @@ export function createSection(el, adapter, { speed = () => 0.6, orbitOn = () => 
     }
     visible = true;
     start();
-  }, { start: 'top 60%' });
+  }
+  onEnterOnce(el, () => { if (inView()) begin(); else pending = true; }, { start: 'top 60%' });
 
   // ---------- "Do we cover you?" ----------
   form.addEventListener('submit', async (e) => {
