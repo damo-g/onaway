@@ -1234,7 +1234,7 @@
   .qc-pop__results button { font-size: var(--text-lead); }
   .qc-pop__results i { width: var(--spacing-13); height: var(--spacing-13); flex: none; background: var(--color-yellow); }
   .qc-pop__results small { margin-left: auto; font-family: var(--font-mono); font-size: var(--text-label); letter-spacing: var(--text-label--letter-spacing); font-weight: 500; font-stretch: normal; text-transform: uppercase; opacity: 0.7; }
-  .qc-pop__msg { padding: var(--spacing-8); font-size: var(--text-small); line-height: 1.45; opacity: 0.75; }
+  .qc-pop__msg, .qc-pop__results .area-msg { padding: var(--spacing-8); font-size: var(--text-small); line-height: 1.45; opacity: 0.75; }
   .qc-pop__hint { padding-inline: var(--spacing-8); font-family: var(--font-mono); font-size: var(--text-label); letter-spacing: var(--text-label--letter-spacing); text-transform: uppercase; opacity: 0.6; }
 
   /* Button: the site's 55 with Lead 20, yellow at 70% while waiting; its label says the missing step */

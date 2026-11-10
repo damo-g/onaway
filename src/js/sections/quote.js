@@ -1,7 +1,6 @@
 import { registerOptions } from '../options.js';
 import { onEnterOnce, prefersReducedMotion } from '../motion.js';
-import { lookupPostcode } from '../data/postcodes.js';
-import { PLACES, regionLabel } from '../data/places.js';
+import { areaSearch } from '../area-search.js';
 
 // Locked first: dark panel, X and O route marks, asking service + area + when.
 registerOptions('quote', {
@@ -102,8 +101,7 @@ export function init(el) {
     blanks[key].setAttribute('aria-expanded', 'true');
     place(key);
     if (key === 'area') {
-      areaInput.value = '';
-      search();
+      area.clear();
       areaInput.focus();
     } else {
       pops[key].querySelector('button').focus();
@@ -146,45 +144,12 @@ export function init(el) {
   pops.service.querySelectorAll('button').forEach((o) => o.addEventListener('click', () => { set('service', o.dataset.value); close({ focusBlank: true }); }));
   pops.when.querySelectorAll('button').forEach((o) => o.addEventListener('click', () => { set('when', o.dataset.value); close({ focusBlank: true }); }));
 
-  // Area: a postal code is looked up; a town is matched by name. Rows show the region tag.
-  function row(name, region, code) {
-    const b = document.createElement('button');
-    b.type = 'button';
-    b.innerHTML = `<i aria-hidden="true"></i><span></span><small></small>`;
-    b.querySelector('span').textContent = name;
-    b.querySelector('small').textContent = `${code ? `${code} · ` : ''}${regionLabel(region)}`;
-    b.addEventListener('click', () => { set('area', name); close({ focusBlank: true }); });
-    return b;
-  }
-  function message(text) {
-    const p = document.createElement('p');
-    p.className = 'qc-pop__msg';
-    p.textContent = text;
-    return p;
-  }
-  function search() {
-    const v = areaInput.value.trim();
-    results.replaceChildren();
-    if (!v) return;
-    if (/^[A-Za-z]\d[A-Za-z]/.test(v)) {
-      const a = lookupPostcode(v);
-      if (a.ok) results.append(row(a.place && a.place !== 'Toronto' ? a.place : a.region === 'Toronto' ? 'Toronto' : regionLabel(a.region), a.region, a.fsa));
-      else results.append(message(`${a.fsa} is outside our five areas for now. Add it on the next page and we will tell you straight.`));
-    } else {
-      const s = v.toLowerCase();
-      const starts = PLACES.filter(([n]) => n.toLowerCase().startsWith(s));
-      const contains = PLACES.filter(([n]) => !n.toLowerCase().startsWith(s) && n.toLowerCase().includes(s));
-      starts.concat(contains).slice(0, 5).forEach(([n, r]) => results.append(row(n, r, '')));
-      if (!results.children.length) results.append(message('Try a postal code, like L5B 1A1.'));
-    }
-    results.querySelector('button')?.classList.add('is-first');
-  }
-  areaInput.addEventListener('input', search);
-  areaInput.addEventListener('keydown', (e) => {
-    if (e.key === 'Enter') {
-      e.preventDefault();
-      results.querySelector('button')?.click();
-    }
+  // Area: postal code or town, matched as in the GTA check (05); the same search as the quote page
+  const area = areaSearch({
+    input: areaInput,
+    list: results,
+    pick: (it) => { set('area', it.label); close({ focusBlank: true }); },
+    empty: 'Try a postal code, like L5B 1A1.',
   });
 
   // ---- pre-fill the area from the GTA check (05)

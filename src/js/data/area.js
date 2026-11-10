@@ -112,3 +112,39 @@ export function lookupArea(input) {
   if (t.outside) return { ok: false, kind: 'town', label: t.label };
   return inside('town', t);
 }
+
+// Suggestions as the visitor types (the quote section's area blank, the quote page's pickers): the same postal
+// codes, towns, communities, regions and forgiveness as lookupArea, as a short list.
+// suggestAreas(input, max) → [{ label, place, region, code?, via?, out? }]: label is what to write, place the PLACES
+// name it maps to, via the place a community belongs to ("Woodbridge" via Vaughan), out a place outside our areas.
+export function suggestAreas(input, max = 5) {
+  const raw = (input || '').trim();
+  if (!raw) return [];
+  const compact = raw.replace(/\s/g, '').toUpperCase();
+  const item = (a) => (a.ok ? { label: a.label, place: a.place, region: a.region, code: a.fsa ?? '', via: !a.regionOnly && a.label !== a.place && a.label !== 'Toronto' ? a.place : '' } : { label: a.label, code: a.fsa ?? '', out: true });
+  if (/^[A-Z]\d[A-Z]/.test(compact)) return [item(lookupArea(compact))];
+  if (/^[A-Z]\d?$/.test(compact) && /\d/.test(compact)) return []; // a postal code on its way
+  const q = norm(raw);
+  if (!q) return [];
+  const ranked = [];
+  for (const [key, t] of INDEX) {
+    const rank = key.startsWith(q) ? 0 : key.split(/[\s-]/).some((w) => w.startsWith(q)) ? 1 : q.length >= 3 && key.includes(q) ? 2 : -1;
+    if (rank < 0) continue;
+    // places we serve first, then communities, regions, and towns outside
+    const kind = t.outside ? 3 : t.region ? 2 : REGION_OF[t.place] && t.label === t.place ? 0 : 1;
+    ranked.push([rank, kind, key, t]);
+  }
+  ranked.sort((a, b) => a[0] - b[0] || a[1] - b[1] || a[2].length - b[2].length);
+  const out = [];
+  const seen = new Set();
+  const add = (a) => { const it = item(a); if (!seen.has(it.label)) { seen.add(it.label); out.push(it); } };
+  for (const [, , , t] of ranked) {
+    if (out.length >= max) break;
+    add(t.outside ? { ok: false, kind: 'town', label: t.label } : inside('town', t));
+  }
+  if (!out.length) { // a slip of a letter
+    const a = lookupArea(raw);
+    if (!a.unknown) add(a);
+  }
+  return out;
+}
