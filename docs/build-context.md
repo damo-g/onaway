@@ -188,7 +188,7 @@ onaway/
 
 - **Footer details:** the contact numbers, email, socials and business number are made up. They need the real ones.
 - **Domain:** onaway.ca is **not bought yet**. The plan is to buy it after the local build. adeona.ca is owned. The placeholder email hello@onaway.ca is still fine in the mocks.
-- **GTA map (GT-10):** Mapbox payment method and a production token restricted to onaway.ca (GitHub secret VITE_MAPBOX_TOKEN) before merging to main; a portrait phone still captured from the live map (needs a working token).
+- **GTA map (GT-10):** Mapbox payment method and a production token restricted to onaway.ca (GitHub secret VITE_MAPBOX_TOKEN) before merging to main.
 - **Postcode mapping:** the postcode → area table needs checking against Canada Post.
 - **OT-05 images:** grade all four to OV-01 and add grain.
 - **Launch SEO:** LocalBusiness schema, Google Business Profile alignment, sitemap, meta and OG images.

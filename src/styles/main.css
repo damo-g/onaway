@@ -1015,7 +1015,6 @@
   /* phone (and a phone on its side): the lead at body size, the arrow alone on the button ("Check" stays its name), so the card stays compact
      and the placeholder reads in full (the input stays at 16: iOS zooms into anything smaller) */
   @media (width < 768px), (height < 500px) {
-    .gta__still img { object-position: 66% 50%; }
     .gta__lead { font-size: var(--text-body); line-height: var(--text-body--line-height); }
     .gta__check { gap: var(--spacing-8); }
     .gta__row input { padding-inline: var(--spacing-13); }
