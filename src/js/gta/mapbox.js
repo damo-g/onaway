@@ -276,6 +276,7 @@ export function createGtaMap(el, {
         bearing: -28,
         maxPitch: 72,
         interactive: false, // no wheel, no drag, no touch: the page always scrolls
+        pixelRatio: Math.min(devicePixelRatio || 1, 2), // a 3× phone draws at 2×: barely softer, far lighter on the GPU and battery
         attributionControl: false,
         logoPosition: 'bottom-right',
         localFontFamily: fontFamily(opt('font')),

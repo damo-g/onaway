@@ -179,7 +179,7 @@ onaway/
 - Images in AVIF or WebP with `srcset`.
 - Lazy load everything below the fold.
 - Budget: page JS under 120 KB gzipped, LCP under 2.5s on 4G.
-- Deferred budget (Nov 2026): the GTA map's Mapbox GL (about 525 KB gzipped) and the section's map code are separate chunks, never part of the first load, so they sit outside the 120 KB page budget and never touch LCP. They load in steps (src/js/sections/gta.js): the code after the page has loaded and gone idle (no map yet, nothing billed); the map itself, off screen, once the visitor scrolls past the first screen or the section is within two screens, so it is drawn before they reach it. The colour grade and the grain are made in a worker (src/js/gta/bake.js). On Save-Data or 2G it all waits until the section is near.
+- Deferred budget (Nov 2026): the GTA map's Mapbox GL (about 525 KB gzipped) and the section's map code are separate chunks, never part of the first load, so they sit outside the 120 KB page budget and never touch LCP. They load in steps (src/js/sections/gta.js): the code after the page has loaded and gone idle (no map yet, nothing billed); the map itself, off screen, once the visitor has scrolled the page themselves (wheel, touch, key or pointer: never a restored scroll, a script, a crawler or a speed test) and reached Services, so it is drawn before they reach the section and only real readers count as a billed map load. Landing on the section starts it at once. The colour grade and the grain are made in a worker (src/js/gta/bake.js). On Save-Data or 2G it all waits until the section is near.
 
 **Sign-off**
 - Each section is approved on localhost or the tunnel before the next one starts.
@@ -188,7 +188,7 @@ onaway/
 
 - **Footer details:** the contact numbers, email, socials and business number are made up. They need the real ones.
 - **Domain:** onaway.ca is **not bought yet**. The plan is to buy it after the local build. adeona.ca is owned. The placeholder email hello@onaway.ca is still fine in the mocks.
-- **GTA map (GT-10):** Mapbox payment method and a production token restricted to onaway.ca (GitHub secret VITE_MAPBOX_TOKEN) before merging to main; the mobile pass.
+- **GTA map (GT-10):** Mapbox payment method and a production token restricted to onaway.ca (GitHub secret VITE_MAPBOX_TOKEN) before merging to main; a portrait phone still captured from the live map (needs a working token).
 - **Postcode mapping:** the postcode → area table needs checking against Canada Post.
 - **OT-05 images:** grade all four to OV-01 and add grain.
 - **Launch SEO:** LocalBusiness schema, Google Business Profile alignment, sitemap, meta and OG images.

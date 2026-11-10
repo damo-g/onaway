@@ -84,6 +84,13 @@ export function createLabels(map, Marker) {
 // open part of the map. navOverlap false: the section sits below the navbar (the live section).
 export function panelPadding(el, panel, layout, { navOverlap = true } = {}) {
   const nav = navOverlap ? parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--nav-h')) || 89 : 0;
-  const right = panel.getBoundingClientRect().right - el.getBoundingClientRect().left;
+  const box = el.getBoundingClientRect();
+  const p = panel.getBoundingClientRect();
+  const right = p.right - box.left;
+  // tablet and phone: the card runs across the foot, so the map frames the room above it
+  if (right > box.width * 0.6) {
+    const e = box.width < 768 ? 21 : 34;
+    return { top: nav + e, right: e, bottom: Math.max(0, Math.round(box.bottom - p.top)) + e, left: e };
+  }
   return { top: nav + 34, right: 55, bottom: 55, left: Math.round(layout === 'card' ? right + 55 : right * 0.82) };
 }

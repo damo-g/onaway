@@ -5,12 +5,12 @@
 --}}
 <div class="gta__panel{{#if panelClass}} {{panelClass}}{{/if}}">
   <h2 class="gta__sentence">We’ll be in <br><span class="gta__slot is-idle"><span class="gta__hl" aria-hidden="true"></span><span class="gta__place">the GTA</span></span> <br>on your date.</h2>
-  <p class="gta__lead text-lead">The City of Toronto and the four regions around it. The same crew and the same promises, wherever you are.</p>
+  <p class="gta__lead">The City of Toronto and the four regions around it. The same crew and the same promises, wherever you are.</p>
   <form class="gta__check" novalidate>
     <label class="label" for="{{id}}">Do we cover you?</label>
     <div class="gta__row">
       <input id="{{id}}" name="postcode" maxlength="{{#if maxlength}}{{maxlength}}{{else}}7{{/if}}" placeholder="{{#if placeholder}}{{placeholder}}{{else}}Postal code, e.g. M6K 1A1{{/if}}" autocomplete="{{#if autocomplete}}{{autocomplete}}{{else}}postal-code{{/if}}" spellcheck="false">
-      <button type="submit">Check <span aria-hidden="true">{{{icon "arrow-right-02"}}}</span></button>
+      <button type="submit"><span class="gta__go">Check</span> <span aria-hidden="true">{{{icon "arrow-right-02"}}}</span></button>
     </div>
     <p class="gta__result" aria-live="polite"></p>
   </form>

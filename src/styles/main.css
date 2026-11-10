@@ -924,9 +924,17 @@
   .promises.is-armed.is-go .carousel.is-paused .carousel__bar.is-on i { animation-play-state: paused; }
   /* ---------- Across the GTA (GT-10, a real 3D map: Mapbox Standard) ---------- */
   /* The map runs edge to edge behind a paper card. Until it has drawn (and wherever it can't run) a still of it
-     shows. Desktop: the section fills the screen below the navbar. gta.js; the map: src/js/gta/. */
-  .gta { --gta-bg: var(--color-paper); --gta-fg: var(--color-carbon); position: relative; overflow: hidden; background: var(--gta-bg); color: var(--gta-fg); }
-  .gta__stage { position: relative; height: calc(2 * var(--spacing-144)); overflow: hidden; background: var(--gta-bg); }
+     shows. The section fills the screen below the navbar (576 at least). Desktop: the card floats at the left
+     margin, centred. Tablet and phone: the card sits at the foot, inset by the page margin, with at least 288 of map
+     above it (the section grows rather than squeeze it). gta.js; the map: src/js/gta/. */
+  .gta {
+    --gta-bg: var(--color-paper); --gta-fg: var(--color-carbon);
+    position: relative; overflow: hidden; display: flex; flex-direction: column;
+    min-height: max(calc(100svh - var(--nav-h)), calc(4 * var(--spacing-144)));
+    padding: calc(2 * var(--spacing-144)) var(--grid-margin) var(--grid-margin);
+    background: var(--gta-bg); color: var(--gta-fg);
+  }
+  .gta__stage { position: absolute; inset: 0; overflow: hidden; background: var(--gta-bg); }
   .gta__still, .gta__map { position: absolute; inset: 0; width: 100%; height: 100%; } /* (mapbox-gl.css, unlayered, sets .mapboxgl-map to position: relative; the size holds either way) */
   .gta__still img { width: 100%; height: 100%; object-fit: cover; }
   .gta__map { opacity: 0; transition: opacity 1.2s ease; }
@@ -943,9 +951,25 @@
   }
   .gta__map .mapboxgl-ctrl-attrib a { color: inherit; }
   .gta__map .mapboxgl-ctrl-bottom-right { z-index: 4; }
+  /* tablet and phone: the card covers the foot, so Mapbox's logo and credit (required) move to the top */
+  @media (width < 1024px) {
+    .gta__credit { top: 0; bottom: auto; }
+    .gta__map .mapboxgl-ctrl-bottom-right { top: 0 !important; bottom: auto !important; } /* (!important: mapbox-gl.css is unlayered) */
+    .gta__map .mapboxgl-ctrl-bottom-right .mapboxgl-ctrl { margin: 0 !important; }
+  }
 
   /* The panel: the sentence, the lead and "Do we cover you?" (src/partials/gta-panel.hbs) */
   .gta__panel { position: relative; display: flex; flex-direction: column; gap: var(--spacing-21); padding: var(--spacing-34) var(--grid-margin); background: var(--color-paper); }
+  /* the card, on every screen: paper with a hairline, a soft shadow and the paper's tooth */
+  .gta .gta__panel {
+    z-index: 3; margin-top: auto; width: 100%; max-width: 600px;
+    padding: var(--spacing-21) var(--spacing-21) var(--spacing-13);
+    box-shadow: 0 0 0 1px var(--color-line), 0 21px 55px -34px color-mix(in srgb, var(--color-carbon) 50%, transparent);
+  }
+  .gta .gta__panel::before {
+    content: ""; position: absolute; inset: 0; pointer-events: none;
+    background-image: var(--gta-grain); background-size: 220px; mix-blend-mode: multiply; opacity: 0.55;
+  }
   .gta__sentence { font-size: var(--text-h2); line-height: 0.98; font-weight: 600; letter-spacing: -0.02em; }
   .gta__slot { position: relative; display: inline-block; padding-inline: 0.04em; }
   .gta__place { position: relative; z-index: 1; display: inline-block; transition: color 0.3s; }
@@ -953,7 +977,7 @@
   .gta__place.is-typing { animation: tk-write 0.6s cubic-bezier(0.4, 0, 0.2, 1) both; }
   .gta__hl { position: absolute; inset: 0.52em 0 0.04em; background: var(--color-yellow); transform: scaleX(0); transform-origin: 0 0; transition: transform 0.7s cubic-bezier(0.4, 0, 0.2, 1); }
   .gta__slot.is-lit .gta__hl { transform: scaleX(1); }
-  .gta__lead { max-width: 40ch; color: color-mix(in srgb, var(--color-carbon) 78%, transparent); }
+  .gta__lead { max-width: 40ch; font-size: var(--text-lead); line-height: var(--text-lead--line-height); color: color-mix(in srgb, var(--color-carbon) 78%, transparent); }
   .gta__check { display: flex; flex-direction: column; gap: var(--spacing-13); }
   .gta__row { display: flex; height: var(--spacing-55); }
   .gta__row input {
@@ -988,24 +1012,24 @@
 
   /* Desktop: the section fills the screen below the navbar; the card floats over the map at the page margin, no
      larger than the GT-09 mock's (600 wide, padding 34 / 21), with a hairline, a soft shadow and the paper's tooth */
-  @media (width >= 1024px) {
-    .gta { height: max(calc(100svh - var(--nav-h)), calc(4 * var(--spacing-144))); }
-    .gta__stage { position: absolute; inset: 0; height: auto; }
-    .gta .gta__panel {
-      position: absolute;
-      left: var(--grid-margin);
-      top: 50%;
-      translate: 0 -50%;
-      z-index: 3;
-      width: min(600px, 46%);
-      padding: var(--spacing-34) var(--spacing-34) var(--spacing-21);
-      box-shadow: 0 0 0 1px var(--color-line), 0 21px 55px -34px color-mix(in srgb, var(--color-carbon) 50%, transparent);
-    }
-    .gta .gta__panel::before {
-      content: ""; position: absolute; inset: 0; pointer-events: none;
-      background-image: var(--gta-grain); background-size: 220px; mix-blend-mode: multiply; opacity: 0.55;
-    }
+  /* phone (and a phone on its side): the lead at body size, the arrow alone on the button ("Check" stays its name), so the card stays compact
+     and the placeholder reads in full (the input stays at 16: iOS zooms into anything smaller) */
+  @media (width < 768px), (height < 500px) {
+    .gta__still img { object-position: 66% 50%; }
+    .gta__lead { font-size: var(--text-body); line-height: var(--text-body--line-height); }
+    .gta__check { gap: var(--spacing-8); }
+    .gta__row input { padding-inline: var(--spacing-13); }
+    .gta__row button { width: var(--spacing-55); justify-content: center; padding: 0; }
+    .gta__go { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+  }
+  @media (width >= 768px) and (height >= 500px) {
+    .gta { padding-bottom: var(--spacing-34); }
+    .gta .gta__panel { padding: var(--spacing-34) var(--spacing-34) var(--spacing-21); }
     .gta__sentence { font-size: var(--text-h1); }
+  }
+  @media (width >= 1024px) {
+    .gta { display: block; height: max(calc(100svh - var(--nav-h)), calc(4 * var(--spacing-144))); padding: 0; }
+    .gta .gta__panel { position: absolute; left: var(--grid-margin); top: 50%; translate: 0 -50%; margin: 0; width: min(600px, 46%); }
   }
 
   /* On the map: the area names, the matched area's name, the sign (src/js/gta/overlays.js) */
