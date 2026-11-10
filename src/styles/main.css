@@ -771,6 +771,24 @@
   .steps[data-ticket="notch"] .ticket__body { border-radius: 6px 0 0 6px; }
   .steps[data-ticket="notch"] .ticket__tear { border-radius: 0 6px 6px 0; }
 
+  /* Size (desktop; dev panel data-size, xl locked): the columns it spans, its height, the numbers' size. Six-column
+     sizes start a column later, leaving two empty columns after the intro. Heights on the scale (432 = 3 × 144,
+     377 = 144 + 144 + 89, 288 = 2 × 144). */
+  .ticket { grid-column: 1 / -1; }
+  @media (width >= 1024px) {
+    .ticket { grid-column: 6 / span 7; }
+    .steps:is([data-size="m6"], [data-size="s6"]) .ticket { grid-column: 7 / span 6; }
+    .steps:is([data-size="l"], [data-size="m6"]) .ticket { --ticket-h: calc(3 * var(--spacing-144)); }
+    .steps:is([data-size="m"], [data-size="s6"]) .ticket { --ticket-h: calc(2 * var(--spacing-144) + var(--spacing-89)); }
+    .steps[data-size="xs"] .ticket { --ticket-h: calc(2 * var(--spacing-144)); }
+    .steps:is([data-size="l"], [data-size="m"], [data-size="m6"], [data-size="s6"], [data-size="xs"]) .ticket__field { padding: var(--spacing-34) var(--spacing-21); }
+    .steps:is([data-size="l"], [data-size="m6"]) .ticket__num { margin-bottom: var(--spacing-13); }
+    .steps:is([data-size="m"], [data-size="m6"], [data-size="s6"]) .ticket__num { margin-bottom: var(--spacing-8); font-size: var(--text-h2); }
+    .steps[data-size="xs"] .ticket__num { margin-bottom: 0; font-size: var(--text-h3); font-weight: 600; }
+    .steps[data-size="xs"] .ticket__field { gap: var(--spacing-8); }
+    .steps[data-size="xs"] .ticket__stamp { right: var(--spacing-21); bottom: var(--spacing-21); }
+  }
+
   /* Phones: the ticket stands up. Stub along the top, steps stacked, tear-off below the seam. */
   @media (width < 768px) {
     .ticket {

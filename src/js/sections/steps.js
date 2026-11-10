@@ -7,6 +7,9 @@ registerOptions('steps', {
   ticket: ['tear', 'stamps', 'stamp', 'pin', 'notch'],
   symbol: ['foot', 'centre'],
   animation: ['write', 'unroll', 'across'],
+  // Desktop size (Nov 2026, the ticket felt too large): xl the current one (7 columns, 500 tall) · l 432 tall ·
+  // m 377 tall, 42 numbers · m6 six columns, 432 · s6 six columns, 377 · xs 288 tall, 26 numbers
+  size: ['xl', 'l', 'm', 'm6', 's6', 'xs'],
 });
 
 export function init(el) {
