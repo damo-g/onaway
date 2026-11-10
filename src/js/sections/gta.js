@@ -2,12 +2,19 @@
 // behaviour is the shared controller (src/js/gta/controller.js): the intro, the idle tour, "Do we cover you?"
 // (postal code or town), the hand-off to the quote (06).
 //
-// Mapbox GL is about 518 KB gzipped, so it has its own deferred budget (docs/build-context.md): it loads only as the
-// section nears the screen, never with the page, and so does everything else of the section's (src/js/gta/:
-// the map, the camera, the controller and the town lookup). Until the map has drawn, and wherever it can't run, the still
+// Loading. Mapbox GL is about 525 KB gzipped, with its own deferred budget (docs/build-context.md). It never
+// competes with the page's first load, yet the map is drawn before the visitor reaches it:
+//   1. after the page has loaded and gone idle: the map's code (Mapbox GL and ours), its stylesheet, the areas and
+//      a connection to Mapbox. No map yet, so nothing is billed (a map load is counted when a map starts).
+//   2. once the visitor scrolls on past the first screen, or the section is within two screens: the map starts,
+//      off screen, on the still's view, and loads the first tour stops.
+//   3. on entry: the intro and the tour, on a map that is already drawn.
+// Landing on the section (a link to /#gta, a restored scroll): all at once. On Save-Data or a 2G connection: only
+// as the section nears the screen. Until the map has drawn, and wherever it can't run, the still
 // (src/assets/images/gta-map.png) shows and the section works on it, the sentence touring the places.
 import { registerOptions } from '../options.js';
 import { prefersReducedMotion } from '../motion.js';
+import { PLACE_AT, TOUR } from '../data/places.js'; // (already in the page: the quote uses it)
 
 // Dev review panel: the open choices (the locked value first). Nothing here ships.
 registerOptions('gta', {
@@ -17,24 +24,52 @@ registerOptions('gta', {
   intro: ['still', 'flight'], // still: the map takes over from the still image's view · flight: it descends from over the lake first
 });
 
+const MAPBOX = 'https://api.mapbox.com';
+const conn = navigator.connection;
+const frugal = !!conn?.saveData || /(^|-)2g$/.test(conn?.effectiveType ?? ''); // the visitor saves data, or the line is slow
+
+// After the page's load event, when the browser is idle (never in the way of the first load or LCP)
+function whenSettled(fn) {
+  const idle = () => ('requestIdleCallback' in window ? requestIdleCallback(fn, { timeout: 4000 }) : setTimeout(fn, 1500));
+  if (document.readyState === 'complete') idle();
+  else addEventListener('load', idle, { once: true });
+}
+// Before the page has loaded, wait for it; after, at once
+const whenLoaded = (fn) => (document.readyState === 'complete' ? fn() : addEventListener('load', fn, { once: true }));
+
 export function init(el) {
   const reduced = prefersReducedMotion();
   const panel = el.querySelector('.gta__panel');
+  const token = import.meta.env.VITE_MAPBOX_TOKEN;
   const still = import.meta.env.DEV && new URLSearchParams(location.search).has('gta-still'); // dev: capture the still
 
+  // 1. the code (and Mapbox GL, through preloadMap), fetched once
+  let code;
+  function loadCode() {
+    code ??= Promise.all([import('../gta/mapbox.js'), import('../gta/controller.js'), import('../gta/texture.js')]).then(([mapbox, controller, texture]) => {
+      if (token) mapbox.preloadMap();
+      return { ...mapbox, ...controller, ...texture };
+    });
+    return code;
+  }
+  function prefetch() {
+    if (token) document.head.append(Object.assign(document.createElement('link'), { rel: 'preconnect', href: MAPBOX, crossOrigin: 'anonymous' }));
+    loadCode();
+  }
+
+  // 2. the map, started off screen and drawn ahead of the visitor
   let started = false;
   async function boot() {
     if (started) return;
     started = true;
-    const [{ createGtaMap, LOCKED, STILL_CAMERA }, { createSection }, { grainTile, asUrl, INK }] = await Promise.all([
-      import('../gta/mapbox.js'), import('../gta/controller.js'), import('../gta/texture.js'),
-    ]);
+    stopWatching();
+    const { createGtaMap, LOCKED, STILL_CAMERA, createSection, grainTile, asUrl, INK } = await loadCode();
     const opt = (key) => el.dataset[key] ?? LOCKED[key];
     const speed = () => +opt('speed');
     const orbitOn = () => opt('orbit') === 'on';
     // The card's paper tooth (tactile, like the tickets): the paper grain, under the words
     panel.style.setProperty('--gta-grain', asUrl(grainTile(INK.carbon, INK.camel, 220)));
-    const gta = createGtaMap(el, { opt, panel, token: import.meta.env.VITE_MAPBOX_TOKEN, reduced, navOverlap: false });
+    const gta = createGtaMap(el, { opt, panel, token, reduced, navOverlap: false });
     if (import.meta.env.DEV) el.addEventListener('section:options', () => gta.applyConfig());
     const map = await gta.boot();
     if (!map) { // no map: the section runs on the still
@@ -48,6 +83,20 @@ export function init(el) {
     if (!still) createSection(el, gta.adapter, { speed, orbitOn, matchMode: () => opt('match') });
     await gta.adapter.drawn(8000);
     el.classList.add('is-live');
+    // then the first two tour stops, so the tour's first flights land on a drawn city
+    if (!still && !reduced) for (const name of TOUR.slice(0, 2)) await gta.adapter.warm(PLACE_AT[name]);
   }
-  new IntersectionObserver(([e], io) => { if (e.isIntersecting) { io.disconnect(); boot(); } }, { rootMargin: '800px 0px' }).observe(el);
+
+  // When to start: the visitor scrolls on past the first screen, or the section comes within two screens (a
+  // generous margin: Services pins and scrubs in between); on a frugal connection, only within 800px
+  const near = new IntersectionObserver(([e]) => { if (e.isIntersecting) whenLoaded(boot); }, { rootMargin: frugal ? '800px 0px' : '200% 0px' });
+  const onScroll = () => { if (scrollY > innerHeight) whenLoaded(boot); };
+  function stopWatching() { near.disconnect(); removeEventListener('scroll', onScroll); }
+  near.observe(el);
+  // landing on the section itself never waits
+  new IntersectionObserver(([e], io) => { if (e.isIntersecting) { io.disconnect(); boot(); } }).observe(el);
+  if (!frugal) {
+    addEventListener('scroll', onScroll, { passive: true });
+    whenSettled(prefetch);
+  }
 }

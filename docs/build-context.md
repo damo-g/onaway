@@ -179,7 +179,7 @@ onaway/
 - Images in AVIF or WebP with `srcset`.
 - Lazy load everything below the fold.
 - Budget: page JS under 120 KB gzipped, LCP under 2.5s on 4G.
-- Deferred budget (Nov 2026): the GTA map's Mapbox GL (about 525 KB gzipped) and the section's map code are separate chunks, loaded only as section 05 nears the screen, never with the page, so they sit outside the 120 KB page budget and never touch LCP.
+- Deferred budget (Nov 2026): the GTA map's Mapbox GL (about 525 KB gzipped) and the section's map code are separate chunks, never part of the first load, so they sit outside the 120 KB page budget and never touch LCP. They load in steps (src/js/sections/gta.js): the code after the page has loaded and gone idle (no map yet, nothing billed); the map itself, off screen, once the visitor scrolls past the first screen or the section is within two screens, so it is drawn before they reach it. The colour grade and the grain are made in a worker (src/js/gta/bake.js). On Save-Data or 2G it all waits until the section is near.
 
 **Sign-off**
 - Each section is approved on localhost or the tunnel before the next one starts.

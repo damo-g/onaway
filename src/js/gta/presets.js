@@ -84,18 +84,21 @@ export const GRADES = {
 };
 
 // A LUT image as Mapbox reads it: N rows (green) of N×N columns (blue slices of N reds), as a base64 PNG
+// (its pixels, the work: pure, so it also runs in the bake worker, bake.worker.js)
+export function lutPixels(grade, N = 32) {
+  const data = new Uint8ClampedArray(N * N * N * 4);
+  for (let gi = 0; gi < N; gi++) for (let bi = 0; bi < N; bi++) for (let ri = 0; ri < N; ri++) {
+    const out = grade([(ri / (N - 1)) * 255, (gi / (N - 1)) * 255, (bi / (N - 1)) * 255]);
+    const i = (gi * N * N + bi * N + ri) * 4;
+    data[i] = out[0]; data[i + 1] = out[1]; data[i + 2] = out[2]; data[i + 3] = 255;
+  }
+  return data;
+}
 export function lutData(grade, N = 32) {
   const c = document.createElement('canvas');
   c.width = N * N;
   c.height = N;
-  const g = c.getContext('2d');
-  const img = g.createImageData(N * N, N);
-  for (let gi = 0; gi < N; gi++) for (let bi = 0; bi < N; bi++) for (let ri = 0; ri < N; ri++) {
-    const out = grade([(ri / (N - 1)) * 255, (gi / (N - 1)) * 255, (bi / (N - 1)) * 255]);
-    const i = (gi * N * N + bi * N + ri) * 4;
-    img.data[i] = out[0]; img.data[i + 1] = out[1]; img.data[i + 2] = out[2]; img.data[i + 3] = 255;
-  }
-  g.putImageData(img, 0, 0);
+  c.getContext('2d').putImageData(new ImageData(lutPixels(grade, N), N * N, N), 0, 0);
   return c.toDataURL('image/png').split(',')[1];
 }
 
@@ -157,7 +160,9 @@ export const BUILDINGS = {
   paper: T.paper, // pale blocks on the land: the light does the shaping
 };
 
-const lutCache = {};
+// The grades as LUT images, by grade name. Baked ahead off the main thread where possible (bake.js); a grade not
+// baked yet is made here, on the spot.
+export const lutCache = {};
 // The full basemap config for a palette (+ any editor overrides)
 export function paletteConfig(name, overrides = {}, buildings = 'stone') {
   const p = PALETTES[name] ?? PALETTES.brandlut;

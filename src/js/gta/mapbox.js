@@ -9,7 +9,8 @@
 import { createCamera } from './camera.js';
 import { loadAreas, WORLD_FC } from './areas.js';
 import { createHighlight, createLabels, panelPadding } from './overlays.js';
-import { softGrainTile, asImageData } from './texture.js';
+import { asImageData } from './texture.js';
+import { bakeGrade, bakeSoftGrain } from './bake.js';
 import { T, mix, alpha } from './colors.js';
 import { PALETTES, paletteConfig, liveLight } from './presets.js';
 
@@ -32,6 +33,15 @@ const HIGHLIGHTS = { spotlight: ['hl-spot', 'hl-inner', 'hl-line-thin'], tint: [
 const fontFamily = (font) => (font === 'mono' ? '"Overpass Mono", monospace' : null);
 const fontsReady = (font) => (font === 'mono' ? Promise.all(['400', '500', '700'].map((w) => document.fonts.load(`${w} 16px "Overpass Mono"`))).catch(() => {}) : Promise.resolve());
 
+// Everything the map needs before it can start, fetched and made once: Mapbox GL and its stylesheet, the five
+// areas, the label font, and (off the main thread, bake.js) the palette's colour grade and the soft grain.
+// preloadMap() can run long before the map starts: it creates no map, so it is not a billed map load.
+let preloaded;
+export function preloadMap(font = LOCKED.font, palette = LOCKED.palette) {
+  preloaded ??= Promise.all([import('mapbox-gl'), loadAreas(), import('mapbox-gl/dist/mapbox-gl.css'), fontsReady(font), bakeGrade(palette), bakeSoftGrain()]);
+  return preloaded;
+}
+
 export function createGtaMap(el, {
   opt = (key) => LOCKED[key],
   container = el.querySelector('.gta__map'),
@@ -40,7 +50,7 @@ export function createGtaMap(el, {
   reduced = false,
   navOverlap = true, // false: the section sits below the navbar (the live section), so no room is kept for it
   overrides = () => ({}), // colour overrides (the exploration's map editor)
-  texture = async (name) => (name === 'soft-grain' ? softGrainTile() : null), // a texture's canvas, by name
+  texture = async (name) => (name === 'soft-grain' ? bakeSoftGrain() : null), // a texture by name: a canvas, or pixels
   textureOpacity = () => +opt('opacity') / 100,
   groundTexture = () => opt('placement') !== 'screen', // the live section lays its texture on the ground
   onConfig = () => {}, // after each config change (the exploration's editor and theme)
@@ -147,7 +157,8 @@ export function createGtaMap(el, {
       if (!map.hasImage(id)) {
         textures[name] ??= await texture(name);
         if (!textures[name] || !map.getLayer('tex-ground')) return;
-        if (!map.hasImage(id)) map.addImage(id, asImageData(textures[name]), { pixelRatio: name === 'airbrush' ? 0.5 : 2 });
+        const img = textures[name].getContext ? asImageData(textures[name]) : textures[name];
+        if (!map.hasImage(id)) map.addImage(id, img, { pixelRatio: name === 'airbrush' ? 0.5 : 2 });
       }
       map.setPaintProperty('tex-ground', 'fill-pattern', id);
     }
@@ -250,7 +261,7 @@ export function createGtaMap(el, {
   async function boot() {
     if (!token) return null;
     try {
-      const [lib, loaded] = await Promise.all([import('mapbox-gl'), loadAreas(), import('mapbox-gl/dist/mapbox-gl.css'), fontsReady(opt('font'))]);
+      const [[lib, loaded]] = await Promise.all([preloadMap(opt('font'), opt('palette')), bakeGrade(opt('palette'))]);
       mapboxgl = lib.default;
       areas = loaded;
       mapboxgl.accessToken = token;

@@ -167,10 +167,15 @@ export function neutral(c, mode) {
 // fine tooth (every pixel a little, deeper where the tone is deep), softened by a light blur so it reads as tooth,
 // not sprinkled dots; only a few true specks remain, in the deepest tone.
 // ink: the grain's colour (a warm brown mixed from rust and carbon); tint: the soft tone under it.
-export function softGrainTile({ n = 768, scale = 2, seed = 9, ink = INK.rust.map((v, i) => v + (INK.carbon[i] - v) * 0.45), tint = INK.camel, tooth = 0.5, specks = 0.05, shade = 0.22 } = {}) {
-  const c = canvas(n);
-  const g = c.getContext('2d', { willReadFrequently: true });
-  const img = g.createImageData(n, n);
+export function softGrainTile(opts) {
+  const { width, data } = softGrainPixels(opts);
+  const c = canvas(width);
+  c.getContext('2d', { willReadFrequently: true }).putImageData(new ImageData(data, width, width), 0, 0);
+  return c;
+}
+// (its pixels, the work: pure, so it also runs in the bake worker, bake.worker.js) → { width, height, data }
+export function softGrainPixels({ n = 768, scale = 2, seed = 9, ink = INK.rust.map((v, i) => v + (INK.carbon[i] - v) * 0.45), tint = INK.camel, tooth = 0.5, specks = 0.05, shade = 0.22 } = {}) {
+  const img = { width: n, height: n, data: new Uint8ClampedArray(n * n * 4) };
   const lo = periodicNoise(scale, seed);
   const hi = periodicNoise(scale * 2, seed + 3);
   const smooth = (e0, e1, x) => { const t = Math.max(0, Math.min(1, (x - e0) / (e1 - e0))); return t * t * (3 - 2 * t); };
@@ -202,6 +207,5 @@ export function softGrainTile({ n = 768, scale = 2, seed = 9, ink = INK.rust.map
       img.data[i + 3] = out * 255;
     }
   }
-  g.putImageData(img, 0, 0);
-  return c;
+  return img;
 }
