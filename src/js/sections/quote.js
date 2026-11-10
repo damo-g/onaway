@@ -8,9 +8,21 @@ registerOptions('quote', {
   colour: ['dark', 'light', 'yellow'],
   marks: ['xo', 'box', 'cross', 'street'],
   ask: ['3', '2', '1'],
-  head: ['label', 'headline'], // a small label over the sentence, or the old display headline
+  head: ['off', 'headline'], // the sentence alone (the eyebrow retired, Nov 2026), or the display headline over it
   size: ['68', '42'], // the sentence on desktop
+  // The button before the sentence is complete (pressing it opens the next blank in every case):
+  // dim (70%, as built) · outline (hollow, fills when ready) · stops (three route stops fill as you answer)
+  // · board (a departure-board line: NEXT · …) · live (always the full button; its words say the next step)
+  wait: ['dim', 'outline', 'stops', 'board', 'live'],
+  // Desktop layout: poster (centred, as built) · left (flush left) · split (7/5: the sentence, then a ticket of the
+  // answers and the button) · aside (8/4: the note and button in the right column) · masthead (the headline across,
+  // the sentence under it, the button on a hairline)
+  layout: ['poster', 'left', 'split', 'aside', 'masthead'],
+  // An extra, brand-led: none · stamps (each answer is stamped onto the panel) · billboard (the panel as a wayfinding
+  // sign on posts) · flap (the blanks as split-flap tiles that flip when set)
+  effect: ['none', 'stamps', 'billboard', 'flap'],
 });
+const SHORT = { 'this week': 'This week', 'next week': 'Next week', later: 'Later', 'not sure yet': 'Not sure' };
 
 const EMPTY = { service: 'a hand', area: 'your area', when: 'sometime soon' };
 
@@ -45,6 +57,13 @@ export function init(el) {
     b.querySelector('.qc-blank__text').textContent = value || EMPTY[key];
     b.classList.toggle('is-set', !!value);
     b.classList.toggle('is-empty', !value);
+    // the answer shows wherever an option repeats it: the split layout's ticket, the stops, the stamps
+    const label = value ? (SHORT[value] ?? value.charAt(0).toUpperCase() + value.slice(1)) : '';
+    el.querySelector(`[data-sum="${key}"] dd`).textContent = label || '—';
+    el.querySelector(`[data-stop="${key}"]`).classList.toggle('is-on', !!value);
+    const stamp = el.querySelector(`[data-stamp="${key}"]`);
+    stamp.querySelector('b').textContent = label;
+    stamp.classList.toggle('is-on', !!value);
     update();
   }
 

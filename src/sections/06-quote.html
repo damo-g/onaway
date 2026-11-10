@@ -1,12 +1,18 @@
 {{!-- 06 Quote · QC-02 Say It in a Sentence (centre poster, dark inset panel). Each blank opens a picker;
      the button says what's missing. src/js/sections/quote.js. Area pre-fills from the GTA check (05).
-     Locked (Oct 2026): a small label leads and the sentence is the headline ("Get a free quote." stays as the
-     section's hidden heading). Panel options: head label | headline · size 68 | 42. --}}
+     Nov 2026: no eyebrow (the sentence and its note already say it); "Get a free quote." is the section's heading,
+     hidden (head off) or shown as the headline. Panel options: head · size · wait (the button before the sentence is
+     complete) · layout · effect. The summary, stops, stamps and sign below show only for the options that use them. --}}
 {{#> section id="quote" variant="inset" class="qc" label="Get a free quote"}}
   <div class="qc__bg" aria-hidden="true">{{> quote-route}}</div>
+  <div class="qc__stamps" aria-hidden="true">
+    <span class="qc-stamp" data-stamp="service"><small>Service</small><b></b></span>
+    <span class="qc-stamp" data-stamp="area"><small>Area</small><b></b></span>
+    <span class="qc-stamp" data-stamp="when"><small>When</small><b></b></span>
+  </div>
 
   <div class="qc__body col-span-full">
-    <p class="qc__kicker label" aria-hidden="true">Free quote · In writing within 2 hours</p>
+    <span class="qc__sign" aria-hidden="true">{{{icon "arrow-right-02"}}}</span>
     <h2 class="qc__title text-h2 md:text-h1 lg:text-display uppercase">Get a free quote.</h2>
 
     <form class="qc__form" action="/quote/" method="get" novalidate>
@@ -50,8 +56,13 @@
       </div>
 
       <div class="qc__foot">
+        <dl class="qc__summary" aria-hidden="true">
+          <div data-sum="service"><dt class="label">Service</dt><dd>—</dd></div>
+          <div data-sum="area"><dt class="label">Area</dt><dd>—</dd></div>
+          <div data-sum="when"><dt class="label">When</dt><dd>—</dd></div>
+        </dl>
         <div class="qc__ready">
-          <button type="submit" class="qc__cta" aria-disabled="true"><span class="qc__cta-label">Pick a service to start</span> <span class="qc__cta-arrow" aria-hidden="true">{{{icon "arrow-right-02"}}}</span></button>
+          <button type="submit" class="qc__cta" aria-disabled="true"><span class="qc__stops" aria-hidden="true"><i data-stop="service"></i><i data-stop="area"></i><i data-stop="when"></i></span><span class="qc__cta-label">Pick a service to start</span> <span class="qc__cta-arrow" aria-hidden="true">{{{icon "arrow-right-02"}}}</span></button>
           <p class="qc__note">Next: your name and number. Your quote arrives in writing <b data-quote-by>within 2 hours</b>. No account, no call needed.</p>
         </div>
         <div class="qc__done" hidden>

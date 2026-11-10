@@ -1165,10 +1165,8 @@
   /* Centre poster */
   .qc__body { position: relative; z-index: 1; display: flex; flex-direction: column; align-items: center; text-align: center; }
   .qc__title { margin-bottom: var(--spacing-21); }
-  /* Head (locked: label): the sentence is the headline; "Get a free quote." stays as the hidden section heading */
-  .qc__kicker { margin-bottom: var(--spacing-21); color: var(--qc-mut); text-wrap: balance; }
+  /* Head: off (locked Nov 2026, no eyebrow): "Get a free quote." stays as the hidden section heading; headline shows it */
   .qc:not([data-head="headline"]) .qc__title { position: absolute; width: 1px; height: 1px; margin: 0; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
-  .qc[data-head="headline"] .qc__kicker { display: none; }
   .qc__title,
   .qc__sentence { color: var(--qc-fg); }
   .qc__form { display: flex; flex-direction: column; align-items: center; }
@@ -1280,6 +1278,113 @@
     .qc[data-size="42"] .qc__ask-when br { display: none; } /* one line at 42 */
   }
 
+  /* ---- CTA options (Nov 2026, dev panel): wait · layout · effect. Desktop first; phones keep the poster. ---- */
+  /* The parts only some options use stay hidden otherwise */
+  .qc__summary, .qc__stops, .qc__stamps, .qc__sign { display: none; }
+  .qc[data-ask="1"] :is([data-sum="area"], [data-stop="area"], [data-stamp="area"]),
+  .qc:is([data-ask="1"], [data-ask="2"]) :is([data-sum="when"], [data-stop="when"], [data-stamp="when"]) { display: none !important; }
+
+  /* wait: outline · hollow until ready, then it fills */
+  .qc[data-wait="outline"] .qc__cta { transition: background-color 0.4s, color 0.4s, box-shadow 0.4s, transform 0.3s; }
+  .qc[data-wait="outline"] .qc__cta[aria-disabled="true"] { opacity: 1; background: transparent; color: var(--qc-fg); box-shadow: inset 0 0 0 1.5px var(--qc-fg); cursor: pointer; }
+  /* wait: stops · three route stops before the words, filling as the sentence is answered (the site's route marks) */
+  .qc[data-wait="stops"] .qc__stops { display: inline-flex; align-items: center; gap: var(--spacing-8); }
+  .qc__stops i { position: relative; width: var(--spacing-8); height: var(--spacing-8); border: 1.5px solid currentColor; border-radius: 50%; transition: background-color 0.3s; }
+  .qc__stops i + i::before { content: ""; position: absolute; right: 100%; top: 50%; width: var(--spacing-8); border-top: 1.5px dotted currentColor; }
+  .qc__stops i.is-on { background: currentColor; }
+  .qc[data-wait="stops"] .qc__cta[aria-disabled="true"] { opacity: 1; background: transparent; color: var(--qc-fg); box-shadow: inset 0 0 0 1.5px var(--qc-line); cursor: pointer; }
+  /* wait: board · a departure-board line (mono caps, "Next ·", a slow amber blink) until it's ready */
+  .qc[data-wait="board"] .qc__cta[aria-disabled="true"] {
+    opacity: 1; cursor: pointer; background: color-mix(in srgb, var(--qc-fg) 8%, transparent); color: var(--qc-fg); box-shadow: inset 0 0 0 1px var(--qc-line);
+    font-family: var(--font-mono); font-size: var(--text-small); font-stretch: normal; letter-spacing: var(--text-label--letter-spacing); text-transform: uppercase; font-weight: 500;
+  }
+  .qc[data-wait="board"] .qc__cta[aria-disabled="true"] .qc__cta-label::before { content: "Next · "; color: var(--qc-mut); }
+  .qc[data-wait="board"] .qc__cta[aria-disabled="true"] .qc__cta-arrow { display: inline-block; width: var(--spacing-8); height: var(--spacing-8); overflow: hidden; border-radius: 50%; background: var(--color-yellow); color: transparent; animation: qc-blink 1.6s steps(2, jump-none) infinite; }
+  @keyframes qc-blink { 50% { opacity: 0.25; } }
+  /* wait: live · always the full button; only its words change */
+  .qc[data-wait="live"] .qc__cta[aria-disabled="true"] { opacity: 1; cursor: pointer; }
+  .qc[data-wait="live"] .qc__cta[aria-disabled="true"]:hover .qc__cta-arrow { transform: translateX(5px); }
+
+  @media (width >= 1024px) {
+    /* layout: left · flush left on the page margin */
+    .qc[data-layout="left"] :is(.qc__body, .qc__form, .qc__ready) { align-items: flex-start; text-align: left; }
+    .qc[data-layout="left"] .qc__bg { scale: -1 1; }
+    /* layout: split (7/5) · the sentence left; the answers as a ticket and the button right · aside (8/4): the note
+       and the button in the right column */
+    .qc:is([data-layout="split"], [data-layout="aside"]) :is(.qc__body, .qc__ready) { align-items: flex-start; text-align: left; }
+    .qc:is([data-layout="split"], [data-layout="aside"]) .qc__form { display: grid; width: 100%; column-gap: calc(var(--grid-gutter) + 100% / 12); align-items: end; }
+    .qc[data-layout="split"] .qc__form { grid-template-columns: minmax(0, 7fr) minmax(0, 5fr); }
+    .qc[data-layout="aside"] .qc__form { grid-template-columns: minmax(0, 8fr) minmax(0, 4fr); }
+    .qc:is([data-layout="split"], [data-layout="aside"]) .qc__sentence { grid-column: 1; grid-row: 1; }
+    .qc:is([data-layout="split"], [data-layout="aside"]) .qc__foot { grid-column: 2; grid-row: 1; margin-top: 0; }
+    .qc[data-layout="split"] .qc__summary { display: block; margin-bottom: var(--spacing-21); border-top: 1px solid var(--qc-line); }
+    .qc__summary div { display: flex; justify-content: space-between; align-items: baseline; gap: var(--spacing-13); padding-block: var(--spacing-13); border-bottom: 1px solid var(--qc-line); }
+    .qc__summary dt { color: var(--qc-mut); }
+    .qc__summary dd { font-size: var(--text-lead); font-weight: 600; }
+    .qc:is([data-layout="split"], [data-layout="aside"]) .qc__cta { width: 100%; justify-content: space-between; }
+    .qc[data-layout="aside"] .qc__ready { flex-direction: column-reverse; gap: var(--spacing-21); }
+    .qc[data-layout="aside"] .qc__note { padding-top: var(--spacing-13); border-top: 1px solid var(--qc-line); }
+    /* layout: masthead · the headline across the panel (always shown here), the sentence under it, the button and
+       the note on a hairline */
+    .qc[data-layout="masthead"] :is(.qc__body, .qc__form) { align-items: stretch; text-align: left; }
+    .qc[data-layout="masthead"] .qc__title { position: static; width: auto; height: auto; overflow: visible; clip-path: none; white-space: normal; margin-bottom: var(--spacing-34); padding-bottom: var(--spacing-21); border-bottom: 1px solid var(--qc-line); }
+    .qc[data-layout="masthead"] .qc__foot { margin-top: var(--spacing-55); padding-top: var(--spacing-21); border-top: 1px solid var(--qc-line); }
+    .qc[data-layout="masthead"] .qc__ready { flex-direction: row-reverse; justify-content: space-between; align-items: center; text-align: left; }
+    .qc[data-layout="masthead"] .qc__note { max-width: 52ch; }
+  }
+
+  /* effect: stamps · each answer is stamped onto the panel, rubber-stamp style (Rust on paper, Paper ink on carbon) */
+  .qc[data-effect="stamps"] .qc__stamps { display: block; position: absolute; inset: 0; pointer-events: none; }
+  .qc-stamp {
+    --ink: var(--color-rust);
+    position: absolute; display: grid; place-content: center; gap: 2px; width: var(--spacing-144); height: var(--spacing-89);
+    border-radius: 50%; box-shadow: inset 0 0 0 2px var(--ink), inset 0 0 0 6px var(--qc-bg), inset 0 0 0 7px var(--ink);
+    color: var(--ink); text-align: center; font-family: var(--font-mono); font-stretch: normal; text-transform: uppercase; letter-spacing: var(--text-label--letter-spacing);
+    opacity: 0; scale: 1.4; transition: opacity 0.15s, scale 0.35s cubic-bezier(0.3, 0.7, 0.3, 1);
+  }
+  .qc[data-colour="dark"] .qc-stamp, .qc:not([data-colour]) .qc-stamp { --ink: color-mix(in srgb, var(--color-paper) 70%, var(--color-rust)); }
+  .qc[data-colour="yellow"] .qc-stamp { --ink: var(--color-carbon); }
+  .qc-stamp small { font-size: var(--text-label); opacity: 0.8; }
+  .qc-stamp b { font-size: var(--text-small); font-weight: 600; }
+  .qc-stamp.is-on { opacity: 0.9; scale: 1; }
+  .qc-stamp[data-stamp="service"] { top: var(--spacing-34); right: calc(var(--spacing-89) + var(--spacing-55)); rotate: -9deg; }
+  .qc-stamp[data-stamp="area"] { bottom: var(--spacing-55); right: var(--spacing-89); rotate: 7deg; }
+  .qc-stamp[data-stamp="when"] { bottom: var(--spacing-34); left: var(--spacing-89); rotate: -5deg; }
+
+  /* effect: billboard · the panel as a wayfinding sign: a framed plate on two posts, an arrow tile at its corner */
+  .qc[data-effect="billboard"] { padding-bottom: 0; }
+  .qc[data-effect="billboard"] .qc__body {
+    --frame: color-mix(in srgb, var(--qc-fg) 16%, var(--qc-bg));
+    margin-inline: auto; margin-bottom: var(--spacing-89); max-width: calc(100% - 2 * var(--spacing-89)); padding: var(--spacing-55) var(--spacing-89);
+    border-radius: var(--spacing-13); background: color-mix(in srgb, var(--qc-fg) 5%, var(--qc-bg));
+    box-shadow: inset 0 0 0 var(--spacing-8) var(--frame), 0 34px 55px -34px color-mix(in srgb, var(--color-carbon) 60%, transparent);
+  }
+  .qc[data-effect="billboard"] .qc__body::before,
+  .qc[data-effect="billboard"] .qc__body::after { content: ""; position: absolute; top: 100%; width: var(--spacing-13); height: var(--spacing-89); background: var(--frame); }
+  .qc[data-effect="billboard"] .qc__body::before { left: 22%; }
+  .qc[data-effect="billboard"] .qc__body::after { right: 22%; }
+  .qc[data-effect="billboard"] .qc__sign {
+    display: grid; place-items: center; position: absolute; top: var(--spacing-8); left: var(--spacing-8); width: var(--spacing-55); height: var(--spacing-55);
+    border-radius: var(--spacing-8) 0 var(--spacing-8) 0; background: var(--color-yellow); color: var(--color-carbon); font-size: var(--text-h3);
+  }
+  .qc[data-effect="billboard"] .qc__bg { opacity: 0.4; }
+
+  /* effect: flap · the blanks as split-flap tiles (the arrival boards); a set blank flips in */
+  .qc[data-effect="flap"] .qc-blank {
+    padding: 0.06em 0.22em; border-bottom: 0; border-radius: 0.08em;
+    background: linear-gradient(to bottom, transparent calc(50% - 1px), color-mix(in srgb, var(--color-carbon) 70%, transparent) calc(50% - 1px) calc(50% + 1px), transparent calc(50% + 1px)), color-mix(in srgb, var(--color-carbon) 88%, var(--color-paper));
+    color: var(--color-paper); font-family: var(--font-mono); font-stretch: normal; font-weight: 500; text-transform: uppercase; letter-spacing: 0.04em; font-size: 0.8em; vertical-align: 0.06em;
+  }
+  .qc[data-effect="flap"] .qc-blank.is-empty .qc-blank__text { color: color-mix(in srgb, var(--color-paper) 55%, transparent); }
+  .qc[data-effect="flap"] .qc-blank__hl { display: none; }
+  .qc:is([data-colour="dark"], :not([data-colour]))[data-effect="flap"] .qc-blank { background-color: color-mix(in srgb, var(--color-paper) 14%, var(--color-carbon)); }
+  .qc[data-effect="flap"] .qc-blank.is-set { box-shadow: inset 0 -0.08em 0 var(--color-yellow); }
+  .qc[data-effect="flap"] .qc-blank.is-set .qc-blank__text { display: inline-block; animation: qc-flap 0.5s cubic-bezier(0.3, 0.7, 0.3, 1); transform-origin: 50% 55%; }
+  @keyframes qc-flap { 0% { transform: rotateX(90deg); } 60% { transform: rotateX(-12deg); } 100% { transform: none; } }
+  @media (prefers-reduced-motion: reduce) {
+    .qc-stamp { transition: none; }
+    .qc[data-effect="flap"] .qc-blank.is-set .qc-blank__text, .qc[data-wait="board"] .qc__cta-arrow { animation: none; }
+  }
   /* Entrance: the route draws in once on entry (quote.js arms it). Reduced motion: no drawing, drift or square. */
   .qc.is-armed .qc-route .rt { animation: qc-draw 3.2s cubic-bezier(0.4, 0, 0.2, 1) 0.2s both; animation-play-state: paused; }
   .qc.is-armed.is-go .qc-route .rt { animation-play-state: running; }
