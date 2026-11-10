@@ -7,11 +7,11 @@
 import { registerOptions } from '../../src/js/options.js';
 import { prefersReducedMotion } from '../../src/js/motion.js';
 import { PLACE_AT, TOUR } from '../../src/js/data/places.js';
-import { createCamera } from './camera.js';
-import { createSection } from './section.js';
-import { loadAreas } from './areas.js';
-import { createHighlight, createLabels, panelPadding } from './overlays.js';
-import { addSectionGrain } from './texture.js';
+import { createCamera } from '../../src/js/gta/camera.js';
+import { createSection } from '../../src/js/gta/controller.js';
+import { loadAreas } from '../../src/js/gta/areas.js';
+import { createHighlight, createLabels, panelPadding } from '../../src/js/gta/overlays.js';
+import { addSectionGrain } from '../../src/js/gta/texture.js';
 import { createMeter } from './meter.js';
 import { mapStyle, hatchImage } from './maplibre-style.js';
 

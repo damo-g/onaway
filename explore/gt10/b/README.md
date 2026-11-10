@@ -40,11 +40,10 @@ Option B of the GT-10 exploration (docs/gt10-3d-map-context.md): the same sectio
 | File | What it is |
 |---|---|
 | `b-mapbox.html`, `b-mapbox.js` | The page and the Mapbox side: the basemap config, our layers in Standard's slots, textures, the map editor, the adapter for the shared controller |
-| `presets.js` | The palettes, the building colours (Standard colour config mixed from the brand tokens), the colour grades and how they're turned into LUT images, and live Toronto light |
 | `b.css` | Screen textures, Mapbox's attribution and logo, the map editor |
 | `textures/` | Drop the logo-work textures here (PNG, JPG, WebP); each becomes a texture option, made seamless |
 
-Shared with option A (one level up, imported, never copied): `section.js` (behaviour), `camera.js` (the continuous tour camera), `areas.js`, `overlays.js` (the highlight fade, labels and pin, panel padding), `texture.js`, `meter.js`, `colors.js`, `places.js`, `regions.geojson`, `gt10.css`, and from the site: the panel partial, the places and tour, the postal and town lookup.
+The map itself is the live section's and is imported, never copied: `src/js/gta/mapbox.js` (the basemap config, our layers, the marks, the camera hooks; this page drives it with every setting as an option), `presets.js` (the palettes, building colours, grades and live light), `controller.js` (behaviour), `camera.js`, `areas.js`, `overlays.js`, `texture.js`, `colors.js`, `region-labels.js`, `regions.geojson`, all in `src/js/gta/`; from one level up: `meter.js` and `gt10.css`; from the site: the panel partial, the places and tour, the postal and town lookup.
 
 ## Findings
 

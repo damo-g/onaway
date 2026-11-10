@@ -200,12 +200,15 @@ export function createCamera(map, initial = {}) {
     },
 
     // Put the camera at the intro's first view, ready to play (and so its tiles can load first)
-    toIntroStart() { map.jumpTo({ ...INTRO_FROM, padding: s.padding }); },
+    // introFrom 'flight' (option A, the exploration): the intro descends from high over the lake. 'still' (the live
+    // section): it starts where it lands, the tilted GTA view the section's still image shows, so the map takes over
+    // from the still without a jump
+    toIntroStart() { map.jumpTo(s.introFrom === 'still' ? gtaView({ bearing: -12 }) : { ...INTRO_FROM, padding: s.padding }); },
 
     // Intro: from high over Lake Ontario, descend and tilt into the GTA (2.5s, ease-out)
     intro() {
       const end = gtaView({ bearing: -12 });
-      if (s.reduced) return move(() => map.jumpTo(end));
+      if (s.reduced || s.introFrom === 'still') return move(() => map.jumpTo(end));
       return move(() => map.easeTo({ ...end, duration: dur(2500), easing: EASE.out, essential: true }));
     },
 

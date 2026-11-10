@@ -1,6 +1,6 @@
-// GT-10 shared · what sits on top of any engine's map: the area highlight's fade and the HTML labels and pin.
+// GT-10 · what sits on top of the map (any engine): the area highlight's fade and the HTML labels and pin.
 // Uses only calls MapLibre and Mapbox share (setFeatureState, Marker, getZoom, on).
-import { REGION_LABELS } from './places.js';
+import { REGION_LABELS } from './region-labels.js';
 
 // The area highlight, drawn by the page's own layers from feature-state `k` (0–1) on the 'regions' and 'masks'
 // sources. The chosen area switches at once (no waiting on the map's worker, so the area before can never flash),
@@ -44,14 +44,14 @@ export function createLabels(map, Marker) {
   for (const r of Object.values(REGION_LABELS)) {
     // (the label sits inside the marker: the engine writes its own inline styles on the marker element)
     const m = document.createElement('div');
-    m.innerHTML = `<div class="g10-region label">${r.text}</div>`;
+    m.innerHTML = `<div class="gta-region label">${r.text}</div>`;
     regionMarkers.push(new Marker({ element: m }).setLngLat(r.at).addTo(map));
   }
   let regionsOn = true;
   // The matched area's name (a match lights an area): one step up the type scale from the place names under it,
   // so the area reads above its towns. Fades as the camera goes down into the city.
   const z = document.createElement('div');
-  z.innerHTML = '<div class="g10-zone" aria-hidden="true"></div>';
+  z.innerHTML = '<div class="gta-zone" aria-hidden="true"></div>';
   const zoneMarker = new Marker({ element: z }).setLngLat([-79.38, 43.65]).addTo(map);
   const zoneEl = () => zoneMarker.getElement().firstChild;
   let zoned = null;
@@ -63,11 +63,11 @@ export function createLabels(map, Marker) {
   map.on('zoom', show);
   show();
   const p = document.createElement('div');
-  p.innerHTML = '<div class="g10-place"><span class="g10-place__chip"><i></i><span class="label"></span></span><b class="g10-place__stem"></b></div>';
+  p.innerHTML = '<div class="gta-pin"><span class="gta-pin__chip"><i></i><span class="label"></span></span><b class="gta-pin__stem"></b></div>';
   const placeMarker = new Marker({ element: p, anchor: 'bottom' }).setLngLat([-79.38, 43.65]).addTo(map);
   const placeEl = () => placeMarker.getElement().firstChild;
   return {
-    pin(label, at, { sign = false } = {}) { placeMarker.setLngLat(at); placeEl().querySelector('.label').textContent = label; placeEl().classList.toggle('g10-place--sign', sign); placeEl().classList.add('is-on'); },
+    pin(label, at, { sign = false } = {}) { placeMarker.setLngLat(at); placeEl().querySelector('.label').textContent = label; placeEl().classList.toggle('gta-pin--sign', sign); placeEl().classList.add('is-on'); },
     unpin() { placeEl().classList.remove('is-on'); },
     regions(on) { regionsOn = on; show(); },
     // zone(region, style): show the area's name large ('mono' Overpass Mono, 'sans' Instrument Sans), or clear it
@@ -80,9 +80,10 @@ export function createLabels(map, Marker) {
   };
 }
 
-// Room the camera keeps clear for the navbar and the panel, so places land in the open part of the map
-export function panelPadding(el, panel, layout) {
-  const nav = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--nav-h')) || 89;
+// Room the camera keeps clear for the panel (and the navbar, when it lies over the map), so places land in the
+// open part of the map. navOverlap false: the section sits below the navbar (the live section).
+export function panelPadding(el, panel, layout, { navOverlap = true } = {}) {
+  const nav = navOverlap ? parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--nav-h')) || 89 : 0;
   const right = panel.getBoundingClientRect().right - el.getBoundingClientRect().left;
   return { top: nav + 34, right: 55, bottom: 55, left: Math.round(layout === 'card' ? right + 55 : right * 0.82) };
 }

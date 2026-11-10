@@ -4,7 +4,7 @@
 // the matched area and the pin, nothing else. No POIs or transit; few labels, in Overpass Mono (our own glyphs).
 // The area highlight layers live in the style too, so switching palette or highlight is a live style diff.
 
-import { T, mix, alpha } from './colors.js';
+import { T, mix, alpha } from '../../src/js/gta/colors.js';
 
 export { T, mix, alpha };
 

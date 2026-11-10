@@ -922,53 +922,30 @@
   .promises.is-armed :is(*, *::before, *::after) { animation-play-state: paused; }
   .promises.is-armed.is-go :is(*, *::before, *::after) { animation-play-state: running; }
   .promises.is-armed.is-go .carousel.is-paused .carousel__bar.is-on i { animation-play-state: paused; }
-  /* ---------- Across the GTA (GT-09 We'll Be There) ---------- */
-  /* Options (dev panel): data-tone light (locked) | dark · data-map drawn (locked) | grid · data-idle tour (locked) | still
-     · data-zoom place (locked) | area · data-check on (locked) | off · data-layout overlay (locked) | split | caption */
-  .gta {
-    --map-land: color-mix(in srgb, var(--color-carbon) 2%, var(--color-paper));
-    --map-lake: color-mix(in srgb, var(--color-camel) 28%, var(--color-paper));
-    --map-ink: var(--color-carbon);
-    --map-halo: var(--map-land);
+  /* ---------- Across the GTA (GT-10, a real 3D map: Mapbox Standard) ---------- */
+  /* The map runs edge to edge behind a paper card. Until it has drawn (and wherever it can't run) a still of it
+     shows. Desktop: the section fills the screen below the navbar. gta.js; the map: src/js/gta/. */
+  .gta { --gta-bg: var(--color-paper); --gta-fg: var(--color-carbon); position: relative; overflow: hidden; background: var(--gta-bg); color: var(--gta-fg); }
+  .gta__stage { position: relative; height: calc(2 * var(--spacing-144)); overflow: hidden; background: var(--gta-bg); }
+  .gta__still, .gta__map { position: absolute; inset: 0; width: 100%; height: 100%; } /* (mapbox-gl.css, unlayered, sets .mapboxgl-map to position: relative; the size holds either way) */
+  .gta__still img { width: 100%; height: 100%; object-fit: cover; }
+  .gta__map { opacity: 0; transition: opacity 1.2s ease; }
+  .gta.is-live .gta__map { opacity: 1; }
+  /* the still's credit (Mapbox's logo and credit come with the live map) */
+  .gta__credit {
+    position: absolute; right: 0; bottom: 0; padding: var(--spacing-8); background: color-mix(in srgb, var(--color-paper) 85%, transparent);
+    font-family: var(--font-mono); font-size: var(--text-label); letter-spacing: 0.02em; transition: opacity 0.6s;
   }
-  .gta[data-tone="dark"] {
-    --map-land: var(--color-carbon);
-    --map-lake: color-mix(in srgb, var(--color-paper) 6%, var(--color-carbon));
-    --map-ink: var(--color-paper);
+  .gta.is-live .gta__credit { opacity: 0; }
+  .gta__map .mapboxgl-ctrl-attrib {
+    font-family: var(--font-mono); font-size: var(--text-label); letter-spacing: 0.02em; color: var(--gta-fg);
+    background: color-mix(in srgb, var(--gta-bg) 85%, transparent);
   }
-  .gta__stage { position: relative; display: flex; flex-direction: column; gap: var(--spacing-34); }
-  .gta__plate { position: relative; height: calc(2 * var(--spacing-144)); overflow: hidden; background: var(--map-land); }
-  .gmap { position: absolute; inset: 0; width: 100%; height: 100%; }
+  .gta__map .mapboxgl-ctrl-attrib a { color: inherit; }
+  .gta__map .mapboxgl-ctrl-bottom-right { z-index: 4; }
 
-  /* Map layers (from the mock: tint, minor streets, rivers, concessions, boundaries, highways, shore, labels) */
-  .gmap .lake { fill: var(--map-lake); }
-  .gmap .landf { fill: var(--map-land); }
-  #gmap-zoom { transition: transform 1.6s cubic-bezier(0.6, 0, 0.15, 1); transform-box: view-box; transform-origin: 0 0; }
-  .gmap .rd { fill: none; stroke: color-mix(in srgb, var(--map-ink) 42%, transparent); stroke-width: 1; }
-  .gmap .mn path { fill: none; stroke: color-mix(in srgb, var(--map-ink) 13%, transparent); stroke-width: 0.6; }
-  .gmap .rv { fill: none; stroke: var(--color-camel); stroke-width: 5; stroke-opacity: 0.5; stroke-linecap: round; }
-  .gmap .hw { fill: none; stroke: color-mix(in srgb, var(--map-ink) 75%, transparent); stroke-width: 5; stroke-linecap: round; }
-  .gmap .hwc { fill: none; stroke: var(--map-land); stroke-width: 1.6; stroke-linecap: round; }
-  .gmap .bd { fill: none; stroke: color-mix(in srgb, var(--map-ink) 45%, transparent); stroke-dasharray: 2 6; }
-  .gmap .sh { fill: none; stroke: var(--map-ink); stroke-width: 1.6; }
-  .gmap .rf { fill: var(--color-yellow); opacity: 0; transition: opacity 0.8s; }
-  .gmap .rf.is-hit { opacity: 0.12; }
-  .gta[data-tone="dark"] .gmap .rf.is-hit { opacity: 0.1; }
-  .gmap text { font-family: var(--font-mono); }
-  .gmap .rn { font-size: 9px; letter-spacing: 0.12em; fill: color-mix(in srgb, var(--map-ink) 50%, transparent); }
-  .gmap .hwt { font-size: 10px; font-weight: 600; letter-spacing: 0.08em; fill: var(--map-ink); paint-order: stroke; stroke: var(--map-halo); stroke-width: 3px; }
-  .gmap .rl { font-size: 16px; font-weight: 600; letter-spacing: 0.4em; fill: color-mix(in srgb, var(--map-ink) 28%, transparent); }
-  .gmap .lk { font-size: 12px; letter-spacing: 0.4em; fill: color-mix(in srgb, var(--map-ink) 40%, transparent); }
-  .gmap .pl circle { fill: var(--map-ink); }
-  .gmap .pl text { font-family: var(--font-sans); font-stretch: 87.5%; font-size: 13px; fill: color-mix(in srgb, var(--map-ink) 75%, transparent); paint-order: stroke; stroke: var(--map-halo); stroke-width: 3px; transition: fill 0.4s; }
-  .gmap .pl.is-on text { fill: var(--map-ink); font-weight: 600; }
-  #gmap-pin { opacity: 0; transition: transform 1.6s cubic-bezier(0.6, 0, 0.15, 1), opacity 0.5s; }
-  .gmap__pin { fill: var(--color-yellow); stroke: var(--color-carbon); stroke-width: 1.5; }
-  .gta[data-map="grid"] .gmap :is(.mn, .rvg, .hwg, .hwl) { display: none; }
-
-  /* Panel: the map's title block */
-  /* Full bleed: the map spans the screen; the panel keeps to the page margin */
-  .gta__panel { display: flex; flex-direction: column; gap: var(--spacing-21); padding-inline: var(--grid-margin); background: var(--color-paper); }
+  /* The panel: the sentence, the lead and "Do we cover you?" (src/partials/gta-panel.hbs) */
+  .gta__panel { position: relative; display: flex; flex-direction: column; gap: var(--spacing-21); padding: var(--spacing-34) var(--grid-margin); background: var(--color-paper); }
   .gta__sentence { font-size: var(--text-h2); line-height: 0.98; font-weight: 600; letter-spacing: -0.02em; }
   .gta__slot { position: relative; display: inline-block; padding-inline: 0.04em; }
   .gta__place { position: relative; z-index: 1; display: inline-block; transition: color 0.3s; }
@@ -978,7 +955,6 @@
   .gta__slot.is-lit .gta__hl { transform: scaleX(1); }
   .gta__lead { max-width: 40ch; color: color-mix(in srgb, var(--color-carbon) 78%, transparent); }
   .gta__check { display: flex; flex-direction: column; gap: var(--spacing-13); }
-  .gta[data-check="off"] .gta__check { display: none; }
   .gta__row { display: flex; height: var(--spacing-55); }
   .gta__row input {
     flex: 1;
@@ -1009,55 +985,75 @@
   .gta__result { min-height: calc(var(--text-body) * 1.45); font-size: var(--text-body); line-height: 1.45; color: color-mix(in srgb, var(--color-carbon) 80%, transparent); }
   .gta__result b { color: var(--color-carbon); font-weight: 600; }
   .gta__result.is-in { animation: tk-write 0.6s cubic-bezier(0.4, 0, 0.2, 1) both; }
-  .gta__mark { display: none; }
 
-  /* Desktop: the map runs full width and the panel overlays it, inset by the page margin */
+  /* Desktop: the section fills the screen below the navbar; the card floats over the map at the page margin, no
+     larger than the GT-09 mock's (600 wide, padding 34 / 21), with a hairline, a soft shadow and the paper's tooth */
   @media (width >= 1024px) {
-    .gta__stage { display: block; }
-    .gta__plate { height: clamp(400px, calc(100svh - 2 * var(--grid-margin)), 560px); } /* a supporting section: 400–560 */
-    .gta__panel {
+    .gta { height: max(calc(100svh - var(--nav-h)), calc(4 * var(--spacing-144))); }
+    .gta__stage { position: absolute; inset: 0; height: auto; }
+    .gta .gta__panel {
       position: absolute;
       left: var(--grid-margin);
-      top: var(--grid-margin);
+      top: 50%;
+      translate: 0 -50%;
       z-index: 3;
-      width: min(600px, 55%);
-      padding: var(--spacing-21) var(--spacing-34);
+      width: min(600px, 46%);
+      padding: var(--spacing-34) var(--spacing-34) var(--spacing-21);
+      box-shadow: 0 0 0 1px var(--color-line), 0 21px 55px -34px color-mix(in srgb, var(--color-carbon) 50%, transparent);
     }
-    .gta__sentence { font-size: var(--text-h1); } /* h1 so the title block fits the 560 plate */
-    .gta__mark {
-      position: absolute;
-      right: var(--grid-margin);
-      top: var(--grid-margin);
-      z-index: 3;
-      display: flex;
-      align-items: center;
-      gap: var(--spacing-13);
-      padding: var(--spacing-8) var(--spacing-13);
-      background: var(--color-paper);
+    .gta .gta__panel::before {
+      content: ""; position: absolute; inset: 0; pointer-events: none;
+      background-image: var(--gta-grain); background-size: 220px; mix-blend-mode: multiply; opacity: 0.55;
     }
-    .gta__mark i { width: var(--spacing-13); height: var(--spacing-13); background: var(--color-yellow); border: 1px solid var(--color-carbon); }
-    /* Split: sentence on paper at the left, map bleeding right */
-    .gta[data-layout="split"] .gta__stage { display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); column-gap: var(--grid-gutter); }
-    .gta[data-layout="split"] .gta__plate { grid-column: 2; grid-row: 1; }
-    .gta[data-layout="split"] .gta__panel { position: static; grid-column: 1; grid-row: 1; width: auto; padding: var(--spacing-89) 0 0 var(--grid-margin); background: none; }
-    /* Caption: map full, sentence in a title band at the foot */
-    .gta[data-layout="caption"] .gta__panel { top: auto; right: var(--grid-margin); bottom: var(--grid-margin); width: auto; display: grid; grid-template-columns: 1fr minmax(0, 480px); column-gap: var(--spacing-89); }
-    .gta[data-layout="caption"] :is(.gta__kick, .gta__sentence) { grid-column: 1 / -1; }
-    .gta[data-layout="caption"] .gta__sentence { font-size: var(--text-h1); white-space: nowrap; }
-    .gta[data-layout="caption"] .gta__sentence br { display: none; }
+    .gta__sentence { font-size: var(--text-h1); }
   }
 
-  /* Entrance: the plate fades in, the panel writes in (gta.js arms on entry). Reduced motion never arms it. */
-  .gta.is-armed .gta__plate { animation: tk-fade 1s ease both; }
-  .gta.is-armed :is(.gta__kick, .gta__sentence, .gta__lead, .gta__check) { animation: tk-write 0.7s cubic-bezier(0.4, 0, 0.2, 1) both; }
-  .gta.is-armed .gta__kick { animation-delay: 0.1s; }
-  .gta.is-armed .gta__sentence { animation-delay: 0.3s; }
-  .gta.is-armed .gta__lead { animation-delay: 0.7s; }
-  .gta.is-armed .gta__check { animation-delay: 0.9s; }
-  .gta.is-armed :is(.gta__plate, .gta__kick, .gta__sentence, .gta__lead, .gta__check) { animation-play-state: paused; }
-  .gta.is-armed.is-go :is(.gta__plate, .gta__kick, .gta__sentence, .gta__lead, .gta__check) { animation-play-state: running; }
-  .gta.is-static #gmap-zoom,
-  .gta.is-static #gmap-pin { transition: none; }
+  /* On the map: the area names, the matched area's name, the sign (src/js/gta/overlays.js) */
+  .gta-region {
+    color: color-mix(in srgb, var(--gta-fg, var(--color-carbon)) 62%, transparent); white-space: nowrap; pointer-events: none;
+    text-shadow: 0 0 3px var(--gta-bg, var(--color-paper)), 0 0 8px var(--gta-bg, var(--color-paper)); opacity: 0; transition: opacity 0.6s;
+  }
+  .gta-region.is-on { opacity: 1; }
+  /* The matched area's name: h3, a step above the place names under it; fades as the camera goes down */
+  .gta-zone {
+    font-family: var(--font-sans); font-stretch: var(--font-stretch-semicondensed); font-size: var(--text-h3); font-weight: 600; line-height: 1;
+    letter-spacing: 0.02em; text-transform: uppercase; color: var(--color-carbon); white-space: nowrap; pointer-events: none;
+    text-shadow: 0 0 3px var(--color-paper), 0 0 13px var(--color-paper), 0 0 21px var(--color-paper);
+    opacity: 0; translate: 0 var(--spacing-8); transition: opacity 0.6s, translate 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  .gta-zone[data-style="mono"] { font-family: var(--font-mono); font-stretch: normal; letter-spacing: 0.12em; }
+  .gta-zone.is-on { opacity: 1; translate: 0 0; }
+  /* on a dark map (dusk, night): paper type with a carbon glow */
+  [data-map-dark] .gta-zone { color: var(--color-paper); text-shadow: 0 0 3px var(--color-carbon), 0 0 13px var(--color-carbon), 0 0 21px var(--color-carbon); }
+  [data-map-dark] .gta-region { color: color-mix(in srgb, var(--color-paper) 70%, transparent); text-shadow: 0 0 3px var(--color-carbon), 0 0 8px var(--color-carbon); }
+  /* The sign: the place's name on a paper chip (option A's pin adds a stem down to a yellow stop) */
+  .gta-pin { display: flex; flex-direction: column; align-items: center; pointer-events: none; }
+  .gta-pin__chip {
+    display: flex; align-items: center; gap: var(--spacing-8); padding: var(--spacing-8) var(--spacing-13); white-space: nowrap;
+    background: var(--color-paper); color: var(--color-carbon); box-shadow: 0 0 0 1px var(--color-line), 0 13px 21px -13px color-mix(in srgb, var(--color-carbon) 45%, transparent);
+    opacity: 0; translate: 0 calc(-1 * var(--spacing-13)); transition: opacity 0.4s, translate 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  .gta-pin__chip i { width: var(--spacing-8); height: var(--spacing-8); background: var(--color-yellow); flex: none; }
+  .gta-pin__stem { position: relative; width: 1px; height: var(--spacing-34); background: var(--color-carbon); transform: scaleY(0); transform-origin: 50% 0; transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1); }
+  .gta-pin__stem::after {
+    content: ""; position: absolute; left: 50%; bottom: 0; width: var(--spacing-13); height: var(--spacing-13); translate: -50% 50%;
+    background: var(--color-yellow); box-shadow: 0 0 0 1.5px var(--color-carbon); border-radius: 50%; transform: scaleY(1);
+  }
+  .gta-pin.is-on .gta-pin__chip { opacity: 1; translate: 0 0; transition-delay: 0.12s; }
+  .gta-pin.is-on .gta-pin__stem { transform: scaleY(1); }
+  .gta-pin--sign .gta-pin__stem { visibility: hidden; } /* the sign: the name alone, floating */
+  @media (prefers-reduced-motion: reduce) {
+    .gta-zone, .gta-pin__chip, .gta-pin__stem, .gta__map { transition: none; translate: none; }
+  }
+
+  /* Entrance: the card writes in (the controller arms it on entry). Reduced motion never arms it.
+     (.g10-sec: the GT-10 exploration pages share it.) */
+  :is(.gta, .g10-sec).is-armed :is(.gta__sentence, .gta__lead, .gta__check) { animation: tk-write 0.7s cubic-bezier(0.4, 0, 0.2, 1) both; }
+  :is(.gta, .g10-sec).is-armed .gta__sentence { animation-delay: 0.3s; }
+  :is(.gta, .g10-sec).is-armed .gta__lead { animation-delay: 0.7s; }
+  :is(.gta, .g10-sec).is-armed .gta__check { animation-delay: 0.9s; }
+  :is(.gta, .g10-sec).is-armed :is(.gta__sentence, .gta__lead, .gta__check) { animation-play-state: paused; }
+  :is(.gta, .g10-sec).is-armed.is-go :is(.gta__sentence, .gta__lead, .gta__check) { animation-play-state: running; }
   /* ---------- Quote (QC-02 Say It in a Sentence) ---------- */
   /* Options (dev panel): data-colour dark (locked) | light | yellow · data-marks xo (locked) | box | cross | street
      · data-ask 3 (locked: service, area, when) | 2 | 1 */

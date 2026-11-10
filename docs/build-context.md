@@ -108,7 +108,7 @@ The full settings are in **Homepage Locked Decisions**.
 | 02 | Services | R2-E Station Signs | Light environment, dark signs. Pinned scrub: the hanging chained signs fold into a full-width row board. Generous bottom padding |
 | 03 | Steps | TS-02 Journey Ticket | Subtle stamp edge, symbol centred in the stub, write-in animation, tear-off CTA |
 | 04 | Promises | OT-05 On the Way | Promise ledger plus a 4-image carousel: Cleaning → Moving → Delivery → crew. 6s per slide, plays once |
-| 05 | Across the GTA | GT-09 We'll Be There | Overlay layout on the map mock. Tour when idle; the postal check flies the map to the place |
+| 05 | Across the GTA | GT-10 | A real 3D map (Mapbox Standard) behind a paper card, full screen below the navbar. Tour when idle; a postal code or town frames the area and flies down into the place |
 | 06 | Get a free quote | QC-02 Say It in a Sentence | Dark poster, centred, route background. **This is an inset Carbon panel with a 20px paper margin on the sides**, because its content is centred |
 | 07 | Footer | FT-02 Window | **Full width and full height in Carbon, no margin.** Hanging columns, the Windows shader in the wordmark, live Toronto time |
 
@@ -179,6 +179,7 @@ onaway/
 - Images in AVIF or WebP with `srcset`.
 - Lazy load everything below the fold.
 - Budget: page JS under 120 KB gzipped, LCP under 2.5s on 4G.
+- Deferred budget (Nov 2026): the GTA map's Mapbox GL (about 525 KB gzipped) and the section's map code are separate chunks, loaded only as section 05 nears the screen, never with the page, so they sit outside the 120 KB page budget and never touch LCP.
 
 **Sign-off**
 - Each section is approved on localhost or the tunnel before the next one starts.
@@ -187,7 +188,7 @@ onaway/
 
 - **Footer details:** the contact numbers, email, socials and business number are made up. They need the real ones.
 - **Domain:** onaway.ca is **not bought yet**. The plan is to buy it after the local build. adeona.ca is owned. The placeholder email hello@onaway.ca is still fine in the mocks.
-- **GT-09 map:** the mock becomes MapLibre GL with OpenStreetMap data, styled to the tokens.
+- **GTA map (GT-10):** Mapbox payment method and a production token restricted to onaway.ca (GitHub secret VITE_MAPBOX_TOKEN) before merging to main; the mobile pass.
 - **Postcode mapping:** the postcode → area table needs checking against Canada Post.
 - **OT-05 images:** grade all four to OV-01 and add grain.
 - **Launch SEO:** LocalBusiness schema, Google Business Profile alignment, sitemap, meta and OG images.

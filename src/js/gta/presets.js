@@ -2,7 +2,7 @@
 // it takes a handful of colours (land, water, green space, roads, buildings, labels…), a light preset, and a colour
 // grade: a lookup table (LUT) applied to everything it draws, its 3D trees and landmarks included. So each palette
 // is a set of colours mixed from the five brand tokens plus, where it needs one, a grade made from them.
-import { T, mix, rgb } from '../colors.js';
+import { T, mix, rgb } from './colors.js';
 
 // Standard's own colour defaults (from its schema), so a palette never inherits the last one's colours
 export const DEFAULTS = {

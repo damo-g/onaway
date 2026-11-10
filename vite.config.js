@@ -49,6 +49,9 @@ export default defineConfig(async ({ command }) => ({
   // allowedHosts: client demos and phone checks through `cloudflared tunnel --url http://localhost:5173`
   server: { port: 5173, strictPort: true, allowedHosts: ['.trycloudflare.com'] },
   build: {
+    // Mapbox GL (section 05's map, about 1.9 MB raw, 525 KB gzipped) is its own chunk with its own deferred budget,
+    // loaded only as the section nears the screen (docs/build-context.md); the page's own JS keeps the 120 KB budget
+    chunkSizeWarningLimit: 2000,
     rollupOptions: {
       // tokens.html is a dev review page (served by `npm run dev`), not part of the site build
       input: {

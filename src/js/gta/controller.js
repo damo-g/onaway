@@ -13,9 +13,9 @@
 //
 // Words and data come from the live site: the panel partial (src/partials/gta-panel.hbs), the places, the tour and
 // the region centres (src/js/data/places.js), the postal table and the town lookup (src/js/data/area.js).
-import { onEnterOnce, prefersReducedMotion } from '../../src/js/motion.js';
-import { PLACE_AT, TOUR, regionLabel } from '../../src/js/data/places.js';
-import { lookupArea } from '../../src/js/data/area.js';
+import { onEnterOnce, prefersReducedMotion } from '../motion.js';
+import { PLACE_AT, TOUR, regionLabel } from '../data/places.js';
+import { lookupArea } from '../data/area.js';
 import { TIMING } from './camera.js';
 
 export function createSection(el, adapter, { speed = () => 0.6, orbitOn = () => true, matchMode = () => 'area' } = {}) {
