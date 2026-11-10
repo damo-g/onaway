@@ -627,10 +627,16 @@
      · data-animation across (locked) | write | unroll. */
   /* About section gap + 89 between the R2-E board and the copy, counting the paper the board already
      leaves under itself (--services-tail, set by services.js); never less than 55 of its own */
-  .steps { padding-top: max(var(--spacing-55), calc(var(--section-gap) + var(--spacing-89) - var(--services-tail, 0px))); }
+  .steps { --after: var(--spacing-89); padding-top: max(var(--spacing-55), calc(var(--section-gap) + var(--after) - var(--services-tail, 0px))); }
+  /* Services' "after" option (dev panel): the paper from the board to Steps' heading, desktop (233 locked) */
+  @media (width >= 1024px) {
+    main:has(.services[data-after="288"]) .steps { --after: var(--spacing-144); }
+    main:has(.services[data-after="377"]) .steps { --after: calc(var(--spacing-144) + var(--spacing-89)); }
+    main:has(.services[data-after="432"]) .steps { --after: calc(2 * var(--spacing-144)); }
+  }
   /* When the board ends high (cards) it leaves more paper than that; Steps then pulls up over it (above the pinned
      section, whose lower part is empty paper by then), so the gap is always the section gap + 89 */
-  .steps { position: relative; z-index: 1; margin-top: min(0px, calc(var(--section-gap) + var(--spacing-89) - var(--spacing-55) - var(--services-tail, 0px))); }
+  .steps { position: relative; z-index: 1; margin-top: min(0px, calc(var(--section-gap) + var(--after) - var(--spacing-55) - var(--services-tail, 0px))); }
   .steps .section__grid { row-gap: var(--spacing-55); align-items: start; }
   .steps__intro { display: flex; flex-direction: column; gap: var(--spacing-34); }
   .steps__lead { max-width: 30ch; color: color-mix(in srgb, var(--color-carbon) 78%, transparent); }

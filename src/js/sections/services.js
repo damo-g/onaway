@@ -15,6 +15,8 @@ registerOptions('services', {
   fact: ['fixed', 'window'],
   // End state: cards (the hanging signs settle as cards on the grid) | board (full-bleed rows)
   end: ['cards', 'board'],
+  // The paper between the board and Steps' heading (desktop): 233 (locked: the section gap + 89) | 288 | 377 | 432
+  after: ['233', '288', '377', '432'],
 });
 
 // R2-E numbers, drawn at the 1512 frame. Signs hang below the beam painted into the plate.
