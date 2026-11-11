@@ -29,8 +29,8 @@ function quoteBy() {
 
 // Dev panel (Nov 2026): the closing CTA as the homepage quote's board. style: panel (locked, as built) · board (hung
 // on two rods from a rail, like the page's own hanging band) · view (board only): angled · reverse · flat · plan: the
-// drawing's size, full (as built) · l 85% · m 70% · s 55%
-registerOptions('cleancta', { style: ['panel', 'board'], view: ['angled', 'reverse', 'flat'], plan: ['full', 'l', 'm', 's'] });
+// drawing's size, m 70% (the sweet spot) · full (as built) · l 85% · s 55%
+registerOptions('cleancta', { style: ['panel', 'board'], view: ['angled', 'reverse', 'flat'], plan: ['m', 'full', 'l', 's'] });
 
 export function init(el) {
   const svg = el.querySelector('.ccta__plan svg');

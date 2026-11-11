@@ -9,8 +9,8 @@
 // The board's dots sit on whole device pixels (no moiré) and take no film grain (it made the unlit dots shimmer); the
 // yellow square sits at the board's far right and arrives as the CSS one did, gliding (not stepping) in from the left,
 // holding, then easing on and out (7 s; on board-update, right after each wipe). Each dot is lit by how much of it the
-// wordmark covers (4 × 4 samples); where a dot is only partly covered it lights smaller (a halftone edge), so the
-// letters keep their curves and corners on a coarse grid. Unlit dots: a setting (footer.dots 2 · 3 · 1 %). The board fills unmask the wordmark (main.css) and read its shape
+// wordmark covers (4 × 4 samples: lit when at least half covered), every dot the same size and brightness. Unlit
+// dots: a setting (footer.dots 2 · 3 · 1 %). The board fills unmask the wordmark (main.css) and read its shape
 // from /svg/wordmark.svg, drawn into a texture.
 // Animates only while visible; reduced motion draws one still frame; no WebGL → returns null (flat fill).
 const FS = `precision mediump float;uniform vec2 r;uniform vec2 R;uniform float t;uniform int m;uniform int pal;uniform float bgo;uniform sampler2D tx;uniform vec2 ts;
@@ -35,14 +35,14 @@ void main(){vec2 px=gl_FragCoord.xy;vec2 uv=px/r.y;vec3 c;
   float cov=0.;
   for(int i=0;i<4;i++)for(int j=0;j<4;j++){vec2 d=(vec2(float(i),float(j))-1.5)*.25;vec2 w=vec2((cell.x-2.+.5+d.x)/ww,(cell.y-2.+.5+d.y)/wh);
    if(w.x>=0.&&w.x<=1.&&w.y>=0.&&w.y<=1.)cov+=texture2D(tx,w).a;}
-  cov/=16.;float on=smoothstep(.12,.7,cov);
+  cov/=16.;float on=step(.5,cov);
   if(pal==2){float ph=mod(t,11.);float fr=(ph-9.4)/1.4*(cols+12.);on*=1.-step(fr-10.,cell.x)*step(cell.x,fr)*step(.35,h(cell+floor(t*12.)));}
   vec3 lit=pal==1?YE:PA;
   float dd=pal==5?max(abs(f.x),abs(f.y)):length(f);
   float dt=pal==5?smoothstep(.4,.34,dd):smoothstep(.42,.3,dd);
   vec3 bd=CB+vec3(.012);
   c=mix(bd,mix(bd,PA,bgo),dt);
-  float rr=mix(.14,.42,on);c=mix(c,lit,step(.01,on)*(pal==5?smoothstep(rr,rr-.06,dd):smoothstep(rr,rr-.12,dd)));
+  c=mix(c,lit,on*dt);
   if(pal==4)c+=lit*on*smoothstep(.7,.25,dd)*.18;
   float sz=pal==3?6.:4.;
   float cyc=pal==2?11.:7.;float p=mod(t,cyc)/cyc;float ie=pal==2?.15:.22;float l0=pal==2?.79:.86;float l1=pal==2?.85:.94;

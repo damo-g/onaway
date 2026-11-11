@@ -2122,9 +2122,17 @@
     color: var(--color-carbon);
     box-shadow: inset 0 0 0 4px var(--color-carbon), 0 13px 21px -13px color-mix(in srgb, var(--color-carbon) 55%, transparent);
     transform-origin: 50% 0;
-    transition: translate 0.2s ease, background-color 0.2s, color 0.2s, box-shadow 0.2s;
+    transition: translate 0.2s ease, transform 0.35s cubic-bezier(0.3, 0.7, 0.3, 1), background-color 0.2s, color 0.2s, box-shadow 0.2s;
   }
   .svc-door::before, .svc-door::after { width: 3px; }
+  /* Hover (dev panel svchero.hover): pointer (locked, the side under the pointer turns in, svchero.js) · left · right
+     (a fixed 2.5° turn) · lift (as built). The colour change stays in every case. */
+  .svc-hero:not([data-hover="lift"]) .svc-door:is(:hover, :focus-visible) { translate: none; }
+  .svc-hero:not([data-hover]) .svc-door:hover,
+  .svc-hero[data-hover="pointer"] .svc-door:hover { transform: perspective(1200px) rotateX(var(--rx, 0deg)) rotateY(var(--ry, 0deg)); transition-duration: 0.2s, 0.15s, 0.2s, 0.2s, 0.2s; }
+  .svc-hero[data-hover="left"] .svc-door:is(:hover, :focus-visible) { transform: perspective(1200px) rotateY(2.5deg); }
+  .svc-hero[data-hover="right"] .svc-door:is(:hover, :focus-visible) { transform: perspective(1200px) rotateY(-2.5deg); }
+  @media (prefers-reduced-motion: reduce) { .svc-door:is(:hover, :focus-visible) { transform: none !important; } }
   .svc-door::before { left: 22%; }
   .svc-door::after { right: 22%; }
   .svc-door__tile { display: grid; place-items: center; width: calc(var(--spacing-89) - var(--spacing-8)); height: calc(var(--spacing-89) - var(--spacing-8)); flex: none; border-radius: 1px; background: var(--door-tile); transition: background-color 0.2s; }
@@ -2848,7 +2856,7 @@
   .ccta[data-style="board"] { padding-top: var(--spacing-144); clip-path: inset(0 -100vw -100vh -100vw); }
   .ccta[data-style="board"]::before { content: ""; position: absolute; z-index: 1; top: 0; left: 0; right: 0; height: var(--spacing-8); background: var(--frame); }
   .ccta[data-style="board"] .ccta__panel::before,
-  .ccta[data-style="board"] .ccta__panel::after { content: ""; position: absolute; z-index: -1; bottom: calc(100% - var(--spacing-8)); width: 5px; height: calc(var(--spacing-144) + var(--spacing-34)); border-radius: 2px; background: var(--frame); }
+  .ccta[data-style="board"] .ccta__panel::after { content: ""; position: absolute; z-index: -1; bottom: calc(100% - var(--spacing-8)); width: 4px; height: calc(var(--spacing-144) + var(--spacing-34)); border-radius: 2px; background: var(--frame); }
   .ccta[data-style="board"] .ccta__panel::before { left: 13%; }
   .ccta[data-style="board"] .ccta__panel::after { right: 13%; }
   /* plan (service pages): the drawing's size, full (as built) · l · m · s */
@@ -2860,13 +2868,19 @@
   .ccta:is([data-style="band"], [data-style="pylon"]) .ccta__panel { margin-left: var(--spacing-34); }
   .ccta:is([data-style="band"], [data-style="pylon"]) .ccta__panel::before {
     content: ""; position: absolute; z-index: -2; top: calc(-1 * var(--spacing-34)); left: calc(-1 * var(--spacing-34)); width: var(--spacing-13);
-    height: calc(100% + var(--spacing-34) + var(--section-gap)); border-radius: var(--spacing-8) var(--spacing-8) 0 0;
+    height: calc(100% + var(--spacing-34) + var(--section-gap) + var(--spacing-55)); border-radius: var(--spacing-8) var(--spacing-8) 0 0;
     background: linear-gradient(90deg, color-mix(in srgb, var(--p) 14%, var(--c)), var(--c) 45%);
   }
   .ccta[data-style="band"] .ccta__panel::after { content: ""; position: absolute; z-index: -2; top: var(--spacing-34); bottom: var(--spacing-34); left: calc(-1 * var(--spacing-21)); width: var(--spacing-34); border-block: var(--spacing-13) solid var(--frame); }
   /* band: the route along the board's foot, inside the frame, on a tint */
   .ccta[data-style="band"] .ccta__panel { padding-bottom: var(--spacing-8); }
   .ccta[data-style="band"] .acta__road { margin: var(--spacing-21) calc(-1 * var(--spacing-13)) 0; border-top: 0; border-radius: 0 0 5px 5px; background: color-mix(in srgb, var(--c) 6%, var(--face)); }
+  /* road (About, band and pylon): the route's ground. carbon (recommended: the panel's own Carbon kept for the route
+     only, a road at the board's foot, the yellow crew at full contrast) · paper (the board's face, no strip) · gray
+     (the tint, as first built) */
+  .ccta[data-road="carbon"] .acta__road { --color-paper: var(--p); --color-carbon: var(--c); background: var(--c) !important; }
+  .ccta[data-road="paper"] .acta__road { background: var(--face) !important; }
+  .ccta[data-style="pylon"][data-road="carbon"] .acta__road { box-shadow: inset 0 0 0 var(--spacing-8) var(--frame), 0 6px 0 0 var(--edge), 0 34px 55px -30px color-mix(in srgb, var(--c) 55%, transparent); }
   /* pylon: two plates bolted to two posts (after the CSL wayfinding pylon). The question on the upper plate (the
      panel), the job route on its own plate below it (the road, taken out of the panel's flow), both on the faces of
      two turned posts that rise above the top plate with caps and run down to the ground. The posts belong to the
