@@ -2116,7 +2116,7 @@
   .svc-hero__call { font-size: var(--text-body); text-decoration: underline; text-underline-offset: 4px; }
 
   /* The hang: an 8px Carbon rail, the band on two chains, the platforms on chains from the band */
-  .svc-hang { margin-top: var(--spacing-89); padding-inline: var(--grid-margin); }
+  .svc-hang { margin-top: var(--spacing-34); padding-inline: var(--grid-margin); } /* Nov 2026: pulled up under the copy (was 89), the rail and the signs read with the heading */
   .svc-hang__rail { height: var(--spacing-8); margin-inline: calc(-1 * var(--grid-margin)); background: linear-gradient(180deg, color-mix(in srgb, var(--color-paper) 18%, var(--color-carbon)), var(--color-carbon) 60%); } /* full width, lit from above (Nov 2026) */
   .svc-band {
     --band-tile: color-mix(in srgb, var(--color-paper) 7%, var(--color-carbon));
@@ -2317,6 +2317,7 @@
   /* ---------- What's included (WI-01b) ---------- */
   .incl { --mut: color-mix(in srgb, var(--color-carbon) 62%, transparent); position: relative; row-gap: var(--spacing-55); padding-block: var(--section-gap); }
   .incl::before { content: ""; position: absolute; inset: 0 var(--grid-margin) auto; border-top: 1px solid var(--color-line); }
+  .svc-hero + :is(.incl, .often)::before { content: none; } /* no rule under the service hero (Nov 2026): the hanging signs close it */
   .incl__title { font-size: var(--text-h2); line-height: 1; font-weight: 600; letter-spacing: -0.01em; }
   .incl__title small { display: block; margin-top: var(--spacing-8); font-size: var(--text-body); line-height: 1.5; font-weight: 400; letter-spacing: 0; color: var(--mut); }
   .incl__ctl { display: flex; flex-wrap: wrap; align-items: center; justify-content: flex-end; gap: var(--spacing-21); align-self: end; }

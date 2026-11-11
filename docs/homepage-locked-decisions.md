@@ -110,3 +110,4 @@ Desktop 1512 × 860 · 12 columns · mocks drawn on a 20 margin (Brand Guide say
 - Mobile pass, GTA (Nov 2026): on phones the tour and match stops sit 0.6 of a zoom level wider (15.4, about 1.5× the area); the 3D landmarks and buildings still stand there. Tablet and desktop keep 16.
 - Mobile pass, hero (Nov 2026): the fold bar fits its content (89), the plate about 10% taller than the first pass, the wordmark 34 on the fold shrinking to 21 as the bar docks (as desktop, at a phone's scale).
 - Mobile pass, service hero (Nov 2026): on phones the platforms' descriptions sit on one line under the name (2 apart, one block centred in the platform); when one runs long it becomes a ticker that holds, slides to its end, holds and slides back (svchero.js; reduced motion: an ellipsis).
+- Service heroes (Nov 2026): the 'quote arrives in writing by' line and the call link removed; the rail and signs pulled up under the copy (34, was 89); no rule under the hero.
