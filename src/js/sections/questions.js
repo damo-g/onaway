@@ -34,6 +34,15 @@ export function init(el) {
   let queue = Promise.resolve();
 
   const atBottom = () => thread.scrollHeight - thread.scrollTop - thread.clientHeight < 40;
+  // The thread only holds the scroll once there's something to scroll in it; until then a wheel or a swipe over it
+  // moves the page (Nov 2026: it trapped the page on phones, where the window filled the screen)
+  const fits = () => {
+    const over = thread.scrollHeight > thread.clientHeight + 1;
+    thread.classList.toggle('is-overflowing', over);
+    thread.toggleAttribute('data-lenis-prevent', over);
+  };
+  new ResizeObserver(fits).observe(thread);
+  new MutationObserver(fits).observe(inner, { childList: true, subtree: true, characterData: true });
   thread.addEventListener('scroll', () => {
     pinned = atBottom();
     thread.classList.toggle('is-scrolled', thread.scrollTop > 4);

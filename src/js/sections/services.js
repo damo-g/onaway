@@ -123,7 +123,7 @@ export function init(el) {
     // card's height (Nov 2026; was a 55 tile with 17 around it, which read as detached)
     const FACE = 6;
     const tileEnd = cards ? rowH - 2 * FACE : mobile ? 55 : 89;
-    const nameEnd = cards ? (mobile ? 26 : 42) : mobile ? 26 : wide ? 55 : 42;
+    const nameEnd = cards ? (mobile ? 20 : 42) : mobile ? 26 : wide ? 55 : 42;
     const arrowEnd = cards ? (mobile ? 26 : 34) : mobile ? 26 : 42;
     // A card's tile sits as far in from the side as from the top and bottom; the board pads by the page margin
     const inset = cards ? FACE : margin;
@@ -133,7 +133,7 @@ export function init(el) {
     const descX = under ? nameX : (iconRight ? colX(3) : colX(4)) - endX;
     // Wide: its own column; tablet: the right-hand three columns; phones: under the description
     const factX = (wide ? (iconRight ? colX(7) : colX(8)) : colX(cols - 3)) - endX;
-    const descW = under ? (mobile ? endW - nameX - inset - 34 : colX(cols - 3) - endX - nameX - gutter) : colX(iconRight ? 6 : 7) - endX - descX - gutter;
+    const descW = under ? (mobile ? endW - nameX - arrowInset - arrowEnd - 13 : colX(cols - 3) - endX - nameX - gutter) : colX(iconRight ? 6 : 7) - endX - descX - gutter;
     const pitch = cards ? 4 : 5;
     const noFact = mobile; // phones show name and description only
     // Name and description read as one block: tight on cards and phones (the description's line height gives the air)
