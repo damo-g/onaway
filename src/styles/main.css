@@ -2178,6 +2178,20 @@
   .svc-door__name { font-size: var(--text-h2); line-height: 1; font-weight: 600; letter-spacing: -0.01em; white-space: nowrap; }
   /* up to two lines, so longer descriptions never push the page sideways */
   .svc-door__sub { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; font-size: var(--text-small); line-height: 1.4; color: color-mix(in srgb, currentColor 70%, transparent); }
+  /* Phones (Nov 2026): the description on one line, a ticker when it runs long: it holds at the start, slides to
+     show the end, holds, slides back (svchero.js sets --shift and --dur; under reduced motion it holds and ends in an
+     ellipsis). The name and the line sit as one tight block, centred in the platform. */
+  @media (width < 768px) {
+    .svc-doors { grid-template-columns: minmax(0, 1fr); } /* the one-line description never widens the platform */
+    .svc-door { min-width: 0; }
+    .svc-door__text { gap: 2px; }
+    .svc-door__sub { display: block; white-space: nowrap; text-overflow: ellipsis; }
+    .svc-door__sub.is-ticker { text-overflow: clip; mask-image: linear-gradient(90deg, var(--color-carbon) calc(100% - var(--spacing-21)), transparent); }
+    .svc-door__sub.is-ticker > span { display: inline-block; animation: door-tick var(--dur, 9s) cubic-bezier(0.45, 0, 0.55, 1) infinite alternate; }
+    .svc-door__sub.is-ticker.is-end { mask-image: linear-gradient(90deg, transparent, var(--color-carbon) var(--spacing-21)); }
+  }
+  @keyframes door-tick { 0%, 18% { transform: none; } 82%, 100% { transform: translateX(var(--shift, 0px)); } }
+  @media (prefers-reduced-motion: reduce) { .svc-door__sub.is-ticker > span { animation: none; } .svc-door__sub.is-ticker { text-overflow: ellipsis; mask-image: none; } }
   .svc-door__arrow { margin-left: auto; font-size: var(--text-h3); line-height: 1; }
   .svc-door:is(:hover, :focus-visible) {
     --face: var(--color-carbon);

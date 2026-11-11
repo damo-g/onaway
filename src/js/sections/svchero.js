@@ -21,6 +21,25 @@ function quoteBy() {
 }
 
 export function init(el) {
+  // Phones: a description too long for its one line becomes a ticker (main.css): the shift and a duration from its length
+  const phone = matchMedia('(width < 768px)');
+  const subs = [...el.querySelectorAll('.svc-door__sub')];
+  subs.forEach((sub) => { const t = document.createElement('span'); t.append(...sub.childNodes); sub.append(t); });
+  function tickers() {
+    subs.forEach((sub) => {
+      const over = phone.matches && !prefersReducedMotion() ? sub.scrollWidth - sub.clientWidth : 0;
+      sub.classList.toggle('is-ticker', over > 2);
+      if (over > 2) {
+        sub.style.setProperty('--shift', `${-Math.ceil(over + 21)}px`);
+        sub.style.setProperty('--dur', `${Math.max(5, (over + 21) / 28).toFixed(1)}s`); // about 28px a second of travel, plus the holds
+      }
+    });
+  }
+  // the edge fade follows the text: the right edge while it waits at the start, the left edge at the end
+  subs.forEach((sub) => sub.firstElementChild.addEventListener('animationiteration', () => sub.classList.toggle('is-end')));
+  document.fonts?.ready.then(tickers);
+  new ResizeObserver(tickers).observe(el);
+
   // The platforms follow the pointer (hover: pointer); nothing moves under reduced motion
   if (!prefersReducedMotion()) {
     el.querySelectorAll('.svc-door').forEach((door) => {
