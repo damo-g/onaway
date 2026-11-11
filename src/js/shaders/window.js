@@ -4,7 +4,8 @@
 // Board, a dot-matrix board like the Services facts (src/js/dotmatrix.js): a grey board the full width of the section,
 // the wordmark's own height, every dot unlit but those that make up the wordmark (and the yellow square, as yellow
 // dots): board (lit Paper) · board-amber (lit amber) · board-update (Paper; every 11 s a wipe runs left to right, the
-// dots flipping as a departures board updates). The board fills unmask the wordmark (main.css) and read its shape
+// dots flipping as a departures board updates) · board-fine (a finer board, 46 rows) · board-glow (lit dots with a soft
+// halo, like LEDs) · board-square (square pixels). The board itself is barely off the footer's Carbon; unlit dots at 4.5%. The board fills unmask the wordmark (main.css) and read its shape
 // from /svg/wordmark.svg, drawn into a texture.
 // Animates only while visible; reduced motion draws one still frame; no WebGL → returns null (flat fill).
 const FS = `precision mediump float;uniform vec2 r;uniform vec2 R;uniform float t;uniform int m;uniform int pal;uniform sampler2D tx;uniform vec2 ts;
@@ -22,19 +23,21 @@ void main(){vec2 px=gl_FragCoord.xy;vec2 uv=px/r.y;vec3 c;
   float dt=smoothstep(.44,.34,length(f));
   c=CB*.9;c=mix(c,mix(CB+vec3(.075),YE,on),dt);
  } else if(m==3){
-  float rows=30.;float pit=R.y/rows;vec2 q=vec2(gl_FragCoord.x,R.y-gl_FragCoord.y)/pit;vec2 cell=floor(q);vec2 f=fract(q)-.5;
+  float rows=pal==3?46.:30.;float pit=R.y/rows;vec2 q=vec2(gl_FragCoord.x,R.y-gl_FragCoord.y)/pit;vec2 cell=floor(q);vec2 f=fract(q)-.5;
   float cols=floor(R.x/pit);
   float wh=rows-4.;float ww=wh*ts.x/ts.y;
   vec2 wu=vec2((cell.x-2.+.5)/ww,(cell.y-2.+.5)/wh);
   float on=0.;
   if(wu.x>=0.&&wu.x<=1.&&wu.y>=0.&&wu.y<=1.)on=step(.5,texture2D(tx,wu).a);
-  float sig=step(cols-8.,cell.x)*step(cell.x,cols-3.)*step(rows-8.,cell.y)*step(cell.y,rows-3.);
+  float sz=pal==3?8.:6.;float sig=step(cols-sz-2.,cell.x)*step(cell.x,cols-3.)*step(rows-sz-2.,cell.y)*step(cell.y,rows-3.);
   if(pal==2){float ph=mod(t,11.);float fr=(ph-9.4)/1.4*(cols+12.);on*=1.-step(fr-10.,cell.x)*step(cell.x,fr)*step(.35,h(cell+floor(t*12.)));}
   vec3 lit=pal==1?YE:PA;
-  float dt=smoothstep(.42,.3,length(f));
-  vec3 bd=CB+vec3(.045);
-  c=mix(bd,mix(mix(bd,PA,.1),lit,on),dt);
+  float dd=pal==5?max(abs(f.x),abs(f.y)):length(f);
+  float dt=pal==5?smoothstep(.4,.34,dd):smoothstep(.42,.3,dd);
+  vec3 bd=CB+vec3(.012);
+  c=mix(bd,mix(mix(bd,PA,.045),lit,on),dt);
   c=mix(c,YE,sig*dt);
+  if(pal==4){c+=lit*on*smoothstep(.7,.25,dd)*.18;c+=YE*sig*smoothstep(.7,.25,dd)*.18;}
  } else {
   vec2 g=vec2(64.,30.);vec2 id=floor(uv*g);vec2 f=fract(uv*g);float col=floor(id.x/4.);float bld=step(.25,h(vec2(col,2.)));
   float lit=step(.62,h(id+floor(t*.12+h(id)*5.)));float win=step(.18,f.x)*step(f.x,.82)*step(.2,f.y)*step(f.y,.8);
@@ -42,7 +45,7 @@ void main(){vec2 px=gl_FragCoord.xy;vec2 uv=px/r.y;vec3 c;
  }
  c+=(h(px+fract(t)*91.)-.5)*.08;gl_FragColor=vec4(c,1.);}`;
 const VS = 'attribute vec2 p;void main(){gl_Position=vec4(p,0,1);}';
-export const FILLS = { sky: [0, 0], 'dots-stars': [2, 0], board: [3, 0], 'board-amber': [3, 1], 'board-update': [3, 2], windows: [4, 0] };
+export const FILLS = { sky: [0, 0], 'dots-stars': [2, 0], board: [3, 0], 'board-amber': [3, 1], 'board-update': [3, 2], 'board-fine': [3, 3], 'board-glow': [3, 4], 'board-square': [3, 5], windows: [4, 0] };
 /**
  * Draws a fill into canvas. Returns { setFill(name), stop() } or null without WebGL.
  * `still` draws a single frame (reduced motion).

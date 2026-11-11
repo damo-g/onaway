@@ -2,7 +2,7 @@ import { registerOptions } from '../options.js';
 import { onEnterOnce, prefersReducedMotion } from '../motion.js';
 import { areaSearch } from '../area-search.js';
 
-// Locked first (Nov 2026: the billboard, angled, masthead, light, head label, 68, stops + live). The locked set is also written on
+// Locked first (Nov 2026: the billboard, angled, stagger, light, head off, 68, stops + live). The locked set is also written on
 // the section (06-quote.html), so the build, which has no panel, shows it too.
 registerOptions('quote', {
   // The board's colour (the panel's, without a board): light (the ticket's face) · dark · yellow
@@ -11,7 +11,7 @@ registerOptions('quote', {
   ask: ['3', '2', '1'],
   // label: "Get a free quote" as the sign's ID band beside the W (mono) · headline: the display headline packed on the
   // sentence · off: the sentence alone
-  head: ['label', 'headline', 'off'],
+  head: ['off', 'label', 'headline'],
   size: ['68', '42'], // the sentence on desktop
   // The button before the sentence is complete (pressing it opens the next blank in every case):
   // stopslive (the full button, three route stops filling as you answer) · live (the full button; only its words
@@ -21,7 +21,8 @@ registerOptions('quote', {
   // Desktop layout: aside (8/4: the note and button in the right column) · poster (centred) · left (flush left) ·
   // masthead (the headline across, the sentence under it, the button on a hairline) · split (7/5: a ticket of the
   // answers and the button)
-  layout: ['masthead', 'aside', 'poster', 'left', 'split'],
+  // stagger (locked: the sentence large from the left, the button and note stepping down into the right five twelfths)
+  layout: ['stagger', 'aside', 'poster', 'masthead', 'left', 'split'],
   // The sentence's setting: billboard (a wayfinding board on two posts to the ground) · hanging (hung on rods from
   // the map above, like the Services signs) · post (on one post at its side) · flap (the panel, its blanks as
   // split-flap tiles) · none (the panel)

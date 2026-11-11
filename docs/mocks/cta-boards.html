@@ -38,12 +38,28 @@
 .chips{display:flex;flex-wrap:wrap;gap:8px;margin:13px 0 34px}
 .chips span{padding:8px 13px;border:1.5px solid rgba(32,37,33,.3);font-size:16px;font-stretch:87.5%;font-weight:500}
 .chips span.on{background:var(--carbon);border-color:var(--carbon);color:var(--paper)}
-.foot{display:flex;align-items:center;justify-content:space-between;gap:34px;padding-top:21px;border-top:1px solid rgba(32,37,33,.3)}
+.foot{display:flex;align-items:center;justify-content:space-between;gap:34px;margin-top:21px}
 .foot .small{max-width:44ch;color:rgba(32,37,33,.7)}
 .btn{display:inline-flex;align-items:center;gap:21px;height:55px;padding:0 21px;background:var(--yellow);font-size:20px;font-weight:600;font-stretch:87.5%;white-space:nowrap}
 .call{font-family:var(--mono);font-size:12px;letter-spacing:.08em;text-transform:uppercase;margin-top:13px;color:rgba(32,37,33,.7)}
 .plan{border:1.5px dashed rgba(32,37,33,.3);height:300px;display:grid;place-items:center;text-align:center;color:rgba(32,37,33,.55)}
 .note{position:absolute;right:21px;bottom:100px;max-width:340px;font-family:var(--mono);font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--rust);text-align:right}
+/* About: the board on a post; the job route (aboutcta.js's animation) kept at the foot */
+.bd.ab{width:1100px;top:89px;padding:89px 89px 34px}
+.abg{display:grid;grid-template-columns:7fr 5fr;column-gap:55px;align-items:start}
+.abr .chips{margin-bottom:21px}
+.scene{display:block;width:100%;height:100%;color:rgba(32,37,33,.55)}
+.sc.in{height:144px;margin:55px -81px -26px;padding:21px 81px;border-radius:0 0 5px 5px;background:color-mix(in srgb,var(--carbon) 8%,var(--paper))}
+.sc.out{display:none;position:absolute;left:0;right:0;bottom:89px;height:120px;padding:0 64px}
+[data-l="ground"] .sc.in{display:none}[data-l="ground"] .sc.out{display:block}
+[data-l="ground"] .bd.ab{width:960px;top:89px;padding:89px 55px 55px}
+[data-l="pylon"] .bd.ab{top:55px;padding:0;background:none;box-shadow:none}
+[data-l="pylon"] .abg{padding:89px 89px 55px;border-radius:13px;background:var(--face);box-shadow:inset 0 0 0 8px var(--frame),0 34px 55px -34px rgba(32,37,33,.5)}
+[data-l="pylon"] .sc.in{position:relative;margin:34px 0 0;padding:21px 89px;border-radius:13px;box-shadow:inset 0 0 0 8px var(--frame),0 34px 55px -34px rgba(32,37,33,.5)}
+[data-l="pylon"] .sc.in::before{content:"";position:absolute;left:50%;top:-34px;width:34px;height:34px;translate:-50% 0;background:var(--frame)}
+.sc.out{--face:var(--paper)}
+[data-l="ground"] .note{bottom:240px}
+.note{display:none}.stage:not([data-l]) .note,[data-l="band"] .note[data-n="band"],[data-l="ground"] .note[data-n="ground"],[data-l="pylon"] .note[data-n="pylon"],#a .note{display:block}
 </style>
 </head>
 <body>
@@ -57,7 +73,6 @@
     <div class="rail"></div>
     <div class="bd l">
       <span class="w"><svg viewBox="-2 -2 88 86"><path fill="currentColor" d="M0,80C.14,77.73-.02,11.64.03,9.23l11.67-1.12s.01,40.19-.1,55.51c20.63-10.95,25.77-37.76,25.47-59.5,2.65-.22,9.1-.87,11.81-1.15-.51,20.26,3.46,45.8,24.97,53.64.05-15.31.05-40.2.07-55.53l11.65-1.08v70.04c-17.66,4.6-35.16-10.2-42.26-25.54-7.02,17.45-23.22,35.59-43.32,35.5Z"/></svg></span>
-      <span class="id lab">Moving · get a free quote</span>
       <div class="cols">
         <div>
           <h2 class="t">Tell us about<br>your move.</h2>
@@ -75,22 +90,26 @@
 </div>
 
 <div class="frame">
-  <div class="top"><div class="id">About page · closing CTA · recommended: post</div>
-    <div class="tools" data-for="b"><button class="tbtn" data-e="post" aria-pressed="true">Post</button><button class="tbtn" data-e="billboard" aria-pressed="false">Billboard</button><button class="tbtn" data-e="hanging" aria-pressed="false">Hanging</button></div></div>
-  <div class="wrap"><div class="stage" id="b" data-effect="post" data-view="angled">
-    <div class="rail"></div>
-    <div class="bd m">
+  <div class="top"><div class="id">About page · closing CTA · post · the animated job route stays at the foot</div>
+    <div class="tools" data-lfor="b"><button class="tbtn" data-l="band" aria-pressed="true">Band</button><button class="tbtn" data-l="ground" aria-pressed="false">Ground</button><button class="tbtn" data-l="pylon" aria-pressed="false">Pylon</button></div></div>
+  <div class="wrap"><div class="stage" id="b" data-effect="post" data-view="angled" data-l="band">
+    <div class="bd ab">
       <span class="w"><svg viewBox="-2 -2 88 86"><path fill="currentColor" d="M0,80C.14,77.73-.02,11.64.03,9.23l11.67-1.12s.01,40.19-.1,55.51c20.63-10.95,25.77-37.76,25.47-59.5,2.65-.22,9.1-.87,11.81-1.15-.51,20.26,3.46,45.8,24.97,53.64.05-15.31.05-40.2.07-55.53l11.65-1.08v70.04c-17.66,4.6-35.16-10.2-42.26-25.54-7.02,17.45-23.22,35.59-43.32,35.5Z"/></svg></span>
-      <span class="id lab">Get a free quote</span>
-      <div class="cols"><div>
+      <div class="abg">
         <h2 class="t">Tell us about<br>your job.</h2>
-        <div class="lab" style="color:rgba(32,37,33,.6)">Your job</div>
-        <div class="chips"><span class="on">Cleaning</span><span>Moving</span><span>Delivery</span></div>
-      </div></div>
-      <div class="foot"><p class="small">A written quote <b>within 2 hours</b>, with every cost on it. No obligation.</p>
-        <div style="text-align:right"><span class="btn">Get a cleaning quote →</span><div class="call">Or call +1 647 877 1411</div></div></div>
+        <div class="abr">
+          <div class="lab" style="color:rgba(32,37,33,.6)">Your job</div>
+          <div class="chips"><span class="on">Cleaning</span><span>Moving</span><span>Delivery</span></div>
+          <p class="small" style="color:rgba(32,37,33,.7);margin-bottom:21px">A written quote <b>within 2 hours</b>, with every cost on it. No obligation.</p>
+          <span class="btn">Get a cleaning quote →</span><div class="call">Or call +1 647 877 1411</div>
+        </div>
+      </div>
+      <div class="sc in"><svg class="scene" viewBox="0 0 1000 120" preserveAspectRatio="none" aria-hidden="true"><path d="M0 90 H1000" stroke="currentColor" stroke-width="2" stroke-dasharray="2 8"/><g fill="var(--face)" stroke="currentColor" stroke-width="2"><rect x="140" y="40" width="120" height="50"/><rect x="440" y="30" width="140" height="60"/><rect x="760" y="45" width="110" height="45"/></g><g fill="currentColor"><circle cx="200" cy="90" r="6"/><circle cx="510" cy="90" r="6"/><circle cx="815" cy="90" r="6"/><rect x="330" y="76" width="34" height="14" style="fill:var(--yellow)"/></g></svg></div>
     </div>
-    <p class="note">About is the people page: one post at the side, a sign you walk up to, smaller (8 columns) and closer.</p>
+    <div class="sc out"><svg class="scene" viewBox="0 0 1000 120" preserveAspectRatio="none" aria-hidden="true"><path d="M0 90 H1000" stroke="currentColor" stroke-width="2" stroke-dasharray="2 8"/><g fill="var(--face)" stroke="currentColor" stroke-width="2"><rect x="140" y="40" width="120" height="50"/><rect x="440" y="30" width="140" height="60"/><rect x="760" y="45" width="110" height="45"/></g><g fill="currentColor"><circle cx="200" cy="90" r="6"/><circle cx="510" cy="90" r="6"/><circle cx="815" cy="90" r="6"/><rect x="330" y="76" width="34" height="14" style="fill:var(--yellow)"/></g></svg></div>
+    <p class="note" data-n="band">Band (recommended): the route runs along the board's foot, inside the frame, on the stub's tint. One object, the animation where it is today.</p>
+    <p class="note" data-n="ground">Ground: a smaller board on its post; the route runs along the ground the full width, the crew driving past the sign.</p>
+    <p class="note" data-n="pylon">Pylon: two plates on one post (after the CSL sign), the question above, the route on its own plate below.</p>
     <div class="ground"></div>
   </div></div>
 </div>
@@ -104,6 +123,11 @@
     const b = e.target.closest('[data-e]'); if (!b) return;
     document.getElementById(g.dataset.for).dataset.effect = b.dataset.e;
     g.querySelectorAll('[data-e]').forEach((x) => x.setAttribute('aria-pressed', String(x === b)));
+  }));
+  document.querySelectorAll('[data-lfor]').forEach((g) => g.addEventListener('click', (e) => {
+    const b = e.target.closest('[data-l]'); if (!b) return;
+    document.getElementById(g.dataset.lfor).dataset.l = b.dataset.l;
+    g.querySelectorAll('[data-l]').forEach((x) => x.setAttribute('aria-pressed', String(x === b)));
   }));
   const vb = document.querySelector('[data-view-btn]');
   vb.addEventListener('click', () => { const on = vb.getAttribute('aria-pressed') !== 'true'; vb.setAttribute('aria-pressed', String(on)); document.querySelectorAll('.stage').forEach((s) => (s.dataset.view = on ? 'angled' : 'flat')); });
