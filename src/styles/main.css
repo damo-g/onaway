@@ -2590,9 +2590,9 @@
   .hope__essay p { max-width: 58ch; font-size: var(--text-lead); line-height: 1.45; color: color-mix(in srgb, var(--color-carbon) 86%, transparent); }
   /* Drop cap (locked: three lines · Carbon · Display 600). Options: data-dropcap 3 | 2 | raised | off,
      data-capcolor carbon | rust, data-capfont display | mono. initial-letter where supported, a float otherwise. */
-  .hope__opener::first-letter { float: left; margin: 0.06em var(--spacing-13) 0 0; font-size: 3.7em; line-height: 0.82; font-weight: 600; letter-spacing: 0; color: var(--color-carbon); }
+  .hope__opener::first-letter { float: left; margin: 0.04em var(--spacing-8) 0 -0.02em; font-size: 5.1em; line-height: 0.76; font-weight: 600; letter-spacing: 0; color: var(--color-carbon); } /* the float fallback (Firefox): sized so the cap spans the three lines */
   @supports (initial-letter: 3) or (-webkit-initial-letter: 3) {
-    .hope__opener::first-letter { float: none; margin: 0 var(--spacing-13) 0 0; font-size: inherit; line-height: inherit; -webkit-initial-letter: 3; initial-letter: 3; }
+    .hope__opener::first-letter { float: none; margin: 0 var(--spacing-8) 0 0; font-size: inherit; line-height: inherit; -webkit-initial-letter: 3; initial-letter: 3; }
     .hope[data-dropcap="2"] .hope__opener::first-letter { -webkit-initial-letter: 2; initial-letter: 2; }
     .hope[data-dropcap="raised"] .hope__opener::first-letter { -webkit-initial-letter: 3 1; initial-letter: 3 1; }
   }

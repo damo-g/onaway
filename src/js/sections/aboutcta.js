@@ -30,11 +30,10 @@ function quoteBy() {
   return `by ${fmt(h + 2, m)}`;
 }
 
-// Dev panel (Nov 2026): the closing panel as a board on one post, the job route kept along its foot. style: panel
-// (locked, as built) · band (one board, the route a slim band along its foot) · pylon (two plates on the post: the
-// question, and the route on its own plate) · view: flat (Nov 2026) · reverse · angled · road: the route's
-// ground, carbon (recommended) · paper · gray
-registerOptions('aboutcta', { style: ['panel', 'band', 'pylon'], view: ['flat', 'reverse', 'angled'], road: ['carbon', 'paper', 'gray'] });
+// The closing panel as a pylon (locked Nov 2026, written on the section in about.html so the build has it): two plates
+// on two posts, the question above, the job route on its own plate below, on Carbon. Dev panel: style pylon · panel (as
+// built) · band (one board on a post, the route along its foot) · view flat · reverse · angled · road carbon · paper · gray
+registerOptions('aboutcta', { style: ['pylon', 'panel', 'band'], view: ['flat', 'reverse', 'angled'], road: ['carbon', 'paper', 'gray'] });
 
 export function init(el) {
   const chips = el.querySelector('.ccta__chips');
