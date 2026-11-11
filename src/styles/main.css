@@ -123,11 +123,11 @@
     /* Navbar, from HF-01. Docked: --nav-h, --wm-h; the call and quote buttons fill the bar, flush right.
        State A (bar on the fold): *-a; the buttons are --btn-h-a tall, centred, inset by the margin. */
     --nav-h: 55px;
-    --nav-h-a: 144px; /* Nov 2026: the bar on the fold stands taller on phones (was 89), so the plate is shorter */
+    --nav-h-a: 89px; /* the bar on the fold fits its content (Nov 2026: 144 tried, too far from the image) */
     --wm-h: 21px;
-    --wm-h-a: var(--text-h3); /* Nov 2026: the wordmark a touch larger on the fold (was 21) */
+    --wm-h-a: 34px; /* Nov 2026: larger on the fold (was 21), shrinking to the docked 21 as the bar snaps in, as on desktop */
     --btn-h-a: 55px;
-    --hero-gap-a: 144px; /* Nov 2026: was 55; the line sits right under the plate (the plate about 21% shorter) */
+    --hero-gap-a: 144px; /* Nov 2026: was 55; the line sits right under the plate (with the 89 bar, the plate ~13% shorter than at first) */
   }
   @media (width >= 768px) {
     :root {
