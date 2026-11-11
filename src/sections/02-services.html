@@ -2,7 +2,7 @@
      src/js/sections/services.js hangs the signs from the beam and scrubs them into the rows. --}}
 {{#> section id="services" variant="bleed" class="services" label="Services"}}
   <div class="services__plate" aria-hidden="true">
-    {{picture "el01" alt="" sizes="(width >= 900px) 100vw, 900px"}}
+    {{picture "el01" alt="" sizes="(width >= 900px) 100vw, 900px" loading="eager" fetchpriority="low"}}
     {{#if dev}}
     <template data-env="el02">{{picture "el02" alt="" sizes="(width >= 900px) 100vw, 900px"}}</template>
     <template data-env="ed03">{{picture "ed03" alt="" sizes="(width >= 900px) 100vw, 900px"}}</template>

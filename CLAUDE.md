@@ -41,7 +41,7 @@ Static marketing site for ONAWAY: cleaning, moving and delivery across the GTA (
 2. Services, R2-E (pinned scrub; at least 89 below the signs)
 3. Steps, TS-02
 4. Promises, OT-05
-5. GTA, GT-09
+5. GTA, GT-10: a real 3D map (Mapbox Standard, `src/js/gta/`) behind a paper card, full screen below the navbar
 6. Quote, QC-02: an **inset Carbon panel with a 20px paper margin on each side**
 7. Footer, FT-02: **full width and full height Carbon**
 
@@ -53,7 +53,7 @@ Leave 144 of paper between the quote and the footer.
 - **Semantic HTML**, visible focus states, and WCAG AA contrast. Decorative canvases get `aria-hidden`.
 - **Reduced motion:** build the end state first, then add motion. Motion goes one thing at a time, left to right, ease-out. No parallax.
 - **Images:** AVIF/WebP with `srcset`, lazy loaded below the fold. Put the full-size source in `src/assets/images/` and write `{{picture "name" alt="…" sizes="…"}}`; `scripts/vite-images.js` encodes the widths (cached) and only ships images a page uses. Review-only alternatives go inside `{{#if dev}}…{{/if}}`.
-- **Performance budget:** page JS under 120 KB gzipped, LCP under 2.5s on 4G.
+- **Performance budget:** page JS under 120 KB gzipped, LCP under 2.5s on 4G. The GTA map (Mapbox GL, ~525 KB gzipped) has its own deferred budget: a separate chunk loaded only as section 05 nears the screen.
 - **Copy:** use it exactly as in the mocks unless the user changes it. CTA wording is "Get a free quote".
 - **Checking:** before saying a section is done, run the dev server, screenshot it at 1512, 1280 and 390 (Playwright, `npm run shots`), plus 1920 for wide screens, compare against the section image and the mock, and fix what doesn't match. Screenshots go to the OS temp folder, never into the repo.
 - **Review panel:** section options live only in the dev review panel; the locked option is the default; nothing from the panel ships in the build. Register options with `registerOptions(id, { option: [locked, ...alternatives] })` from `src/js/options.js`.
@@ -76,5 +76,6 @@ Leave 144 of paper between the quote and the footer.
 - `public/.htaccess` ships with the build: redirects onaway.adeona.ca and www to https://onaway.ca, clean URLs, 404 page, caching, compression.
 
 ## Before launch
+- Mapbox (section 05): add a payment method, make a production token restricted to onaway.ca, and set it as the GitHub secret `VITE_MAPBOX_TOKEN` (locally it lives in `.env.local`, git-ignored). Without a token the section shows its still.
 - Remove `<meta name="robots" content="noindex">` from every page and change `public/robots.txt` to allow crawling.
 - Replace the placeholder contact details in the footer (and the nav's phone number, and the one on the Accessibility page).

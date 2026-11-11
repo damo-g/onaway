@@ -582,6 +582,8 @@
   .sign__housing, .sign__face, .sign__rule { display: none; }
   .sign__tile { display: grid; place-items: center; aspect-ratio: 1; background: var(--s-tile); color: var(--s-glyph); }
   .sign__tile svg { width: 68%; height: 68%; }
+  /* End-state cards: the tile is nearly the card's height (77), the glyph a touch larger than the old 55 tile's */
+  .services.is-scripted .sign__tile svg { width: 60%; height: 60%; }
   .sign__name { font-size: var(--text-h3); line-height: 1; font-weight: 600; white-space: nowrap; }
   .sign__desc { grid-column: 2 / -1; font-size: var(--text-small); line-height: 1.5; color: var(--s-sub); }
   .sign__fact { grid-column: 2 / -1; color: var(--s-txt); }
@@ -627,17 +629,27 @@
      · data-animation across (locked) | write | unroll. */
   /* About section gap + 89 between the R2-E board and the copy, counting the paper the board already
      leaves under itself (--services-tail, set by services.js); never less than 55 of its own */
-  .steps { padding-top: max(var(--spacing-55), calc(var(--section-gap) + var(--spacing-89) - var(--services-tail, 0px))); }
+  .steps { --after: var(--spacing-144); padding-top: max(var(--spacing-55), calc(var(--section-gap) + var(--after) - var(--services-tail, 0px))); }
+  /* Services' "after": the paper from the board to Steps' heading. 322 locked (Nov 2026): the section gap + 2 × 89 on
+     tablet and desktop; phones 89 + 144 = 233. Dev panel (desktop): 233 | 288 | 377 | 432. */
+  @media (width >= 768px) { .steps { --after: calc(2 * var(--spacing-89)); } }
+  @media (width >= 1024px) {
+    main:has(.services[data-after="233"]) .steps { --after: var(--spacing-89); }
+    main:has(.services[data-after="288"]) .steps { --after: var(--spacing-144); }
+    main:has(.services[data-after="377"]) .steps { --after: calc(var(--spacing-144) + var(--spacing-89)); }
+    main:has(.services[data-after="432"]) .steps { --after: calc(2 * var(--spacing-144)); }
+  }
   /* When the board ends high (cards) it leaves more paper than that; Steps then pulls up over it (above the pinned
      section, whose lower part is empty paper by then), so the gap is always the section gap + 89 */
-  .steps { position: relative; z-index: 1; margin-top: min(0px, calc(var(--section-gap) + var(--spacing-89) - var(--spacing-55) - var(--services-tail, 0px))); }
+  .steps { position: relative; z-index: 1; margin-top: min(0px, calc(var(--section-gap) + var(--after) - var(--spacing-55) - var(--services-tail, 0px))); }
   .steps .section__grid { row-gap: var(--spacing-55); align-items: start; }
   .steps__intro { display: flex; flex-direction: column; gap: var(--spacing-34); }
   .steps__lead { max-width: 30ch; color: color-mix(in srgb, var(--color-carbon) 78%, transparent); }
 
   /* TS-02 on the scale: 500 tall body with a 55 stub, 144 tear-off, 89 stamp */
   .ticket {
-    --ticket-h: 500px;
+    --ticket-xl: 500px; /* xl, the footprint every size keeps */
+    --ticket-h: var(--ticket-xl);
     --tear-w: var(--spacing-144);
     --stub: var(--spacing-55);
     --stamp-size: var(--spacing-89);
@@ -770,6 +782,51 @@
   .steps[data-ticket="notch"] .ticket__seam::after { bottom: -13px; }
   .steps[data-ticket="notch"] .ticket__body { border-radius: 6px 0 0 6px; }
   .steps[data-ticket="notch"] .ticket__tear { border-radius: 0 6px 6px 0; }
+
+  /* Size (desktop; dev panel data-size, xl locked): the columns it spans, its height, the numbers' size. Six-column
+     sizes start a column later, leaving two empty columns after the intro. Heights on the scale (432 = 3 × 144,
+     377 = 144 + 144 + 89, 288 = 2 × 144). */
+  .ticket { grid-column: 1 / -1; }
+  @media (width >= 1024px) {
+    .ticket { grid-column: 6 / span 7; }
+    .steps:is([data-size="m6"], [data-size="s6"]) .ticket { grid-column: 7 / span 6; }
+    .steps:is([data-size="l"], [data-size="m6"]) .ticket { --ticket-h: calc(3 * var(--spacing-144)); }
+    .steps:is([data-size="m"], [data-size="s6"]) .ticket { --ticket-h: calc(2 * var(--spacing-144) + var(--spacing-89)); }
+    .steps[data-size="xs"] .ticket { --ticket-h: calc(2 * var(--spacing-144)); }
+    .steps:is([data-size="l"], [data-size="m"], [data-size="m6"], [data-size="s6"], [data-size="xs"]) .ticket__field { padding: var(--spacing-34) var(--spacing-21); }
+    .steps:is([data-size="l"], [data-size="m6"]) .ticket__num { margin-bottom: var(--spacing-13); }
+    .steps:is([data-size="m"], [data-size="m6"], [data-size="s6"]) .ticket__num { margin-bottom: var(--spacing-8); font-size: var(--text-h2); }
+    .steps[data-size="xs"] .ticket__num { margin-bottom: 0; font-size: var(--text-h3); font-weight: 600; }
+    .steps[data-size="xs"] .ticket__field { gap: var(--spacing-8); }
+    .steps[data-size="xs"] .ticket__stamp { right: var(--spacing-21); bottom: var(--spacing-21); }
+    /* xs6: m6's six columns and 42 numbers on xs's 288; the stamp goes small, in the third step's top corner */
+    .steps[data-size="xs6"] .ticket { grid-column: 7 / span 6; --ticket-h: calc(2 * var(--spacing-144)); --stamp-size: var(--spacing-55); }
+    .steps[data-size="xs6"] .ticket__field { padding: var(--spacing-34) var(--spacing-21); gap: var(--spacing-8); }
+    .steps[data-size="xs6"] .ticket__num { margin-bottom: var(--spacing-8); font-size: var(--text-h2); }
+    .steps[data-size="xs6"] .ticket__stamp { top: var(--spacing-34); bottom: auto; right: var(--spacing-21); font-size: 0; box-shadow: inset 0 0 0 1.5px var(--color-rust), inset 0 0 0 5px var(--ticket-face), inset 0 0 0 6px var(--color-rust); }
+    .steps[data-size="xs6"] .ticket__stamp::after { content: "Locked"; font-size: var(--text-label); letter-spacing: 0.04em; }
+    /* Whatever the size, the section keeps xl's footprint: the paper the smaller ticket leaves stays under it */
+    .ticket { margin-bottom: calc(var(--ticket-xl) - var(--ticket-h)); }
+
+    /* The step numbers (dev panel num · numsize). mono: Overpass Mono, muted, a hairline running after it.
+       ghost: light Carbon numerals, the step's watermark. numsize sets their size on the type scale. */
+    .steps[data-num="mono"] .ticket__num { display: flex; align-items: center; gap: var(--spacing-13); margin-bottom: var(--spacing-8); font-family: var(--font-mono); font-size: var(--text-label); font-weight: 500; font-stretch: normal; letter-spacing: var(--text-label--letter-spacing); color: color-mix(in srgb, var(--color-carbon) 62%, transparent); }
+    .steps[data-num="mono"] .ticket__num::after { content: ""; flex: 1; border-top: 1px solid var(--ticket-rule); }
+    .steps[data-num="ghost"] .ticket__num { font-weight: 300; letter-spacing: -0.03em; color: color-mix(in srgb, var(--color-carbon) 22%, transparent); }
+    .steps[data-numsize="12"] .ticket__num { font-size: var(--text-label); }
+    .steps[data-numsize="20"] .ticket__num { font-size: var(--text-lead); }
+    .steps[data-numsize="26"] .ticket__num { font-size: var(--text-h3); }
+    .steps[data-numsize="42"] .ticket__num { font-size: var(--text-h2); }
+    .steps[data-numsize="68"] .ticket__num { font-size: var(--text-h1); }
+  }
+
+  /* Tablets take the locked xs too: 288 tall, 26 numbers, the stamp in closer */
+  @media (768px <= width < 1024px) {
+    .steps[data-size="xs"] .ticket { --ticket-h: calc(2 * var(--spacing-144)); }
+    .steps[data-size="xs"] .ticket__field { padding: var(--spacing-34) var(--spacing-21); gap: var(--spacing-8); }
+    .steps[data-size="xs"] .ticket__num { margin-bottom: 0; font-size: var(--text-h3); font-weight: 600; }
+    .steps[data-size="xs"] .ticket__stamp { right: var(--spacing-21); bottom: var(--spacing-21); }
+  }
 
   /* Phones: the ticket stands up. Stub along the top, steps stacked, tear-off below the seam. */
   @media (width < 768px) {
@@ -922,53 +979,54 @@
   .promises.is-armed :is(*, *::before, *::after) { animation-play-state: paused; }
   .promises.is-armed.is-go :is(*, *::before, *::after) { animation-play-state: running; }
   .promises.is-armed.is-go .carousel.is-paused .carousel__bar.is-on i { animation-play-state: paused; }
-  /* ---------- Across the GTA (GT-09 We'll Be There) ---------- */
-  /* Options (dev panel): data-tone light (locked) | dark · data-map drawn (locked) | grid · data-idle tour (locked) | still
-     · data-zoom place (locked) | area · data-check on (locked) | off · data-layout overlay (locked) | split | caption */
+  /* ---------- Across the GTA (GT-10, a real 3D map: Mapbox Standard) ---------- */
+  /* The map runs edge to edge behind a paper card. Until it has drawn (and wherever it can't run) a still of it
+     shows. The section fills the screen below the navbar (576 at least). Desktop: the card floats at the left
+     margin, centred. Tablet and phone: the card sits at the foot, inset by the page margin, with at least 288 of map
+     above it (the section grows rather than squeeze it). gta.js; the map: src/js/gta/. */
   .gta {
-    --map-land: color-mix(in srgb, var(--color-carbon) 2%, var(--color-paper));
-    --map-lake: color-mix(in srgb, var(--color-camel) 28%, var(--color-paper));
-    --map-ink: var(--color-carbon);
-    --map-halo: var(--map-land);
+    --gta-bg: var(--color-paper); --gta-fg: var(--color-carbon);
+    position: relative; overflow: hidden; display: flex; flex-direction: column;
+    min-height: max(calc(100svh - var(--nav-h)), calc(4 * var(--spacing-144)));
+    padding: calc(2 * var(--spacing-144)) var(--grid-margin) var(--grid-margin);
+    background: var(--gta-bg); color: var(--gta-fg);
   }
-  .gta[data-tone="dark"] {
-    --map-land: var(--color-carbon);
-    --map-lake: color-mix(in srgb, var(--color-paper) 6%, var(--color-carbon));
-    --map-ink: var(--color-paper);
+  .gta__stage { position: absolute; inset: 0; overflow: hidden; background: var(--gta-bg); }
+  .gta__still, .gta__map { position: absolute; inset: 0; width: 100%; height: 100%; } /* (mapbox-gl.css, unlayered, sets .mapboxgl-map to position: relative; the size holds either way) */
+  .gta__still img { width: 100%; height: 100%; object-fit: cover; }
+  .gta__map { opacity: 0; transition: opacity 1.2s ease; }
+  .gta.is-live .gta__map { opacity: 1; }
+  /* the still's credit (Mapbox's logo and credit come with the live map) */
+  .gta__credit {
+    position: absolute; right: 0; bottom: 0; padding: var(--spacing-8); background: color-mix(in srgb, var(--color-paper) 85%, transparent);
+    font-family: var(--font-mono); font-size: var(--text-label); letter-spacing: 0.02em; transition: opacity 0.6s;
   }
-  .gta__stage { position: relative; display: flex; flex-direction: column; gap: var(--spacing-34); }
-  .gta__plate { position: relative; height: calc(2 * var(--spacing-144)); overflow: hidden; background: var(--map-land); }
-  .gmap { position: absolute; inset: 0; width: 100%; height: 100%; }
+  .gta.is-live .gta__credit { opacity: 0; }
+  .gta__map .mapboxgl-ctrl-attrib {
+    font-family: var(--font-mono); font-size: var(--text-label); letter-spacing: 0.02em; color: var(--gta-fg);
+    background: color-mix(in srgb, var(--gta-bg) 85%, transparent);
+  }
+  .gta__map .mapboxgl-ctrl-attrib a { color: inherit; }
+  .gta__map .mapboxgl-ctrl-bottom-right { z-index: 4; }
+  /* tablet and phone: the card covers the foot, so Mapbox's logo and credit (required) move to the top */
+  @media (width < 1024px) {
+    .gta__credit { top: 0; bottom: auto; }
+    .gta__map .mapboxgl-ctrl-bottom-right { top: 0 !important; bottom: auto !important; } /* (!important: mapbox-gl.css is unlayered) */
+    .gta__map .mapboxgl-ctrl-bottom-right .mapboxgl-ctrl { margin: 0 !important; }
+  }
 
-  /* Map layers (from the mock: tint, minor streets, rivers, concessions, boundaries, highways, shore, labels) */
-  .gmap .lake { fill: var(--map-lake); }
-  .gmap .landf { fill: var(--map-land); }
-  #gmap-zoom { transition: transform 1.6s cubic-bezier(0.6, 0, 0.15, 1); transform-box: view-box; transform-origin: 0 0; }
-  .gmap .rd { fill: none; stroke: color-mix(in srgb, var(--map-ink) 42%, transparent); stroke-width: 1; }
-  .gmap .mn path { fill: none; stroke: color-mix(in srgb, var(--map-ink) 13%, transparent); stroke-width: 0.6; }
-  .gmap .rv { fill: none; stroke: var(--color-camel); stroke-width: 5; stroke-opacity: 0.5; stroke-linecap: round; }
-  .gmap .hw { fill: none; stroke: color-mix(in srgb, var(--map-ink) 75%, transparent); stroke-width: 5; stroke-linecap: round; }
-  .gmap .hwc { fill: none; stroke: var(--map-land); stroke-width: 1.6; stroke-linecap: round; }
-  .gmap .bd { fill: none; stroke: color-mix(in srgb, var(--map-ink) 45%, transparent); stroke-dasharray: 2 6; }
-  .gmap .sh { fill: none; stroke: var(--map-ink); stroke-width: 1.6; }
-  .gmap .rf { fill: var(--color-yellow); opacity: 0; transition: opacity 0.8s; }
-  .gmap .rf.is-hit { opacity: 0.12; }
-  .gta[data-tone="dark"] .gmap .rf.is-hit { opacity: 0.1; }
-  .gmap text { font-family: var(--font-mono); }
-  .gmap .rn { font-size: 9px; letter-spacing: 0.12em; fill: color-mix(in srgb, var(--map-ink) 50%, transparent); }
-  .gmap .hwt { font-size: 10px; font-weight: 600; letter-spacing: 0.08em; fill: var(--map-ink); paint-order: stroke; stroke: var(--map-halo); stroke-width: 3px; }
-  .gmap .rl { font-size: 16px; font-weight: 600; letter-spacing: 0.4em; fill: color-mix(in srgb, var(--map-ink) 28%, transparent); }
-  .gmap .lk { font-size: 12px; letter-spacing: 0.4em; fill: color-mix(in srgb, var(--map-ink) 40%, transparent); }
-  .gmap .pl circle { fill: var(--map-ink); }
-  .gmap .pl text { font-family: var(--font-sans); font-stretch: 87.5%; font-size: 13px; fill: color-mix(in srgb, var(--map-ink) 75%, transparent); paint-order: stroke; stroke: var(--map-halo); stroke-width: 3px; transition: fill 0.4s; }
-  .gmap .pl.is-on text { fill: var(--map-ink); font-weight: 600; }
-  #gmap-pin { opacity: 0; transition: transform 1.6s cubic-bezier(0.6, 0, 0.15, 1), opacity 0.5s; }
-  .gmap__pin { fill: var(--color-yellow); stroke: var(--color-carbon); stroke-width: 1.5; }
-  .gta[data-map="grid"] .gmap :is(.mn, .rvg, .hwg, .hwl) { display: none; }
-
-  /* Panel: the map's title block */
-  /* Full bleed: the map spans the screen; the panel keeps to the page margin */
-  .gta__panel { display: flex; flex-direction: column; gap: var(--spacing-21); padding-inline: var(--grid-margin); background: var(--color-paper); }
+  /* The panel: the sentence, the lead and "Do we cover you?" (src/partials/gta-panel.hbs) */
+  .gta__panel { position: relative; display: flex; flex-direction: column; gap: var(--spacing-21); padding: var(--spacing-34) var(--grid-margin); background: var(--color-paper); }
+  /* the card, on every screen: paper with a hairline, a soft shadow and the paper's tooth */
+  .gta .gta__panel {
+    z-index: 3; margin-top: auto; width: 100%; max-width: 600px;
+    padding: var(--spacing-21) var(--spacing-21) var(--spacing-13);
+    box-shadow: 0 0 0 1px var(--color-line), 0 21px 55px -34px color-mix(in srgb, var(--color-carbon) 50%, transparent);
+  }
+  .gta .gta__panel::before {
+    content: ""; position: absolute; inset: 0; pointer-events: none;
+    background-image: var(--gta-grain); background-size: 220px; mix-blend-mode: multiply; opacity: 0.55;
+  }
   .gta__sentence { font-size: var(--text-h2); line-height: 0.98; font-weight: 600; letter-spacing: -0.02em; }
   .gta__slot { position: relative; display: inline-block; padding-inline: 0.04em; }
   .gta__place { position: relative; z-index: 1; display: inline-block; transition: color 0.3s; }
@@ -976,9 +1034,8 @@
   .gta__place.is-typing { animation: tk-write 0.6s cubic-bezier(0.4, 0, 0.2, 1) both; }
   .gta__hl { position: absolute; inset: 0.52em 0 0.04em; background: var(--color-yellow); transform: scaleX(0); transform-origin: 0 0; transition: transform 0.7s cubic-bezier(0.4, 0, 0.2, 1); }
   .gta__slot.is-lit .gta__hl { transform: scaleX(1); }
-  .gta__lead { max-width: 40ch; color: color-mix(in srgb, var(--color-carbon) 78%, transparent); }
+  .gta__lead { max-width: 40ch; font-size: var(--text-lead); line-height: var(--text-lead--line-height); color: color-mix(in srgb, var(--color-carbon) 78%, transparent); }
   .gta__check { display: flex; flex-direction: column; gap: var(--spacing-13); }
-  .gta[data-check="off"] .gta__check { display: none; }
   .gta__row { display: flex; height: var(--spacing-55); }
   .gta__row input {
     flex: 1;
@@ -1009,55 +1066,74 @@
   .gta__result { min-height: calc(var(--text-body) * 1.45); font-size: var(--text-body); line-height: 1.45; color: color-mix(in srgb, var(--color-carbon) 80%, transparent); }
   .gta__result b { color: var(--color-carbon); font-weight: 600; }
   .gta__result.is-in { animation: tk-write 0.6s cubic-bezier(0.4, 0, 0.2, 1) both; }
-  .gta__mark { display: none; }
 
-  /* Desktop: the map runs full width and the panel overlays it, inset by the page margin */
+  /* Desktop: the section fills the screen below the navbar; the card floats over the map at the page margin, no
+     larger than the GT-09 mock's (600 wide, padding 34 / 21), with a hairline, a soft shadow and the paper's tooth */
+  /* phone (and a phone on its side): the lead at body size, the arrow alone on the button ("Check" stays its name), so the card stays compact
+     and the placeholder reads in full (the input stays at 16: iOS zooms into anything smaller) */
+  @media (width < 768px), (height < 500px) {
+    .gta__lead { font-size: var(--text-body); line-height: var(--text-body--line-height); }
+    .gta__check { gap: var(--spacing-8); }
+    .gta__row input { padding-inline: var(--spacing-13); }
+    .gta__row button { width: var(--spacing-55); justify-content: center; padding: 0; }
+    .gta__go { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+  }
+  @media (width >= 768px) and (height >= 500px) {
+    .gta { padding-bottom: var(--spacing-34); }
+    .gta .gta__panel { padding: var(--spacing-34) var(--spacing-34) var(--spacing-21); }
+    .gta__sentence { font-size: var(--text-h1); }
+  }
   @media (width >= 1024px) {
-    .gta__stage { display: block; }
-    .gta__plate { height: clamp(400px, calc(100svh - 2 * var(--grid-margin)), 560px); } /* a supporting section: 400–560 */
-    .gta__panel {
-      position: absolute;
-      left: var(--grid-margin);
-      top: var(--grid-margin);
-      z-index: 3;
-      width: min(600px, 55%);
-      padding: var(--spacing-21) var(--spacing-34);
-    }
-    .gta__sentence { font-size: var(--text-h1); } /* h1 so the title block fits the 560 plate */
-    .gta__mark {
-      position: absolute;
-      right: var(--grid-margin);
-      top: var(--grid-margin);
-      z-index: 3;
-      display: flex;
-      align-items: center;
-      gap: var(--spacing-13);
-      padding: var(--spacing-8) var(--spacing-13);
-      background: var(--color-paper);
-    }
-    .gta__mark i { width: var(--spacing-13); height: var(--spacing-13); background: var(--color-yellow); border: 1px solid var(--color-carbon); }
-    /* Split: sentence on paper at the left, map bleeding right */
-    .gta[data-layout="split"] .gta__stage { display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); column-gap: var(--grid-gutter); }
-    .gta[data-layout="split"] .gta__plate { grid-column: 2; grid-row: 1; }
-    .gta[data-layout="split"] .gta__panel { position: static; grid-column: 1; grid-row: 1; width: auto; padding: var(--spacing-89) 0 0 var(--grid-margin); background: none; }
-    /* Caption: map full, sentence in a title band at the foot */
-    .gta[data-layout="caption"] .gta__panel { top: auto; right: var(--grid-margin); bottom: var(--grid-margin); width: auto; display: grid; grid-template-columns: 1fr minmax(0, 480px); column-gap: var(--spacing-89); }
-    .gta[data-layout="caption"] :is(.gta__kick, .gta__sentence) { grid-column: 1 / -1; }
-    .gta[data-layout="caption"] .gta__sentence { font-size: var(--text-h1); white-space: nowrap; }
-    .gta[data-layout="caption"] .gta__sentence br { display: none; }
+    .gta { display: block; height: max(calc(100svh - var(--nav-h)), calc(4 * var(--spacing-144))); padding: 0; }
+    .gta .gta__panel { position: absolute; left: var(--grid-margin); top: 50%; translate: 0 -50%; margin: 0; width: min(600px, 46%); }
   }
 
-  /* Entrance: the plate fades in, the panel writes in (gta.js arms on entry). Reduced motion never arms it. */
-  .gta.is-armed .gta__plate { animation: tk-fade 1s ease both; }
-  .gta.is-armed :is(.gta__kick, .gta__sentence, .gta__lead, .gta__check) { animation: tk-write 0.7s cubic-bezier(0.4, 0, 0.2, 1) both; }
-  .gta.is-armed .gta__kick { animation-delay: 0.1s; }
-  .gta.is-armed .gta__sentence { animation-delay: 0.3s; }
-  .gta.is-armed .gta__lead { animation-delay: 0.7s; }
-  .gta.is-armed .gta__check { animation-delay: 0.9s; }
-  .gta.is-armed :is(.gta__plate, .gta__kick, .gta__sentence, .gta__lead, .gta__check) { animation-play-state: paused; }
-  .gta.is-armed.is-go :is(.gta__plate, .gta__kick, .gta__sentence, .gta__lead, .gta__check) { animation-play-state: running; }
-  .gta.is-static #gmap-zoom,
-  .gta.is-static #gmap-pin { transition: none; }
+  /* On the map: the area names, the matched area's name, the sign (src/js/gta/overlays.js) */
+  .gta-region {
+    color: color-mix(in srgb, var(--gta-fg, var(--color-carbon)) 62%, transparent); white-space: nowrap; pointer-events: none;
+    text-shadow: 0 0 3px var(--gta-bg, var(--color-paper)), 0 0 8px var(--gta-bg, var(--color-paper)); opacity: 0; transition: opacity 0.6s;
+  }
+  .gta-region.is-on { opacity: 1; }
+  /* The matched area's name: h3, a step above the place names under it; fades as the camera goes down */
+  .gta-zone {
+    font-family: var(--font-sans); font-stretch: var(--font-stretch-semicondensed); font-size: var(--text-h3); font-weight: 600; line-height: 1;
+    letter-spacing: 0.02em; text-transform: uppercase; color: var(--color-carbon); white-space: nowrap; pointer-events: none;
+    text-shadow: 0 0 3px var(--color-paper), 0 0 13px var(--color-paper), 0 0 21px var(--color-paper);
+    opacity: 0; translate: 0 var(--spacing-8); transition: opacity 0.6s, translate 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  .gta-zone[data-style="mono"] { font-family: var(--font-mono); font-stretch: normal; letter-spacing: 0.12em; }
+  .gta-zone.is-on { opacity: 1; translate: 0 0; }
+  /* on a dark map (dusk, night): paper type with a carbon glow */
+  [data-map-dark] .gta-zone { color: var(--color-paper); text-shadow: 0 0 3px var(--color-carbon), 0 0 13px var(--color-carbon), 0 0 21px var(--color-carbon); }
+  [data-map-dark] .gta-region { color: color-mix(in srgb, var(--color-paper) 70%, transparent); text-shadow: 0 0 3px var(--color-carbon), 0 0 8px var(--color-carbon); }
+  /* The sign: the place's name on a paper chip (option A's pin adds a stem down to a yellow stop) */
+  .gta-pin { display: flex; flex-direction: column; align-items: center; pointer-events: none; }
+  .gta-pin__chip {
+    display: flex; align-items: center; gap: var(--spacing-8); padding: var(--spacing-8) var(--spacing-13); white-space: nowrap;
+    background: var(--color-paper); color: var(--color-carbon); box-shadow: 0 0 0 1px var(--color-line), 0 13px 21px -13px color-mix(in srgb, var(--color-carbon) 45%, transparent);
+    opacity: 0; translate: 0 calc(-1 * var(--spacing-13)); transition: opacity 0.4s, translate 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  .gta-pin__chip i { width: var(--spacing-8); height: var(--spacing-8); background: var(--color-yellow); flex: none; }
+  .gta-pin__stem { position: relative; width: 1px; height: var(--spacing-34); background: var(--color-carbon); transform: scaleY(0); transform-origin: 50% 0; transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1); }
+  .gta-pin__stem::after {
+    content: ""; position: absolute; left: 50%; bottom: 0; width: var(--spacing-13); height: var(--spacing-13); translate: -50% 50%;
+    background: var(--color-yellow); box-shadow: 0 0 0 1.5px var(--color-carbon); border-radius: 50%; transform: scaleY(1);
+  }
+  .gta-pin.is-on .gta-pin__chip { opacity: 1; translate: 0 0; transition-delay: 0.12s; }
+  .gta-pin.is-on .gta-pin__stem { transform: scaleY(1); }
+  .gta-pin--sign .gta-pin__stem { visibility: hidden; } /* the sign: the name alone, floating */
+  @media (prefers-reduced-motion: reduce) {
+    .gta-zone, .gta-pin__chip, .gta-pin__stem, .gta__map { transition: none; translate: none; }
+  }
+
+  /* Entrance: the card writes in (the controller arms it on entry). Reduced motion never arms it.
+     (.g10-sec: the GT-10 exploration pages share it.) */
+  :is(.gta, .g10-sec).is-armed :is(.gta__sentence, .gta__lead, .gta__check) { animation: tk-write 0.7s cubic-bezier(0.4, 0, 0.2, 1) both; }
+  :is(.gta, .g10-sec).is-armed .gta__sentence { animation-delay: 0.3s; }
+  :is(.gta, .g10-sec).is-armed .gta__lead { animation-delay: 0.7s; }
+  :is(.gta, .g10-sec).is-armed .gta__check { animation-delay: 0.9s; }
+  :is(.gta, .g10-sec).is-armed :is(.gta__sentence, .gta__lead, .gta__check) { animation-play-state: paused; }
+  :is(.gta, .g10-sec).is-armed.is-go :is(.gta__sentence, .gta__lead, .gta__check) { animation-play-state: running; }
   /* ---------- Quote (QC-02 Say It in a Sentence) ---------- */
   /* Options (dev panel): data-colour dark (locked) | light | yellow · data-marks xo (locked) | box | cross | street
      · data-ask 3 (locked: service, area, when) | 2 | 1 */
@@ -1122,10 +1198,8 @@
   /* Centre poster */
   .qc__body { position: relative; z-index: 1; display: flex; flex-direction: column; align-items: center; text-align: center; }
   .qc__title { margin-bottom: var(--spacing-21); }
-  /* Head (locked: label): the sentence is the headline; "Get a free quote." stays as the hidden section heading */
-  .qc__kicker { margin-bottom: var(--spacing-21); color: var(--qc-mut); text-wrap: balance; }
+  /* Head: off (locked Nov 2026, no eyebrow): "Get a free quote." stays as the hidden section heading; headline shows it */
   .qc:not([data-head="headline"]) .qc__title { position: absolute; width: 1px; height: 1px; margin: 0; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
-  .qc[data-head="headline"] .qc__kicker { display: none; }
   .qc__title,
   .qc__sentence { color: var(--qc-fg); }
   .qc__form { display: flex; flex-direction: column; align-items: center; }
@@ -1193,10 +1267,10 @@
   .qc-pop__results button { font-size: var(--text-lead); }
   .qc-pop__results i { width: var(--spacing-13); height: var(--spacing-13); flex: none; background: var(--color-yellow); }
   .qc-pop__results small { margin-left: auto; font-family: var(--font-mono); font-size: var(--text-label); letter-spacing: var(--text-label--letter-spacing); font-weight: 500; font-stretch: normal; text-transform: uppercase; opacity: 0.7; }
-  .qc-pop__msg { padding: var(--spacing-8); font-size: var(--text-small); line-height: 1.45; opacity: 0.75; }
+  .qc-pop__msg, .qc-pop__results .area-msg { padding: var(--spacing-8); font-size: var(--text-small); line-height: 1.45; opacity: 0.75; }
   .qc-pop__hint { padding-inline: var(--spacing-8); font-family: var(--font-mono); font-size: var(--text-label); letter-spacing: var(--text-label--letter-spacing); text-transform: uppercase; opacity: 0.6; }
 
-  /* Button: the site's 55 with Lead 20, yellow at 70% while waiting; its label says the missing step */
+  /* Button: the site's 55 with Lead 20; its label says the missing step (the wait option sets how it waits) */
   .qc__foot { margin-top: var(--spacing-34); }
   .qc__ready { display: flex; flex-direction: column; align-items: center; gap: var(--spacing-13); }
   .qc__cta {
@@ -1212,7 +1286,6 @@
     cursor: pointer;
     transition: opacity 0.4s, transform 0.3s;
   }
-  .qc__cta[aria-disabled="true"] { opacity: 0.7; cursor: not-allowed; }
   .qc__cta.is-ready { animation: qc-ready 0.5s cubic-bezier(0.3, 0.7, 0.3, 1); }
   .qc__cta-arrow { transition: transform 0.3s; }
   .qc__cta:not([aria-disabled="true"]):hover .qc__cta-arrow { transform: translateX(5px); }
@@ -1237,6 +1310,186 @@
     .qc[data-size="42"] .qc__ask-when br { display: none; } /* one line at 42 */
   }
 
+  /* ---- CTA options (Nov 2026, dev panel): wait · layout · effect · board · view. The locked set is written on the
+     section itself (06-quote.html: billboard, aside, light, headline, 42, stops + live), so dev and the build match. ---- */
+  /* The parts only some options use stay hidden otherwise */
+  .qc__summary, .qc__stops, .qc__sign, .qc__count { display: none; }
+  .qc[data-ask="1"] :is([data-sum="area"], [data-stop="area"]),
+  .qc:is([data-ask="1"], [data-ask="2"]) :is([data-sum="when"], [data-stop="when"]) { display: none !important; }
+
+  /* wait: the button before the sentence is complete. Pressing it always opens the next blank, so it never looks
+     disabled: stopslive (locked) the full button with three route stops filling as you answer · live the full button,
+     only its words change · stops hollow, the stops filling · fill hollow, a yellow bar along its foot growing with each
+     answer · count the full button with "1/3" where the arrow goes · dim 70% (as built) */
+  .qc__cta[aria-disabled="true"] { cursor: pointer; }
+  .qc[data-wait="dim"] .qc__cta[aria-disabled="true"] { opacity: 0.7; cursor: not-allowed; }
+  .qc:is([data-wait="stopslive"], [data-wait="live"], [data-wait="count"]) .qc__cta[aria-disabled="true"]:hover .qc__cta-arrow { transform: translateX(5px); }
+  .qc:is([data-wait="stops"], [data-wait="stopslive"]) .qc__stops { display: inline-flex; align-items: center; gap: var(--spacing-8); }
+  /* stops + live: the stops and the words together on the left (8 apart), the arrow on the right */
+  .qc[data-wait="stopslive"] .qc__cta { gap: var(--spacing-8); }
+  .qc[data-wait="stopslive"] .qc__cta-label { margin-right: auto; }
+  .qc[data-wait="stopslive"] .qc__cta-arrow { margin-left: var(--spacing-13); }
+  .qc__stops i { position: relative; width: var(--spacing-8); height: var(--spacing-8); border: 1.5px solid currentColor; border-radius: 50%; transition: background-color 0.3s; }
+  .qc__stops i + i::before { content: ""; position: absolute; right: 100%; top: 50%; width: var(--spacing-8); border-top: 1.5px dotted currentColor; }
+  .qc__stops i.is-on { background: currentColor; }
+  .qc:is([data-wait="stops"], [data-wait="fill"]) .qc__cta { position: relative; transition: background-color 0.4s, color 0.4s, box-shadow 0.4s, transform 0.3s; }
+  .qc:is([data-wait="stops"], [data-wait="fill"]) .qc__cta[aria-disabled="true"] { background: transparent; color: var(--qc-fg); box-shadow: inset 0 0 0 1.5px var(--qc-line); }
+  .qc[data-wait="fill"] .qc__cta::after { content: ""; position: absolute; left: 0; bottom: 0; width: var(--qc-p, 0%); height: 4px; background: var(--color-yellow); transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1); }
+  .qc[data-wait="fill"] .qc__cta:not([aria-disabled="true"])::after { display: none; }
+  .qc[data-wait="count"] .qc__cta[aria-disabled="true"] .qc__count { display: inline; font-family: var(--font-mono); font-size: var(--text-label); font-weight: 500; font-stretch: normal; letter-spacing: var(--text-label--letter-spacing); }
+  .qc[data-wait="count"] .qc__cta[aria-disabled="true"] .qc__cta-arrow { display: none; }
+
+  @media (width >= 1024px) {
+    /* layout: left · flush left on the page margin */
+    .qc[data-layout="left"] :is(.qc__body, .qc__form, .qc__ready) { align-items: flex-start; text-align: left; }
+    .qc[data-layout="left"] .qc__bg { scale: -1 1; }
+    /* layout: aside (8/4, locked) · the note and the button in the right column · split (7/5): the sentence left; the
+       answers as a ticket and the button right */
+    .qc:is([data-layout="split"], [data-layout="aside"]) :is(.qc__body, .qc__ready) { align-items: flex-start; text-align: left; }
+    .qc:is([data-layout="split"], [data-layout="aside"]) .qc__form { display: grid; width: 100%; column-gap: calc(var(--grid-gutter) + 100% / 12); align-items: end; }
+    .qc[data-layout="split"] .qc__form { grid-template-columns: minmax(0, 7fr) minmax(0, 5fr); }
+    .qc[data-layout="aside"] .qc__form { grid-template-columns: minmax(0, 8fr) minmax(0, 4fr); }
+    .qc:is([data-layout="split"], [data-layout="aside"]) .qc__sentence { grid-column: 1; grid-row: 1; }
+    .qc:is([data-layout="split"], [data-layout="aside"]) .qc__foot { grid-column: 2; grid-row: 1; margin-top: 0; }
+    .qc[data-layout="split"] .qc__summary { display: block; margin-bottom: var(--spacing-21); border-top: 1px solid var(--qc-line); }
+    .qc__summary div { display: flex; justify-content: space-between; align-items: baseline; gap: var(--spacing-13); padding-block: var(--spacing-13); border-bottom: 1px solid var(--qc-line); }
+    .qc__summary dt { color: var(--qc-mut); }
+    .qc__summary dd { font-size: var(--text-lead); font-weight: 600; }
+    .qc:is([data-layout="split"], [data-layout="aside"]) .qc__cta { width: 100%; justify-content: space-between; gap: var(--spacing-13); white-space: nowrap; }
+    .qc[data-layout="aside"] .qc__ready { flex-direction: column-reverse; gap: var(--spacing-21); }
+    .qc[data-layout="aside"] .qc__note { padding-top: var(--spacing-13); border-top: 1px solid var(--qc-line); }
+    /* layout: masthead · the headline across the panel (with head: headline), the sentence under it, the button and
+       the note on a hairline. With head off, the sentence is the masthead. */
+    .qc[data-layout="masthead"] :is(.qc__body, .qc__form) { align-items: stretch; text-align: left; }
+    .qc[data-layout="masthead"][data-head="headline"] .qc__title { margin-bottom: var(--spacing-34); }
+    .qc[data-layout="masthead"] .qc__foot { margin-top: var(--spacing-55); }
+    .qc[data-layout="masthead"] .qc__ready { flex-direction: row-reverse; justify-content: space-between; align-items: center; text-align: left; }
+    .qc[data-layout="masthead"] .qc__note { max-width: 52ch; }
+    /* layout: stagger (locked Nov 2026) · between aside and poster: the sentence set large from the left, the button and
+       the note stepping down under it into the right-hand five twelfths; no rules */
+    .qc[data-layout="stagger"] :is(.qc__body, .qc__form) { align-items: stretch; text-align: left; }
+    .qc[data-layout="stagger"] .qc__foot { margin-top: var(--spacing-34); margin-left: calc(7 / 12 * 100%); }
+    .qc[data-layout="stagger"] .qc__ready { align-items: stretch; text-align: left; gap: var(--spacing-13); }
+    .qc[data-layout="stagger"] .qc__cta { width: 100%; white-space: nowrap; }
+  }
+
+  /* ---- Boards (effect: billboard, locked · hanging · post). The panel's colour goes off; the board carries it
+     (colour: light, locked, the ticket's face · dark · yellow), in a Carbon housing like the Services signs. The
+     route marks go (nothing to stand behind). billboard: two posts down to the ground, the footer · hanging: rods
+     up to the map above, as the Services signs hang · post: one post at its side, two brackets. quote.js measures
+     --post-h and --rod-h. board: l (locked, 10 columns) · m (8) · xl (12) · view: angled (locked: turned 4°, its near
+     edge showing) · flat. Phones: a pylon, the W tile on a neck above the board, one post. ---- */
+  .qc:is([data-effect="billboard"], [data-effect="hanging"], [data-effect="post"]) {
+    --frame: var(--color-carbon);
+    overflow: visible;
+    padding-bottom: 0;
+    background: transparent;
+  }
+  .qc[data-colour="light"]:is([data-effect="billboard"], [data-effect="hanging"], [data-effect="post"]) { --qc-bg: color-mix(in srgb, var(--color-carbon) 5%, var(--color-paper)); }
+  .qc[data-colour="dark"]:is([data-effect="billboard"], [data-effect="hanging"], [data-effect="post"]) { --qc-bg: color-mix(in srgb, var(--color-paper) 7%, var(--color-carbon)); }
+  .qc:is([data-effect="billboard"], [data-effect="hanging"], [data-effect="post"]) .qc__bg { display: none; }
+  .qc:is([data-effect="billboard"], [data-effect="hanging"], [data-effect="post"]) .qc__body {
+    --cols: 10;
+    width: 100%;
+    margin-inline: auto;
+    padding: var(--spacing-55) var(--spacing-34) var(--spacing-34);
+    border-radius: var(--spacing-13);
+    background: var(--qc-bg);
+    box-shadow: inset 0 0 0 var(--spacing-8) var(--frame), 0 34px 55px -34px color-mix(in srgb, var(--color-carbon) 50%, transparent);
+    transition: background-color 0.5s;
+  }
+  /* The W, the sign's tile in its corner */
+  .qc:is([data-effect="billboard"], [data-effect="hanging"], [data-effect="post"]) .qc__sign {
+    display: grid; place-items: center; position: absolute; top: 0; left: 0; width: var(--spacing-55); height: var(--spacing-55);
+    border-radius: var(--spacing-13) 0 var(--spacing-13) 0; background: var(--frame); color: var(--color-paper);
+  }
+  .qc__sign svg { width: var(--spacing-21); height: auto; }
+  .qc:is([data-effect="billboard"], [data-effect="hanging"], [data-effect="post"]) .qc__body::before,
+  .qc:is([data-effect="billboard"], [data-effect="hanging"], [data-effect="post"]) .qc__body::after { content: ""; position: absolute; z-index: -1; background: var(--frame); }
+  /* billboard: two posts to the ground */
+  .qc[data-effect="billboard"] .qc__body::before,
+  .qc[data-effect="billboard"] .qc__body::after { top: calc(100% - var(--spacing-8)); width: var(--spacing-13); height: calc(var(--post-h, var(--spacing-144)) + var(--spacing-8)); }
+  .qc[data-effect="billboard"] .qc__body::before { left: 22%; }
+  .qc[data-effect="billboard"] .qc__body::after { right: 22%; }
+  /* hanging: two rods up to the section above */
+  .qc[data-effect="hanging"] .qc__body::before,
+  .qc[data-effect="hanging"] .qc__body::after { bottom: calc(100% - var(--spacing-8)); width: 5px; height: calc(var(--rod-h, var(--spacing-144)) + var(--spacing-8)); border-radius: 2px; }
+  .qc[data-effect="hanging"] .qc__body::before { left: 13%; }
+  .qc[data-effect="hanging"] .qc__body::after { right: 13%; }
+  /* post: one post at the left, rising a little above the board, two brackets */
+  .qc[data-effect="post"] .qc__body::before { top: calc(-1 * var(--spacing-34)); left: calc(-1 * var(--spacing-34)); width: var(--spacing-13); height: calc(100% + var(--spacing-34) + var(--post-h, var(--spacing-144))); border-radius: var(--spacing-8) var(--spacing-8) 0 0; }
+  .qc[data-effect="post"] .qc__body::after {
+    top: var(--spacing-34); bottom: var(--spacing-34); left: calc(-1 * var(--spacing-21)); width: var(--spacing-34); background: none;
+    border-block: var(--spacing-13) solid var(--frame);
+  }
+  .qc:is([data-effect="billboard"], [data-effect="hanging"], [data-effect="post"]) .qc__title { line-height: 0.9; }
+  /* head: label · "Get a free quote" as the sign's ID band: mono, beside the W in the housing's corner (on a board), or
+     a label over the sentence (on the panel) */
+  .qc[data-head="label"] .qc__title { position: static; width: auto; height: auto; overflow: visible; clip-path: none; white-space: nowrap; margin-bottom: var(--spacing-21); font-family: var(--font-mono); font-size: var(--text-label) !important; line-height: 1; letter-spacing: var(--text-label--letter-spacing); font-weight: 500; font-stretch: normal; color: var(--qc-mut); }
+  .qc[data-head="label"]:is([data-effect="billboard"], [data-effect="hanging"], [data-effect="post"]) .qc__title { position: absolute; top: 0; left: calc(var(--spacing-55) + var(--spacing-21)); display: flex; align-items: center; height: var(--spacing-55); margin: 0; color: var(--qc-fg); }
+  @media (width >= 768px) {
+    .qc:is([data-effect="billboard"], [data-effect="hanging"], [data-effect="post"]) .qc__body { padding: var(--spacing-89) var(--spacing-55) var(--spacing-55); }
+    .qc[data-effect="post"] .qc__body { margin-left: var(--spacing-34); width: calc(100% - var(--spacing-34)); }
+  }
+  @media (width >= 1024px) {
+    .qc:is([data-effect="billboard"], [data-effect="hanging"], [data-effect="post"]) .qc__body {
+      width: calc((100% + var(--grid-gutter)) * var(--cols) / 12 - var(--grid-gutter));
+      padding: var(--spacing-89) var(--spacing-89) var(--spacing-55);
+    }
+    .qc[data-effect="post"] .qc__body { margin-left: auto; }
+    .qc[data-board="m"] .qc__body { --cols: 8; }
+    .qc[data-board="xl"] .qc__body { --cols: 12; }
+    .qc[data-board="xl"]:is([data-effect="billboard"], [data-effect="hanging"]) .qc__body { width: 100%; }
+    .qc[data-board="xl"][data-effect="post"] .qc__body { width: calc(100% - var(--spacing-34)); margin-right: 0; }
+    /* The headline packed tight on the sentence: one poster. Aside: the note and button start level with the sentence. */
+    .qc[data-head="headline"]:is([data-effect="billboard"], [data-effect="hanging"], [data-effect="post"]) .qc__title { margin-bottom: var(--spacing-13); }
+    .qc[data-layout="aside"]:is([data-effect="billboard"], [data-effect="hanging"], [data-effect="post"]) .qc__form { align-items: start; }
+    .qc[data-layout="aside"]:is([data-effect="billboard"], [data-effect="hanging"], [data-effect="post"]) .qc__sentence { padding-top: var(--spacing-8); }
+    /* view: angled (locked Nov 2026) · turned 4° about its middle, the near (left) edge showing its depth; the far
+       post shrinks with the turn, so both run on past the footer's edge (Carbon on Carbon: no seam) */
+    .qc[data-view="angled"][data-effect="billboard"] .qc__body::before,
+    .qc[data-view="angled"][data-effect="billboard"] .qc__body::after { height: calc(var(--post-h, var(--spacing-144)) + var(--spacing-55)); }
+    .qc[data-view="angled"][data-effect="post"] .qc__body::before { height: calc(100% + var(--spacing-89) + var(--post-h, var(--spacing-144))); }
+    .qc[data-view="angled"] .qc__body {
+      transform: perspective(2400px) rotateY(4deg);
+      box-shadow: inset 0 0 0 var(--spacing-8) var(--frame), calc(-1 * var(--spacing-13)) 0 0 0 color-mix(in srgb, var(--color-carbon) 80%, var(--color-camel)), 34px 34px 55px -21px color-mix(in srgb, var(--color-carbon) 45%, transparent);
+    }
+  }
+  /* Smaller desktops (1024–1439): the board takes all 12 columns, the aside 7/5, so the button keeps its line */
+  @media (1024px <= width < 1440px) {
+    .qc:is([data-effect="billboard"], [data-effect="hanging"], [data-effect="post"]) .qc__body { --cols: 12; padding-inline: var(--spacing-55); }
+    .qc[data-layout="aside"]:is([data-effect="billboard"], [data-effect="hanging"], [data-effect="post"]) .qc__form { grid-template-columns: minmax(0, 7fr) minmax(0, 5fr); column-gap: var(--spacing-55); }
+  }
+  /* Phones: a pylon. The W on its own tile at the top, a neck, the board, one post to the ground. */
+  @media (width < 768px) {
+    .qc:is([data-effect="billboard"], [data-effect="hanging"], [data-effect="post"]) { margin-inline: 0; }
+    .qc:is([data-effect="billboard"], [data-effect="hanging"], [data-effect="post"]) .qc__body { margin-top: calc(var(--spacing-89) + var(--spacing-21)); padding: var(--spacing-55) var(--spacing-21) var(--spacing-34) calc(var(--spacing-8) + var(--spacing-21)); align-items: flex-start; text-align: left; }
+    .qc:is([data-effect="billboard"], [data-effect="hanging"], [data-effect="post"]) :is(.qc__form, .qc__ready) { align-items: flex-start; text-align: left; }
+    .qc:is([data-effect="billboard"], [data-effect="hanging"], [data-effect="post"]) .qc__sign {
+      top: calc(-1 * (var(--spacing-89) + var(--spacing-21))); left: 50%; translate: -50% 0; width: var(--spacing-89); height: var(--spacing-89);
+      border-radius: var(--spacing-13); background: var(--qc-bg); box-shadow: inset 0 0 0 var(--spacing-8) var(--frame); color: var(--qc-fg);
+    }
+    .qc:is([data-effect="billboard"], [data-effect="hanging"], [data-effect="post"]) .qc__sign svg { width: var(--spacing-34); }
+    .qc:is([data-effect="billboard"], [data-effect="hanging"], [data-effect="post"]) .qc__sign::after { content: ""; position: absolute; top: 100%; left: 50%; translate: -50% 0; width: var(--spacing-34); height: var(--spacing-21); background: var(--frame); }
+    .qc:is([data-effect="billboard"], [data-effect="hanging"], [data-effect="post"]) .qc__body::before { inset: calc(100% - var(--spacing-8)) auto auto 50%; translate: -50% 0; width: var(--spacing-13); height: calc(var(--post-h, var(--spacing-89)) + var(--spacing-8)); border-radius: 0; }
+    .qc:is([data-effect="billboard"], [data-effect="hanging"], [data-effect="post"]) .qc__body::after { display: none; }
+    .qc:is([data-effect="billboard"], [data-effect="hanging"], [data-effect="post"]) .qc__cta { width: 100%; justify-content: space-between; }
+  }
+
+  /* effect: flap · the blanks as split-flap tiles (the arrival boards); a set blank flips in */
+  .qc[data-effect="flap"] .qc-blank {
+    padding: 0.06em 0.22em; border-bottom: 0; border-radius: 0.08em;
+    background: linear-gradient(to bottom, transparent calc(50% - 1px), color-mix(in srgb, var(--color-carbon) 70%, transparent) calc(50% - 1px) calc(50% + 1px), transparent calc(50% + 1px)), color-mix(in srgb, var(--color-carbon) 88%, var(--color-paper));
+    color: var(--color-paper); font-family: var(--font-mono); font-stretch: normal; font-weight: 500; text-transform: uppercase; letter-spacing: 0.04em; font-size: 0.8em; vertical-align: 0.06em;
+  }
+  .qc[data-effect="flap"] .qc-blank.is-empty .qc-blank__text { color: color-mix(in srgb, var(--color-paper) 55%, transparent); }
+  .qc[data-effect="flap"] .qc-blank__hl { display: none; }
+  .qc[data-effect="flap"] .qc-blank.is-set { box-shadow: inset 0 -0.08em 0 var(--color-yellow); }
+  .qc[data-effect="flap"] .qc-blank.is-set .qc-blank__text { display: inline-block; animation: qc-flap 0.5s cubic-bezier(0.3, 0.7, 0.3, 1); transform-origin: 50% 55%; }
+  @keyframes qc-flap { 0% { transform: rotateX(90deg); } 60% { transform: rotateX(-12deg); } 100% { transform: none; } }
+  @media (prefers-reduced-motion: reduce) {
+    .qc[data-effect="flap"] .qc-blank.is-set .qc-blank__text { animation: none; }
+  }
   /* Entrance: the route draws in once on entry (quote.js arms it). Reduced motion: no drawing, drift or square. */
   .qc.is-armed .qc-route .rt { animation: qc-draw 3.2s cubic-bezier(0.4, 0, 0.2, 1) 0.2s both; animation-play-state: paused; }
   .qc.is-armed.is-go .qc-route .rt { animation-play-state: running; }
@@ -1248,7 +1501,7 @@
   html[data-motion="reduce"] .qc-blank.is-next { animation: none; }
   html[data-motion="reduce"] .qc-route .mv { display: none; }
   /* ---------- Footer (FT-02 Window) ---------- */
-  /* Options (dev panel): data-fill windows (locked) | sky | lake | traffic | flap | flat · data-signal arrive (locked)
+  /* Options (dev panel): data-fill windows (locked) | board | board-update | board-fine | board-glow | board-square | board-amber | dots-stars | sky | flat · data-signal arrive (locked)
      | turn | still | off · data-hover signal (locked) | sweep | invert | mark */
   .footer {
     --ft-fg: var(--color-paper);
@@ -1265,14 +1518,58 @@
   .footer__tag { max-width: 22ch; font-size: var(--text-h3); line-height: 1.1; font-weight: 500; letter-spacing: -0.01em; }
   .footer__clock { color: var(--ft-fg); }
   .footer__clock time { font-variant-numeric: tabular-nums; }
-  /* The hours sit under the time, a step quieter: supporting information. The pictogram carries the camel (camel is
-     never text); the words are Paper at 55%. Panel option footer.hours: quiet (locked) | kraft (a camel tag, Carbon
-     words) | inline (one line after the time). */
-  .footer__when { display: flex; flex-direction: column; align-items: flex-start; gap: var(--spacing-8); }
-  .footer__hours { --tile: var(--color-carbon); display: inline-flex; align-items: center; gap: var(--spacing-8); color: color-mix(in srgb, var(--color-paper) 55%, transparent); }
-  .footer__hours svg { flex: none; width: 1.25em; height: 1.25em; color: var(--color-camel); }
-  .footer[data-hours="kraft"] .footer__hours { --tile: var(--color-camel); padding: var(--spacing-8); border-radius: 2px; background: var(--color-camel); color: var(--color-carbon); }
-  .footer[data-hours="kraft"] .footer__hours svg { color: var(--color-carbon); }
+  /* The time and the hours (Nov 2026). Locked, tile: the door pictogram on a sign tile like the Services cards (Paper
+     7% on Carbon, a Paper glyph), the time as a label beside it, the hours under it in Paper. Panel option footer.hours:
+     board (an arrivals board: ruled rows, LOCAL TIME / HOURS, values right) · big (the time at h2, its city above, the
+     hours under with a dot, yellow while open) · quiet (as built: a small camel pictogram, muted words) · inline. */
+  .footer__when { --tile: color-mix(in srgb, var(--color-paper) 7%, var(--color-carbon)); display: grid; grid-template-columns: var(--spacing-55) auto; column-gap: var(--spacing-13); row-gap: var(--spacing-8); align-items: center; }
+  .footer__tile { grid-row: 1 / span 2; display: grid; place-items: center; width: var(--spacing-55); height: var(--spacing-55); background: var(--tile); color: var(--color-paper); }
+  .footer__tile svg { width: 68%; height: 68%; }
+  .footer__clock { align-self: end; }
+  .footer__hours { align-self: start; display: inline-flex; align-items: center; gap: var(--spacing-8); font-family: inherit; font-size: var(--text-body); font-stretch: 87.5%; letter-spacing: 0; text-transform: none; font-weight: 500; color: var(--color-paper); }
+  .footer__hours svg { display: none; flex: none; width: 1.25em; height: 1.25em; color: var(--color-camel); }
+  /* board */
+  .footer[data-hours="board"] .footer__when { grid-template-columns: auto auto; column-gap: var(--spacing-34); row-gap: 0; min-width: calc(4 * var(--spacing-55)); }
+  .footer[data-hours="board"] .footer__tile { display: none; }
+  .footer[data-hours="board"] :is(.footer__clock, .footer__hours) { display: contents; }
+  .footer[data-hours="board"] .footer__sep { display: none; }
+  .footer[data-hours="board"] :is(.footer__city, .footer__clock time, .footer__hours span) { padding-block: var(--spacing-8); border-top: 1px solid var(--ft-line); }
+  .footer[data-hours="board"] .footer__city { font-size: 0; }
+  .footer[data-hours="board"] .footer__city::before { content: "Local time"; font-size: var(--text-label); color: var(--ft-mut); }
+  .footer[data-hours="board"] .footer__hours::before { content: "Hours"; grid-column: 1; padding-block: var(--spacing-8); border-top: 1px solid var(--ft-line); font-family: var(--font-mono); font-size: var(--text-label); letter-spacing: var(--text-label--letter-spacing); text-transform: uppercase; font-stretch: normal; color: var(--ft-mut); }
+  .footer[data-hours="board"] :is(.footer__clock time, .footer__hours span) { text-align: right; color: var(--color-paper); }
+  .footer[data-hours="board"] .footer__hours span { font-family: var(--font-mono); font-size: var(--text-label); letter-spacing: var(--text-label--letter-spacing); text-transform: uppercase; font-stretch: normal; }
+  /* big */
+  .footer[data-hours="big"] .footer__when { display: flex; flex-direction: column; gap: var(--spacing-8); }
+  .footer[data-hours="big"] .footer__tile, .footer[data-hours="big"] .footer__sep { display: none; }
+  .footer[data-hours="big"] .footer__clock { display: flex; flex-direction: column; gap: var(--spacing-8); }
+  .footer[data-hours="big"] .footer__city { color: var(--ft-mut); }
+  .footer[data-hours="big"] .footer__clock time { font-family: var(--font-sans); font-size: var(--text-h2); line-height: 1; letter-spacing: -0.01em; font-weight: 500; font-stretch: 87.5%; text-transform: none; }
+  .footer[data-hours="big"] .footer__hours::before { content: ""; width: var(--spacing-8); height: var(--spacing-8); border-radius: 50%; background: var(--color-camel); }
+  .footer[data-hours="big"] .footer__when.is-open .footer__hours::before { background: var(--color-yellow); }
+  /* timetable: two columns, a mono label over each value (Body 16: supporting information), one hairline between */
+  .footer[data-hours="timetable"] .footer__when { grid-template-columns: auto auto; grid-template-rows: auto auto; gap: 0; align-items: end; }
+  .footer[data-hours="timetable"] :is(.footer__tile, .footer__sep) { display: none; }
+  .footer[data-hours="timetable"] .footer__clock { display: contents; }
+  .footer[data-hours="timetable"] :is(.footer__city, .footer__clock time) { padding-right: var(--spacing-21); }
+  .footer[data-hours="timetable"] .footer__hours { padding-left: var(--spacing-21); border-left: 1px solid var(--ft-line); }
+  .footer[data-hours="timetable"] .footer__city { grid-area: 1 / 1; padding-bottom: var(--spacing-8); color: var(--ft-mut); }
+  .footer[data-hours="timetable"] .footer__city::after { content: " · now"; }
+  .footer[data-hours="timetable"] .footer__clock time { grid-area: 2 / 1; font-family: var(--font-sans); font-size: var(--text-body); line-height: 1.2; font-weight: 500; font-stretch: 87.5%; letter-spacing: 0; text-transform: none; }
+  .footer[data-hours="timetable"] .footer__hours { grid-area: 2 / 2; font-size: var(--text-body); line-height: 1.2; }
+  .footer[data-hours="timetable"] .footer__when::after { content: "Hours"; grid-area: 1 / 2; padding-left: var(--spacing-21); padding-bottom: var(--spacing-8); border-left: 1px solid var(--ft-line); font-family: var(--font-mono); font-size: var(--text-label); line-height: 1.2; letter-spacing: var(--text-label--letter-spacing); text-transform: uppercase; color: var(--ft-mut); }
+  /* plate: a small wayfinding plate, a status bar down its edge (yellow while open) */
+  .footer[data-hours="plate"] .footer__when { position: relative; padding: var(--spacing-13) var(--spacing-21) var(--spacing-13) var(--spacing-13); border-radius: var(--spacing-8); background: color-mix(in srgb, var(--color-paper) 7%, var(--color-carbon)); box-shadow: inset 0 0 0 1px var(--ft-line); grid-template-columns: var(--spacing-55) auto; }
+  .footer[data-hours="plate"] .footer__when::before { content: ""; position: absolute; left: 0; top: var(--spacing-13); bottom: var(--spacing-13); width: 3px; border-radius: 0 2px 2px 0; background: var(--color-camel); }
+  .footer[data-hours="plate"] .footer__when.is-open::before { background: var(--color-yellow); }
+  .footer[data-hours="plate"] .footer__tile { background: var(--color-carbon); }
+  .footer[data-hours="plate"] .footer__hours { grid-row: 1; grid-column: 2; align-self: end; font-size: var(--text-lead); }
+  .footer[data-hours="plate"] .footer__clock { grid-row: 2; grid-column: 2; align-self: start; color: var(--ft-mut); }
+  /* quiet (as built) and inline */
+  .footer:is([data-hours="quiet"], [data-hours="inline"]) .footer__when { --tile: var(--color-carbon); display: flex; flex-direction: column; align-items: flex-start; gap: var(--spacing-8); }
+  .footer:is([data-hours="quiet"], [data-hours="inline"]) .footer__tile { display: none; }
+  .footer:is([data-hours="quiet"], [data-hours="inline"]) .footer__hours { font-family: var(--font-mono); font-size: var(--text-label); letter-spacing: var(--text-label--letter-spacing); text-transform: uppercase; font-stretch: normal; color: color-mix(in srgb, var(--color-paper) 55%, transparent); }
+  .footer:is([data-hours="quiet"], [data-hours="inline"]) .footer__hours svg { display: block; }
   .footer[data-hours="inline"] .footer__when { flex-direction: row; flex-wrap: wrap; align-items: center; }
   .footer[data-hours="inline"] .footer__clock::after { content: " ·"; }
 
@@ -1426,6 +1723,12 @@
     mask: url("/svg/wordmark.svg") left bottom / contain no-repeat;
   }
   .footer__wordmark canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
+  /* The board fills: a dot-matrix board edge to edge and down to the page's foot (its lit dots draw the wordmark and
+     the yellow square, which arrives dot by dot, so the square itself steps aside) */
+  .footer.is-board { padding-bottom: 0; }
+  .footer.is-board .footer__mark { padding-inline: 0; }
+  .footer.is-board .footer__wordmark { -webkit-mask: none; mask: none; aspect-ratio: 5 / 1; background: color-mix(in srgb, var(--color-paper) 2%, var(--color-carbon)); }
+  .footer.is-board .footer__signal { display: none; }
   .footer[data-fill="flat"] .footer__wordmark canvas,
   .footer.is-flat .footer__wordmark canvas { display: none; }
   .footer__signal { flex: none; width: calc(var(--spacing-34) + var(--spacing-13)); aspect-ratio: 1; margin-bottom: 0.4%; background: var(--color-yellow); }
@@ -1443,7 +1746,8 @@
   @media (width >= 1024px) {
     .footer { padding-top: var(--spacing-55); }
     .footer__tag { font-size: var(--text-h2); }
-    .footer__when { justify-self: end; align-items: flex-end; padding-top: var(--spacing-13); }
+    .footer__when { justify-self: end; padding-top: var(--spacing-13); }
+    .footer:is([data-hours="quiet"], [data-hours="big"]) .footer__when { align-items: flex-end; }
     .footer[data-hours="inline"] .footer__when { justify-content: flex-end; }
     .footer__cols { margin-top: var(--spacing-55); }
     .footer__explore { grid-column: 1 / span 3; }
@@ -1776,7 +2080,7 @@
 
   /* The hang: an 8px Carbon rail, the band on two chains, the platforms on chains from the band */
   .svc-hang { margin-top: var(--spacing-89); padding-inline: var(--grid-margin); }
-  .svc-hang__rail { height: var(--spacing-8); background: var(--color-carbon); }
+  .svc-hang__rail { height: var(--spacing-8); margin-inline: calc(-1 * var(--grid-margin)); background: var(--color-carbon); } /* full width (Nov 2026) */
   .svc-band {
     --band-tile: color-mix(in srgb, var(--color-paper) 7%, var(--color-carbon));
     position: relative;
@@ -1818,9 +2122,17 @@
     color: var(--color-carbon);
     box-shadow: inset 0 0 0 4px var(--color-carbon), 0 13px 21px -13px color-mix(in srgb, var(--color-carbon) 55%, transparent);
     transform-origin: 50% 0;
-    transition: translate 0.2s ease, background-color 0.2s, color 0.2s, box-shadow 0.2s;
+    transition: translate 0.2s ease, transform 0.35s cubic-bezier(0.3, 0.7, 0.3, 1), background-color 0.2s, color 0.2s, box-shadow 0.2s;
   }
   .svc-door::before, .svc-door::after { width: 3px; }
+  /* Hover (dev panel svchero.hover): pointer (locked, the side under the pointer turns in, svchero.js) · left · right
+     (a fixed 2.5° turn) · lift (as built). The colour change stays in every case. */
+  .svc-hero:not([data-hover="lift"]) .svc-door:is(:hover, :focus-visible) { translate: none; }
+  .svc-hero:not([data-hover]) .svc-door:hover,
+  .svc-hero[data-hover="pointer"] .svc-door:hover { transform: perspective(1200px) rotateX(var(--rx, 0deg)) rotateY(var(--ry, 0deg)); transition-duration: 0.2s, 0.15s, 0.2s, 0.2s, 0.2s; }
+  .svc-hero[data-hover="left"] .svc-door:is(:hover, :focus-visible) { transform: perspective(1200px) rotateY(2.5deg); }
+  .svc-hero[data-hover="right"] .svc-door:is(:hover, :focus-visible) { transform: perspective(1200px) rotateY(-2.5deg); }
+  @media (prefers-reduced-motion: reduce) { .svc-door:is(:hover, :focus-visible) { transform: none !important; } }
   .svc-door::before { left: 22%; }
   .svc-door::after { right: 22%; }
   .svc-door__tile { display: grid; place-items: center; width: calc(var(--spacing-89) - var(--spacing-8)); height: calc(var(--spacing-89) - var(--spacing-8)); flex: none; border-radius: 1px; background: var(--door-tile); transition: background-color 0.2s; }
@@ -2278,27 +2590,27 @@
   .hope__essay p { max-width: 58ch; font-size: var(--text-lead); line-height: 1.45; color: color-mix(in srgb, var(--color-carbon) 86%, transparent); }
   /* Drop cap (locked: three lines · Carbon · Display 600). Options: data-dropcap 3 | 2 | raised | off,
      data-capcolor carbon | rust, data-capfont display | mono. initial-letter where supported, a float otherwise. */
-  .hope__opener::first-letter { float: left; margin: 0.06em var(--spacing-13) 0 0; font-size: 3.7em; line-height: 0.82; font-weight: 600; letter-spacing: 0; color: var(--color-carbon); }
+  .hope__opener::first-letter { float: left; margin: 0.04em var(--spacing-8) 0 -0.02em; font-size: 5.1em; line-height: 0.76; font-weight: 600; letter-spacing: 0; color: var(--color-carbon); } /* the float fallback (Firefox): sized so the cap spans the three lines */
   @supports (initial-letter: 3) or (-webkit-initial-letter: 3) {
-    .hope__opener::first-letter { float: none; margin: 0 var(--spacing-13) 0 0; font-size: inherit; line-height: inherit; -webkit-initial-letter: 3; initial-letter: 3; }
+    .hope__opener::first-letter { float: none; margin: 0 var(--spacing-8) 0 0; font-size: inherit; line-height: inherit; -webkit-initial-letter: 3; initial-letter: 3; }
     .hope[data-dropcap="2"] .hope__opener::first-letter { -webkit-initial-letter: 2; initial-letter: 2; }
     .hope[data-dropcap="raised"] .hope__opener::first-letter { -webkit-initial-letter: 3 1; initial-letter: 3 1; }
   }
   .hope[data-dropcap="off"] .hope__opener::first-letter { all: unset; }
   .hope[data-capcolor="rust"] .hope__opener::first-letter { color: var(--color-rust); }
   .hope[data-capfont="mono"] .hope__opener::first-letter { font-family: var(--font-mono); font-weight: 500; }
-  /* Logo letters (panel option hope.cap: logo (locked) · type): the O and W openers paint the wordmark's own letter
+  /* Logo letters (panel option hope.cap: type (locked Nov 2026: the letter in Instrument Sans) · logo): the O and W openers paint the wordmark's own letter
      (public/svg/cap-*.svg) over the drop cap; the text keeps its real letter for reading and search */
   /* Sized to the cap: where initial-letter works, the three-line cap (two line heights plus a cap height of the 20
      text) and the box widened so the round O fits; in the float fallback (Firefox) the letter's own cap height */
-  .hope:not([data-cap="type"], [data-capfont="mono"], [data-dropcap="off"]) .hope__opener::first-letter { padding-right: 0.12em; background: no-repeat left bottom 0.1em / auto 0.72em; }
+  .hope[data-cap="logo"]:not([data-capfont="mono"], [data-dropcap="off"]) .hope__opener::first-letter { padding-right: 0.12em; background: no-repeat left bottom 0.1em / auto 0.72em; }
   @supports (initial-letter: 3) or (-webkit-initial-letter: 3) {
-    .hope:not([data-cap="type"], [data-capfont="mono"], [data-dropcap="off"]) .hope__opener::first-letter { padding-right: 0.5em; background-position: left bottom; background-size: auto 3.7em; }
+    .hope[data-cap="logo"]:not([data-capfont="mono"], [data-dropcap="off"]) .hope__opener::first-letter { padding-right: 0.5em; background-position: left bottom; background-size: auto 3.7em; }
   }
-  .hope:not([data-cap="type"], [data-capfont="mono"], [data-dropcap="off"]) .hope__opener:is([data-v="once"], [data-v="only"])::first-letter { color: transparent; background-image: url("/svg/cap-o.svg"); }
-  .hope:not([data-cap="type"], [data-capfont="mono"], [data-dropcap="off"]) .hope__opener[data-v="when"]::first-letter { color: transparent; background-image: url("/svg/cap-w.svg"); }
-  .hope:not([data-cap="type"], [data-capfont="mono"], [data-dropcap="off"])[data-capcolor="rust"] .hope__opener:is([data-v="once"], [data-v="only"])::first-letter { background-image: url("/svg/cap-o-rust.svg"); }
-  .hope:not([data-cap="type"], [data-capfont="mono"], [data-dropcap="off"])[data-capcolor="rust"] .hope__opener[data-v="when"]::first-letter { background-image: url("/svg/cap-w-rust.svg"); }
+  .hope[data-cap="logo"]:not([data-capfont="mono"], [data-dropcap="off"]) .hope__opener:is([data-v="once"], [data-v="only"])::first-letter { color: transparent; background-image: url("/svg/cap-o.svg"); }
+  .hope[data-cap="logo"]:not([data-capfont="mono"], [data-dropcap="off"]) .hope__opener[data-v="when"]::first-letter { color: transparent; background-image: url("/svg/cap-w.svg"); }
+  .hope[data-cap="logo"]:not([data-capfont="mono"], [data-dropcap="off"])[data-capcolor="rust"] .hope__opener:is([data-v="once"], [data-v="only"])::first-letter { background-image: url("/svg/cap-o-rust.svg"); }
+  .hope[data-cap="logo"]:not([data-capfont="mono"], [data-dropcap="off"])[data-capcolor="rust"] .hope__opener[data-v="when"]::first-letter { background-image: url("/svg/cap-w-rust.svg"); }
   /* Ledger: the usual hope, struck in Rust, then the plan */
   .hope__ledger { border-top: 3px solid var(--color-carbon); }
   .hope__head { display: none; padding-block: var(--spacing-13); color: var(--mut); }
@@ -2516,6 +2828,117 @@
   @media (prefers-reduced-motion: reduce) {
     .qs__msg { animation: none; }
   }
+  /* ---- Closing CTA boards (Nov 2026, dev panel; the panel as built stays locked). The homepage quote's board carried
+     to the closing panels: a light board (the ticket's face) in a Carbon housing, the W in its corner. Service pages:
+     style board, hung on two rods from a rail like the page's hanging band. About: style band (on one post, the job
+     route a slim band along its foot) · pylon (two plates on the post: the question, and the route on its own plate).
+     view: angled · reverse · flat (desktop). Inside a board Paper and Carbon swap, so the panel's own rules (chips, the
+     plans, the stops) recolour themselves. ---- */
+  .ccta__w { display: none; }
+  .ccta:is([data-style="board"], [data-style="band"], [data-style="pylon"]) {
+    --p: var(--color-paper); --c: var(--color-carbon); --frame: var(--color-carbon);
+    --face: color-mix(in srgb, var(--color-carbon) 5%, var(--color-paper));
+    --edge: color-mix(in srgb, var(--color-carbon) 80%, var(--color-camel));
+    position: relative;
+  }
+  .ccta:is([data-style="board"], [data-style="band"], [data-style="pylon"]) .ccta__panel {
+    --color-paper: var(--c); --color-carbon: var(--p);
+    position: relative; isolation: isolate; overflow: visible; border-radius: var(--spacing-13); background: var(--face);
+    box-shadow: inset 0 0 0 var(--spacing-8) var(--frame), 0 34px 55px -34px color-mix(in srgb, var(--c) 50%, transparent);
+  }
+  .ccta:is([data-style="board"], [data-style="band"], [data-style="pylon"]) .ccta__cta { color: var(--c); }
+  .ccta:is([data-style="board"], [data-style="band"], [data-style="pylon"]) .ccta__w {
+    display: grid; place-items: center; position: absolute; z-index: 2; top: 0; left: 0; width: var(--spacing-55); height: var(--spacing-55);
+    border-radius: var(--spacing-13) 0 var(--spacing-13) 0; background: var(--frame); color: var(--p);
+  }
+  .ccta__w svg { width: var(--spacing-21); height: auto; }
+  /* board (service pages): a rail, two rods */
+  .ccta[data-style="board"] { padding-top: var(--spacing-144); clip-path: inset(0 -100vw -100vh -100vw); }
+  .ccta[data-style="board"]::before { content: ""; position: absolute; z-index: 1; top: 0; left: 0; right: 0; height: var(--spacing-8); background: var(--frame); }
+  .ccta[data-style="board"] .ccta__panel::before,
+  .ccta[data-style="board"] .ccta__panel::after { content: ""; position: absolute; z-index: -1; bottom: calc(100% - var(--spacing-8)); width: 4px; height: calc(var(--spacing-144) + var(--spacing-34)); border-radius: 2px; background: var(--frame); }
+  .ccta[data-style="board"] .ccta__panel::before { left: 13%; }
+  .ccta[data-style="board"] .ccta__panel::after { right: 13%; }
+  /* plan (service pages): the drawing's size, full (as built) · l · m · s */
+  .ccta[data-plan="l"] .ccta__plan svg { width: 85%; margin-left: auto; }
+  .ccta[data-plan="m"] .ccta__plan svg { width: 70%; margin-left: auto; }
+  .ccta[data-plan="s"] .ccta__plan svg { width: 55%; margin-left: auto; }
+  /* band and pylon (About): one post at the left, down to the footer */
+  .ccta:is([data-style="band"], [data-style="pylon"]) { padding-top: var(--spacing-89); }
+  .ccta:is([data-style="band"], [data-style="pylon"]) .ccta__panel { margin-left: var(--spacing-34); }
+  .ccta:is([data-style="band"], [data-style="pylon"]) .ccta__panel::before {
+    content: ""; position: absolute; z-index: -2; top: calc(-1 * var(--spacing-34)); left: calc(-1 * var(--spacing-34)); width: var(--spacing-13);
+    height: calc(100% + var(--spacing-34) + var(--section-gap) + var(--spacing-55)); border-radius: var(--spacing-8) var(--spacing-8) 0 0;
+    background: linear-gradient(90deg, color-mix(in srgb, var(--p) 14%, var(--c)), var(--c) 45%);
+  }
+  .ccta[data-style="band"] .ccta__panel::after { content: ""; position: absolute; z-index: -2; top: var(--spacing-34); bottom: var(--spacing-34); left: calc(-1 * var(--spacing-21)); width: var(--spacing-34); border-block: var(--spacing-13) solid var(--frame); }
+  /* band: the route along the board's foot, inside the frame, on a tint */
+  .ccta[data-style="band"] .ccta__panel { padding-bottom: var(--spacing-8); }
+  .ccta[data-style="band"] .acta__road { margin: var(--spacing-21) calc(-1 * var(--spacing-13)) 0; border-top: 0; border-radius: 0 0 5px 5px; background: color-mix(in srgb, var(--c) 6%, var(--face)); }
+  /* road (About, band and pylon): the route's ground. carbon (recommended: the panel's own Carbon kept for the route
+     only, a road at the board's foot, the yellow crew at full contrast) · paper (the board's face, no strip) · gray
+     (the tint, as first built) */
+  .ccta[data-road="carbon"] .acta__road { --color-paper: var(--p); --color-carbon: var(--c); background: var(--c) !important; }
+  .ccta[data-road="paper"] .acta__road { background: var(--face) !important; }
+  /* pylon (Nov 2026, refined): two plates bolted to two posts (after the CSL wayfinding pylon). The question on the
+     upper plate (the panel); the job route on its own plate below it. The route keeps the live page's box exactly
+     (55 tall, its drawings untouched, so the crew, stops and labels land where the script puts them); its plate is
+     drawn around it (::before). Both plates sit on the faces of two turned posts that rise above the top plate with
+     round caps and run down to the ground; the posts belong to the section, behind the plates, a bolt at each plate
+     corner where it meets a post. Soft edges: the frame, a 2px cut edge and a soft shadow, no hard offset. */
+  .ccta[data-style="pylon"] {
+    --pm: var(--spacing-89); /* the plates' inset from the content edges */
+    --post-x: calc(var(--grid-margin) + var(--pm) + (100% - 2 * var(--grid-margin) - 2 * var(--pm)) * 0.1);
+    --plate-shadow: inset 0 0 0 var(--spacing-8) var(--frame), 0 2px 0 0 var(--edge), 0 21px 34px -21px color-mix(in srgb, var(--c) 45%, transparent);
+    --bolt: radial-gradient(circle 2.5px, color-mix(in srgb, var(--c) 50%, transparent) 75%, transparent 85%);
+    isolation: isolate; padding-bottom: calc(var(--section-gap) + var(--spacing-144));
+  }
+  .ccta[data-style="pylon"] .ccta__panel { margin-inline: var(--pm); padding-bottom: var(--spacing-55); }
+  .ccta[data-style="pylon"] .ccta__panel::before { content: none; }
+  .ccta[data-style="pylon"]::before,
+  .ccta[data-style="pylon"]::after {
+    content: ""; position: absolute; z-index: -1; top: calc(var(--spacing-89) - var(--spacing-34)); bottom: 0; width: var(--spacing-21);
+    border-radius: var(--spacing-21) var(--spacing-21) 0 0;
+    background: linear-gradient(90deg, color-mix(in srgb, var(--p) 18%, var(--c)), var(--c) 45%);
+  }
+  .ccta[data-style="pylon"]::before { left: var(--post-x); }
+  .ccta[data-style="pylon"]::after { right: var(--post-x); }
+  .ccta[data-style="pylon"] .ccta__panel,
+  .ccta[data-style="pylon"] .acta__road::before {
+    background:
+      var(--bolt) 10.6% var(--spacing-21) / 8px 8px no-repeat,
+      var(--bolt) 10.6% calc(100% - var(--spacing-21)) / 8px 8px no-repeat,
+      var(--bolt) 89.4% var(--spacing-21) / 8px 8px no-repeat,
+      var(--bolt) 89.4% calc(100% - var(--spacing-21)) / 8px 8px no-repeat,
+      var(--plate, var(--face));
+    box-shadow: var(--plate-shadow);
+  }
+  /* the route: the live box, inset in its plate (8 frame + 26 air each side, 17 above and below) */
+  .ccta[data-style="pylon"] .acta__road {
+    position: absolute; grid-column: auto; left: var(--spacing-34); right: var(--spacing-34); top: calc(100% + var(--spacing-55) + 17px);
+    height: var(--spacing-55); margin: 0 !important; border: 0; border-radius: 0; background: none !important;
+  }
+  .ccta[data-style="pylon"] .acta__road::before {
+    content: ""; position: absolute; z-index: -1; inset: -17px calc(-1 * var(--spacing-34)); border-radius: var(--spacing-13);
+    background-position: 10.6% var(--spacing-13), 10.6% calc(100% - var(--spacing-13)), 89.4% var(--spacing-13), 89.4% calc(100% - var(--spacing-13)), 0 0;
+  }
+  .ccta[data-style="pylon"][data-road="carbon"] .acta__road::before { --plate: var(--c); --bolt: radial-gradient(circle 2.5px, color-mix(in srgb, var(--p) 35%, transparent) 75%, transparent 85%); }
+  .ccta[data-style="pylon"][data-road="gray"] .acta__road::before { --plate: color-mix(in srgb, var(--c) 6%, var(--face)); }
+  @media (width < 1024px) {
+    .ccta[data-style="pylon"] { --pm: var(--spacing-34); }
+  }
+  @media (width >= 1024px) {
+    /* a column of paper either side (the board turns, so it never meets the page edge) */
+    .ccta[data-style="board"] .ccta__panel { margin-inline: calc((100% + var(--grid-gutter)) / 12); }
+    .ccta[data-style="band"] .ccta__panel { margin-inline: calc((100% + var(--grid-gutter)) / 12 + var(--spacing-34)) calc((100% + var(--grid-gutter)) / 12); }
+    .ccta[data-style="band"] .acta__road { margin-inline: calc(-1 * (var(--spacing-55) - var(--spacing-8))); }
+    .ccta:is([data-style="board"], [data-style="band"])[data-view="angled"] .ccta__panel { transform: perspective(2400px) rotateY(4deg); box-shadow: inset 0 0 0 var(--spacing-8) var(--frame), calc(-1 * var(--spacing-13)) 0 0 0 var(--edge), 34px 34px 55px -21px color-mix(in srgb, var(--c) 45%, transparent); }
+    .ccta:is([data-style="board"], [data-style="band"])[data-view="reverse"] .ccta__panel { transform: perspective(2400px) rotateY(-4deg); box-shadow: inset 0 0 0 var(--spacing-8) var(--frame), var(--spacing-13) 0 0 0 var(--edge), -34px 34px 55px -21px color-mix(in srgb, var(--c) 45%, transparent); }
+    /* the pylon turns as a whole: its plates are the panel's pieces */
+    .ccta[data-style="pylon"][data-view="angled"] .ccta__panel { transform: perspective(2400px) rotateY(4deg); }
+    .ccta[data-style="pylon"][data-view="reverse"] .ccta__panel { transform: perspective(2400px) rotateY(-4deg); }
+  }
+
   /* ---------- Cleaning closing CTA (CC-02b) ---------- */
   .ccta { padding: 0 var(--grid-margin) var(--section-gap); }
   .ccta__panel {

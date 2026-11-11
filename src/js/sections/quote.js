@@ -1,16 +1,38 @@
 import { registerOptions } from '../options.js';
 import { onEnterOnce, prefersReducedMotion } from '../motion.js';
-import { lookupPostcode } from '../data/postcodes.js';
-import { PLACES, regionLabel } from '../data/places.js';
+import { areaSearch } from '../area-search.js';
 
-// Locked first: dark panel, X and O route marks, asking service + area + when.
+// Locked first (Nov 2026: the billboard, angled, masthead, light, head off, 68, stops + live). The locked set is also written on
+// the section (06-quote.html), so the build, which has no panel, shows it too.
 registerOptions('quote', {
-  colour: ['dark', 'light', 'yellow'],
-  marks: ['xo', 'box', 'cross', 'street'],
+  // The board's colour (the panel's, without a board): light (the ticket's face) · dark · yellow
+  colour: ['light', 'dark', 'yellow'],
+  marks: ['xo', 'box', 'cross', 'street'], // the route behind the panel (no board only)
   ask: ['3', '2', '1'],
-  head: ['label', 'headline'], // a small label over the sentence, or the old display headline
+  // label: "Get a free quote" as the sign's ID band beside the W (mono) · headline: the display headline packed on the
+  // sentence · off: the sentence alone
+  head: ['off', 'label', 'headline'],
   size: ['68', '42'], // the sentence on desktop
+  // The button before the sentence is complete (pressing it opens the next blank in every case):
+  // stopslive (the full button, three route stops filling as you answer) · live (the full button; only its words
+  // change) · stops (hollow, the stops filling) · fill (hollow, a yellow bar along its foot grows with each answer)
+  // · count (the full button, "1/3" where the arrow goes) · dim (70%, as built)
+  wait: ['stopslive', 'live', 'stops', 'fill', 'count', 'dim'],
+  // Desktop layout: aside (8/4: the note and button in the right column) · poster (centred) · left (flush left) ·
+  // masthead (the headline across, the sentence under it, the button on a hairline) · split (7/5: a ticket of the
+  // answers and the button)
+  // masthead (locked Nov 2026: the sentence across, the note and button on one row under it, no rules) · stagger (the
+  // button and note stepping down into the right five twelfths)
+  layout: ['masthead', 'stagger', 'aside', 'poster', 'left', 'split'],
+  // The sentence's setting: billboard (a wayfinding board on two posts to the ground) · hanging (hung on rods from
+  // the map above, like the Services signs) · post (on one post at its side) · flap (the panel, its blanks as
+  // split-flap tiles) · none (the panel)
+  effect: ['billboard', 'hanging', 'post', 'flap', 'none'],
+  board: ['l', 'm', 'xl'], // the board's width on desktop: 10 · 8 · 12 columns
+  view: ['angled', 'flat'], // angled: turned 4°, its near edge showing (desktop; the pickers turn with it)
 });
+const BOARDS = ['billboard', 'hanging', 'post'];
+const SHORT = { 'this week': 'This week', 'next week': 'Next week', later: 'Later', 'not sure yet': 'Not sure' };
 
 const EMPTY = { service: 'a hand', area: 'your area', when: 'sometime soon' };
 
@@ -45,6 +67,10 @@ export function init(el) {
     b.querySelector('.qc-blank__text').textContent = value || EMPTY[key];
     b.classList.toggle('is-set', !!value);
     b.classList.toggle('is-empty', !value);
+    // the answer shows wherever an option repeats it: the split layout's ticket, the stops
+    const label = value ? (SHORT[value] ?? value.charAt(0).toUpperCase() + value.slice(1)) : '';
+    el.querySelector(`[data-sum="${key}"] dd`).textContent = label || '—';
+    el.querySelector(`[data-stop="${key}"]`).classList.toggle('is-on', !!value);
     update();
   }
 
@@ -62,6 +88,10 @@ export function init(el) {
     }
     const order = ['service', 'area', 'when'].slice(0, ask());
     const next = order.find((k) => !values[k]);
+    // progress, for the fill and count options
+    const got = order.filter((k) => values[k]).length;
+    el.style.setProperty('--qc-p', `${(got / order.length) * 100}%`);
+    el.querySelector('.qc__count').textContent = `${got}/${order.length}`;
     Object.entries(blanks).forEach(([k, b]) => b.classList.toggle('is-next', k === next));
   }
 
@@ -83,8 +113,7 @@ export function init(el) {
     blanks[key].setAttribute('aria-expanded', 'true');
     place(key);
     if (key === 'area') {
-      areaInput.value = '';
-      search();
+      area.clear();
       areaInput.focus();
     } else {
       pops[key].querySelector('button').focus();
@@ -127,45 +156,12 @@ export function init(el) {
   pops.service.querySelectorAll('button').forEach((o) => o.addEventListener('click', () => { set('service', o.dataset.value); close({ focusBlank: true }); }));
   pops.when.querySelectorAll('button').forEach((o) => o.addEventListener('click', () => { set('when', o.dataset.value); close({ focusBlank: true }); }));
 
-  // Area: a postal code is looked up; a town is matched by name. Rows show the region tag.
-  function row(name, region, code) {
-    const b = document.createElement('button');
-    b.type = 'button';
-    b.innerHTML = `<i aria-hidden="true"></i><span></span><small></small>`;
-    b.querySelector('span').textContent = name;
-    b.querySelector('small').textContent = `${code ? `${code} · ` : ''}${regionLabel(region)}`;
-    b.addEventListener('click', () => { set('area', name); close({ focusBlank: true }); });
-    return b;
-  }
-  function message(text) {
-    const p = document.createElement('p');
-    p.className = 'qc-pop__msg';
-    p.textContent = text;
-    return p;
-  }
-  function search() {
-    const v = areaInput.value.trim();
-    results.replaceChildren();
-    if (!v) return;
-    if (/^[A-Za-z]\d[A-Za-z]/.test(v)) {
-      const a = lookupPostcode(v);
-      if (a.ok) results.append(row(a.place && a.place !== 'Toronto' ? a.place : a.region === 'Toronto' ? 'Toronto' : regionLabel(a.region), a.region, a.fsa));
-      else results.append(message(`${a.fsa} is outside our five areas for now. Add it on the next page and we will tell you straight.`));
-    } else {
-      const s = v.toLowerCase();
-      const starts = PLACES.filter(([n]) => n.toLowerCase().startsWith(s));
-      const contains = PLACES.filter(([n]) => !n.toLowerCase().startsWith(s) && n.toLowerCase().includes(s));
-      starts.concat(contains).slice(0, 5).forEach(([n, r]) => results.append(row(n, r, '')));
-      if (!results.children.length) results.append(message('Try a postal code, like L5B 1A1.'));
-    }
-    results.querySelector('button')?.classList.add('is-first');
-  }
-  areaInput.addEventListener('input', search);
-  areaInput.addEventListener('keydown', (e) => {
-    if (e.key === 'Enter') {
-      e.preventDefault();
-      results.querySelector('button')?.click();
-    }
+  // Area: postal code or town, matched as in the GTA check (05); the same search as the quote page
+  const area = areaSearch({
+    input: areaInput,
+    list: results,
+    pick: (it) => { set('area', it.label); close({ focusBlank: true }); },
+    empty: 'Try a postal code, like L5B 1A1.',
   });
 
   // ---- pre-fill the area from the GTA check (05)
@@ -195,6 +191,23 @@ export function init(el) {
 
   update();
 
+  // ---- the board: its posts reach the ground (the footer), its rods the map above; on paper, not a dark panel
+  const body = el.querySelector('.qc__body');
+  const footer = document.querySelector('[data-section="footer"]');
+  const above = el.previousElementSibling;
+  function rig() {
+    const board = BOARDS.includes(el.dataset.effect);
+    if (board) el.removeAttribute('data-nav-theme');
+    else el.dataset.navTheme = 'dark';
+    if (!board) return;
+    const b = body.getBoundingClientRect();
+    if (footer) el.style.setProperty('--post-h', `${Math.max(0, Math.round(footer.getBoundingClientRect().top - b.bottom))}px`);
+    if (above) el.style.setProperty('--rod-h', `${Math.max(0, Math.round(b.top - above.getBoundingClientRect().bottom))}px`);
+  }
+  rig();
+  new ResizeObserver(rig).observe(document.body);
+  document.fonts?.ready.then(rig);
+
   if (!prefersReducedMotion()) {
     el.classList.add('is-armed');
     onEnterOnce(el, () => {
@@ -204,5 +217,5 @@ export function init(el) {
     }, { start: 'top 70%' });
   }
 
-  if (import.meta.env.DEV) el.addEventListener('section:options', update);
+  if (import.meta.env.DEV) el.addEventListener('section:options', () => { update(); requestAnimationFrame(rig); });
 }

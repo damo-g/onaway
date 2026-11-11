@@ -33,6 +33,9 @@ jobs:
           key: images-${{ hashFiles('src/assets/images/**', 'scripts/vite-images.js') }}
 
       - run: npm run build
+        env:
+          # section 05's map (a public token, restricted to onaway.ca on Mapbox); without it the section shows its still
+          VITE_MAPBOX_TOKEN: ${{ secrets.VITE_MAPBOX_TOKEN }}
 
       - name: Upload to Namecheap (FTPS)
         uses: SamKirkland/FTP-Deploy-Action@v4.3.5

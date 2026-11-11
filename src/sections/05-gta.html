@@ -1,25 +1,14 @@
-{{!-- 05 Across the GTA · GT-09 We'll Be There. The sentence and the map move together: an idle tour once,
-     then the postal-code check flies the map to your place. src/js/sections/gta.js. --}}
+{{!-- 05 Across the GTA · GT-10, a real 3D map (Mapbox Standard). The sentence and the map move together: an intro
+     and an idle tour once through the places, then "Do we cover you?" (postal code or town) frames the area,
+     lights it and flies down into the place. Fills the screen below the navbar. src/js/sections/gta.js; the map:
+     src/js/gta/. Until the map has drawn, and wherever it can't run (no WebGL, no token, the month's limit), a
+     still of it shows and the sentence still works. --}}
 {{#> section id="gta" variant="bleed" class="gta" label="Across the GTA"}}
   <div class="gta__stage">
-    <div class="gta__plate">
-      {{> gta-map}}
-    </div>
-
-    <div class="gta__panel">
-      <p class="gta__kick label">Across the GTA</p>
-      <h2 class="gta__sentence">We’ll be in <br><span class="gta__slot is-idle"><span class="gta__hl" aria-hidden="true"></span><span class="gta__place">the GTA</span></span> <br>on your date.</h2>
-      <p class="gta__lead text-lead">The City of Toronto and the four regions around it. The same crew and the same promises, wherever you are.</p>
-      <form class="gta__check" novalidate>
-        <label class="label" for="gta-postcode">Do we cover you?</label>
-        <div class="gta__row">
-          <input id="gta-postcode" name="postcode" maxlength="7" placeholder="Postal code, e.g. M6K 1A1" autocomplete="postal-code" spellcheck="false">
-          <button type="submit">Check <span aria-hidden="true">{{{icon "arrow-right-02"}}}</span></button>
-        </div>
-        <p class="gta__result" aria-live="polite"></p>
-      </form>
-    </div>
-
-    <p class="gta__mark label" aria-hidden="true"><i></i>Where we’ll be</p>
+    {{picture "gta-map" class="gta__still" alt="" sizes="100vw" art="gta-map-phone:(width < 768px), gta-map-tablet:(width < 1024px)"}}
+    <p class="gta__credit" aria-hidden="true">© Mapbox © OpenStreetMap</p>
+    <div class="gta__map"></div>
   </div>
+
+  {{> gta-panel id="gta-postcode" placeholder="Postal code or town, e.g. M6K 1A1" maxlength="40"}}
 {{/section}}

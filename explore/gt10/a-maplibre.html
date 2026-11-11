@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="en-CA">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <script>document.documentElement.classList.add('js')</script>
+  <meta name="robots" content="noindex">
+  <title>GT-10 A · MapLibre</title>
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="preload" href="/fonts/InstrumentSans-Variable.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="/fonts/OverpassMono-Variable.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="/src/styles/main.css">
+  <link rel="stylesheet" href="./gt10.css">
+  <!-- The page script loads the site's own main.js (navbar, Lenis, dev panel, sections 04 and 06) -->
+  <script type="module" src="./a-maplibre.js"></script>
+</head>
+<body>
+  {{!-- GT-10 · option A, in the real homepage around it: the section sits where 05 does, between Promises
+       and the Quote, so scroll, the navbar and the quote's pre-fill behave as they will on the site.
+       Exploration only (docs/gt10-3d-map-context.md), never linked. Options: the dev panel, bottom right. --}}
+  {{> nav}}
+
+  <main id="main">
+    {{> [04-promises]}}
+
+    {{#> section id="gt10" variant="bleed" class="g10-sec" label="Across the GTA"}}
+      <div class="g10-map" aria-hidden="true"></div>
+      {{> gta-panel id="g10-postcode" panelClass="g10-panel" placeholder="Postal code or town, e.g. M6K 1A1" maxlength="40" autocomplete="off"}}
+    {{/section}}
+
+    {{> [06-quote]}}
+  </main>
+
+  {{> [07-footer]}}
+  {{> footer}}
+</body>
+</html>

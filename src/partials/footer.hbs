@@ -6,8 +6,9 @@
     <p class="footer__tag col-span-full lg:col-span-8">We’ll take it from here.</p>
     {{!-- The time, and under it the hours (not a link, so not a row): footer.js turns them into "Open till 8 PM" / "Opens 8 AM" --}}
     <div class="footer__when col-span-full lg:col-span-4">
-      <p class="footer__clock label">Toronto · <time data-toronto-time>--:--</time></p>
-      <p class="footer__hours label">{{> picto name="hours"}}<span data-toronto-hours>Open 8 AM – 8 PM daily</span></p>
+      <span class="footer__tile" aria-hidden="true">{{> picto name="open"}}</span>
+      <p class="footer__clock label"><span class="footer__city">Toronto</span><span class="footer__sep"> · </span><time data-toronto-time>--:--</time></p>
+      <p class="footer__hours">{{> picto name="open"}}<span data-toronto-hours>Open 8 AM – 8 PM daily</span></p>
     </div>
   </div>
 

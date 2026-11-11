@@ -1,3 +1,4 @@
+import { registerOptions } from '../options.js';
 import { prefersReducedMotion } from '../motion.js';
 import { icon } from '../icons.js';
 
@@ -28,6 +29,11 @@ function quoteBy() {
   if (h >= 18) return 'by 10:00 AM tomorrow';
   return `by ${fmt(h + 2, m)}`;
 }
+
+// The closing panel as a pylon (locked Nov 2026, written on the section in about.html so the build has it): two plates
+// on two posts, the question above, the job route on its own plate below, on Carbon. Dev panel: style pylon · panel (as
+// built) · band (one board on a post, the route along its foot) · view flat · reverse · angled · road carbon · paper · gray
+registerOptions('aboutcta', { style: ['pylon', 'panel', 'band'], view: ['flat', 'reverse', 'angled'], road: ['carbon', 'paper', 'gray'] });
 
 export function init(el) {
   const chips = el.querySelector('.ccta__chips');

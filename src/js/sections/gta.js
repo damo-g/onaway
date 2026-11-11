@@ -1,207 +1,152 @@
+// 05 Across the GTA · GT-10: the section's map is a real 3D city (Mapbox Standard, src/js/gta/mapbox.js) and its
+// behaviour is the shared controller (src/js/gta/controller.js): the intro, the idle tour, "Do we cover you?"
+// (postal code or town), the hand-off to the quote (06).
+//
+// Loading. Mapbox GL is about 525 KB gzipped, with its own deferred budget (docs/build-context.md). It never
+// competes with the page's first load, yet the map is drawn before the visitor reaches it:
+//   1. after the page has loaded and gone idle: the map's code (Mapbox GL and ours), its stylesheet, the areas and
+//      a connection to Mapbox. No map yet, so nothing is billed (a map load is counted when a map starts).
+//   2. once the visitor has scrolled the page themselves past the Services scrub, in a still moment: the
+//      map starts, off screen, and draws the first two tour stops once under the still, in the moments the page
+//      isn't scrolling (the GPU compiles its shaders then, not on the first flight), then waits on the still's view.
+//   3. on entry: the intro and the tour, on a map that is already drawn.
+// Landing on the section (a link to /#gta, a restored scroll): all at once. On Save-Data or a 2G connection: only
+// as the section nears the screen. Until the map has drawn, and wherever it can't run, the still
+// (src/assets/images/gta-map.png) shows and the section works on it, the sentence touring the places.
 import { registerOptions } from '../options.js';
-import { onEnterOnce, prefersReducedMotion } from '../motion.js';
-import { lookupPostcode } from '../data/postcodes.js';
+import { prefersReducedMotion } from '../motion.js';
+import { PLACE_AT, TOUR } from '../data/places.js'; // (already in the page: the quote uses it)
 
-// Locked first: overlay layout, drawn map, light tone, idle tour, place zoom, coverage check on.
+// Dev review panel: the open choices (the locked value first). Nothing here ships.
 registerOptions('gta', {
-  layout: ['overlay', 'split', 'caption'],
-  map: ['drawn', 'grid'],
-  tone: ['light', 'dark'],
-  idle: ['tour', 'still'],
-  zoom: ['place', 'area'],
-  check: ['on', 'off'],
+  buildings: ['stone', 'sand', 'camel', 'clay', 'umber', 'ink', 'paper'],
+  palette: ['brandrich', 'brandlut'],
+  light: ['live', 'day', 'dawn', 'dusk', 'night'],
+  intro: ['still', 'flight'], // still: the map takes over from the still image's view · flight: it descends from over the lake first
 });
 
-// Place positions on the drawn map (viewBox 1472 × 820), from the GT-09 mock
-const VB = { w: 1472, h: 820 };
-const PLACES = {
-  Burlington: [90, 722], Oakville: [230, 662], Milton: [150, 470], 'Halton Hills': [170, 330], Mississauga: [420, 590],
-  Brampton: [400, 360], Caledon: [380, 120], Etobicoke: [590, 590], Downtown: [775, 650], 'North York': [760, 420],
-  'East York': [830, 520], Scarborough: [980, 500], Vaughan: [640, 240], 'Richmond Hill': [770, 210], Markham: [920, 236],
-  Newmarket: [790, 70], Aurora: [760, 130], Stouffville: [1010, 140], Pickering: [1110, 452], Ajax: [1180, 432],
-  Whitby: [1270, 420], Oshawa: [1360, 410], Clarington: [1435, 380],
-};
-const REGION_CENTRE = { Toronto: 'Downtown', Peel: 'Mississauga', York: 'Markham', Durham: 'Oshawa', Halton: 'Oakville' };
-const TOUR = ['Downtown', 'Mississauga', 'Markham', 'Oakville', 'Scarborough', 'Brampton', 'Pickering', 'Vaughan', 'Burlington', 'Oshawa'];
-const STOP = 3400; // per tour stop
-const ZOOM = { place: 2.2, area: 1.6 };
+const MAPBOX = 'https://api.mapbox.com';
+const conn = navigator.connection;
+const frugal = !!conn?.saveData || /(^|-)2g$/.test(conn?.effectiveType ?? ''); // the visitor saves data, or the line is slow
+
+// After the page's load event, when the browser is idle (never in the way of the first load or LCP)
+function whenSettled(fn) {
+  const idle = () => ('requestIdleCallback' in window ? requestIdleCallback(fn, { timeout: 4000 }) : setTimeout(fn, 1500));
+  if (document.readyState === 'complete') idle();
+  else addEventListener('load', idle, { once: true });
+}
+// Resolves once the page has been still for 700ms (a reading pause) (or at once, if stop() says so)
+function quiet(stop) {
+  return new Promise((resolve) => {
+    let t;
+    const done = () => { removeEventListener('scroll', again); resolve(); };
+    const again = () => { clearTimeout(t); if (stop()) done(); else t = setTimeout(done, 700); };
+    addEventListener('scroll', again, { passive: true });
+    again();
+  });
+}
+// Before the page has loaded, wait for it; after, at once
+const whenLoaded = (fn) => (document.readyState === 'complete' ? fn() : addEventListener('load', fn, { once: true }));
+
+// The input's hint in full where it fits, else its short form (a phone, the narrower desktop card): never cut off
+function fitPlaceholder(input) {
+  if (!input) return;
+  const full = input.placeholder;
+  const short = full.split(',')[0]; // "Postal code or town"
+  const ctx = document.createElement('canvas').getContext('2d');
+  const fit = () => {
+    const cs = getComputedStyle(input);
+    ctx.font = `${cs.fontWeight} ${cs.fontSize} ${cs.fontFamily}`;
+    if ('fontStretch' in ctx) ctx.fontStretch = 'semi-condensed'; // (else measured a touch wide: the short form, harmless)
+    const room = input.clientWidth - parseFloat(cs.paddingLeft) - parseFloat(cs.paddingRight);
+    input.placeholder = ctx.measureText(full).width <= room ? full : short;
+  };
+  document.fonts.ready.then(fit);
+  new ResizeObserver(fit).observe(input);
+}
 
 export function init(el) {
-  const plate = el.querySelector('.gta__plate');
-  const panel = el.querySelector('.gta__panel');
-  const zoom = el.querySelector('#gmap-zoom');
-  const pin = el.querySelector('#gmap-pin');
-  const regions = [...el.querySelectorAll('.gmap .rf')];
-  const placeGroups = [...el.querySelectorAll('.gmap .pl')];
-  const slot = el.querySelector('.gta__slot');
-  const placeText = el.querySelector('.gta__place');
-  const form = el.querySelector('.gta__check');
-  const input = form.querySelector('input');
-  const result = form.querySelector('.gta__result');
   const reduced = prefersReducedMotion();
-  const opt = (key, locked) => el.dataset[key] ?? locked;
-  if (reduced) el.classList.add('is-static');
+  const panel = el.querySelector('.gta__panel');
+  const token = import.meta.env.VITE_MAPBOX_TOKEN;
+  const still = import.meta.env.DEV && new URLSearchParams(location.search).has('gta-still'); // dev: capture the still
+  fitPlaceholder(el.querySelector('.gta__row input'));
 
-  let current = null; // { name, z } the map is flown to
-  let k = 0;
-  let timer = null;
-  let touring = false;
-  let hovered = false;
-  let focused = false;
-  let visible = false;
-
-  // Centre of the open map (right of the overlay panel, above the caption band) in viewBox units
-  function focusPoint() {
-    const W = plate.clientWidth;
-    const H = plate.clientHeight;
-    const s = Math.max(W / VB.w, H / VB.h); // preserveAspectRatio: slice
-    const ox = (VB.w - W / s) / 2;
-    const oy = (VB.h - H / s) / 2;
-    let cx = W / 2;
-    let cy = H / 2;
-    if (getComputedStyle(panel).position === 'absolute') {
-      const p = panel.getBoundingClientRect();
-      const m = plate.getBoundingClientRect();
-      if (opt('layout', 'overlay') === 'caption') cy = (p.top - m.top) / 2;
-      else cx = (p.right - m.left + W) / 2;
-    }
-    return { x: ox + cx / s, y: oy + cy / s };
+  // 1. the code (and Mapbox GL, through preloadMap), fetched once
+  let code;
+  function loadCode() {
+    code ??= Promise.all([import('../gta/mapbox.js'), import('../gta/controller.js'), import('../gta/texture.js')]).then(([mapbox, controller, texture]) => {
+      if (token) mapbox.preloadMap();
+      return { ...mapbox, ...controller, ...texture };
+    });
+    return code;
+  }
+  function prefetch() {
+    if (token) document.head.append(Object.assign(document.createElement('link'), { rel: 'preconnect', href: MAPBOX, crossOrigin: 'anonymous' }));
+    loadCode();
   }
 
-  const highlight = (name) => placeGroups.forEach((g) => g.classList.toggle('is-on', g.dataset.place === name));
-
-  function fly(name, z) {
-    const p = PLACES[name];
-    if (!p) return wide();
-    current = { name, z };
-    highlight(name);
-    const f = focusPoint();
-    zoom.style.transform = `translate(${f.x - p[0] * z}px, ${f.y - p[1] * z}px) scale(${z})`;
-    pin.style.transform = `translate(${p[0]}px, ${p[1]}px) scale(${1.2 / z})`;
-    pin.style.opacity = 1;
-  }
-
-  function hop(name) {
-    const p = PLACES[name];
-    current = null;
-    zoom.style.transform = '';
-    highlight(name);
-    pin.style.transform = `translate(${p[0]}px, ${p[1]}px)`;
-    pin.style.opacity = 1;
-  }
-
-  function wide() {
-    current = null;
-    zoom.style.transform = '';
-    pin.style.opacity = 0;
-    highlight(null);
-  }
-
-  function write(text) {
-    placeText.classList.remove('is-typing');
-    void placeText.offsetWidth;
-    placeText.textContent = text;
-    placeText.classList.add('is-typing');
-  }
-
-  // Idle tour: once through the ten places, then rest wide on the whole GTA. Pauses on hover, focus
-  // and when the map is mostly off screen; resumes where it left off.
-  function step() {
-    timer = null;
-    if (!touring || hovered || focused || !visible) return;
-    if (k >= TOUR.length) {
-      touring = false;
-      write('the GTA');
-      wide();
+  // 2. the map, started off screen and drawn ahead of the visitor
+  let started = false;
+  async function boot() {
+    if (started) return;
+    started = true;
+    stopWatching();
+    const { createGtaMap, LOCKED, STILL_CAMERA, createSection, grainTile, asUrl, INK } = await loadCode();
+    const opt = (key) => el.dataset[key] ?? LOCKED[key];
+    const speed = () => +opt('speed');
+    const orbitOn = () => opt('orbit') === 'on';
+    // The card's paper tooth (tactile, like the tickets): the paper grain, under the words
+    panel.style.setProperty('--gta-grain', asUrl(grainTile(INK.carbon, INK.camel, 220)));
+    const gta = createGtaMap(el, { opt, panel, token, reduced, navOverlap: false });
+    if (import.meta.env.DEV) el.addEventListener('section:options', () => gta.applyConfig());
+    const map = await gta.boot();
+    if (!map) { // no map: the section runs on the still
+      createSection(el, { camera: STILL_CAMERA, drawn: () => Promise.resolve(), highlight() {}, pin() {}, unpin() {}, zoomFor: () => 0, outline: () => [], areaZoom: () => 0 },
+        { speed, orbitOn, matchMode: () => opt('match') });
       return;
     }
-    const name = TOUR[k++];
-    write(name);
-    if (opt('idle', 'tour') === 'tour') fly(name, Math.max(1.3, ZOOM[opt('zoom', 'place')] * 0.7));
-    else hop(name);
-    timer = setTimeout(step, STOP);
+    if (import.meta.env.DEV) window.__gta = gta;
+    // the map takes the intro's first view and fades in over the still once that view is drawn
+    gta.camera.toIntroStart();
+    // Off screen (the visitor still reading above): the first two stops are drawn once under the still, so the
+    // tour's first flight never waits on the GPU. It stops the moment the section is where its intro starts.
+    const near = () => el.getBoundingClientRect().top < innerHeight * 0.6;
+    const prewarm = !(import.meta.env.DEV && new URLSearchParams(location.search).has('gta-noprewarm'));
+    if (prewarm && !still && !reduced && !near()) await gta.adapter.prerender(TOUR.slice(0, 2).map((n) => PLACE_AT[n]), { stop: near, ready: () => quiet(near) });
+    if (!still) createSection(el, gta.adapter, { speed, orbitOn, matchMode: () => opt('match') });
+    await gta.adapter.drawn(8000);
+    el.classList.add('is-live');
+    // then the first two tour stops, so the tour's first flights land on a drawn city
+    if (!still && !reduced) for (const name of TOUR.slice(0, 2)) await gta.adapter.warm(PLACE_AT[name]);
   }
 
-  function update() {
-    if (!touring) return;
-    if (hovered || focused || !visible) {
-      clearTimeout(timer);
-      timer = null;
-    } else if (!timer) {
-      timer = setTimeout(step, STOP / 2);
-    }
-  }
-
-  function startTour() {
-    if (reduced) return;
-    clearTimeout(timer);
-    touring = true;
-    k = 0;
-    timer = setTimeout(step, 1600);
-  }
-
-  el.querySelector('.gta__stage').addEventListener('mouseenter', () => { hovered = true; update(); });
-  el.querySelector('.gta__stage').addEventListener('mouseleave', () => { hovered = false; update(); });
-  form.addEventListener('focusin', () => { focused = true; update(); });
-  form.addEventListener('focusout', (e) => { if (!form.contains(e.relatedTarget)) { focused = false; update(); } });
-  new IntersectionObserver(([entry]) => { visible = entry.isIntersecting; update(); }, { threshold: 0.4 }).observe(plate);
-
-  // Postal-code check: fly to the place, pin it, tint the region, write it into the sentence
-  form.addEventListener('submit', (e) => {
-    e.preventDefault();
-    const a = lookupPostcode(input.value);
-    result.classList.remove('is-in');
-    void result.offsetWidth;
-    result.classList.add('is-in');
-    if (a.bad) {
-      result.innerHTML = 'Postal codes start letter, number, letter, like <b>M6K</b>.';
-      return;
-    }
-    clearTimeout(timer);
-    touring = false;
-    regions.forEach((r) => r.classList.toggle('is-hit', a.ok && r.dataset.region === a.region));
-    slot.classList.remove('is-idle', 'is-lit');
-
-    if (!a.ok) {
-      result.innerHTML = `<b>Not yet.</b> ${a.fsa} is outside our five areas. Ask anyway, and we will tell you straight.`;
-      write('your area, soon');
-      wide();
-      return;
-    }
-
-    const area = a.region === 'Toronto' ? 'in the City of Toronto' : `${a.region} Region`;
-    result.innerHTML = `<b>Yes.</b> ${a.fsa} is ${a.place && a.place !== 'Toronto' ? `${a.place}, ` : ''}${area}. Same crew, same promises.`;
-    let name = a.place && PLACES[a.place] ? a.place : REGION_CENTRE[a.region];
-    let shown = a.place && PLACES[a.place] ? a.place : a.region === 'Toronto' ? 'Toronto' : `${a.region} Region`;
-    if (a.place === 'Toronto') {
-      name = 'Downtown';
-      shown = 'Toronto';
-    }
-    write(shown);
-    fly(name, ZOOM[opt('zoom', 'place')]);
-    setTimeout(() => slot.classList.add('is-lit'), reduced ? 0 : 500);
-
-    // Hand-off: the quote section (06) pre-fills "where" from this
-    const where = { fsa: a.fsa, region: a.region, place: shown };
-    try { sessionStorage.setItem('onaway:where', JSON.stringify(where)); } catch {}
-    document.dispatchEvent(new CustomEvent('gta:place', { detail: where }));
-  });
-
-  // Keep the flown-to place in focus when the plate resizes
-  new ResizeObserver(() => current && fly(current.name, current.z)).observe(plate);
-
-  if (!reduced) {
-    const play = () => {
-      el.classList.remove('is-armed', 'is-go');
-      void el.offsetWidth;
-      el.classList.add('is-armed', 'is-go');
-      if (!slot.classList.contains('is-lit')) startTour();
-    };
-    el.classList.add('is-armed');
-    onEnterOnce(el, play, { start: 'top 60%' });
-  }
-
-  if (import.meta.env.DEV) {
-    el.addEventListener('section:options', () => current && fly(current.name, current.z));
-  }
+  // When to start (a map start is a billed map load, so only for a visitor who is reading on): once they have
+  // scrolled the page themselves (a wheel, a touch, a key, a pointer: never a restored scroll, a script, a crawler
+  // or a speed test) and are past the Services scrub (Steps in the upper half of the screen), in a moment the page
+  // is still: the map's start (parsing the library and the style, its workers) is a few long tasks that would
+  // otherwise land on the scrub (Nov 2026: Services fell from 55 to 41 fps while the map started under it). If the
+  // visitor never pauses, it starts anyway once the section is within a screen and a half. On a frugal connection,
+  // only once the section is within 800px. Landing on the section itself never waits.
+  const steps = document.querySelector('[data-section="steps"]');
+  const INPUT = ['wheel', 'touchmove', 'keydown', 'pointerdown'];
+  let engaged = false;
+  let waiting = false;
+  const close = () => el.getBoundingClientRect().top < innerHeight * 1.5;
+  const reached = () => {
+    if (frugal) return el.getBoundingClientRect().top < innerHeight + 800;
+    return steps ? steps.getBoundingClientRect().top < innerHeight / 2 : scrollY > innerHeight * 2;
+  };
+  const check = () => {
+    if (!engaged || waiting || !reached()) return;
+    waiting = true;
+    whenLoaded(() => quiet(close).then(boot));
+  };
+  const engage = () => { engaged = true; INPUT.forEach((t) => removeEventListener(t, engage)); check(); };
+  function stopWatching() { removeEventListener('scroll', check); INPUT.forEach((t) => removeEventListener(t, engage)); }
+  INPUT.forEach((t) => addEventListener(t, engage, { passive: true }));
+  addEventListener('scroll', check, { passive: true });
+  new IntersectionObserver(([e], io) => { if (e.isIntersecting) { io.disconnect(); boot(); } }).observe(el);
+  // the code (Mapbox GL is a long parse) also waits for a still page, so it never lands on a scroll
+  if (!frugal) whenSettled(() => quiet(() => started).then(prefetch));
 }

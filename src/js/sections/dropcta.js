@@ -1,3 +1,4 @@
+import { registerOptions } from '../options.js';
 import { prefersReducedMotion } from '../motion.js';
 import { icon } from '../icons.js';
 
@@ -66,6 +67,11 @@ function scene(p) {
   s += '<rect class="dcta__crew" x="-5" y="-5" width="10" height="10"/>';
   return { s, W, last: drops.length - 1 };
 }
+
+// Dev panel (Nov 2026): the closing CTA as the homepage quote's board. style: panel (locked, as built) · board (hung
+// on two rods from a rail, like the page's own hanging band) · view (board only): angled · reverse · flat · plan: the
+// drawing's size, m 70% (the sweet spot) · full (as built) · l 85% · s 55%
+registerOptions('dropcta', { style: ['panel', 'board'], view: ['angled', 'reverse', 'flat'], plan: ['m', 'full', 'l', 's'] });
 
 export function init(el) {
   const svg = el.querySelector('.ccta__plan svg');

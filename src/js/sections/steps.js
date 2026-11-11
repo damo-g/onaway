@@ -7,6 +7,16 @@ registerOptions('steps', {
   ticket: ['tear', 'stamps', 'stamp', 'pin', 'notch'],
   symbol: ['foot', 'centre'],
   animation: ['write', 'unroll', 'across'],
+  // Desktop size (Nov 2026, the ticket felt too large): xl the current one (7 columns, 500 tall) · l 432 tall ·
+  // m 377 tall, 42 numbers · m6 six columns, 432 · s6 six columns, 377 · xs 288 tall, 26 numbers · xs6 m6's
+  // columns and type on xs's 288. The section keeps xl's footprint whatever the size (the ticket sits at the top).
+  // xs locked (Nov 2026), written on the section (03-steps.html) so the build has it too; tablets take it as well
+  size: ['xs', 'xl', 'l', 'm', 'm6', 's6', 'xs6'],
+  // The step numbers: sans (as built, Carbon) · mono (Overpass Mono, muted, a hairline after it) · ghost (light
+  // Carbon numerals, the step's watermark)
+  num: ['sans', 'mono', 'ghost'],
+  // Their size: auto (the size's own) · 12 · 20 · 26 · 42 · 68
+  numsize: ['auto', '12', '20', '26', '42', '68'],
 });
 
 export function init(el) {

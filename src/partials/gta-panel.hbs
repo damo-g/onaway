@@ -1,0 +1,17 @@
+{{!--
+  The GTA section’s panel: the sentence, the lead and "Do we cover you?" (no eyebrow: the sentence opens it). Shared by the live section (05-gta)
+  and the GT-10 map exploration (explore/gt10), so both always carry the same words.
+  Params: id (input id, required) · panelClass (extra panel classes) · placeholder · maxlength · autocomplete
+--}}
+<div class="gta__panel{{#if panelClass}} {{panelClass}}{{/if}}">
+  <h2 class="gta__sentence">We’ll be in <br><span class="gta__slot is-idle"><span class="gta__hl" aria-hidden="true"></span><span class="gta__place">the GTA</span></span> <br>on your date.</h2>
+  <p class="gta__lead">The City of Toronto and the four regions around it. The same crew and the same promises, wherever you are.</p>
+  <form class="gta__check" novalidate>
+    <label class="label" for="{{id}}">Do we cover you?</label>
+    <div class="gta__row">
+      <input id="{{id}}" name="postcode" maxlength="{{#if maxlength}}{{maxlength}}{{else}}7{{/if}}" placeholder="{{#if placeholder}}{{placeholder}}{{else}}Postal code, e.g. M6K 1A1{{/if}}" autocomplete="{{#if autocomplete}}{{autocomplete}}{{else}}postal-code{{/if}}" spellcheck="false">
+      <button type="submit"><span class="gta__go">Check</span> <span aria-hidden="true">{{{icon "arrow-right-02"}}}</span></button>
+    </div>
+    <p class="gta__result" aria-live="polite"></p>
+  </form>
+</div>

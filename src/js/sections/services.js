@@ -15,6 +15,9 @@ registerOptions('services', {
   fact: ['fixed', 'window'],
   // End state: cards (the hanging signs settle as cards on the grid) | board (full-bleed rows)
   end: ['cards', 'board'],
+  // The paper between the board and Steps' heading (desktop): 322 (locked Nov 2026: the section gap + 2 × 89, a touch
+  // more than 288) | 233 (the section gap + 89, as built) | 288 | 377 | 432. Tablet keeps 322, phones 233.
+  after: ['322', '233', '288', '377', '432'],
 });
 
 // R2-E numbers, drawn at the 1512 frame. Signs hang below the beam painted into the plate.
@@ -116,11 +119,14 @@ export function init(el) {
     const boardBottom = end[2].y + end[2].h;
 
     // End-state contents (x is measured from the sign's left edge)
-    const tileEnd = cards ? (mobile ? 34 : 55) : mobile ? 55 : 89;
+    // A card's tile sits in the face, as far from the card's edge as the face is from the housing (6): nearly the
+    // card's height (Nov 2026; was a 55 tile with 17 around it, which read as detached)
+    const FACE = 6;
+    const tileEnd = cards ? rowH - 2 * FACE : mobile ? 55 : 89;
     const nameEnd = cards ? (mobile ? 26 : 42) : mobile ? 26 : wide ? 55 : 42;
     const arrowEnd = cards ? (mobile ? 26 : 34) : mobile ? 26 : 42;
     // A card's tile sits as far in from the side as from the top and bottom; the board pads by the page margin
-    const inset = cards ? (rowH - tileEnd) / 2 : margin;
+    const inset = cards ? FACE : margin;
     // The arrow mirrors the tile: its centre as far from the right edge as the tile's is from the left
     const arrowInset = cards ? inset + (tileEnd - arrowEnd) / 2 : margin;
     const nameX = iconRight ? inset : inset + tileEnd + gutter;
@@ -218,7 +224,7 @@ export function init(el) {
       const fs = L(a.h * 0.38, g.nameEnd, p);
       const af = L(a.h * 0.38, g.arrowEnd, p);
       const tx = g.iconRight ? w - ins - ts : ins;
-      Object.assign(s.tile.style, { left: `${tx}px`, top: `${(h - ts) / 2}px`, width: `${ts}px`, height: `${ts}px`, borderRadius: `${L(4, 2, p)}px` });
+      Object.assign(s.tile.style, { left: `${tx}px`, top: `${(h - ts) / 2}px`, width: `${ts}px`, height: `${ts}px`, borderRadius: `${L(4, g.cards ? 3 : 2, p)}px` });
 
       const nx = g.iconRight ? L(34, g.nameX, p) : tx + ts + L(28, g.nameX - g.inset - g.tileEnd, p);
       // Stacked layouts lift the name so name, description (and fact on phones) sit centred as a block

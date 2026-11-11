@@ -19,9 +19,12 @@ const img = images({
   cache: resolve(root, 'node_modules/.cache/onaway-images'),
 });
 
-export default defineConfig(({ command }) => ({
+export default defineConfig(async ({ command }) => ({
   plugins: [
     img.plugin,
+    // Dev only: the GT-10 map exploration's local tile cache (explore/gt10/tile-cache.js). Imported only by the dev
+    // server, so the site's build never depends on the exploration folder.
+    command === 'serve' && (await import('./explore/gt10/tile-cache.js')).gt10TileCache(root),
     // Dev only: clean URLs like the server's .htaccess (/quote and /quote/ serve quote.html)
     {
       name: 'onaway-clean-urls',
@@ -43,8 +46,12 @@ export default defineConfig(({ command }) => ({
       helpers: { eq: (a, b) => a === b, picture: img.picture, faqJsonLd, icon },
     }),
   ],
-  server: { port: 5173, strictPort: true },
+  // allowedHosts: client demos and phone checks through `cloudflared tunnel --url http://localhost:5173`
+  server: { port: 5173, strictPort: true, allowedHosts: ['.trycloudflare.com'] },
   build: {
+    // Mapbox GL (section 05's map, about 1.9 MB raw, 525 KB gzipped) is its own chunk with its own deferred budget,
+    // loaded only as the section nears the screen (docs/build-context.md); the page's own JS keeps the 120 KB budget
+    chunkSizeWarningLimit: 2000,
     rollupOptions: {
       // tokens.html is a dev review page (served by `npm run dev`), not part of the site build
       input: {

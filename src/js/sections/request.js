@@ -1,5 +1,5 @@
-import { lookupPostcode } from '../data/postcodes.js';
-import { PLACES } from '../data/places.js';
+import { areaSearch } from '../area-search.js';
+import { lookupArea } from '../data/area.js';
 import { icon } from '../icons.js';
 
 // QP-01 The Ticket. Three steps that fold as you finish them (a "GOT IT" cue first), a live ticket that
@@ -393,61 +393,28 @@ export function init(el) {
       picked(f);
       if (f === 'from' && !S.to) setTimeout(() => el.querySelector('#qp-to')?.focus({ preventScroll: true }), 60);
     }
-    function row(name, region, code) {
-      const b = document.createElement('button');
-      b.type = 'button';
-      b.innerHTML = '<i aria-hidden="true"></i><span></span><small class="label"></small>';
-      b.querySelector('span').textContent = name;
-      b.querySelector('small').textContent = `${code ? `${code} · ` : ''}${REGION[region]}`;
-      b.onclick = () => set({ place: name, region, code });
-      return b;
-    }
-    function search() {
-      const v = input.value.trim();
-      res.replaceChildren();
-      first = null;
-      pk.classList.toggle('is-open', !!v);
-      if (!v) return;
-      if (/^[A-Za-z]\d[A-Za-z]/.test(v)) {
-        const a = lookupPostcode(v);
-        if (a.ok) res.append((first = row(a.place && a.place !== 'Toronto' ? a.place : 'Toronto', a.region, a.fsa)));
-        else {
-          const p = document.createElement('p');
-          p.innerHTML = `<span></span> is outside our five areas for now. <button type="button">Send it anyway</button> and we’ll tell you straight.`;
-          p.querySelector('span').textContent = a.fsa;
-          p.querySelector('button').onclick = () => set({ place: a.fsa, region: '', code: a.fsa, out: true });
-          res.append(p);
-        }
-      } else {
-        const s = v.toLowerCase();
-        const starts = PLACES.filter(([n]) => n.toLowerCase().startsWith(s));
-        const contains = PLACES.filter(([n]) => !n.toLowerCase().startsWith(s) && n.toLowerCase().includes(s));
-        starts.concat(contains).slice(0, 5).forEach(([n, r], i) => {
-          const b = row(n, r, '');
-          if (!i) first = b;
-          res.append(b);
-        });
-        if (!res.children.length) {
-          const p = document.createElement('p');
-          p.textContent = 'Try a postal code, like L5B 1A1.';
-          res.append(p);
-        }
-      }
-      first?.classList.add('is-first');
-    }
-    input.addEventListener('input', search);
-    input.addEventListener('keydown', (e) => {
-      if (e.key === 'Enter') { e.preventDefault(); first?.click(); }
-      if (e.key === 'Escape') pk.classList.remove('is-open');
+    // Postal code or town, matched as in the GTA check (05); the same search as the homepage quote (06)
+    const search = areaSearch({
+      input,
+      list: res,
+      tagClass: 'label',
+      pick: (it) => set({ place: it.label, region: it.region, code: it.code }),
+      outside(it) {
+        const p = document.createElement('p');
+        p.innerHTML = `<span></span> is outside our five areas for now. <button type="button">Send it anyway</button> and we’ll tell you straight.`;
+        p.querySelector('span').textContent = it.label;
+        p.querySelector('button').onclick = () => set({ place: it.label, region: '', code: it.code, out: true });
+        return p;
+      },
+      onRender: (has) => pk.classList.toggle('is-open', has),
     });
-    // Pressing a suggestion keeps focus in the input, so a slow click or a trackpad tap still lands;
+    input.addEventListener('keydown', (e) => { if (e.key === 'Escape') pk.classList.remove('is-open'); });
     // the list closes only when focus really leaves the picker
-    res.addEventListener('pointerdown', (e) => e.target.closest('button') && e.preventDefault());
     pk.addEventListener('focusout', (e) => { if (!pk.contains(e.relatedTarget)) pk.classList.remove('is-open'); });
     pk.querySelector('.qpick__change').onclick = () => {
       S[f] = null;
       pk.classList.remove('is-set', 'is-out');
-      input.value = '';
+      search.clear();
       update();
       setTimeout(() => input.focus(), 20);
     };
@@ -645,7 +612,7 @@ export function init(el) {
 
   // ---------- arrive with answers: from the homepage quote or map, or a service page (?service=) ----------
   const SVC = { cleaning: 'clean', moving: 'move', delivery: 'deliver', clean: 'clean', move: 'move', deliver: 'deliver' };
-  const regionOf = (place) => PLACES.find(([n]) => n === place)?.[1];
+  const regionOf = (place) => { const a = lookupArea(place); return a.ok ? a.region : null; };
   try {
     const params = new URLSearchParams(location.search);
     const quote = JSON.parse(sessionStorage.getItem('onaway:quote') || 'null') || {};

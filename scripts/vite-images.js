@@ -1,6 +1,7 @@
 // Responsive images without client JS: sources in src/assets/images are encoded to AVIF + WebP at
 // a few widths (cached in node_modules/.cache), served in dev and emitted in the build only when a
-// page uses them. In templates: {{picture "ov01" alt="…" sizes="100vw" loading="eager"}}
+// page uses them. In templates: {{picture "ov01" alt="…" sizes="100vw" loading="eager"}}; art="ov01-phone:(width < 768px)" swaps in
+// another image (its own shape) where a media query matches.
 import { mkdir, readdir, readFile, stat } from 'node:fs/promises';
 import { parse, resolve } from 'node:path';
 import Handlebars from 'handlebars';
@@ -63,11 +64,21 @@ export function images({ src, cache: cacheRoot, widths = [768, 1280, 1920, 2560]
     const m = meta.get(name);
     if (!m) throw new Error(`[images] no source image "${name}" in ${src}`);
     m.widths.forEach((w) => Object.keys(FORMATS).forEach((f) => used.add(`${name}-${w}.${f}`)));
-    const { alt = '', sizes = '100vw', loading = 'lazy', fetchpriority, class: cls, imgClass } = options.hash;
+    const { alt = '', sizes = '100vw', loading = 'lazy', fetchpriority, class: cls, imgClass, art } = options.hash;
     const e = Handlebars.escapeExpression;
+    // Art direction: art="other-image:(media query), …", the first match wins, else this image (each at its own shape)
+    const arts = (art ?? '').split(/,(?![^(]*\))/).map((a) => a.trim()).filter(Boolean).map((a) => {
+      const i = a.indexOf(':');
+      const n = a.slice(0, i).trim();
+      if (!meta.get(n)) throw new Error(`[images] no source image "${n}" in ${src}`);
+      meta.get(n).widths.forEach((w) => Object.keys(FORMATS).forEach((fmt) => used.add(`${n}-${w}.${fmt}`)));
+      return { n, media: a.slice(i + 1).trim() };
+    });
+    const artSources = arts.map(({ n, media }) => ['avif', 'webp'].map((fmt) => `<source media="${e(media)}" type="image/${fmt}" srcset="${srcset(n, fmt)}" sizes="${e(sizes)}">`).join('')).join('');
     const fallback = m.widths.find((w) => w >= 1280) ?? m.widths.at(-1);
     return new Handlebars.SafeString(
       `<picture${cls ? ` class="${e(cls)}"` : ''} data-image="${e(name)}">` +
+        artSources +
         `<source type="image/avif" srcset="${srcset(name, 'avif')}" sizes="${e(sizes)}">` +
         `<source type="image/webp" srcset="${srcset(name, 'webp')}" sizes="${e(sizes)}">` +
         `<img src="${BASE}${name}-${fallback}.webp" width="${m.width}" height="${m.height}" alt="${e(alt)}"` +
