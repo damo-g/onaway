@@ -15,6 +15,8 @@ registerOptions('footer', {
   // · timetable (two columns, NOW and HOURS in mono over the values at h3, a hairline between) · plate (a small
   // wayfinding plate: the door on its tile, "Open till 8 PM" in Lead, the time under it, a status bar at its edge)
   hours: ['tile', 'timetable', 'plate', 'board', 'big', 'quiet', 'inline'],
+  // The board fills' unlit dots, % of Paper on the board: 2 (locked) · 3 · 1
+  dots: ['2', '3', '1'],
 });
 
 export function init(el) {
@@ -49,6 +51,7 @@ export function init(el) {
     const TAGLINES = { here: 'We’ll take it from here.', steady: 'Steady hands at your door.', date: 'Done right, on your date.', handled: 'Your move, handled.' };
     const apply = () => {
       shader?.setFill(opt('fill', 'windows'));
+      shader?.setDim(+opt('dots', '2') / 100);
       sync();
       el.querySelector('.footer__tag').textContent = TAGLINES[opt('tagline', 'here')];
     };

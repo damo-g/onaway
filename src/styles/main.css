@@ -2080,7 +2080,7 @@
 
   /* The hang: an 8px Carbon rail, the band on two chains, the platforms on chains from the band */
   .svc-hang { margin-top: var(--spacing-89); padding-inline: var(--grid-margin); }
-  .svc-hang__rail { height: var(--spacing-8); background: var(--color-carbon); }
+  .svc-hang__rail { height: var(--spacing-8); margin-inline: calc(-1 * var(--grid-margin)); background: var(--color-carbon); } /* full width (Nov 2026) */
   .svc-band {
     --band-tile: color-mix(in srgb, var(--color-paper) 7%, var(--color-carbon));
     position: relative;
@@ -2845,12 +2845,16 @@
   }
   .ccta__w svg { width: var(--spacing-21); height: auto; }
   /* board (service pages): a rail, two rods */
-  .ccta[data-style="board"] { padding-top: var(--spacing-144); }
-  .ccta[data-style="board"]::before { content: ""; position: absolute; top: 0; left: var(--grid-margin); right: var(--grid-margin); height: var(--spacing-13); border-radius: 2px; background: var(--frame); }
+  .ccta[data-style="board"] { padding-top: var(--spacing-144); clip-path: inset(0 -100vw -100vh -100vw); }
+  .ccta[data-style="board"]::before { content: ""; position: absolute; z-index: 1; top: 0; left: 0; right: 0; height: var(--spacing-8); background: var(--frame); }
   .ccta[data-style="board"] .ccta__panel::before,
-  .ccta[data-style="board"] .ccta__panel::after { content: ""; position: absolute; z-index: -1; bottom: calc(100% - var(--spacing-8)); width: 5px; height: calc(var(--spacing-144) - var(--spacing-13) + var(--spacing-8)); border-radius: 2px; background: var(--frame); }
+  .ccta[data-style="board"] .ccta__panel::after { content: ""; position: absolute; z-index: -1; bottom: calc(100% - var(--spacing-8)); width: 5px; height: calc(var(--spacing-144) + var(--spacing-34)); border-radius: 2px; background: var(--frame); }
   .ccta[data-style="board"] .ccta__panel::before { left: 13%; }
   .ccta[data-style="board"] .ccta__panel::after { right: 13%; }
+  /* plan (service pages): the drawing's size, full (as built) · l · m · s */
+  .ccta[data-plan="l"] .ccta__plan svg { width: 85%; margin-left: auto; }
+  .ccta[data-plan="m"] .ccta__plan svg { width: 70%; margin-left: auto; }
+  .ccta[data-plan="s"] .ccta__plan svg { width: 55%; margin-left: auto; }
   /* band and pylon (About): one post at the left, down to the footer */
   .ccta:is([data-style="band"], [data-style="pylon"]) { padding-top: var(--spacing-89); }
   .ccta:is([data-style="band"], [data-style="pylon"]) .ccta__panel { margin-left: var(--spacing-34); }
@@ -2859,32 +2863,54 @@
     height: calc(100% + var(--spacing-34) + var(--section-gap)); border-radius: var(--spacing-8) var(--spacing-8) 0 0;
     background: linear-gradient(90deg, color-mix(in srgb, var(--p) 14%, var(--c)), var(--c) 45%);
   }
-  .ccta[data-style="pylon"] .ccta__panel::before { left: calc(-1 * var(--spacing-13)); } /* the plates fixed to the post's face */
   .ccta[data-style="band"] .ccta__panel::after { content: ""; position: absolute; z-index: -2; top: var(--spacing-34); bottom: var(--spacing-34); left: calc(-1 * var(--spacing-21)); width: var(--spacing-34); border-block: var(--spacing-13) solid var(--frame); }
   /* band: the route along the board's foot, inside the frame, on a tint */
   .ccta[data-style="band"] .ccta__panel { padding-bottom: var(--spacing-8); }
   .ccta[data-style="band"] .acta__road { margin: var(--spacing-21) calc(-1 * var(--spacing-13)) 0; border-top: 0; border-radius: 0 0 5px 5px; background: color-mix(in srgb, var(--c) 6%, var(--face)); }
-  /* pylon: the panel itself goes; the question on its own plate (::after), the route on another, two rods between */
-  .ccta[data-style="pylon"] .ccta__panel { background: none; box-shadow: none !important; transform: none !important; }
-  .ccta[data-style="pylon"] .ccta__panel::after,
-  .ccta[data-style="pylon"] .acta__road {
-    border-radius: var(--spacing-13);
-    background: linear-gradient(180deg, color-mix(in srgb, var(--p) 60%, var(--face)), var(--face) 30%, color-mix(in srgb, var(--c) 6%, var(--face)));
+  /* pylon: two plates bolted to two posts (after the CSL wayfinding pylon). The question on the upper plate (the
+     panel), the job route on its own plate below it (the road, taken out of the panel's flow), both on the faces of
+     two turned posts that rise above the top plate with caps and run down to the ground. The posts belong to the
+     section, behind the plates; four bolts on each plate where it meets a post. */
+  .ccta[data-style="pylon"] {
+    --pm: var(--spacing-89); /* the plates' inset from the content edges */
+    --post-x: calc(var(--grid-margin) + var(--pm) + (100% - 2 * var(--grid-margin) - 2 * var(--pm)) * 0.1);
+    isolation: isolate; padding-bottom: calc(var(--section-gap) + var(--spacing-89) + var(--spacing-55));
+  }
+  .ccta[data-style="pylon"] .ccta__panel { margin-inline: var(--pm); padding-bottom: var(--spacing-55); }
+  .ccta[data-style="pylon"] .ccta__panel::before { content: none; }
+  .ccta[data-style="pylon"]::before,
+  .ccta[data-style="pylon"]::after {
+    content: ""; position: absolute; z-index: -1; top: calc(var(--spacing-89) - var(--spacing-55)); bottom: 0; width: var(--spacing-21);
+    border-radius: var(--spacing-8) var(--spacing-8) 0 0;
+    background: linear-gradient(90deg, color-mix(in srgb, var(--p) 16%, var(--c)), var(--c) 40%, var(--c));
+  }
+  .ccta[data-style="pylon"]::before { left: var(--post-x); }
+  .ccta[data-style="pylon"]::after { right: var(--post-x); }
+  .ccta[data-style="pylon"] :is(.ccta__panel, .acta__road) {
+    --bolt: radial-gradient(circle 3px, color-mix(in srgb, var(--c) 55%, transparent) 70%, transparent 80%);
+    background:
+      var(--bolt) calc(10% + 8px - 3px) var(--spacing-21) / 8px 8px no-repeat,
+      var(--bolt) calc(10% + 8px - 3px) calc(100% - var(--spacing-21)) / 8px 8px no-repeat,
+      var(--bolt) calc(90% - 8px + 3px) var(--spacing-21) / 8px 8px no-repeat,
+      var(--bolt) calc(90% - 8px + 3px) calc(100% - var(--spacing-21)) / 8px 8px no-repeat,
+      var(--face);
     box-shadow: inset 0 0 0 var(--spacing-8) var(--frame), 0 6px 0 0 var(--edge), 0 34px 55px -30px color-mix(in srgb, var(--c) 55%, transparent);
   }
-  .ccta[data-style="pylon"] .ccta__panel::after { content: ""; position: absolute; z-index: -1; inset: 0 0 var(--spacing-144) 0; }
-  .ccta[data-style="pylon"] .acta__road { height: var(--spacing-89); margin: var(--spacing-55) 0 0; border-top: 0; }
-  .ccta[data-style="pylon"] .acta__road::before { content: ""; position: absolute; left: 30%; right: 30%; bottom: 100%; height: calc(var(--spacing-55) + 6px); background: linear-gradient(90deg, var(--frame) 0 5px, transparent 5px calc(100% - 5px), var(--frame) calc(100% - 5px)); }
+  .ccta[data-style="pylon"] .acta__road > svg { inset: var(--spacing-13) var(--spacing-21); width: calc(100% - 2 * var(--spacing-21)); height: calc(100% - 2 * var(--spacing-13)); }
+  .ccta[data-style="pylon"] .acta__road { position: absolute; grid-column: auto; left: 0; right: 0; top: calc(100% + var(--spacing-55)); height: var(--spacing-89); margin: 0 !important; border-top: 0; border-radius: var(--spacing-13); overflow: hidden; }
+  @media (width < 1024px) {
+    .ccta[data-style="pylon"] { --pm: var(--spacing-34); }
+  }
   @media (width >= 1024px) {
     /* a column of paper either side (the board turns, so it never meets the page edge) */
     .ccta[data-style="board"] .ccta__panel { margin-inline: calc((100% + var(--grid-gutter)) / 12); }
-    .ccta:is([data-style="band"], [data-style="pylon"]) .ccta__panel { margin-inline: calc((100% + var(--grid-gutter)) / 12 + var(--spacing-34)) calc((100% + var(--grid-gutter)) / 12); }
+    .ccta[data-style="band"] .ccta__panel { margin-inline: calc((100% + var(--grid-gutter)) / 12 + var(--spacing-34)) calc((100% + var(--grid-gutter)) / 12); }
     .ccta[data-style="band"] .acta__road { margin-inline: calc(-1 * (var(--spacing-55) - var(--spacing-8))); }
     .ccta:is([data-style="board"], [data-style="band"])[data-view="angled"] .ccta__panel { transform: perspective(2400px) rotateY(4deg); box-shadow: inset 0 0 0 var(--spacing-8) var(--frame), calc(-1 * var(--spacing-13)) 0 0 0 var(--edge), 34px 34px 55px -21px color-mix(in srgb, var(--c) 45%, transparent); }
     .ccta:is([data-style="board"], [data-style="band"])[data-view="reverse"] .ccta__panel { transform: perspective(2400px) rotateY(-4deg); box-shadow: inset 0 0 0 var(--spacing-8) var(--frame), var(--spacing-13) 0 0 0 var(--edge), -34px 34px 55px -21px color-mix(in srgb, var(--c) 45%, transparent); }
     /* the pylon turns as a whole: its plates are the panel's pieces */
-    .ccta[data-style="pylon"][data-view="angled"] .ccta__panel { transform: perspective(2400px) rotateY(4deg) !important; }
-    .ccta[data-style="pylon"][data-view="reverse"] .ccta__panel { transform: perspective(2400px) rotateY(-4deg) !important; }
+    .ccta[data-style="pylon"][data-view="angled"] .ccta__panel { transform: perspective(2400px) rotateY(4deg); }
+    .ccta[data-style="pylon"][data-view="reverse"] .ccta__panel { transform: perspective(2400px) rotateY(-4deg); }
   }
 
   /* ---------- Cleaning closing CTA (CC-02b) ---------- */

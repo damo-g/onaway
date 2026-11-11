@@ -9,10 +9,11 @@
 // The board's dots sit on whole device pixels (no moiré) and take no film grain (it made the unlit dots shimmer); the
 // yellow square sits at the board's far right and arrives as the CSS one did, gliding (not stepping) in from the left,
 // holding, then easing on and out (7 s; on board-update, right after each wipe). Each dot is lit by how much of it the
-// wordmark covers (3 × 3 samples), so the letters' edges and inner curves land on the right dots. Unlit dots at 3%. The board fills unmask the wordmark (main.css) and read its shape
+// wordmark covers (4 × 4 samples); where a dot is only partly covered it lights smaller (a halftone edge), so the
+// letters keep their curves and corners on a coarse grid. Unlit dots: a setting (footer.dots 2 · 3 · 1 %). The board fills unmask the wordmark (main.css) and read its shape
 // from /svg/wordmark.svg, drawn into a texture.
 // Animates only while visible; reduced motion draws one still frame; no WebGL → returns null (flat fill).
-const FS = `precision mediump float;uniform vec2 r;uniform vec2 R;uniform float t;uniform int m;uniform int pal;uniform sampler2D tx;uniform vec2 ts;
+const FS = `precision mediump float;uniform vec2 r;uniform vec2 R;uniform float t;uniform int m;uniform int pal;uniform float bgo;uniform sampler2D tx;uniform vec2 ts;
 float h(vec2 p){return fract(sin(dot(p,vec2(127.1,311.7)))*43758.5453);}
 float n(vec2 p){vec2 i=floor(p),f=fract(p);f=f*f*(3.-2.*f);return mix(mix(h(i),h(i+vec2(1,0)),f.x),mix(h(i+vec2(0,1)),h(i+vec2(1,1)),f.x),f.y);}
 float fb(vec2 p){float v=0.,a=.5;for(int i=0;i<5;i++){v+=a*n(p);p=p*2.03+vec2(1.7,9.2);a*=.5;}return v;}
@@ -32,15 +33,16 @@ void main(){vec2 px=gl_FragCoord.xy;vec2 uv=px/r.y;vec3 c;
   vec2 q=vec2(gl_FragCoord.x-o.x,R.y-gl_FragCoord.y-o.y)/pit;vec2 cell=floor(q);vec2 f=fract(q)-.5;
   float wh=rows-4.;float ww=wh*ts.x/ts.y;
   float cov=0.;
-  for(int i=0;i<3;i++)for(int j=0;j<3;j++){vec2 d=(vec2(float(i),float(j))-1.)*.3;vec2 w=vec2((cell.x-2.+.5+d.x)/ww,(cell.y-2.+.5+d.y)/wh);
+  for(int i=0;i<4;i++)for(int j=0;j<4;j++){vec2 d=(vec2(float(i),float(j))-1.5)*.25;vec2 w=vec2((cell.x-2.+.5+d.x)/ww,(cell.y-2.+.5+d.y)/wh);
    if(w.x>=0.&&w.x<=1.&&w.y>=0.&&w.y<=1.)cov+=texture2D(tx,w).a;}
-  float on=step(.45,cov/9.);
+  cov/=16.;float on=smoothstep(.12,.7,cov);
   if(pal==2){float ph=mod(t,11.);float fr=(ph-9.4)/1.4*(cols+12.);on*=1.-step(fr-10.,cell.x)*step(cell.x,fr)*step(.35,h(cell+floor(t*12.)));}
   vec3 lit=pal==1?YE:PA;
   float dd=pal==5?max(abs(f.x),abs(f.y)):length(f);
   float dt=pal==5?smoothstep(.4,.34,dd):smoothstep(.42,.3,dd);
   vec3 bd=CB+vec3(.012);
-  c=mix(bd,mix(mix(bd,PA,.03),lit,on),dt);
+  c=mix(bd,mix(bd,PA,bgo),dt);
+  float rr=mix(.14,.42,on);c=mix(c,lit,step(.01,on)*(pal==5?smoothstep(rr,rr-.06,dd):smoothstep(rr,rr-.12,dd)));
   if(pal==4)c+=lit*on*smoothstep(.7,.25,dd)*.18;
   float sz=pal==3?6.:4.;
   float cyc=pal==2?11.:7.;float p=mod(t,cyc)/cyc;float ie=pal==2?.15:.22;float l0=pal==2?.79:.86;float l1=pal==2?.85:.94;
@@ -111,6 +113,8 @@ export function windowShader(canvas, { fill = 'windows', still = false } = {}) {
   img.src = '/svg/wordmark.svg';
 
   let [mode, pal] = FILLS[fill] ?? FILLS.windows;
+  let dim = 0.02;
+  const uBgo = gl.getUniformLocation(program, 'bgo');
   let raf = 0;
   let visible = false;
   const t0 = performance.now();
@@ -129,6 +133,7 @@ export function windowShader(canvas, { fill = 'windows', still = false } = {}) {
     gl.uniform1f(uT, still ? 20 : (performance.now() - t0) / 1000 + 20);
     gl.uniform1i(uM, mode);
     gl.uniform1i(uPal, pal);
+    gl.uniform1f(uBgo, dim);
     gl.uniform2f(uRD, w, h);
     gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
   }
@@ -147,6 +152,10 @@ export function windowShader(canvas, { fill = 'windows', still = false } = {}) {
   draw();
 
   return {
+    setDim(v) {
+      dim = v;
+      draw();
+    },
     setFill(name) {
       [mode, pal] = FILLS[name] ?? [mode, pal];
       draw();
