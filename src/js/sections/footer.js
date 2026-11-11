@@ -4,12 +4,15 @@ import { windowShader } from '../shaders/window.js';
 
 // Locked first: Windows fill, Arrive signal, Signal hover, "We'll take it from here."
 registerOptions('footer', {
-  fill: ['windows', 'sky', 'flat', 'route', 'platform', 'kraft'],
+  fill: ['windows', 'dots', 'route', 'route-dark', 'route-camel', 'route-ink', 'sky', 'flat'],
   signal: ['arrive', 'turn', 'still', 'off'],
   hover: ['signal', 'sweep', 'invert', 'mark'],
   tagline: ['here', 'steady', 'date', 'handled'],
-  // The hours under the clock: quiet (locked: camel pictogram, muted words) | kraft (a camel tag) | inline (one line with the time)
-  hours: ['quiet', 'kraft', 'inline'],
+  // The time and the hours (Nov 2026: the door pictogram, on a sign tile like the Services cards): tile (locked: the
+  // tile, the time as a label, the hours under it in Paper) · board (an arrivals board: two ruled rows, LOCAL TIME and
+  // HOURS, values to the right) · big (the time large, its city above, the hours under with a dot, yellow while open)
+  // · quiet (as built: a small pictogram, muted words) · inline (one line with the time)
+  hours: ['tile', 'board', 'big', 'quiet', 'inline'],
 });
 
 export function init(el) {
@@ -24,7 +27,9 @@ export function init(el) {
     clock.textContent = fmt.format(new Date()).toUpperCase();
     clock.dateTime = new Date().toISOString();
     const h = Number(hourNow.format(new Date()));
-    hours.textContent = h >= 8 && h < 20 ? 'Open till 8 PM' : 'Opens 8 AM';
+    const open = h >= 8 && h < 20;
+    hours.textContent = open ? 'Open till 8 PM' : 'Opens 8 AM';
+    el.querySelector('.footer__when').classList.toggle('is-open', open);
   };
   tick();
   setInterval(tick, 20000);

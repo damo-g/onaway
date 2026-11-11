@@ -1473,7 +1473,7 @@
   html[data-motion="reduce"] .qc-blank.is-next { animation: none; }
   html[data-motion="reduce"] .qc-route .mv { display: none; }
   /* ---------- Footer (FT-02 Window) ---------- */
-  /* Options (dev panel): data-fill windows (locked) | sky | flat | route | platform | kraft · data-signal arrive (locked)
+  /* Options (dev panel): data-fill windows (locked) | dots | route | route-dark | route-camel | route-ink | sky | flat · data-signal arrive (locked)
      | turn | still | off · data-hover signal (locked) | sweep | invert | mark */
   .footer {
     --ft-fg: var(--color-paper);
@@ -1490,14 +1490,40 @@
   .footer__tag { max-width: 22ch; font-size: var(--text-h3); line-height: 1.1; font-weight: 500; letter-spacing: -0.01em; }
   .footer__clock { color: var(--ft-fg); }
   .footer__clock time { font-variant-numeric: tabular-nums; }
-  /* The hours sit under the time, a step quieter: supporting information. The pictogram carries the camel (camel is
-     never text); the words are Paper at 55%. Panel option footer.hours: quiet (locked) | kraft (a camel tag, Carbon
-     words) | inline (one line after the time). */
-  .footer__when { display: flex; flex-direction: column; align-items: flex-start; gap: var(--spacing-8); }
-  .footer__hours { --tile: var(--color-carbon); display: inline-flex; align-items: center; gap: var(--spacing-8); color: color-mix(in srgb, var(--color-paper) 55%, transparent); }
-  .footer__hours svg { flex: none; width: 1.25em; height: 1.25em; color: var(--color-camel); }
-  .footer[data-hours="kraft"] .footer__hours { --tile: var(--color-camel); padding: var(--spacing-8); border-radius: 2px; background: var(--color-camel); color: var(--color-carbon); }
-  .footer[data-hours="kraft"] .footer__hours svg { color: var(--color-carbon); }
+  /* The time and the hours (Nov 2026). Locked, tile: the door pictogram on a sign tile like the Services cards (Paper
+     7% on Carbon, a Paper glyph), the time as a label beside it, the hours under it in Paper. Panel option footer.hours:
+     board (an arrivals board: ruled rows, LOCAL TIME / HOURS, values right) · big (the time at h2, its city above, the
+     hours under with a dot, yellow while open) · quiet (as built: a small camel pictogram, muted words) · inline. */
+  .footer__when { --tile: color-mix(in srgb, var(--color-paper) 7%, var(--color-carbon)); display: grid; grid-template-columns: var(--spacing-55) auto; column-gap: var(--spacing-13); row-gap: var(--spacing-8); align-items: center; }
+  .footer__tile { grid-row: 1 / span 2; display: grid; place-items: center; width: var(--spacing-55); height: var(--spacing-55); background: var(--tile); color: var(--color-paper); }
+  .footer__tile svg { width: 68%; height: 68%; }
+  .footer__clock { align-self: end; }
+  .footer__hours { align-self: start; display: inline-flex; align-items: center; gap: var(--spacing-8); font-family: inherit; font-size: var(--text-body); font-stretch: 87.5%; letter-spacing: 0; text-transform: none; font-weight: 500; color: var(--color-paper); }
+  .footer__hours svg { display: none; flex: none; width: 1.25em; height: 1.25em; color: var(--color-camel); }
+  /* board */
+  .footer[data-hours="board"] .footer__when { grid-template-columns: auto auto; column-gap: var(--spacing-34); row-gap: 0; min-width: calc(4 * var(--spacing-55)); }
+  .footer[data-hours="board"] .footer__tile { display: none; }
+  .footer[data-hours="board"] :is(.footer__clock, .footer__hours) { display: contents; }
+  .footer[data-hours="board"] .footer__sep { display: none; }
+  .footer[data-hours="board"] :is(.footer__city, .footer__clock time, .footer__hours span) { padding-block: var(--spacing-8); border-top: 1px solid var(--ft-line); }
+  .footer[data-hours="board"] .footer__city { font-size: 0; }
+  .footer[data-hours="board"] .footer__city::before { content: "Local time"; font-size: var(--text-label); color: var(--ft-mut); }
+  .footer[data-hours="board"] .footer__hours::before { content: "Hours"; grid-column: 1; padding-block: var(--spacing-8); border-top: 1px solid var(--ft-line); font-family: var(--font-mono); font-size: var(--text-label); letter-spacing: var(--text-label--letter-spacing); text-transform: uppercase; font-stretch: normal; color: var(--ft-mut); }
+  .footer[data-hours="board"] :is(.footer__clock time, .footer__hours span) { text-align: right; color: var(--color-paper); }
+  .footer[data-hours="board"] .footer__hours span { font-family: var(--font-mono); font-size: var(--text-label); letter-spacing: var(--text-label--letter-spacing); text-transform: uppercase; font-stretch: normal; }
+  /* big */
+  .footer[data-hours="big"] .footer__when { display: flex; flex-direction: column; gap: var(--spacing-8); }
+  .footer[data-hours="big"] .footer__tile, .footer[data-hours="big"] .footer__sep { display: none; }
+  .footer[data-hours="big"] .footer__clock { display: flex; flex-direction: column; gap: var(--spacing-8); }
+  .footer[data-hours="big"] .footer__city { color: var(--ft-mut); }
+  .footer[data-hours="big"] .footer__clock time { font-family: var(--font-sans); font-size: var(--text-h2); line-height: 1; letter-spacing: -0.01em; font-weight: 500; font-stretch: 87.5%; text-transform: none; }
+  .footer[data-hours="big"] .footer__hours::before { content: ""; width: var(--spacing-8); height: var(--spacing-8); border-radius: 50%; background: var(--color-camel); }
+  .footer[data-hours="big"] .footer__when.is-open .footer__hours::before { background: var(--color-yellow); }
+  /* quiet (as built) and inline */
+  .footer:is([data-hours="quiet"], [data-hours="inline"]) .footer__when { --tile: var(--color-carbon); display: flex; flex-direction: column; align-items: flex-start; gap: var(--spacing-8); }
+  .footer:is([data-hours="quiet"], [data-hours="inline"]) .footer__tile { display: none; }
+  .footer:is([data-hours="quiet"], [data-hours="inline"]) .footer__hours { font-family: var(--font-mono); font-size: var(--text-label); letter-spacing: var(--text-label--letter-spacing); text-transform: uppercase; font-stretch: normal; color: color-mix(in srgb, var(--color-paper) 55%, transparent); }
+  .footer:is([data-hours="quiet"], [data-hours="inline"]) .footer__hours svg { display: block; }
   .footer[data-hours="inline"] .footer__when { flex-direction: row; flex-wrap: wrap; align-items: center; }
   .footer[data-hours="inline"] .footer__clock::after { content: " ·"; }
 
@@ -1668,7 +1694,8 @@
   @media (width >= 1024px) {
     .footer { padding-top: var(--spacing-55); }
     .footer__tag { font-size: var(--text-h2); }
-    .footer__when { justify-self: end; align-items: flex-end; padding-top: var(--spacing-13); }
+    .footer__when { justify-self: end; padding-top: var(--spacing-13); }
+    .footer:is([data-hours="quiet"], [data-hours="big"]) .footer__when { align-items: flex-end; }
     .footer[data-hours="inline"] .footer__when { justify-content: flex-end; }
     .footer__cols { margin-top: var(--spacing-55); }
     .footer__explore { grid-column: 1 / span 3; }

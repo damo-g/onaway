@@ -1,7 +1,7 @@
 // Dot-matrix text (numbers, times, arrival-board facts only), ported from the R2-E mock helper.
 // <span data-dm="2 HR QUOTE" data-pitch="5"></span> → an SVG of 5×7 dots. Lit dots use currentColor,
 // unlit dots the same colour at low opacity, so colour always comes from the tokens.
-const F = {
+export const DM_FONT = {
   A: '01110 10001 10001 11111 10001 10001 10001', B: '11110 10001 10001 11110 10001 10001 11110', C: '01110 10001 10000 10000 10000 10001 01110',
   D: '11110 10001 10001 10001 10001 10001 11110', E: '11111 10000 10000 11110 10000 10000 11111', F: '11111 10000 10000 11110 10000 10000 10000',
   G: '01110 10001 10000 10111 10001 10001 01111', H: '10001 10001 10001 11111 10001 10001 10001', I: '01110 00100 00100 00100 00100 00100 01110',
@@ -23,7 +23,7 @@ const F = {
 export function dotMatrix(text, pitch = 5) {
   const cols = [];
   [...text.toUpperCase()].forEach((ch, i) => {
-    const g = (F[ch] ?? F[' ']).split(' ');
+    const g = (DM_FONT[ch] ?? DM_FONT[' ']).split(' ');
     if (i) cols.push(null);
     for (let c = 0; c < g[0].length; c++) cols.push(g.map((row) => row[c] === '1'));
   });
