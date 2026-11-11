@@ -1,0 +1,113 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>CTA Boards · Service and About</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wdth,wght@75..100,400..700&family=Overpass+Mono:wght@400;500;600&display=swap">
+<link rel="stylesheet" href="shared.css">
+<style>
+/* The homepage quote's board (QC-02, Nov 2026) carried to the service pages' closing CTA (hanging, from the page's own
+   hanging band) and the About page's (post). Review toggles: effect · view. Copy as on the live pages. */
+.stage{height:860px}
+.frame{margin-bottom:34px}
+.rail{position:absolute;left:0;right:0;top:0;height:13px;background:var(--carbon)}
+.ground{position:absolute;left:0;right:0;bottom:0;height:89px;background:var(--carbon)}
+.bd{--frame:var(--carbon);--face:color-mix(in srgb,var(--carbon) 5%,var(--paper));position:absolute;left:50%;top:144px;translate:-50% 0;
+  padding:89px 89px 55px;border-radius:13px;background:var(--face);box-shadow:inset 0 0 0 8px var(--frame),0 34px 55px -34px rgba(32,37,33,.5);
+  transition:transform .5s cubic-bezier(.3,.7,.3,1)}
+.bd.l{width:1236px}.bd.m{width:1004px}
+[data-view="angled"] .bd{transform:perspective(2400px) rotateY(4deg);box-shadow:inset 0 0 0 8px var(--frame),-13px 0 0 0 color-mix(in srgb,var(--carbon) 80%,var(--camel)),34px 34px 55px -21px rgba(32,37,33,.45)}
+.bd .w{position:absolute;left:0;top:0;width:55px;height:55px;display:grid;place-items:center;border-radius:13px 0 13px 0;background:var(--frame);color:var(--paper)}
+.bd .w svg{width:21px}
+.bd .id{position:absolute;left:76px;top:0;height:55px;display:flex;align-items:center}
+.bd::before,.bd::after{content:"";position:absolute;z-index:-1;background:var(--frame)}
+/* hanging: rods up to the rail · billboard: two posts to the ground · post: one post at its side, two brackets */
+[data-effect="hanging"] .bd::before,[data-effect="hanging"] .bd::after{bottom:calc(100% - 8px);width:5px;height:150px;border-radius:2px}
+[data-effect="hanging"] .bd::before{left:13%}[data-effect="hanging"] .bd::after{right:13%}
+[data-effect="billboard"] .bd::before,[data-effect="billboard"] .bd::after{top:calc(100% - 8px);width:13px;height:400px}
+[data-effect="billboard"] .bd::before{left:22%}[data-effect="billboard"] .bd::after{right:22%}
+[data-effect="post"] .bd::before{top:-34px;left:-34px;width:13px;height:900px;border-radius:8px 8px 0 0}
+[data-effect="post"] .bd::after{top:34px;bottom:34px;left:-21px;width:34px;background:none;border-block:13px solid var(--frame)}
+[data-effect="post"] .bd{translate:calc(-50% + 17px) 0}
+.rail{display:none}[data-effect="hanging"] .rail{display:block}
+.cols{display:grid;grid-template-columns:7fr 5fr;column-gap:55px;align-items:start}
+.m .cols{grid-template-columns:1fr}
+.t{font-family:var(--display);font-stretch:87.5%;font-weight:650;font-size:68px;line-height:.95;letter-spacing:-.02em;margin:0 0 34px}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin:13px 0 34px}
+.chips span{padding:8px 13px;border:1.5px solid rgba(32,37,33,.3);font-size:16px;font-stretch:87.5%;font-weight:500}
+.chips span.on{background:var(--carbon);border-color:var(--carbon);color:var(--paper)}
+.foot{display:flex;align-items:center;justify-content:space-between;gap:34px;padding-top:21px;border-top:1px solid rgba(32,37,33,.3)}
+.foot .small{max-width:44ch;color:rgba(32,37,33,.7)}
+.btn{display:inline-flex;align-items:center;gap:21px;height:55px;padding:0 21px;background:var(--yellow);font-size:20px;font-weight:600;font-stretch:87.5%;white-space:nowrap}
+.call{font-family:var(--mono);font-size:12px;letter-spacing:.08em;text-transform:uppercase;margin-top:13px;color:rgba(32,37,33,.7)}
+.plan{border:1.5px dashed rgba(32,37,33,.3);height:300px;display:grid;place-items:center;text-align:center;color:rgba(32,37,33,.55)}
+.note{position:absolute;right:21px;bottom:100px;max-width:340px;font-family:var(--mono);font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--rust);text-align:right}
+</style>
+</head>
+<body>
+<header class="top"><div><div class="id">Review · CTA boards</div><h1>The quote board, carried to the service and About pages</h1></div>
+  <div class="tools"><button class="tbtn" data-view-btn aria-pressed="true">Angled</button></div></header>
+
+<div class="frame">
+  <div class="top"><div class="id">Moving page · closing CTA (MV-04b) · recommended: hanging</div>
+    <div class="tools" data-for="a"><button class="tbtn" data-e="hanging" aria-pressed="true">Hanging</button><button class="tbtn" data-e="billboard" aria-pressed="false">Billboard</button><button class="tbtn" data-e="post" aria-pressed="false">Post</button></div></div>
+  <div class="wrap"><div class="stage" id="a" data-effect="hanging" data-view="angled">
+    <div class="rail"></div>
+    <div class="bd l">
+      <span class="w"><svg viewBox="-2 -2 88 86"><path fill="currentColor" d="M0,80C.14,77.73-.02,11.64.03,9.23l11.67-1.12s.01,40.19-.1,55.51c20.63-10.95,25.77-37.76,25.47-59.5,2.65-.22,9.1-.87,11.81-1.15-.51,20.26,3.46,45.8,24.97,53.64.05-15.31.05-40.2.07-55.53l11.65-1.08v70.04c-17.66,4.6-35.16-10.2-42.26-25.54-7.02,17.45-23.22,35.59-43.32,35.5Z"/></svg></span>
+      <span class="id lab">Moving · get a free quote</span>
+      <div class="cols">
+        <div>
+          <h2 class="t">Tell us about<br>your move.</h2>
+          <div class="lab" style="color:rgba(32,37,33,.6)">Moving from</div>
+          <div class="chips"><span>Studio</span><span class="on">1–2 bedroom</span><span>3+ bedroom</span><span>House</span><span>Office</span></div>
+        </div>
+        <div class="plan lab">The floor-to-floor plan<br>(the live animation stays here)</div>
+      </div>
+      <div class="foot"><p class="small">A written plan and quote <b>within 2 hours</b>: crew, timing and every cost. No obligation.</p>
+        <div style="text-align:right"><span class="btn">Get a moving quote for your 1–2 bedroom →</span><div class="call">Or call +1 647 877 1411</div></div></div>
+    </div>
+    <div class="ground"></div>
+    <p class="note">The service page arrives with a hanging band (PT-01); its closing CTA hangs the same way, from a rail, like the R2-E signs.</p>
+  </div></div>
+</div>
+
+<div class="frame">
+  <div class="top"><div class="id">About page · closing CTA · recommended: post</div>
+    <div class="tools" data-for="b"><button class="tbtn" data-e="post" aria-pressed="true">Post</button><button class="tbtn" data-e="billboard" aria-pressed="false">Billboard</button><button class="tbtn" data-e="hanging" aria-pressed="false">Hanging</button></div></div>
+  <div class="wrap"><div class="stage" id="b" data-effect="post" data-view="angled">
+    <div class="rail"></div>
+    <div class="bd m">
+      <span class="w"><svg viewBox="-2 -2 88 86"><path fill="currentColor" d="M0,80C.14,77.73-.02,11.64.03,9.23l11.67-1.12s.01,40.19-.1,55.51c20.63-10.95,25.77-37.76,25.47-59.5,2.65-.22,9.1-.87,11.81-1.15-.51,20.26,3.46,45.8,24.97,53.64.05-15.31.05-40.2.07-55.53l11.65-1.08v70.04c-17.66,4.6-35.16-10.2-42.26-25.54-7.02,17.45-23.22,35.59-43.32,35.5Z"/></svg></span>
+      <span class="id lab">Get a free quote</span>
+      <div class="cols"><div>
+        <h2 class="t">Tell us about<br>your job.</h2>
+        <div class="lab" style="color:rgba(32,37,33,.6)">Your job</div>
+        <div class="chips"><span class="on">Cleaning</span><span>Moving</span><span>Delivery</span></div>
+      </div></div>
+      <div class="foot"><p class="small">A written quote <b>within 2 hours</b>, with every cost on it. No obligation.</p>
+        <div style="text-align:right"><span class="btn">Get a cleaning quote →</span><div class="call">Or call +1 647 877 1411</div></div></div>
+    </div>
+    <p class="note">About is the people page: one post at the side, a sign you walk up to, smaller (8 columns) and closer.</p>
+    <div class="ground"></div>
+  </div></div>
+</div>
+
+<script>
+(function () {
+  // scale each 1512 frame to fit
+  const fit = () => document.querySelectorAll('.wrap').forEach((w) => { const st = w.querySelector('.stage'); const k = Math.min(1, w.clientWidth / 1512); st.style.transform = `scale(${k})`; w.style.height = `${860 * k}px`; });
+  addEventListener('resize', fit); fit();
+  document.querySelectorAll('[data-for]').forEach((g) => g.addEventListener('click', (e) => {
+    const b = e.target.closest('[data-e]'); if (!b) return;
+    document.getElementById(g.dataset.for).dataset.effect = b.dataset.e;
+    g.querySelectorAll('[data-e]').forEach((x) => x.setAttribute('aria-pressed', String(x === b)));
+  }));
+  const vb = document.querySelector('[data-view-btn]');
+  vb.addEventListener('click', () => { const on = vb.getAttribute('aria-pressed') !== 'true'; vb.setAttribute('aria-pressed', String(on)); document.querySelectorAll('.stage').forEach((s) => (s.dataset.view = on ? 'angled' : 'flat')); });
+})();
+</script>
+</body>
+</html>
