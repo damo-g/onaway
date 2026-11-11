@@ -27,10 +27,11 @@ function quoteBy() {
   return `by ${fmt(h + 2, m)}`;
 }
 
-// Dev panel (Nov 2026): the closing CTA as the homepage quote's board. style: panel (locked, as built) · board (hung
+// The closing CTA as the homepage quote's board (locked Nov 2026: board · angled · m, written on the section). style:
+// board · panel (as built) (hung
 // on two rods from a rail, like the page's own hanging band) · view (board only): angled · reverse · flat · plan: the
 // drawing's size, m 70% (the sweet spot) · full (as built) · l 85% · s 55%
-registerOptions('cleancta', { style: ['panel', 'board'], view: ['angled', 'reverse', 'flat'], plan: ['m', 'full', 'l', 's'] });
+registerOptions('cleancta', { style: ['board', 'panel'], view: ['angled', 'reverse', 'flat'], plan: ['m', 'full', 'l', 's'] });
 
 export function init(el) {
   const svg = el.querySelector('.ccta__plan svg');

@@ -4,7 +4,8 @@ import { windowShader } from '../shaders/window.js';
 
 // Locked first: Windows fill, Arrive signal, Signal hover, "We'll take it from here."
 registerOptions('footer', {
-  fill: ['windows', 'board', 'board-update', 'board-fine', 'board-glow', 'board-square', 'board-amber', 'dots-stars', 'sky', 'flat'],
+  // board-update and timetable locked (Nov 2026), written on the footer (footer.hbs) so the build has them
+  fill: ['board-update', 'windows', 'board', 'board-fine', 'board-glow', 'board-square', 'board-amber', 'dots-stars', 'sky', 'flat'],
   signal: ['arrive', 'turn', 'still', 'off'],
   hover: ['signal', 'sweep', 'invert', 'mark'],
   tagline: ['here', 'steady', 'date', 'handled'],
@@ -14,7 +15,7 @@ registerOptions('footer', {
   // · quiet (as built: a small pictogram, muted words) · inline (one line with the time)
   // · timetable (two columns, NOW and HOURS in mono over the values at h3, a hairline between) · plate (a small
   // wayfinding plate: the door on its tile, "Open till 8 PM" in Lead, the time under it, a status bar at its edge)
-  hours: ['tile', 'timetable', 'plate', 'board', 'big', 'quiet', 'inline'],
+  hours: ['timetable', 'tile', 'plate', 'board', 'big', 'quiet', 'inline'],
   // The board fills' unlit dots, % of Paper on the board: 2 (locked) · 3 · 1
   dots: ['2', '3', '1'],
 });
@@ -41,16 +42,16 @@ export function init(el) {
   // Wordmark fill: the shader, or flat Paper when WebGL isn't there
   const opt = (key, locked) => el.dataset[key] ?? locked;
   // the board fills: the board takes the whole width, no mask
-  const sync = () => el.classList.toggle('is-board', opt('fill', 'windows').startsWith('board'));
+  const sync = () => el.classList.toggle('is-board', opt('fill', 'board-update').startsWith('board'));
   sync();
-  const shader = windowShader(el.querySelector('.footer__wordmark canvas'), { fill: opt('fill', 'windows'), still: prefersReducedMotion() });
+  const shader = windowShader(el.querySelector('.footer__wordmark canvas'), { fill: opt('fill', 'board-update'), still: prefersReducedMotion() });
   if (!shader) el.classList.add('is-flat');
 
   if (import.meta.env.DEV) {
     // Review panel: other fills and taglines
     const TAGLINES = { here: 'We’ll take it from here.', steady: 'Steady hands at your door.', date: 'Done right, on your date.', handled: 'Your move, handled.' };
     const apply = () => {
-      shader?.setFill(opt('fill', 'windows'));
+      shader?.setFill(opt('fill', 'board-update'));
       shader?.setDim(+opt('dots', '2') / 100);
       sync();
       el.querySelector('.footer__tag').textContent = TAGLINES[opt('tagline', 'here')];

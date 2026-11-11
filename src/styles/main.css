@@ -2863,6 +2863,7 @@
   .ccta[data-plan="l"] .ccta__plan svg { width: 85%; margin-left: auto; }
   .ccta[data-plan="m"] .ccta__plan svg { width: 70%; margin-left: auto; }
   .ccta[data-plan="s"] .ccta__plan svg { width: 55%; margin-left: auto; }
+  @media (width < 1024px) { .ccta[data-plan] .ccta__plan svg { margin-inline: auto; } }
   /* band and pylon (About): one post at the left, down to the footer */
   .ccta:is([data-style="band"], [data-style="pylon"]) { padding-top: var(--spacing-89); }
   .ccta:is([data-style="band"], [data-style="pylon"]) .ccta__panel { margin-left: var(--spacing-34); }
@@ -2887,7 +2888,7 @@
      round caps and run down to the ground; the posts belong to the section, behind the plates, a bolt at each plate
      corner where it meets a post. Soft edges: the frame, a 2px cut edge and a soft shadow, no hard offset. */
   .ccta[data-style="pylon"] {
-    --pm: var(--spacing-89); /* the plates' inset from the content edges */
+    --pm: var(--spacing-55); /* the plates' inset from the content edges (Nov 2026: 55, was 89) */
     --post-x: calc(var(--grid-margin) + var(--pm) + (100% - 2 * var(--grid-margin) - 2 * var(--pm)) * 0.1);
     --plate-shadow: inset 0 0 0 var(--spacing-8) var(--frame), 0 2px 0 0 var(--edge), 0 21px 34px -21px color-mix(in srgb, var(--c) 45%, transparent);
     --bolt: radial-gradient(circle 2.5px, color-mix(in srgb, var(--c) 50%, transparent) 75%, transparent 85%);
@@ -2925,7 +2926,21 @@
   .ccta[data-style="pylon"][data-road="carbon"] .acta__road::before { --plate: var(--c); --bolt: radial-gradient(circle 2.5px, color-mix(in srgb, var(--p) 35%, transparent) 75%, transparent 85%); }
   .ccta[data-style="pylon"][data-road="gray"] .acta__road::before { --plate: color-mix(in srgb, var(--c) 6%, var(--face)); }
   @media (width < 1024px) {
-    .ccta[data-style="pylon"] { --pm: var(--spacing-34); }
+    .ccta[data-style="pylon"] { --pm: var(--spacing-21); }
+  }
+  /* Phones: the pylon stands up. The upper plate holds the panel's own stacked phone layout (the title, the job, the
+     lead and the button, one under another), the route keeps its plate under it, and a single post runs up the middle
+     behind both, capped above the top plate, down to the ground. */
+  @media (width < 768px) {
+    .ccta[data-style="pylon"] { --pm: 0px; }
+    .ccta[data-style="pylon"] .ccta__panel { padding: var(--spacing-89) var(--spacing-34) var(--spacing-34); }
+    .ccta[data-style="pylon"]::before { left: calc(50% - var(--spacing-13)); }
+    .ccta[data-style="pylon"]::after { display: none; }
+    .ccta[data-style="pylon"] .ccta__panel,
+    .ccta[data-style="pylon"] .acta__road::before { background-position: 50% var(--spacing-21), 50% calc(100% - var(--spacing-21)), 50% var(--spacing-21), 50% calc(100% - var(--spacing-21)), 0 0; }
+    .ccta[data-style="pylon"] .acta__road { left: var(--spacing-21); right: var(--spacing-21); }
+    .ccta[data-style="pylon"] .acta__road::before { inset: -17px calc(-1 * var(--spacing-21)); }
+    .ccta[data-style="pylon"] .ccta__cta { align-self: stretch; justify-content: space-between; }
   }
   @media (width >= 1024px) {
     /* a column of paper either side (the board turns, so it never meets the page edge) */
