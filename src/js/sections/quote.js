@@ -2,25 +2,32 @@ import { registerOptions } from '../options.js';
 import { onEnterOnce, prefersReducedMotion } from '../motion.js';
 import { areaSearch } from '../area-search.js';
 
-// Locked first: dark panel, X and O route marks, asking service + area + when.
+// Locked first (Nov 2026: the billboard, aside, light, headline, 42, stops + live). The locked set is also written on
+// the section (06-quote.html), so the build, which has no panel, shows it too.
 registerOptions('quote', {
-  colour: ['dark', 'light', 'yellow'],
-  marks: ['xo', 'box', 'cross', 'street'],
+  // The board's colour (the panel's, without a board): light (the ticket's face) · dark · yellow
+  colour: ['light', 'dark', 'yellow'],
+  marks: ['xo', 'box', 'cross', 'street'], // the route behind the panel (no board only)
   ask: ['3', '2', '1'],
-  head: ['off', 'headline'], // the sentence alone (the eyebrow retired, Nov 2026), or the display headline over it
-  size: ['68', '42'], // the sentence on desktop
+  head: ['headline', 'off'], // the display headline packed on the sentence, or the sentence alone
+  size: ['42', '68'], // the sentence on desktop
   // The button before the sentence is complete (pressing it opens the next blank in every case):
-  // dim (70%, as built) · outline (hollow, fills when ready) · stops (three route stops fill as you answer)
-  // · board (a departure-board line: NEXT · …) · live (always the full button; its words say the next step)
-  wait: ['dim', 'outline', 'stops', 'board', 'live'],
-  // Desktop layout: poster (centred, as built) · left (flush left) · split (7/5: the sentence, then a ticket of the
-  // answers and the button) · aside (8/4: the note and button in the right column) · masthead (the headline across,
-  // the sentence under it, the button on a hairline)
-  layout: ['poster', 'left', 'split', 'aside', 'masthead'],
-  // An extra, brand-led: none · stamps (each answer is stamped onto the panel) · billboard (the panel as a wayfinding
-  // sign on posts) · flap (the blanks as split-flap tiles that flip when set)
-  effect: ['none', 'stamps', 'billboard', 'flap'],
+  // stopslive (the full button, three route stops filling as you answer) · live (the full button; only its words
+  // change) · stops (hollow, the stops filling) · fill (hollow, a yellow bar along its foot grows with each answer)
+  // · count (the full button, "1/3" where the arrow goes) · dim (70%, as built)
+  wait: ['stopslive', 'live', 'stops', 'fill', 'count', 'dim'],
+  // Desktop layout: aside (8/4: the note and button in the right column) · poster (centred) · left (flush left) ·
+  // masthead (the headline across, the sentence under it, the button on a hairline) · split (7/5: a ticket of the
+  // answers and the button)
+  layout: ['aside', 'poster', 'left', 'masthead', 'split'],
+  // The sentence's setting: billboard (a wayfinding board on two posts to the ground) · hanging (hung on rods from
+  // the map above, like the Services signs) · post (on one post at its side) · flap (the panel, its blanks as
+  // split-flap tiles) · none (the panel)
+  effect: ['billboard', 'hanging', 'post', 'flap', 'none'],
+  board: ['l', 'm', 'xl'], // the board's width on desktop: 10 · 8 · 12 columns
+  view: ['flat', 'angled'], // angled: turned a few degrees, its near edge showing
 });
+const BOARDS = ['billboard', 'hanging', 'post'];
 const SHORT = { 'this week': 'This week', 'next week': 'Next week', later: 'Later', 'not sure yet': 'Not sure' };
 
 const EMPTY = { service: 'a hand', area: 'your area', when: 'sometime soon' };
@@ -56,13 +63,10 @@ export function init(el) {
     b.querySelector('.qc-blank__text').textContent = value || EMPTY[key];
     b.classList.toggle('is-set', !!value);
     b.classList.toggle('is-empty', !value);
-    // the answer shows wherever an option repeats it: the split layout's ticket, the stops, the stamps
+    // the answer shows wherever an option repeats it: the split layout's ticket, the stops
     const label = value ? (SHORT[value] ?? value.charAt(0).toUpperCase() + value.slice(1)) : '';
     el.querySelector(`[data-sum="${key}"] dd`).textContent = label || '—';
     el.querySelector(`[data-stop="${key}"]`).classList.toggle('is-on', !!value);
-    const stamp = el.querySelector(`[data-stamp="${key}"]`);
-    stamp.querySelector('b').textContent = label;
-    stamp.classList.toggle('is-on', !!value);
     update();
   }
 
@@ -80,6 +84,10 @@ export function init(el) {
     }
     const order = ['service', 'area', 'when'].slice(0, ask());
     const next = order.find((k) => !values[k]);
+    // progress, for the fill and count options
+    const got = order.filter((k) => values[k]).length;
+    el.style.setProperty('--qc-p', `${(got / order.length) * 100}%`);
+    el.querySelector('.qc__count').textContent = `${got}/${order.length}`;
     Object.entries(blanks).forEach(([k, b]) => b.classList.toggle('is-next', k === next));
   }
 
@@ -179,6 +187,23 @@ export function init(el) {
 
   update();
 
+  // ---- the board: its posts reach the ground (the footer), its rods the map above; on paper, not a dark panel
+  const body = el.querySelector('.qc__body');
+  const footer = document.querySelector('[data-section="footer"]');
+  const above = el.previousElementSibling;
+  function rig() {
+    const board = BOARDS.includes(el.dataset.effect);
+    if (board) el.removeAttribute('data-nav-theme');
+    else el.dataset.navTheme = 'dark';
+    if (!board) return;
+    const b = body.getBoundingClientRect();
+    if (footer) el.style.setProperty('--post-h', `${Math.max(0, Math.round(footer.getBoundingClientRect().top - b.bottom))}px`);
+    if (above) el.style.setProperty('--rod-h', `${Math.max(0, Math.round(b.top - above.getBoundingClientRect().bottom))}px`);
+  }
+  rig();
+  new ResizeObserver(rig).observe(document.body);
+  document.fonts?.ready.then(rig);
+
   if (!prefersReducedMotion()) {
     el.classList.add('is-armed');
     onEnterOnce(el, () => {
@@ -188,5 +213,5 @@ export function init(el) {
     }, { start: 'top 70%' });
   }
 
-  if (import.meta.env.DEV) el.addEventListener('section:options', update);
+  if (import.meta.env.DEV) el.addEventListener('section:options', () => { update(); requestAnimationFrame(rig); });
 }

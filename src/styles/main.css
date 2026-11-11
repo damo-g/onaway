@@ -1260,7 +1260,7 @@
   .qc-pop__msg, .qc-pop__results .area-msg { padding: var(--spacing-8); font-size: var(--text-small); line-height: 1.45; opacity: 0.75; }
   .qc-pop__hint { padding-inline: var(--spacing-8); font-family: var(--font-mono); font-size: var(--text-label); letter-spacing: var(--text-label--letter-spacing); text-transform: uppercase; opacity: 0.6; }
 
-  /* Button: the site's 55 with Lead 20, yellow at 70% while waiting; its label says the missing step */
+  /* Button: the site's 55 with Lead 20; its label says the missing step (the wait option sets how it waits) */
   .qc__foot { margin-top: var(--spacing-34); }
   .qc__ready { display: flex; flex-direction: column; align-items: center; gap: var(--spacing-13); }
   .qc__cta {
@@ -1276,7 +1276,6 @@
     cursor: pointer;
     transition: opacity 0.4s, transform 0.3s;
   }
-  .qc__cta[aria-disabled="true"] { opacity: 0.7; cursor: not-allowed; }
   .qc__cta.is-ready { animation: qc-ready 0.5s cubic-bezier(0.3, 0.7, 0.3, 1); }
   .qc__cta-arrow { transition: transform 0.3s; }
   .qc__cta:not([aria-disabled="true"]):hover .qc__cta-arrow { transform: translateX(5px); }
@@ -1301,39 +1300,37 @@
     .qc[data-size="42"] .qc__ask-when br { display: none; } /* one line at 42 */
   }
 
-  /* ---- CTA options (Nov 2026, dev panel): wait · layout · effect. Desktop first; phones keep the poster. ---- */
+  /* ---- CTA options (Nov 2026, dev panel): wait · layout · effect · board · view. The locked set is written on the
+     section itself (06-quote.html: billboard, aside, light, headline, 42, stops + live), so dev and the build match. ---- */
   /* The parts only some options use stay hidden otherwise */
-  .qc__summary, .qc__stops, .qc__stamps, .qc__sign { display: none; }
-  .qc[data-ask="1"] :is([data-sum="area"], [data-stop="area"], [data-stamp="area"]),
-  .qc:is([data-ask="1"], [data-ask="2"]) :is([data-sum="when"], [data-stop="when"], [data-stamp="when"]) { display: none !important; }
+  .qc__summary, .qc__stops, .qc__sign, .qc__count { display: none; }
+  .qc[data-ask="1"] :is([data-sum="area"], [data-stop="area"]),
+  .qc:is([data-ask="1"], [data-ask="2"]) :is([data-sum="when"], [data-stop="when"]) { display: none !important; }
 
-  /* wait: outline · hollow until ready, then it fills */
-  .qc[data-wait="outline"] .qc__cta { transition: background-color 0.4s, color 0.4s, box-shadow 0.4s, transform 0.3s; }
-  .qc[data-wait="outline"] .qc__cta[aria-disabled="true"] { opacity: 1; background: transparent; color: var(--qc-fg); box-shadow: inset 0 0 0 1.5px var(--qc-fg); cursor: pointer; }
-  /* wait: stops · three route stops before the words, filling as the sentence is answered (the site's route marks) */
-  .qc[data-wait="stops"] .qc__stops { display: inline-flex; align-items: center; gap: var(--spacing-8); }
+  /* wait: the button before the sentence is complete. Pressing it always opens the next blank, so it never looks
+     disabled: stopslive (locked) the full button with three route stops filling as you answer · live the full button,
+     only its words change · stops hollow, the stops filling · fill hollow, a yellow bar along its foot growing with each
+     answer · count the full button with "1/3" where the arrow goes · dim 70% (as built) */
+  .qc__cta[aria-disabled="true"] { cursor: pointer; }
+  .qc[data-wait="dim"] .qc__cta[aria-disabled="true"] { opacity: 0.7; cursor: not-allowed; }
+  .qc:is([data-wait="stopslive"], [data-wait="live"], [data-wait="count"]) .qc__cta[aria-disabled="true"]:hover .qc__cta-arrow { transform: translateX(5px); }
+  .qc:is([data-wait="stops"], [data-wait="stopslive"]) .qc__stops { display: inline-flex; align-items: center; gap: var(--spacing-8); }
   .qc__stops i { position: relative; width: var(--spacing-8); height: var(--spacing-8); border: 1.5px solid currentColor; border-radius: 50%; transition: background-color 0.3s; }
   .qc__stops i + i::before { content: ""; position: absolute; right: 100%; top: 50%; width: var(--spacing-8); border-top: 1.5px dotted currentColor; }
   .qc__stops i.is-on { background: currentColor; }
-  .qc[data-wait="stops"] .qc__cta[aria-disabled="true"] { opacity: 1; background: transparent; color: var(--qc-fg); box-shadow: inset 0 0 0 1.5px var(--qc-line); cursor: pointer; }
-  /* wait: board · a departure-board line (mono caps, "Next ·", a slow amber blink) until it's ready */
-  .qc[data-wait="board"] .qc__cta[aria-disabled="true"] {
-    opacity: 1; cursor: pointer; background: color-mix(in srgb, var(--qc-fg) 8%, transparent); color: var(--qc-fg); box-shadow: inset 0 0 0 1px var(--qc-line);
-    font-family: var(--font-mono); font-size: var(--text-small); font-stretch: normal; letter-spacing: var(--text-label--letter-spacing); text-transform: uppercase; font-weight: 500;
-  }
-  .qc[data-wait="board"] .qc__cta[aria-disabled="true"] .qc__cta-label::before { content: "Next · "; color: var(--qc-mut); }
-  .qc[data-wait="board"] .qc__cta[aria-disabled="true"] .qc__cta-arrow { display: inline-block; width: var(--spacing-8); height: var(--spacing-8); overflow: hidden; border-radius: 50%; background: var(--color-yellow); color: transparent; animation: qc-blink 1.6s steps(2, jump-none) infinite; }
-  @keyframes qc-blink { 50% { opacity: 0.25; } }
-  /* wait: live · always the full button; only its words change */
-  .qc[data-wait="live"] .qc__cta[aria-disabled="true"] { opacity: 1; cursor: pointer; }
-  .qc[data-wait="live"] .qc__cta[aria-disabled="true"]:hover .qc__cta-arrow { transform: translateX(5px); }
+  .qc:is([data-wait="stops"], [data-wait="fill"]) .qc__cta { position: relative; transition: background-color 0.4s, color 0.4s, box-shadow 0.4s, transform 0.3s; }
+  .qc:is([data-wait="stops"], [data-wait="fill"]) .qc__cta[aria-disabled="true"] { background: transparent; color: var(--qc-fg); box-shadow: inset 0 0 0 1.5px var(--qc-line); }
+  .qc[data-wait="fill"] .qc__cta::after { content: ""; position: absolute; left: 0; bottom: 0; width: var(--qc-p, 0%); height: 4px; background: var(--color-yellow); transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1); }
+  .qc[data-wait="fill"] .qc__cta:not([aria-disabled="true"])::after { display: none; }
+  .qc[data-wait="count"] .qc__cta[aria-disabled="true"] .qc__count { display: inline; font-family: var(--font-mono); font-size: var(--text-label); font-weight: 500; font-stretch: normal; letter-spacing: var(--text-label--letter-spacing); }
+  .qc[data-wait="count"] .qc__cta[aria-disabled="true"] .qc__cta-arrow { display: none; }
 
   @media (width >= 1024px) {
     /* layout: left · flush left on the page margin */
     .qc[data-layout="left"] :is(.qc__body, .qc__form, .qc__ready) { align-items: flex-start; text-align: left; }
     .qc[data-layout="left"] .qc__bg { scale: -1 1; }
-    /* layout: split (7/5) · the sentence left; the answers as a ticket and the button right · aside (8/4): the note
-       and the button in the right column */
+    /* layout: aside (8/4, locked) · the note and the button in the right column · split (7/5): the sentence left; the
+       answers as a ticket and the button right */
     .qc:is([data-layout="split"], [data-layout="aside"]) :is(.qc__body, .qc__ready) { align-items: flex-start; text-align: left; }
     .qc:is([data-layout="split"], [data-layout="aside"]) .qc__form { display: grid; width: 100%; column-gap: calc(var(--grid-gutter) + 100% / 12); align-items: end; }
     .qc[data-layout="split"] .qc__form { grid-template-columns: minmax(0, 7fr) minmax(0, 5fr); }
@@ -1344,53 +1341,112 @@
     .qc__summary div { display: flex; justify-content: space-between; align-items: baseline; gap: var(--spacing-13); padding-block: var(--spacing-13); border-bottom: 1px solid var(--qc-line); }
     .qc__summary dt { color: var(--qc-mut); }
     .qc__summary dd { font-size: var(--text-lead); font-weight: 600; }
-    .qc:is([data-layout="split"], [data-layout="aside"]) .qc__cta { width: 100%; justify-content: space-between; }
+    .qc:is([data-layout="split"], [data-layout="aside"]) .qc__cta { width: 100%; justify-content: space-between; gap: var(--spacing-13); white-space: nowrap; }
     .qc[data-layout="aside"] .qc__ready { flex-direction: column-reverse; gap: var(--spacing-21); }
     .qc[data-layout="aside"] .qc__note { padding-top: var(--spacing-13); border-top: 1px solid var(--qc-line); }
-    /* layout: masthead · the headline across the panel (always shown here), the sentence under it, the button and
-       the note on a hairline */
+    /* layout: masthead · the headline across the panel (with head: headline), the sentence under it, the button and
+       the note on a hairline. With head off, the sentence is the masthead. */
     .qc[data-layout="masthead"] :is(.qc__body, .qc__form) { align-items: stretch; text-align: left; }
-    .qc[data-layout="masthead"] .qc__title { position: static; width: auto; height: auto; overflow: visible; clip-path: none; white-space: normal; margin-bottom: var(--spacing-34); padding-bottom: var(--spacing-21); border-bottom: 1px solid var(--qc-line); }
+    .qc[data-layout="masthead"][data-head="headline"] .qc__title { margin-bottom: var(--spacing-34); padding-bottom: var(--spacing-21); border-bottom: 1px solid var(--qc-line); }
     .qc[data-layout="masthead"] .qc__foot { margin-top: var(--spacing-55); padding-top: var(--spacing-21); border-top: 1px solid var(--qc-line); }
     .qc[data-layout="masthead"] .qc__ready { flex-direction: row-reverse; justify-content: space-between; align-items: center; text-align: left; }
     .qc[data-layout="masthead"] .qc__note { max-width: 52ch; }
   }
 
-  /* effect: stamps · each answer is stamped onto the panel, rubber-stamp style (Rust on paper, Paper ink on carbon) */
-  .qc[data-effect="stamps"] .qc__stamps { display: block; position: absolute; inset: 0; pointer-events: none; }
-  .qc-stamp {
-    --ink: var(--color-rust);
-    position: absolute; display: grid; place-content: center; gap: 2px; width: var(--spacing-144); height: var(--spacing-89);
-    border-radius: 50%; box-shadow: inset 0 0 0 2px var(--ink), inset 0 0 0 6px var(--qc-bg), inset 0 0 0 7px var(--ink);
-    color: var(--ink); text-align: center; font-family: var(--font-mono); font-stretch: normal; text-transform: uppercase; letter-spacing: var(--text-label--letter-spacing);
-    opacity: 0; scale: 1.4; transition: opacity 0.15s, scale 0.35s cubic-bezier(0.3, 0.7, 0.3, 1);
+  /* ---- Boards (effect: billboard, locked · hanging · post). The panel's colour goes off; the board carries it
+     (colour: light, locked, the ticket's face · dark · yellow), in a Carbon housing like the Services signs. The
+     route marks go (nothing to stand behind). billboard: two posts down to the ground, the footer · hanging: rods
+     up to the map above, as the Services signs hang · post: one post at its side, two brackets. quote.js measures
+     --post-h and --rod-h. board: l (locked, 10 columns) · m (8) · xl (12) · view: flat (locked) · angled (turned a
+     few degrees, its near edge showing). Phones: a pylon, the W tile on a neck above the board, one post. ---- */
+  .qc:is([data-effect="billboard"], [data-effect="hanging"], [data-effect="post"]) {
+    --frame: var(--color-carbon);
+    overflow: visible;
+    padding-bottom: 0;
+    background: transparent;
   }
-  .qc[data-colour="dark"] .qc-stamp, .qc:not([data-colour]) .qc-stamp { --ink: color-mix(in srgb, var(--color-paper) 70%, var(--color-rust)); }
-  .qc[data-colour="yellow"] .qc-stamp { --ink: var(--color-carbon); }
-  .qc-stamp small { font-size: var(--text-label); opacity: 0.8; }
-  .qc-stamp b { font-size: var(--text-small); font-weight: 600; }
-  .qc-stamp.is-on { opacity: 0.9; scale: 1; }
-  .qc-stamp[data-stamp="service"] { top: var(--spacing-34); right: calc(var(--spacing-89) + var(--spacing-55)); rotate: -9deg; }
-  .qc-stamp[data-stamp="area"] { bottom: var(--spacing-55); right: var(--spacing-89); rotate: 7deg; }
-  .qc-stamp[data-stamp="when"] { bottom: var(--spacing-34); left: var(--spacing-89); rotate: -5deg; }
-
-  /* effect: billboard · the panel as a wayfinding sign: a framed plate on two posts, an arrow tile at its corner */
-  .qc[data-effect="billboard"] { padding-bottom: 0; }
-  .qc[data-effect="billboard"] .qc__body {
-    --frame: color-mix(in srgb, var(--qc-fg) 16%, var(--qc-bg));
-    margin-inline: auto; margin-bottom: var(--spacing-89); max-width: calc(100% - 2 * var(--spacing-89)); padding: var(--spacing-55) var(--spacing-89);
-    border-radius: var(--spacing-13); background: color-mix(in srgb, var(--qc-fg) 5%, var(--qc-bg));
-    box-shadow: inset 0 0 0 var(--spacing-8) var(--frame), 0 34px 55px -34px color-mix(in srgb, var(--color-carbon) 60%, transparent);
+  .qc[data-colour="light"]:is([data-effect="billboard"], [data-effect="hanging"], [data-effect="post"]) { --qc-bg: color-mix(in srgb, var(--color-carbon) 5%, var(--color-paper)); }
+  .qc[data-colour="dark"]:is([data-effect="billboard"], [data-effect="hanging"], [data-effect="post"]) { --qc-bg: color-mix(in srgb, var(--color-paper) 7%, var(--color-carbon)); }
+  .qc:is([data-effect="billboard"], [data-effect="hanging"], [data-effect="post"]) .qc__bg { display: none; }
+  .qc:is([data-effect="billboard"], [data-effect="hanging"], [data-effect="post"]) .qc__body {
+    --cols: 10;
+    width: 100%;
+    margin-inline: auto;
+    padding: var(--spacing-55) var(--spacing-34) var(--spacing-34);
+    border-radius: var(--spacing-13);
+    background: var(--qc-bg);
+    box-shadow: inset 0 0 0 var(--spacing-8) var(--frame), 0 34px 55px -34px color-mix(in srgb, var(--color-carbon) 50%, transparent);
+    transition: background-color 0.5s;
   }
+  /* The W, the sign's tile in its corner */
+  .qc:is([data-effect="billboard"], [data-effect="hanging"], [data-effect="post"]) .qc__sign {
+    display: grid; place-items: center; position: absolute; top: 0; left: 0; width: var(--spacing-55); height: var(--spacing-55);
+    border-radius: var(--spacing-13) 0 var(--spacing-13) 0; background: var(--frame); color: var(--color-paper);
+  }
+  .qc__sign svg { width: var(--spacing-21); height: auto; }
+  .qc:is([data-effect="billboard"], [data-effect="hanging"], [data-effect="post"]) .qc__body::before,
+  .qc:is([data-effect="billboard"], [data-effect="hanging"], [data-effect="post"]) .qc__body::after { content: ""; position: absolute; z-index: -1; background: var(--frame); }
+  /* billboard: two posts to the ground */
   .qc[data-effect="billboard"] .qc__body::before,
-  .qc[data-effect="billboard"] .qc__body::after { content: ""; position: absolute; top: 100%; width: var(--spacing-13); height: var(--spacing-89); background: var(--frame); }
+  .qc[data-effect="billboard"] .qc__body::after { top: calc(100% - var(--spacing-8)); width: var(--spacing-13); height: calc(var(--post-h, var(--spacing-144)) + var(--spacing-8)); }
   .qc[data-effect="billboard"] .qc__body::before { left: 22%; }
   .qc[data-effect="billboard"] .qc__body::after { right: 22%; }
-  .qc[data-effect="billboard"] .qc__sign {
-    display: grid; place-items: center; position: absolute; top: var(--spacing-8); left: var(--spacing-8); width: var(--spacing-55); height: var(--spacing-55);
-    border-radius: var(--spacing-8) 0 var(--spacing-8) 0; background: var(--color-yellow); color: var(--color-carbon); font-size: var(--text-h3);
+  /* hanging: two rods up to the section above */
+  .qc[data-effect="hanging"] .qc__body::before,
+  .qc[data-effect="hanging"] .qc__body::after { bottom: calc(100% - var(--spacing-8)); width: 5px; height: calc(var(--rod-h, var(--spacing-144)) + var(--spacing-8)); border-radius: 2px; }
+  .qc[data-effect="hanging"] .qc__body::before { left: 13%; }
+  .qc[data-effect="hanging"] .qc__body::after { right: 13%; }
+  /* post: one post at the left, rising a little above the board, two brackets */
+  .qc[data-effect="post"] .qc__body::before { top: calc(-1 * var(--spacing-34)); left: calc(-1 * var(--spacing-34)); width: var(--spacing-13); height: calc(100% + var(--spacing-34) + var(--post-h, var(--spacing-144))); border-radius: var(--spacing-8) var(--spacing-8) 0 0; }
+  .qc[data-effect="post"] .qc__body::after {
+    top: var(--spacing-34); bottom: var(--spacing-34); left: calc(-1 * var(--spacing-21)); width: var(--spacing-34); background: none;
+    border-block: var(--spacing-13) solid var(--frame);
   }
-  .qc[data-effect="billboard"] .qc__bg { opacity: 0.4; }
+  .qc:is([data-effect="billboard"], [data-effect="hanging"], [data-effect="post"]) .qc__title { line-height: 0.9; }
+  @media (width >= 768px) {
+    .qc:is([data-effect="billboard"], [data-effect="hanging"], [data-effect="post"]) .qc__body { padding: var(--spacing-89) var(--spacing-55) var(--spacing-55); }
+    .qc[data-effect="post"] .qc__body { margin-left: var(--spacing-34); width: calc(100% - var(--spacing-34)); }
+  }
+  @media (width >= 1024px) {
+    .qc:is([data-effect="billboard"], [data-effect="hanging"], [data-effect="post"]) .qc__body {
+      width: calc((100% + var(--grid-gutter)) * var(--cols) / 12 - var(--grid-gutter));
+      padding: var(--spacing-89) var(--spacing-89) var(--spacing-55);
+    }
+    .qc[data-effect="post"] .qc__body { margin-left: auto; }
+    .qc[data-board="m"] .qc__body { --cols: 8; }
+    .qc[data-board="xl"] .qc__body { --cols: 12; }
+    .qc[data-board="xl"]:is([data-effect="billboard"], [data-effect="hanging"]) .qc__body { width: 100%; }
+    .qc[data-board="xl"][data-effect="post"] .qc__body { width: calc(100% - var(--spacing-34)); margin-right: 0; }
+    /* The headline packed tight on the sentence: one poster. Aside: the note and button start level with the sentence. */
+    .qc[data-head="headline"]:is([data-effect="billboard"], [data-effect="hanging"], [data-effect="post"]) .qc__title { margin-bottom: var(--spacing-13); }
+    .qc[data-layout="aside"]:is([data-effect="billboard"], [data-effect="hanging"], [data-effect="post"]) .qc__form { align-items: start; }
+    .qc[data-layout="aside"]:is([data-effect="billboard"], [data-effect="hanging"], [data-effect="post"]) .qc__sentence { padding-top: var(--spacing-8); }
+    /* view: angled · turned a few degrees about its middle, the near (left) edge showing its depth */
+    .qc[data-view="angled"] .qc__body {
+      transform: perspective(2400px) rotateY(9deg);
+      box-shadow: inset 0 0 0 var(--spacing-8) var(--frame), calc(-1 * var(--spacing-13)) 0 0 0 color-mix(in srgb, var(--color-carbon) 80%, var(--color-camel)), 34px 34px 55px -21px color-mix(in srgb, var(--color-carbon) 45%, transparent);
+    }
+  }
+  /* Smaller desktops (1024–1439): the board takes all 12 columns, the aside 7/5, so the button keeps its line */
+  @media (1024px <= width < 1440px) {
+    .qc:is([data-effect="billboard"], [data-effect="hanging"], [data-effect="post"]) .qc__body { --cols: 12; padding-inline: var(--spacing-55); }
+    .qc[data-layout="aside"]:is([data-effect="billboard"], [data-effect="hanging"], [data-effect="post"]) .qc__form { grid-template-columns: minmax(0, 7fr) minmax(0, 5fr); column-gap: var(--spacing-55); }
+  }
+  /* Phones: a pylon. The W on its own tile at the top, a neck, the board, one post to the ground. */
+  @media (width < 768px) {
+    .qc:is([data-effect="billboard"], [data-effect="hanging"], [data-effect="post"]) { margin-inline: 0; }
+    .qc:is([data-effect="billboard"], [data-effect="hanging"], [data-effect="post"]) .qc__body { margin-top: calc(var(--spacing-89) + var(--spacing-21)); padding: var(--spacing-55) var(--spacing-21) var(--spacing-34) calc(var(--spacing-8) + var(--spacing-21)); align-items: flex-start; text-align: left; }
+    .qc:is([data-effect="billboard"], [data-effect="hanging"], [data-effect="post"]) :is(.qc__form, .qc__ready) { align-items: flex-start; text-align: left; }
+    .qc:is([data-effect="billboard"], [data-effect="hanging"], [data-effect="post"]) .qc__sign {
+      top: calc(-1 * (var(--spacing-89) + var(--spacing-21))); left: 50%; translate: -50% 0; width: var(--spacing-89); height: var(--spacing-89);
+      border-radius: var(--spacing-13); background: var(--qc-bg); box-shadow: inset 0 0 0 var(--spacing-8) var(--frame); color: var(--qc-fg);
+    }
+    .qc:is([data-effect="billboard"], [data-effect="hanging"], [data-effect="post"]) .qc__sign svg { width: var(--spacing-34); }
+    .qc:is([data-effect="billboard"], [data-effect="hanging"], [data-effect="post"]) .qc__sign::after { content: ""; position: absolute; top: 100%; left: 50%; translate: -50% 0; width: var(--spacing-34); height: var(--spacing-21); background: var(--frame); }
+    .qc:is([data-effect="billboard"], [data-effect="hanging"], [data-effect="post"]) .qc__body::before { inset: calc(100% - var(--spacing-8)) auto auto 50%; translate: -50% 0; width: var(--spacing-13); height: calc(var(--post-h, var(--spacing-89)) + var(--spacing-8)); border-radius: 0; }
+    .qc:is([data-effect="billboard"], [data-effect="hanging"], [data-effect="post"]) .qc__body::after { display: none; }
+    .qc:is([data-effect="billboard"], [data-effect="hanging"], [data-effect="post"]) .qc__cta { width: 100%; justify-content: space-between; }
+  }
 
   /* effect: flap · the blanks as split-flap tiles (the arrival boards); a set blank flips in */
   .qc[data-effect="flap"] .qc-blank {
@@ -1400,13 +1456,11 @@
   }
   .qc[data-effect="flap"] .qc-blank.is-empty .qc-blank__text { color: color-mix(in srgb, var(--color-paper) 55%, transparent); }
   .qc[data-effect="flap"] .qc-blank__hl { display: none; }
-  .qc:is([data-colour="dark"], :not([data-colour]))[data-effect="flap"] .qc-blank { background-color: color-mix(in srgb, var(--color-paper) 14%, var(--color-carbon)); }
   .qc[data-effect="flap"] .qc-blank.is-set { box-shadow: inset 0 -0.08em 0 var(--color-yellow); }
   .qc[data-effect="flap"] .qc-blank.is-set .qc-blank__text { display: inline-block; animation: qc-flap 0.5s cubic-bezier(0.3, 0.7, 0.3, 1); transform-origin: 50% 55%; }
   @keyframes qc-flap { 0% { transform: rotateX(90deg); } 60% { transform: rotateX(-12deg); } 100% { transform: none; } }
   @media (prefers-reduced-motion: reduce) {
-    .qc-stamp { transition: none; }
-    .qc[data-effect="flap"] .qc-blank.is-set .qc-blank__text, .qc[data-wait="board"] .qc__cta-arrow { animation: none; }
+    .qc[data-effect="flap"] .qc-blank.is-set .qc-blank__text { animation: none; }
   }
   /* Entrance: the route draws in once on entry (quote.js arms it). Reduced motion: no drawing, drift or square. */
   .qc.is-armed .qc-route .rt { animation: qc-draw 3.2s cubic-bezier(0.4, 0, 0.2, 1) 0.2s both; animation-play-state: paused; }
