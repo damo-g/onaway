@@ -2,7 +2,7 @@ import { registerOptions } from '../options.js';
 import { onEnterOnce, prefersReducedMotion } from '../motion.js';
 import { areaSearch } from '../area-search.js';
 
-// Locked first (Nov 2026: the billboard, angled, stagger, light, head off, 68, stops + live). The locked set is also written on
+// Locked first (Nov 2026: the billboard, angled, masthead, light, head off, 68, stops + live). The locked set is also written on
 // the section (06-quote.html), so the build, which has no panel, shows it too.
 registerOptions('quote', {
   // The board's colour (the panel's, without a board): light (the ticket's face) · dark · yellow
@@ -21,8 +21,9 @@ registerOptions('quote', {
   // Desktop layout: aside (8/4: the note and button in the right column) · poster (centred) · left (flush left) ·
   // masthead (the headline across, the sentence under it, the button on a hairline) · split (7/5: a ticket of the
   // answers and the button)
-  // stagger (locked: the sentence large from the left, the button and note stepping down into the right five twelfths)
-  layout: ['stagger', 'aside', 'poster', 'masthead', 'left', 'split'],
+  // masthead (locked Nov 2026: the sentence across, the note and button on one row under it, no rules) · stagger (the
+  // button and note stepping down into the right five twelfths)
+  layout: ['masthead', 'stagger', 'aside', 'poster', 'left', 'split'],
   // The sentence's setting: billboard (a wayfinding board on two posts to the ground) · hanging (hung on rods from
   // the map above, like the Services signs) · post (on one post at its side) · flap (the panel, its blanks as
   // split-flap tiles) · none (the panel)

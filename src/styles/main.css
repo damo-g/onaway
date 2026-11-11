@@ -1723,9 +1723,11 @@
     mask: url("/svg/wordmark.svg") left bottom / contain no-repeat;
   }
   .footer__wordmark canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
-  /* The board fills: a dot-matrix board the full width of the section, the wordmark's height (its lit dots draw the
-     wordmark and the yellow square, so the square itself steps aside) */
-  .footer.is-board .footer__wordmark { -webkit-mask: none; mask: none; aspect-ratio: 314 / 56; border-radius: var(--spacing-8); background: color-mix(in srgb, var(--color-paper) 2%, var(--color-carbon)); }
+  /* The board fills: a dot-matrix board edge to edge and down to the page's foot (its lit dots draw the wordmark and
+     the yellow square, which arrives dot by dot, so the square itself steps aside) */
+  .footer.is-board { padding-bottom: 0; }
+  .footer.is-board .footer__mark { padding-inline: 0; }
+  .footer.is-board .footer__wordmark { -webkit-mask: none; mask: none; aspect-ratio: 5 / 1; background: color-mix(in srgb, var(--color-paper) 2%, var(--color-carbon)); }
   .footer.is-board .footer__signal { display: none; }
   .footer[data-fill="flat"] .footer__wordmark canvas,
   .footer.is-flat .footer__wordmark canvas { display: none; }

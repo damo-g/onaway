@@ -18,6 +18,7 @@
   padding:89px 89px 55px;border-radius:13px;background:var(--face);box-shadow:inset 0 0 0 8px var(--frame),0 34px 55px -34px rgba(32,37,33,.5);
   transition:transform .5s cubic-bezier(.3,.7,.3,1)}
 .bd.l{width:1236px}.bd.m{width:1004px}
+[data-view="reverse"] .bd{transform:perspective(2400px) rotateY(-4deg);box-shadow:inset 0 0 0 8px var(--frame),13px 0 0 0 color-mix(in srgb,var(--carbon) 80%,var(--camel)),-34px 34px 55px -21px rgba(32,37,33,.45)}
 [data-view="angled"] .bd{transform:perspective(2400px) rotateY(4deg);box-shadow:inset 0 0 0 8px var(--frame),-13px 0 0 0 color-mix(in srgb,var(--carbon) 80%,var(--camel)),34px 34px 55px -21px rgba(32,37,33,.45)}
 .bd .w{position:absolute;left:0;top:0;width:55px;height:55px;display:grid;place-items:center;border-radius:13px 0 13px 0;background:var(--frame);color:var(--paper)}
 .bd .w svg{width:21px}
@@ -49,14 +50,22 @@
 .abg{display:grid;grid-template-columns:7fr 5fr;column-gap:55px;align-items:start}
 .abr .chips{margin-bottom:21px}
 .scene{display:block;width:100%;height:100%;color:rgba(32,37,33,.55)}
-.sc.in{height:144px;margin:55px -81px -26px;padding:21px 81px;border-radius:0 0 5px 5px;background:color-mix(in srgb,var(--carbon) 8%,var(--paper))}
-.sc.out{display:none;position:absolute;left:0;right:0;bottom:89px;height:120px;padding:0 64px}
+.sc.in{height:55px;margin:34px -81px -26px;padding:0 81px;border-radius:0 0 5px 5px;background:color-mix(in srgb,var(--carbon) 6%,var(--paper))}
+.sc.out{display:none;position:absolute;left:0;right:0;bottom:89px;height:55px;padding:0 64px}
 [data-l="ground"] .sc.in{display:none}[data-l="ground"] .sc.out{display:block}
 [data-l="ground"] .bd.ab{width:960px;top:89px;padding:89px 55px 55px}
 [data-l="pylon"] .bd.ab{top:55px;padding:0;background:none;box-shadow:none}
-[data-l="pylon"] .abg{padding:89px 89px 55px;border-radius:13px;background:var(--face);box-shadow:inset 0 0 0 8px var(--frame),0 34px 55px -34px rgba(32,37,33,.5)}
-[data-l="pylon"] .sc.in{position:relative;margin:34px 0 0;padding:21px 89px;border-radius:13px;box-shadow:inset 0 0 0 8px var(--frame),0 34px 55px -34px rgba(32,37,33,.5)}
-[data-l="pylon"] .sc.in::before{content:"";position:absolute;left:50%;top:-34px;width:34px;height:34px;translate:-50% 0;background:var(--frame)}
+[data-l="pylon"] .abg,[data-l="pylon"] .sc.in{position:relative;border-radius:13px;background:linear-gradient(180deg,color-mix(in srgb,var(--paper) 70%,var(--face)),var(--face) 30%,color-mix(in srgb,var(--carbon) 6%,var(--face)));
+  box-shadow:inset 0 0 0 8px var(--frame),inset 0 9px 0 0 rgba(255,255,255,.08),0 6px 0 0 color-mix(in srgb,var(--carbon) 85%,var(--camel)),0 34px 55px -30px rgba(32,37,33,.55)}
+[data-l="pylon"] .abg{padding:89px 89px 55px}
+[data-l="pylon"] .sc.in{margin:34px 0 0;height:89px;padding:17px 89px}
+[data-l="pylon"] :is(.abg,.sc.in)::after{content:"";position:absolute;inset:17px;pointer-events:none;
+  background:radial-gradient(circle 3px,rgba(32,37,33,.45) 60%,transparent 70%) 0 0/8px 8px no-repeat,radial-gradient(circle 3px,rgba(32,37,33,.45) 60%,transparent 70%) 100% 0/8px 8px no-repeat,radial-gradient(circle 3px,rgba(32,37,33,.45) 60%,transparent 70%) 0 100%/8px 8px no-repeat,radial-gradient(circle 3px,rgba(32,37,33,.45) 60%,transparent 70%) 100% 100%/8px 8px no-repeat}
+[data-l="pylon"] .sc.in::before{content:"";position:absolute;left:30%;right:30%;top:-40px;height:40px;background:linear-gradient(90deg,var(--frame) 0 5px,transparent 5px calc(100% - 5px),var(--frame) calc(100% - 5px))}
+[data-l="pylon"] .w{z-index:2;border-radius:13px 0 13px 0}
+[data-effect="post"][data-l="pylon"] .bd::before{background:linear-gradient(90deg,#3b413c,var(--carbon) 45%,#141814)}
+.plinth{display:none;position:absolute;left:168px;bottom:89px;width:55px;height:13px;border-radius:3px 3px 0 0;background:linear-gradient(180deg,#3b413c,var(--carbon))}
+[data-effect="post"][data-l="pylon"] .plinth{display:block}
 .sc.out{--face:var(--paper)}
 [data-l="ground"] .note{bottom:240px}
 .note{display:none}.stage:not([data-l]) .note,[data-l="band"] .note[data-n="band"],[data-l="ground"] .note[data-n="ground"],[data-l="pylon"] .note[data-n="pylon"],#a .note{display:block}
@@ -64,7 +73,7 @@
 </head>
 <body>
 <header class="top"><div><div class="id">Review · CTA boards</div><h1>The quote board, carried to the service and About pages</h1></div>
-  <div class="tools"><button class="tbtn" data-view-btn aria-pressed="true">Angled</button></div></header>
+  <div class="tools" data-views><button class="tbtn" data-v="angled" aria-pressed="true">Angled</button><button class="tbtn" data-v="reverse" aria-pressed="false">Reversed</button><button class="tbtn" data-v="flat" aria-pressed="false">Flat</button></div></header>
 
 <div class="frame">
   <div class="top"><div class="id">Moving page · closing CTA (MV-04b) · recommended: hanging</div>
@@ -104,12 +113,13 @@
           <span class="btn">Get a cleaning quote →</span><div class="call">Or call +1 647 877 1411</div>
         </div>
       </div>
-      <div class="sc in"><svg class="scene" viewBox="0 0 1000 120" preserveAspectRatio="none" aria-hidden="true"><path d="M0 90 H1000" stroke="currentColor" stroke-width="2" stroke-dasharray="2 8"/><g fill="var(--face)" stroke="currentColor" stroke-width="2"><rect x="140" y="40" width="120" height="50"/><rect x="440" y="30" width="140" height="60"/><rect x="760" y="45" width="110" height="45"/></g><g fill="currentColor"><circle cx="200" cy="90" r="6"/><circle cx="510" cy="90" r="6"/><circle cx="815" cy="90" r="6"/><rect x="330" y="76" width="34" height="14" style="fill:var(--yellow)"/></g></svg></div>
+      <div class="sc in"><svg class="scene" viewBox="0 0 1000 55" preserveAspectRatio="none" aria-hidden="true"><path d="M0 28 H1000" stroke="currentColor" stroke-width="1.5"/><g fill="var(--face)" stroke="currentColor" stroke-width="1.5"><circle cx="210" cy="28" r="5"/><circle cx="520" cy="28" r="5"/><circle cx="830" cy="28" r="5" style="fill:currentColor"/></g><rect x="352" y="22" width="34" height="12" style="fill:var(--yellow)"/></svg></div>
     </div>
-    <div class="sc out"><svg class="scene" viewBox="0 0 1000 120" preserveAspectRatio="none" aria-hidden="true"><path d="M0 90 H1000" stroke="currentColor" stroke-width="2" stroke-dasharray="2 8"/><g fill="var(--face)" stroke="currentColor" stroke-width="2"><rect x="140" y="40" width="120" height="50"/><rect x="440" y="30" width="140" height="60"/><rect x="760" y="45" width="110" height="45"/></g><g fill="currentColor"><circle cx="200" cy="90" r="6"/><circle cx="510" cy="90" r="6"/><circle cx="815" cy="90" r="6"/><rect x="330" y="76" width="34" height="14" style="fill:var(--yellow)"/></g></svg></div>
+    <div class="sc out"><svg class="scene" viewBox="0 0 1000 55" preserveAspectRatio="none" aria-hidden="true"><path d="M0 28 H1000" stroke="currentColor" stroke-width="1.5"/><g fill="var(--face)" stroke="currentColor" stroke-width="1.5"><circle cx="210" cy="28" r="5"/><circle cx="520" cy="28" r="5"/><circle cx="830" cy="28" r="5" style="fill:currentColor"/></g><rect x="352" y="22" width="34" height="12" style="fill:var(--yellow)"/></svg></div>
     <p class="note" data-n="band">Band (recommended): the route runs along the board's foot, inside the frame, on the stub's tint. One object, the animation where it is today.</p>
     <p class="note" data-n="ground">Ground: a smaller board on its post; the route runs along the ground the full width, the crew driving past the sign.</p>
     <p class="note" data-n="pylon">Pylon: two plates on one post (after the CSL sign), the question above, the route on its own plate below.</p>
+    <span class="plinth"></span>
     <div class="ground"></div>
   </div></div>
 </div>
@@ -129,8 +139,8 @@
     document.getElementById(g.dataset.lfor).dataset.l = b.dataset.l;
     g.querySelectorAll('[data-l]').forEach((x) => x.setAttribute('aria-pressed', String(x === b)));
   }));
-  const vb = document.querySelector('[data-view-btn]');
-  vb.addEventListener('click', () => { const on = vb.getAttribute('aria-pressed') !== 'true'; vb.setAttribute('aria-pressed', String(on)); document.querySelectorAll('.stage').forEach((s) => (s.dataset.view = on ? 'angled' : 'flat')); });
+  const vs = document.querySelector('[data-views]');
+  vs.addEventListener('click', (e) => { const b = e.target.closest('[data-v]'); if (!b) return; vs.querySelectorAll('[data-v]').forEach((x) => x.setAttribute('aria-pressed', String(x === b))); document.querySelectorAll('.stage').forEach((st) => (st.dataset.view = b.dataset.v)); });
 })();
 </script>
 </body>

@@ -5,7 +5,9 @@
 // the wordmark's own height, every dot unlit but those that make up the wordmark (and the yellow square, as yellow
 // dots): board (lit Paper) · board-amber (lit amber) · board-update (Paper; every 11 s a wipe runs left to right, the
 // dots flipping as a departures board updates) · board-fine (a finer board, 46 rows) · board-glow (lit dots with a soft
-// halo, like LEDs) · board-square (square pixels). The board itself is barely off the footer's Carbon; unlit dots at 4.5%. The board fills unmask the wordmark (main.css) and read its shape
+// halo, like LEDs) · board-square (square pixels). The board itself is barely off the footer's Carbon; unlit dots at 4.5%.
+// The board's dots sit on whole device pixels (no moiré) and take no film grain (it made the unlit dots shimmer); the
+// yellow square arrives as the CSS one does (from the left, holds, steps on and out, 7 s), dot by dot, after the Y. The board fills unmask the wordmark (main.css) and read its shape
 // from /svg/wordmark.svg, drawn into a texture.
 // Animates only while visible; reduced motion draws one still frame; no WebGL → returns null (flat fill).
 const FS = `precision mediump float;uniform vec2 r;uniform vec2 R;uniform float t;uniform int m;uniform int pal;uniform sampler2D tx;uniform vec2 ts;
@@ -23,13 +25,18 @@ void main(){vec2 px=gl_FragCoord.xy;vec2 uv=px/r.y;vec3 c;
   float dt=smoothstep(.44,.34,length(f));
   c=CB*.9;c=mix(c,mix(CB+vec3(.075),YE,on),dt);
  } else if(m==3){
-  float rows=pal==3?46.:30.;float pit=R.y/rows;vec2 q=vec2(gl_FragCoord.x,R.y-gl_FragCoord.y)/pit;vec2 cell=floor(q);vec2 f=fract(q)-.5;
-  float cols=floor(R.x/pit);
+  float rows=pal==3?46.:30.;float pit=max(1.,floor(R.y/rows));float cols=floor(R.x/pit);
+  vec2 o=floor((R-vec2(cols,rows)*pit)*.5);
+  vec2 q=vec2(gl_FragCoord.x-o.x,R.y-gl_FragCoord.y-o.y)/pit;vec2 cell=floor(q);vec2 f=fract(q)-.5;
   float wh=rows-4.;float ww=wh*ts.x/ts.y;
   vec2 wu=vec2((cell.x-2.+.5)/ww,(cell.y-2.+.5)/wh);
   float on=0.;
   if(wu.x>=0.&&wu.x<=1.&&wu.y>=0.&&wu.y<=1.)on=step(.5,texture2D(tx,wu).a);
-  float sz=pal==3?8.:6.;float sig=step(cols-sz-2.,cell.x)*step(cell.x,cols-3.)*step(rows-sz-2.,cell.y)*step(cell.y,rows-3.);
+  float sz=pal==3?6.:4.;float p=mod(t,7.)/7.;float e=1.-pow(1.-clamp(p/.22,0.,1.),3.);
+  float dx=p<.86?floor(mix(-14.,0.,e)):floor(mix(0.,3.,clamp((p-.86)/.08,0.,1.)));
+  float vis=p<.86?clamp(p/.06,0.,1.):1.-clamp((p-.86)/.08,0.,1.);
+  float sx=2.+ceil(ww)+3.+dx;
+  float sig=vis*step(sx,cell.x)*step(cell.x,sx+sz-1.)*step(rows-2.-sz,cell.y)*step(cell.y,rows-3.);
   if(pal==2){float ph=mod(t,11.);float fr=(ph-9.4)/1.4*(cols+12.);on*=1.-step(fr-10.,cell.x)*step(cell.x,fr)*step(.35,h(cell+floor(t*12.)));}
   vec3 lit=pal==1?YE:PA;
   float dd=pal==5?max(abs(f.x),abs(f.y)):length(f);
@@ -43,7 +50,7 @@ void main(){vec2 px=gl_FragCoord.xy;vec2 uv=px/r.y;vec3 c;
   float lit=step(.62,h(id+floor(t*.12+h(id)*5.)));float win=step(.18,f.x)*step(f.x,.82)*step(.2,f.y)*step(f.y,.8);
   c=CB+vec3(.03);c=mix(c,mix(CA,YE,h(id*1.3)),win*lit*bld);c=mix(c,vec3(.2,.22,.21),win*(1.-lit)*bld);
  }
- c+=(h(px+fract(t)*91.)-.5)*.08;gl_FragColor=vec4(c,1.);}`;
+ if(m!=3)c+=(h(px+fract(t)*91.)-.5)*.08;gl_FragColor=vec4(c,1.);}`;
 const VS = 'attribute vec2 p;void main(){gl_Position=vec4(p,0,1);}';
 export const FILLS = { sky: [0, 0], 'dots-stars': [2, 0], board: [3, 0], 'board-amber': [3, 1], 'board-update': [3, 2], 'board-fine': [3, 3], 'board-glow': [3, 4], 'board-square': [3, 5], windows: [4, 0] };
 /**
