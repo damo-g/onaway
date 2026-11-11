@@ -7,7 +7,9 @@
 // dots flipping as a departures board updates) · board-fine (a finer board, 46 rows) · board-glow (lit dots with a soft
 // halo, like LEDs) · board-square (square pixels). The board itself is barely off the footer's Carbon; unlit dots at 4.5%.
 // The board's dots sit on whole device pixels (no moiré) and take no film grain (it made the unlit dots shimmer); the
-// yellow square arrives as the CSS one does (from the left, holds, steps on and out, 7 s), dot by dot, after the Y. The board fills unmask the wordmark (main.css) and read its shape
+// yellow square sits at the board's far right and arrives as the CSS one did, gliding (not stepping) in from the left,
+// holding, then easing on and out (7 s; on board-update, right after each wipe). Each dot is lit by how much of it the
+// wordmark covers (3 × 3 samples), so the letters' edges and inner curves land on the right dots. Unlit dots at 3%. The board fills unmask the wordmark (main.css) and read its shape
 // from /svg/wordmark.svg, drawn into a texture.
 // Animates only while visible; reduced motion draws one still frame; no WebGL → returns null (flat fill).
 const FS = `precision mediump float;uniform vec2 r;uniform vec2 R;uniform float t;uniform int m;uniform int pal;uniform sampler2D tx;uniform vec2 ts;
@@ -29,22 +31,27 @@ void main(){vec2 px=gl_FragCoord.xy;vec2 uv=px/r.y;vec3 c;
   vec2 o=floor((R-vec2(cols,rows)*pit)*.5);
   vec2 q=vec2(gl_FragCoord.x-o.x,R.y-gl_FragCoord.y-o.y)/pit;vec2 cell=floor(q);vec2 f=fract(q)-.5;
   float wh=rows-4.;float ww=wh*ts.x/ts.y;
-  vec2 wu=vec2((cell.x-2.+.5)/ww,(cell.y-2.+.5)/wh);
-  float on=0.;
-  if(wu.x>=0.&&wu.x<=1.&&wu.y>=0.&&wu.y<=1.)on=step(.5,texture2D(tx,wu).a);
-  float sz=pal==3?6.:4.;float p=mod(t,7.)/7.;float e=1.-pow(1.-clamp(p/.22,0.,1.),3.);
-  float dx=p<.86?floor(mix(-14.,0.,e)):floor(mix(0.,3.,clamp((p-.86)/.08,0.,1.)));
-  float vis=p<.86?clamp(p/.06,0.,1.):1.-clamp((p-.86)/.08,0.,1.);
-  float sx=2.+ceil(ww)+3.+dx;
-  float sig=vis*step(sx,cell.x)*step(cell.x,sx+sz-1.)*step(rows-2.-sz,cell.y)*step(cell.y,rows-3.);
+  float cov=0.;
+  for(int i=0;i<3;i++)for(int j=0;j<3;j++){vec2 d=(vec2(float(i),float(j))-1.)*.3;vec2 w=vec2((cell.x-2.+.5+d.x)/ww,(cell.y-2.+.5+d.y)/wh);
+   if(w.x>=0.&&w.x<=1.&&w.y>=0.&&w.y<=1.)cov+=texture2D(tx,w).a;}
+  float on=step(.45,cov/9.);
   if(pal==2){float ph=mod(t,11.);float fr=(ph-9.4)/1.4*(cols+12.);on*=1.-step(fr-10.,cell.x)*step(cell.x,fr)*step(.35,h(cell+floor(t*12.)));}
   vec3 lit=pal==1?YE:PA;
   float dd=pal==5?max(abs(f.x),abs(f.y)):length(f);
   float dt=pal==5?smoothstep(.4,.34,dd):smoothstep(.42,.3,dd);
   vec3 bd=CB+vec3(.012);
-  c=mix(bd,mix(mix(bd,PA,.045),lit,on),dt);
-  c=mix(c,YE,sig*dt);
-  if(pal==4){c+=lit*on*smoothstep(.7,.25,dd)*.18;c+=YE*sig*smoothstep(.7,.25,dd)*.18;}
+  c=mix(bd,mix(mix(bd,PA,.03),lit,on),dt);
+  if(pal==4)c+=lit*on*smoothstep(.7,.25,dd)*.18;
+  float sz=pal==3?6.:4.;
+  float cyc=pal==2?11.:7.;float p=mod(t,cyc)/cyc;float ie=pal==2?.15:.22;float l0=pal==2?.79:.86;float l1=pal==2?.85:.94;
+  float e=1.-pow(1.-clamp(p/ie,0.,1.),3.);float lv=clamp((p-l0)/(l1-l0),0.,1.);
+  float dx=p<l0?mix(-9.,0.,e):mix(0.,3.,lv*lv);
+  float vis=p<l0?clamp(p/(ie*.3),0.,1.):1.-lv;
+  vec2 lq=vec2(q.x-(cols-2.-sz+dx),q.y-(rows-2.-sz));vec2 lc=floor(lq);vec2 lf=fract(lq)-.5;
+  float ins=step(0.,lc.x)*step(lc.x,sz-1.)*step(0.,lc.y)*step(lc.y,sz-1.);
+  float sd=pal==5?smoothstep(.4,.34,max(abs(lf.x),abs(lf.y))):smoothstep(.42,.3,length(lf));
+  c=mix(c,YE,ins*sd*vis);
+  if(pal==4)c+=YE*ins*vis*smoothstep(.7,.25,length(lf))*.18;
  } else {
   vec2 g=vec2(64.,30.);vec2 id=floor(uv*g);vec2 f=fract(uv*g);float col=floor(id.x/4.);float bld=step(.25,h(vec2(col,2.)));
   float lit=step(.62,h(id+floor(t*.12+h(id)*5.)));float win=step(.18,f.x)*step(f.x,.82)*step(.2,f.y)*step(f.y,.8);
