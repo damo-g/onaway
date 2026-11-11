@@ -1416,6 +1416,10 @@
     border-block: var(--spacing-13) solid var(--frame);
   }
   .qc:is([data-effect="billboard"], [data-effect="hanging"], [data-effect="post"]) .qc__title { line-height: 0.9; }
+  /* head: label · "Get a free quote" as the sign's ID band: mono, beside the W in the housing's corner (on a board), or
+     a label over the sentence (on the panel) */
+  .qc[data-head="label"] .qc__title { position: static; width: auto; height: auto; overflow: visible; clip-path: none; white-space: nowrap; margin-bottom: var(--spacing-21); font-family: var(--font-mono); font-size: var(--text-label) !important; line-height: 1; letter-spacing: var(--text-label--letter-spacing); font-weight: 500; font-stretch: normal; color: var(--qc-mut); }
+  .qc[data-head="label"]:is([data-effect="billboard"], [data-effect="hanging"], [data-effect="post"]) .qc__title { position: absolute; top: 0; left: calc(var(--spacing-55) + var(--spacing-21)); display: flex; align-items: center; height: var(--spacing-55); margin: 0; color: var(--qc-fg); }
   @media (width >= 768px) {
     .qc:is([data-effect="billboard"], [data-effect="hanging"], [data-effect="post"]) .qc__body { padding: var(--spacing-89) var(--spacing-55) var(--spacing-55); }
     .qc[data-effect="post"] .qc__body { margin-left: var(--spacing-34); width: calc(100% - var(--spacing-34)); }
@@ -1490,7 +1494,7 @@
   html[data-motion="reduce"] .qc-blank.is-next { animation: none; }
   html[data-motion="reduce"] .qc-route .mv { display: none; }
   /* ---------- Footer (FT-02 Window) ---------- */
-  /* Options (dev panel): data-fill windows (locked) | dots | dots-paper | dots-hold | dots-stars | sky | flat · data-signal arrive (locked)
+  /* Options (dev panel): data-fill windows (locked) | board | board-update | board-amber | dots-stars | sky | flat · data-signal arrive (locked)
      | turn | still | off · data-hover signal (locked) | sweep | invert | mark */
   .footer {
     --ft-fg: var(--color-paper);
@@ -1536,6 +1540,22 @@
   .footer[data-hours="big"] .footer__clock time { font-family: var(--font-sans); font-size: var(--text-h2); line-height: 1; letter-spacing: -0.01em; font-weight: 500; font-stretch: 87.5%; text-transform: none; }
   .footer[data-hours="big"] .footer__hours::before { content: ""; width: var(--spacing-8); height: var(--spacing-8); border-radius: 50%; background: var(--color-camel); }
   .footer[data-hours="big"] .footer__when.is-open .footer__hours::before { background: var(--color-yellow); }
+  /* timetable: two columns, a mono label over each value, a hairline between */
+  .footer[data-hours="timetable"] .footer__when { grid-template-columns: auto auto; grid-template-rows: auto auto; column-gap: 0; row-gap: var(--spacing-8); align-items: end; }
+  .footer[data-hours="timetable"] :is(.footer__tile, .footer__sep) { display: none; }
+  .footer[data-hours="timetable"] .footer__clock { display: contents; }
+  .footer[data-hours="timetable"] .footer__city { grid-area: 1 / 1; padding-right: var(--spacing-34); color: var(--ft-mut); }
+  .footer[data-hours="timetable"] .footer__city::after { content: " · now"; }
+  .footer[data-hours="timetable"] .footer__clock time { grid-area: 2 / 1; padding-right: var(--spacing-34); font-family: var(--font-sans); font-size: var(--text-h3); line-height: 1; font-weight: 500; font-stretch: 87.5%; letter-spacing: 0; text-transform: none; }
+  .footer[data-hours="timetable"] .footer__hours { grid-area: 2 / 2; padding-left: var(--spacing-34); border-left: 1px solid var(--ft-line); font-size: var(--text-h3); line-height: 1; }
+  .footer[data-hours="timetable"] .footer__when::after { content: "Hours"; grid-area: 1 / 2; padding-left: var(--spacing-34); border-left: 1px solid var(--ft-line); font-family: var(--font-mono); font-size: var(--text-label); letter-spacing: var(--text-label--letter-spacing); text-transform: uppercase; color: var(--ft-mut); }
+  /* plate: a small wayfinding plate, a status bar down its edge (yellow while open) */
+  .footer[data-hours="plate"] .footer__when { position: relative; padding: var(--spacing-13) var(--spacing-21) var(--spacing-13) var(--spacing-13); border-radius: var(--spacing-8); background: color-mix(in srgb, var(--color-paper) 7%, var(--color-carbon)); box-shadow: inset 0 0 0 1px var(--ft-line); grid-template-columns: var(--spacing-55) auto; }
+  .footer[data-hours="plate"] .footer__when::before { content: ""; position: absolute; left: 0; top: var(--spacing-13); bottom: var(--spacing-13); width: 3px; border-radius: 0 2px 2px 0; background: var(--color-camel); }
+  .footer[data-hours="plate"] .footer__when.is-open::before { background: var(--color-yellow); }
+  .footer[data-hours="plate"] .footer__tile { background: var(--color-carbon); }
+  .footer[data-hours="plate"] .footer__hours { grid-row: 1; grid-column: 2; align-self: end; font-size: var(--text-lead); }
+  .footer[data-hours="plate"] .footer__clock { grid-row: 2; grid-column: 2; align-self: start; color: var(--ft-mut); }
   /* quiet (as built) and inline */
   .footer:is([data-hours="quiet"], [data-hours="inline"]) .footer__when { --tile: var(--color-carbon); display: flex; flex-direction: column; align-items: flex-start; gap: var(--spacing-8); }
   .footer:is([data-hours="quiet"], [data-hours="inline"]) .footer__tile { display: none; }
@@ -1694,6 +1714,10 @@
     mask: url("/svg/wordmark.svg") left bottom / contain no-repeat;
   }
   .footer__wordmark canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
+  /* The board fills: a dot-matrix board the full width of the section, the wordmark's height (its lit dots draw the
+     wordmark and the yellow square, so the square itself steps aside) */
+  .footer.is-board .footer__wordmark { -webkit-mask: none; mask: none; aspect-ratio: 314 / 56; border-radius: var(--spacing-8); background: color-mix(in srgb, var(--color-paper) 5%, var(--color-carbon)); }
+  .footer.is-board .footer__signal { display: none; }
   .footer[data-fill="flat"] .footer__wordmark canvas,
   .footer.is-flat .footer__wordmark canvas { display: none; }
   .footer__signal { flex: none; width: calc(var(--spacing-34) + var(--spacing-13)); aspect-ratio: 1; margin-bottom: 0.4%; background: var(--color-yellow); }

@@ -4,7 +4,7 @@ import { windowShader } from '../shaders/window.js';
 
 // Locked first: Windows fill, Arrive signal, Signal hover, "We'll take it from here."
 registerOptions('footer', {
-  fill: ['windows', 'dots', 'dots-hold', 'dots-paper', 'dots-stars', 'sky', 'flat'],
+  fill: ['windows', 'board', 'board-update', 'board-amber', 'dots-stars', 'sky', 'flat'],
   signal: ['arrive', 'turn', 'still', 'off'],
   hover: ['signal', 'sweep', 'invert', 'mark'],
   tagline: ['here', 'steady', 'date', 'handled'],
@@ -12,7 +12,9 @@ registerOptions('footer', {
   // tile, the time as a label, the hours under it in Paper) · board (an arrivals board: two ruled rows, LOCAL TIME and
   // HOURS, values to the right) · big (the time large, its city above, the hours under with a dot, yellow while open)
   // · quiet (as built: a small pictogram, muted words) · inline (one line with the time)
-  hours: ['tile', 'board', 'big', 'quiet', 'inline'],
+  // · timetable (two columns, NOW and HOURS in mono over the values at h3, a hairline between) · plate (a small
+  // wayfinding plate: the door on its tile, "Open till 8 PM" in Lead, the time under it, a status bar at its edge)
+  hours: ['tile', 'timetable', 'plate', 'board', 'big', 'quiet', 'inline'],
 });
 
 export function init(el) {
@@ -36,6 +38,9 @@ export function init(el) {
 
   // Wordmark fill: the shader, or flat Paper when WebGL isn't there
   const opt = (key, locked) => el.dataset[key] ?? locked;
+  // the board fills: the board takes the whole width, no mask
+  const sync = () => el.classList.toggle('is-board', opt('fill', 'windows').startsWith('board'));
+  sync();
   const shader = windowShader(el.querySelector('.footer__wordmark canvas'), { fill: opt('fill', 'windows'), still: prefersReducedMotion() });
   if (!shader) el.classList.add('is-flat');
 
@@ -44,6 +49,7 @@ export function init(el) {
     const TAGLINES = { here: 'We’ll take it from here.', steady: 'Steady hands at your door.', date: 'Done right, on your date.', handled: 'Your move, handled.' };
     const apply = () => {
       shader?.setFill(opt('fill', 'windows'));
+      sync();
       el.querySelector('.footer__tag').textContent = TAGLINES[opt('tagline', 'here')];
     };
     apply();
