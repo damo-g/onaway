@@ -7,7 +7,8 @@
 //   1. after the page has loaded and gone idle: the map's code (Mapbox GL and ours), its stylesheet, the areas and
 //      a connection to Mapbox. No map yet, so nothing is billed (a map load is counted when a map starts).
 //   2. once the visitor has scrolled the page themselves and reached Services (the section after the hero): the
-//      map starts, off screen, on the still's view, and loads the first tour stops.
+//      map starts, off screen, and draws the first two tour stops once under the still, in the moments the page
+//      isn't scrolling (the GPU compiles its shaders then, not on the first flight), then waits on the still's view.
 //   3. on entry: the intro and the tour, on a map that is already drawn.
 // Landing on the section (a link to /#gta, a restored scroll): all at once. On Save-Data or a 2G connection: only
 // as the section nears the screen. Until the map has drawn, and wherever it can't run, the still
@@ -33,6 +34,16 @@ function whenSettled(fn) {
   const idle = () => ('requestIdleCallback' in window ? requestIdleCallback(fn, { timeout: 4000 }) : setTimeout(fn, 1500));
   if (document.readyState === 'complete') idle();
   else addEventListener('load', idle, { once: true });
+}
+// Resolves once the page has been still for 700ms (a reading pause) (or at once, if stop() says so)
+function quiet(stop) {
+  return new Promise((resolve) => {
+    let t;
+    const done = () => { removeEventListener('scroll', again); resolve(); };
+    const again = () => { clearTimeout(t); if (stop()) done(); else t = setTimeout(done, 700); };
+    addEventListener('scroll', again, { passive: true });
+    again();
+  });
 }
 // Before the page has loaded, wait for it; after, at once
 const whenLoaded = (fn) => (document.readyState === 'complete' ? fn() : addEventListener('load', fn, { once: true }));
@@ -98,6 +109,11 @@ export function init(el) {
     if (import.meta.env.DEV) window.__gta = gta;
     // the map takes the intro's first view and fades in over the still once that view is drawn
     gta.camera.toIntroStart();
+    // Off screen (the visitor still reading above): the first two stops are drawn once under the still, so the
+    // tour's first flight never waits on the GPU. It stops the moment the section is where its intro starts.
+    const near = () => el.getBoundingClientRect().top < innerHeight * 0.6;
+    const prewarm = !(import.meta.env.DEV && new URLSearchParams(location.search).has('gta-noprewarm'));
+    if (prewarm && !still && !reduced && !near()) await gta.adapter.prerender(TOUR.slice(0, 2).map((n) => PLACE_AT[n]), { stop: near, ready: () => quiet(near) });
     if (!still) createSection(el, gta.adapter, { speed, orbitOn, matchMode: () => opt('match') });
     await gta.adapter.drawn(8000);
     el.classList.add('is-live');

@@ -22,6 +22,7 @@ export const LOCKED = {
 };
 
 const STYLE = 'mapbox://styles/mapbox/standard';
+const TILE_CACHE = (import.meta.env.DEV && +new URLSearchParams(location.search).get('gta-cache')) || 24; // (dev: ?gta-cache=n to compare)
 const BUILDINGS = { featuresetId: 'buildings', importId: 'basemap' };
 const PLACE_LABELS = { featuresetId: 'place-labels', importId: 'basemap' };
 const k = ['number', ['feature-state', 'k'], 0]; // an area's highlight, 0–1 (overlays.js fades it)
@@ -232,11 +233,45 @@ export function createGtaMap(el, {
     return new Promise((r) => setTimeout(r, 1200));
   }
 
+  // Resolves once the map has nothing left to load or draw (or after max ms, or as soon as stop() says so)
+  function settled(max, stop) {
+    return new Promise((resolve) => {
+      const t0 = performance.now();
+      const tick = () => (map.loaded() && map.areTilesLoaded()) || stop() || performance.now() - t0 > max ? resolve() : setTimeout(tick, 80);
+      setTimeout(tick, 80);
+    });
+  }
+  // Draw places once, ahead of the visitor, while the map is still hidden under the still: the GPU compiles the
+  // shaders for each kind of 3D object (buildings, trees, landmarks, their shadows) the first time it draws one, a
+  // hitch of up to ~0.7 s that would otherwise land on the tour's first flight. Shaders are per kind, not per pixel,
+  // so it's drawn on a small canvas: a few tiles instead of dozens, light enough not to be felt on a scrolling page.
+  // ready() waits for a quiet moment (the page not scrolling). Then the map goes back to its size and view.
+  async function prerender(ats, { stop = () => false, ready = async () => {}, max = 4000 } = {}) {
+    if (!map) return;
+    const home = { center: map.getCenter(), zoom: map.getZoom(), pitch: map.getPitch(), bearing: map.getBearing(), padding: map.getPadding() };
+    const size = container.style.cssText;
+    container.style.width = '320px';
+    container.style.height = '200px';
+    map.resize();
+    for (const at of ats) {
+      await ready();
+      if (stop()) break;
+      map.jumpTo({ center: at, zoom: +opt('closeness'), pitch: +opt('pitch'), bearing: home.bearing, padding: { top: 0, right: 0, bottom: 0, left: 0 } });
+      await settled(max, stop);
+      await new Promise((r) => requestAnimationFrame(() => requestAnimationFrame(r))); // drawn at least once
+    }
+    container.style.cssText = size;
+    map.resize();
+    map.jumpTo(home);
+    await settled(max, () => false);
+  }
+
   // What the shared controller (controller.js) drives
   const adapter = {
     get camera() { return camera; },
     drawn,
     warm,
+    prerender,
     highlight: (region) => { hl?.set(region); labels?.zone(region, opt('zone')); },
     zoomFor: () => +opt('closeness'), // stops at z16: Standard stands its everyday 3D buildings from about z15–16
     outline: (region) => areas.outlines[region],
@@ -277,6 +312,10 @@ export function createGtaMap(el, {
         maxPitch: 72,
         interactive: false, // no wheel, no drag, no touch: the page always scrolls
         pixelRatio: Math.min(devicePixelRatio || 1, 2), // a 3× phone draws at 2×: barely softer, far lighter on the GPU and battery
+        // Tiles kept after they leave the screen, per source (Mapbox sizes it from the viewport: about 60 on a laptop).
+        // The tour never goes back to a stop, so a smaller cache costs it nothing and keeps the page's memory down
+        // (phones close heavy tabs). What's on screen and the flight ahead are never affected.
+        maxTileCacheSize: TILE_CACHE,
         attributionControl: false,
         logoPosition: 'bottom-right',
         localFontFamily: fontFamily(opt('font')),
