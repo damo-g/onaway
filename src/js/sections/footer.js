@@ -4,7 +4,7 @@ import { windowShader } from '../shaders/window.js';
 
 // Locked first: Windows fill, Arrive signal, Signal hover, "We'll take it from here."
 registerOptions('footer', {
-  fill: ['windows', 'dots', 'route', 'route-dark', 'route-camel', 'route-ink', 'sky', 'flat'],
+  fill: ['windows', 'dots', 'dots-hold', 'dots-paper', 'dots-stars', 'sky', 'flat'],
   signal: ['arrive', 'turn', 'still', 'off'],
   hover: ['signal', 'sweep', 'invert', 'mark'],
   tagline: ['here', 'steady', 'date', 'handled'],

@@ -2,7 +2,7 @@ import { registerOptions } from '../options.js';
 import { onEnterOnce, prefersReducedMotion } from '../motion.js';
 import { areaSearch } from '../area-search.js';
 
-// Locked first (Nov 2026: the billboard, aside, light, headline, 42, stops + live). The locked set is also written on
+// Locked first (Nov 2026: the billboard, angled, aside, light, headline, 42, stops + live). The locked set is also written on
 // the section (06-quote.html), so the build, which has no panel, shows it too.
 registerOptions('quote', {
   // The board's colour (the panel's, without a board): light (the ticket's face) · dark · yellow
@@ -25,7 +25,7 @@ registerOptions('quote', {
   // split-flap tiles) · none (the panel)
   effect: ['billboard', 'hanging', 'post', 'flap', 'none'],
   board: ['l', 'm', 'xl'], // the board's width on desktop: 10 · 8 · 12 columns
-  view: ['flat', 'angled'], // angled: turned a few degrees, its near edge showing
+  view: ['angled', 'flat'], // angled: turned 4°, its near edge showing (desktop; the pickers turn with it)
 });
 const BOARDS = ['billboard', 'hanging', 'post'];
 const SHORT = { 'this week': 'This week', 'next week': 'Next week', later: 'Later', 'not sure yet': 'Not sure' };

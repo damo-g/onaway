@@ -818,6 +818,14 @@
     .steps[data-numsize="68"] .ticket__num { font-size: var(--text-h1); }
   }
 
+  /* Tablets take the locked xs too: 288 tall, 26 numbers, the stamp in closer */
+  @media (768px <= width < 1024px) {
+    .steps[data-size="xs"] .ticket { --ticket-h: calc(2 * var(--spacing-144)); }
+    .steps[data-size="xs"] .ticket__field { padding: var(--spacing-34) var(--spacing-21); gap: var(--spacing-8); }
+    .steps[data-size="xs"] .ticket__num { margin-bottom: 0; font-size: var(--text-h3); font-weight: 600; }
+    .steps[data-size="xs"] .ticket__stamp { right: var(--spacing-21); bottom: var(--spacing-21); }
+  }
+
   /* Phones: the ticket stands up. Stub along the top, steps stacked, tear-off below the seam. */
   @media (width < 768px) {
     .ticket {
@@ -1315,6 +1323,10 @@
   .qc[data-wait="dim"] .qc__cta[aria-disabled="true"] { opacity: 0.7; cursor: not-allowed; }
   .qc:is([data-wait="stopslive"], [data-wait="live"], [data-wait="count"]) .qc__cta[aria-disabled="true"]:hover .qc__cta-arrow { transform: translateX(5px); }
   .qc:is([data-wait="stops"], [data-wait="stopslive"]) .qc__stops { display: inline-flex; align-items: center; gap: var(--spacing-8); }
+  /* stops + live: the stops and the words together on the left (8 apart), the arrow on the right */
+  .qc[data-wait="stopslive"] .qc__cta { gap: var(--spacing-8); }
+  .qc[data-wait="stopslive"] .qc__cta-label { margin-right: auto; }
+  .qc[data-wait="stopslive"] .qc__cta-arrow { margin-left: var(--spacing-13); }
   .qc__stops i { position: relative; width: var(--spacing-8); height: var(--spacing-8); border: 1.5px solid currentColor; border-radius: 50%; transition: background-color 0.3s; }
   .qc__stops i + i::before { content: ""; position: absolute; right: 100%; top: 50%; width: var(--spacing-8); border-top: 1.5px dotted currentColor; }
   .qc__stops i.is-on { background: currentColor; }
@@ -1357,8 +1369,8 @@
      (colour: light, locked, the ticket's face · dark · yellow), in a Carbon housing like the Services signs. The
      route marks go (nothing to stand behind). billboard: two posts down to the ground, the footer · hanging: rods
      up to the map above, as the Services signs hang · post: one post at its side, two brackets. quote.js measures
-     --post-h and --rod-h. board: l (locked, 10 columns) · m (8) · xl (12) · view: flat (locked) · angled (turned a
-     few degrees, its near edge showing). Phones: a pylon, the W tile on a neck above the board, one post. ---- */
+     --post-h and --rod-h. board: l (locked, 10 columns) · m (8) · xl (12) · view: angled (locked: turned 4°, its near
+     edge showing) · flat. Phones: a pylon, the W tile on a neck above the board, one post. ---- */
   .qc:is([data-effect="billboard"], [data-effect="hanging"], [data-effect="post"]) {
     --frame: var(--color-carbon);
     overflow: visible;
@@ -1421,9 +1433,13 @@
     .qc[data-head="headline"]:is([data-effect="billboard"], [data-effect="hanging"], [data-effect="post"]) .qc__title { margin-bottom: var(--spacing-13); }
     .qc[data-layout="aside"]:is([data-effect="billboard"], [data-effect="hanging"], [data-effect="post"]) .qc__form { align-items: start; }
     .qc[data-layout="aside"]:is([data-effect="billboard"], [data-effect="hanging"], [data-effect="post"]) .qc__sentence { padding-top: var(--spacing-8); }
-    /* view: angled · turned a few degrees about its middle, the near (left) edge showing its depth */
+    /* view: angled (locked Nov 2026) · turned 4° about its middle, the near (left) edge showing its depth; the far
+       post shrinks with the turn, so both run on past the footer's edge (Carbon on Carbon: no seam) */
+    .qc[data-view="angled"][data-effect="billboard"] .qc__body::before,
+    .qc[data-view="angled"][data-effect="billboard"] .qc__body::after { height: calc(var(--post-h, var(--spacing-144)) + var(--spacing-55)); }
+    .qc[data-view="angled"][data-effect="post"] .qc__body::before { height: calc(100% + var(--spacing-89) + var(--post-h, var(--spacing-144))); }
     .qc[data-view="angled"] .qc__body {
-      transform: perspective(2400px) rotateY(9deg);
+      transform: perspective(2400px) rotateY(4deg);
       box-shadow: inset 0 0 0 var(--spacing-8) var(--frame), calc(-1 * var(--spacing-13)) 0 0 0 color-mix(in srgb, var(--color-carbon) 80%, var(--color-camel)), 34px 34px 55px -21px color-mix(in srgb, var(--color-carbon) 45%, transparent);
     }
   }
@@ -1473,7 +1489,7 @@
   html[data-motion="reduce"] .qc-blank.is-next { animation: none; }
   html[data-motion="reduce"] .qc-route .mv { display: none; }
   /* ---------- Footer (FT-02 Window) ---------- */
-  /* Options (dev panel): data-fill windows (locked) | dots | route | route-dark | route-camel | route-ink | sky | flat · data-signal arrive (locked)
+  /* Options (dev panel): data-fill windows (locked) | dots | dots-paper | dots-hold | dots-stars | sky | flat · data-signal arrive (locked)
      | turn | still | off · data-hover signal (locked) | sweep | invert | mark */
   .footer {
     --ft-fg: var(--color-paper);
