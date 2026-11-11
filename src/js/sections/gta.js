@@ -6,7 +6,7 @@
 // competes with the page's first load, yet the map is drawn before the visitor reaches it:
 //   1. after the page has loaded and gone idle: the map's code (Mapbox GL and ours), its stylesheet, the areas and
 //      a connection to Mapbox. No map yet, so nothing is billed (a map load is counted when a map starts).
-//   2. once the visitor has scrolled the page themselves and reached Services (the section after the hero): the
+//   2. once the visitor has scrolled the page themselves past the Services scrub, in a still moment: the
 //      map starts, off screen, and draws the first two tour stops once under the still, in the moments the page
 //      isn't scrolling (the GPU compiles its shaders then, not on the first flight), then waits on the still's view.
 //   3. on entry: the intro and the tour, on a map that is already drawn.
@@ -123,20 +123,30 @@ export function init(el) {
 
   // When to start (a map start is a billed map load, so only for a visitor who is reading on): once they have
   // scrolled the page themselves (a wheel, a touch, a key, a pointer: never a restored scroll, a script, a crawler
-  // or a speed test) and reached the section after the hero, Services; on a frugal connection, only once the
-  // section is within 800px. Landing on the section itself never waits.
-  const services = document.querySelector('[data-section="services"]');
+  // or a speed test) and are past the Services scrub (Steps in the upper half of the screen), in a moment the page
+  // is still: the map's start (parsing the library and the style, its workers) is a few long tasks that would
+  // otherwise land on the scrub (Nov 2026: Services fell from 55 to 41 fps while the map started under it). If the
+  // visitor never pauses, it starts anyway once the section is within a screen and a half. On a frugal connection,
+  // only once the section is within 800px. Landing on the section itself never waits.
+  const steps = document.querySelector('[data-section="steps"]');
   const INPUT = ['wheel', 'touchmove', 'keydown', 'pointerdown'];
   let engaged = false;
+  let waiting = false;
+  const close = () => el.getBoundingClientRect().top < innerHeight * 1.5;
   const reached = () => {
     if (frugal) return el.getBoundingClientRect().top < innerHeight + 800;
-    return services ? services.getBoundingClientRect().top < innerHeight / 2 : scrollY > innerHeight;
+    return steps ? steps.getBoundingClientRect().top < innerHeight / 2 : scrollY > innerHeight * 2;
   };
-  const check = () => { if (engaged && reached()) whenLoaded(boot); };
+  const check = () => {
+    if (!engaged || waiting || !reached()) return;
+    waiting = true;
+    whenLoaded(() => quiet(close).then(boot));
+  };
   const engage = () => { engaged = true; INPUT.forEach((t) => removeEventListener(t, engage)); check(); };
   function stopWatching() { removeEventListener('scroll', check); INPUT.forEach((t) => removeEventListener(t, engage)); }
   INPUT.forEach((t) => addEventListener(t, engage, { passive: true }));
   addEventListener('scroll', check, { passive: true });
   new IntersectionObserver(([e], io) => { if (e.isIntersecting) { io.disconnect(); boot(); } }).observe(el);
-  if (!frugal) whenSettled(prefetch);
+  // the code (Mapbox GL is a long parse) also waits for a still page, so it never lands on a scroll
+  if (!frugal) whenSettled(() => quiet(() => started).then(prefetch));
 }
