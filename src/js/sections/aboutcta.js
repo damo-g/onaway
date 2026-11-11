@@ -1,3 +1,4 @@
+import { registerOptions } from '../options.js';
 import { prefersReducedMotion } from '../motion.js';
 import { icon } from '../icons.js';
 
@@ -28,6 +29,11 @@ function quoteBy() {
   if (h >= 18) return 'by 10:00 AM tomorrow';
   return `by ${fmt(h + 2, m)}`;
 }
+
+// Dev panel (Nov 2026): the closing panel as a board on one post, the job route kept along its foot. style: panel
+// (locked, as built) · band (one board, the route a slim band along its foot) · pylon (two plates on the post: the
+// question, and the route on its own plate) · view: reverse (the right side near) · angled · flat
+registerOptions('aboutcta', { style: ['panel', 'band', 'pylon'], view: ['reverse', 'angled', 'flat'] });
 
 export function init(el) {
   const chips = el.querySelector('.ccta__chips');

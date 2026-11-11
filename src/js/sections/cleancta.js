@@ -1,3 +1,4 @@
+import { registerOptions } from '../options.js';
 import { prefersReducedMotion } from '../motion.js';
 import { icon } from '../icons.js';
 
@@ -25,6 +26,10 @@ function quoteBy() {
   if (h >= 18) return 'by 10:00 AM tomorrow';
   return `by ${fmt(h + 2, m)}`;
 }
+
+// Dev panel (Nov 2026): the closing CTA as the homepage quote's board. style: panel (locked, as built) · board (hung
+// on two rods from a rail, like the page's own hanging band) · view (board only): angled · reverse · flat
+registerOptions('cleancta', { style: ['panel', 'board'], view: ['angled', 'reverse', 'flat'] });
 
 export function init(el) {
   const svg = el.querySelector('.ccta__plan svg');
