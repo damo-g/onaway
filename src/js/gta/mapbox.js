@@ -228,7 +228,7 @@ export function createGtaMap(el, {
   // Load a place's tiles before the camera goes there (Mapbox's public preload: jumpTo with preloadOnly)
   function warm(at) {
     if (!map) return Promise.resolve();
-    map.jumpTo({ center: at, zoom: +opt('closeness') - 0.1, pitch: +opt('pitch'), bearing: map.getBearing(), padding: padding(), preloadOnly: true });
+    map.jumpTo({ center: at, zoom: close() - 0.1, pitch: +opt('pitch'), bearing: map.getBearing(), padding: padding(), preloadOnly: true });
     return new Promise((r) => setTimeout(r, 1200));
   }
 
@@ -255,7 +255,7 @@ export function createGtaMap(el, {
     for (const at of ats) {
       await ready();
       if (stop()) break;
-      map.jumpTo({ center: at, zoom: +opt('closeness'), pitch: +opt('pitch'), bearing: home.bearing, padding: { top: 0, right: 0, bottom: 0, left: 0 } });
+      map.jumpTo({ center: at, zoom: close(), pitch: +opt('pitch'), bearing: home.bearing, padding: { top: 0, right: 0, bottom: 0, left: 0 } });
       await settled(max, stop);
       await new Promise((r) => requestAnimationFrame(() => requestAnimationFrame(r))); // drawn at least once
     }
@@ -265,6 +265,11 @@ export function createGtaMap(el, {
     await settled(max, () => false);
   }
 
+  // How close the stops come: the locked closeness (16) on tablet and desktop; on phones 0.6 of a zoom level wider
+  // (about 1.5× the area), so a narrow screen still reads as a place, not a single block. The 3D landmarks and
+  // buildings still stand at 15.4.
+  const close = () => +opt('closeness') - (matchMedia('(width < 768px)').matches ? 0.6 : 0);
+
   // What the shared controller (controller.js) drives
   const adapter = {
     get camera() { return camera; },
@@ -272,7 +277,7 @@ export function createGtaMap(el, {
     warm,
     prerender,
     highlight: (region) => { hl?.set(region); labels?.zone(region, opt('zone')); },
-    zoomFor: () => +opt('closeness'), // stops at z16: Standard stands its everyday 3D buildings from about z15–16
+    zoomFor: () => close(), // stops at z16 (15.4 on phones): Standard stands its everyday 3D buildings from about z15
     outline: (region) => areas.outlines[region],
     areaZoom: () => map.getZoom(),
     pin: (label, at) => markOn(label, at),

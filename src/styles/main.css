@@ -123,11 +123,11 @@
     /* Navbar, from HF-01. Docked: --nav-h, --wm-h; the call and quote buttons fill the bar, flush right.
        State A (bar on the fold): *-a; the buttons are --btn-h-a tall, centred, inset by the margin. */
     --nav-h: 55px;
-    --nav-h-a: 89px;
+    --nav-h-a: 89px; /* the bar on the fold fits its content (Nov 2026: 144 tried, too far from the image) */
     --wm-h: 21px;
-    --wm-h-a: 21px;
+    --wm-h-a: 34px; /* Nov 2026: larger on the fold (was 21), shrinking to the docked 21 as the bar snaps in, as on desktop */
     --btn-h-a: 55px;
-    --hero-gap-a: 55px;
+    --hero-gap-a: 144px; /* Nov 2026: was 55; the line sits right under the plate (with the 89 bar, the plate ~13% shorter than at first) */
   }
   @media (width >= 768px) {
     :root {
@@ -497,6 +497,11 @@
   .hero[data-chip="coords"] .hero__chip-v[data-v="coords"] { display: inline-flex; }
   .hero__chip-v[data-v="regions"] { white-space: normal; }
   .hero__chip { max-width: calc(100% - 2 * var(--grid-margin)); }
+  /* Phones: the tag steps back (less tracking, a tighter plate); the line sits right under the image */
+  @media (width < 768px) {
+    .hero__chip { gap: var(--spacing-8); padding: 4px var(--spacing-8); font-size: 10px !important; letter-spacing: 0.06em !important; } /* (over the .label utility; 10 as the Soon labels) */
+    .hero.is-scripted .hero__lede { align-items: flex-start; padding: var(--spacing-13) 0 0; }
+  }
   .hero.is-scripted .hero__lede { display: flex; }
   html.js .hero:not(.is-ready) { visibility: hidden; animation: hero-reveal 0s 2s forwards; }
   html.js body:has(.hero:not(.is-ready)) .site-nav { visibility: hidden; animation: hero-reveal 0s 2s forwards; }
@@ -859,11 +864,20 @@
     .ticket__body { grid-template-columns: 1fr; grid-template-rows: var(--stub) auto; padding-bottom: var(--spacing-89); }
     .ticket__stub, .steps[data-symbol="centre"] .ticket__stub { align-items: center; padding-bottom: 0; }
     .ticket__fields { grid-template-columns: 1fr; }
-    .ticket__field { padding: var(--spacing-21); gap: var(--spacing-8); }
+    .ticket { width: min(100%, 320px); margin-inline: auto; --stub: var(--spacing-34); --stamp-size: var(--spacing-55); }
+    .ticket__stub svg { width: var(--spacing-13); }
+    .ticket__body { padding-bottom: var(--spacing-34); }
+    .ticket__field { padding: var(--spacing-13) var(--spacing-21); gap: 4px; }
     .ticket__field + .ticket__field { border-left: 0; border-top: 1px solid var(--ticket-rule); }
-    .ticket__num { margin-bottom: 0; font-size: var(--text-h2); }
+    .ticket__num { margin-bottom: 0; font-size: var(--text-lead); font-weight: 600; }
+    .ticket__title { font-size: var(--text-lead); }
+    .ticket__copy { font-size: var(--text-small); }
+    .ticket__stamp { font-size: 0; box-shadow: inset 0 0 0 1.5px var(--color-rust), inset 0 0 0 5px var(--ticket-face), inset 0 0 0 6px var(--color-rust); }
+    .ticket__stamp::after { content: "Locked"; font-size: var(--text-label); letter-spacing: 0; }
+    .ticket__tear-label { font-size: var(--text-lead); }
+    .steps__lead { font-size: var(--text-body) !important; } /* (over the text-lead utility) */
     .ticket__seam { display: none; }
-    .ticket__stamp { right: var(--spacing-21); bottom: var(--spacing-21); }
+    .ticket__stamp { right: var(--spacing-13); bottom: var(--spacing-13); }
     .ticket__tear { width: auto; flex-direction: row; align-items: center; padding: var(--spacing-21); transform-origin: 0 0; }
     .ticket__tear-label br { display: none; }
   }
@@ -932,6 +946,10 @@
     width: 100%;
     background: var(--color-camel);
   }
+  @media (width < 768px) {
+    .promises .carousel { width: calc(100% + 2 * var(--grid-margin)); margin-inline: calc(-1 * var(--grid-margin)); aspect-ratio: 4 / 4; }
+  }
+  .promises__cred { display: none; } /* Nov 2026: "Licensed · Insured · Local" retired, desktop and phones */
   .carousel__track { display: flex; height: 100%; transition: transform 1.1s cubic-bezier(0.6, 0, 0.2, 1); }
   .carousel__slide { position: relative; flex: 0 0 100%; height: 100%; margin: 0; }
   .carousel__slide picture { position: absolute; inset: 0; }
@@ -1071,6 +1089,15 @@
      larger than the GT-09 mock's (600 wide, padding 34 / 21), with a hairline, a soft shadow and the paper's tooth */
   /* phone (and a phone on its side): the lead at body size, the arrow alone on the button ("Check" stays its name), so the card stays compact
      and the placeholder reads in full (the input stays at 16: iOS zooms into anything smaller) */
+  @media (width < 768px) {
+    .gta { padding-top: max(calc(55svh - var(--nav-h)), calc(2 * var(--spacing-144))); }
+    .gta .gta__panel { padding: var(--spacing-13) var(--spacing-13) var(--spacing-8); }
+    .gta__sentence { font-size: var(--text-h3); line-height: 1.05; }
+    .gta__sentence br { display: none; }
+    .gta .gta__lead { font-size: var(--text-small); line-height: 1.45; }
+    .gta__check { margin-top: var(--spacing-13); }
+    .gta__row input, .gta__row button { height: var(--spacing-55); }
+  }
   @media (width < 768px), (height < 500px) {
     .gta__lead { font-size: var(--text-body); line-height: var(--text-body--line-height); }
     .gta__check { gap: var(--spacing-8); }
@@ -1395,7 +1422,7 @@
     padding: var(--spacing-55) var(--spacing-34) var(--spacing-34);
     border-radius: var(--spacing-13);
     background: var(--qc-bg);
-    box-shadow: inset 0 0 0 var(--spacing-8) var(--frame), 0 34px 55px -34px color-mix(in srgb, var(--color-carbon) 50%, transparent);
+    box-shadow: inset 0 0 0 var(--spacing-8) var(--frame), 0 2px 0 0 color-mix(in srgb, var(--color-carbon) 80%, var(--color-camel)), 0 21px 34px -21px color-mix(in srgb, var(--color-carbon) 45%, transparent); /* the pylon's edge (Nov 2026) */
     transition: background-color 0.5s;
   }
   /* The W, the sign's tile in its corner */
@@ -1404,6 +1431,16 @@
     border-radius: var(--spacing-13) 0 var(--spacing-13) 0; background: var(--frame); color: var(--color-paper);
   }
   .qc__sign svg { width: var(--spacing-21); height: auto; }
+  /* The posts' light (Nov 2026, as on the About pylon): lit from the left, the round face turning into shade. On the
+     homepage board's posts and rods and the service pages' rods and rail. */
+  .qc.qc:is([data-effect="billboard"], [data-effect="hanging"]) .qc__body::before,
+  .qc.qc:is([data-effect="billboard"], [data-effect="hanging"]) .qc__body::after,
+  .qc.qc[data-effect="post"] .qc__body::before { /* (doubled class: over the boards' plain Carbon, set later) */
+    background: linear-gradient(90deg, color-mix(in srgb, var(--color-paper) 18%, var(--frame)), var(--frame) 45%);
+  }
+  .ccta.ccta[data-style="board"] .ccta__panel::before,
+  .ccta.ccta[data-style="board"] .ccta__panel::after { background: linear-gradient(90deg, color-mix(in srgb, var(--p) 22%, var(--c)), var(--c) 55%); }
+  .ccta.ccta[data-style="board"]::before { background: linear-gradient(180deg, color-mix(in srgb, var(--p) 18%, var(--c)), var(--c) 60%); }
   .qc:is([data-effect="billboard"], [data-effect="hanging"], [data-effect="post"]) .qc__body::before,
   .qc:is([data-effect="billboard"], [data-effect="hanging"], [data-effect="post"]) .qc__body::after { content: ""; position: absolute; z-index: -1; background: var(--frame); }
   /* billboard: two posts to the ground */
@@ -1452,7 +1489,7 @@
     .qc[data-view="angled"][data-effect="post"] .qc__body::before { height: calc(100% + var(--spacing-89) + var(--post-h, var(--spacing-144))); }
     .qc[data-view="angled"] .qc__body {
       transform: perspective(2400px) rotateY(4deg);
-      box-shadow: inset 0 0 0 var(--spacing-8) var(--frame), calc(-1 * var(--spacing-13)) 0 0 0 color-mix(in srgb, var(--color-carbon) 80%, var(--color-camel)), 34px 34px 55px -21px color-mix(in srgb, var(--color-carbon) 45%, transparent);
+      box-shadow: inset 0 0 0 var(--spacing-8) var(--frame), 0 2px 0 0 color-mix(in srgb, var(--color-carbon) 80%, var(--color-camel)), calc(-1 * var(--spacing-13)) 0 0 0 color-mix(in srgb, var(--color-carbon) 80%, var(--color-camel)), 34px 34px 55px -21px color-mix(in srgb, var(--color-carbon) 45%, transparent);
     }
   }
   /* Smaller desktops (1024–1439): the board takes all 12 columns, the aside 7/5, so the button keeps its line */
@@ -1463,13 +1500,13 @@
   /* Phones: a pylon. The W on its own tile at the top, a neck, the board, one post to the ground. */
   @media (width < 768px) {
     .qc:is([data-effect="billboard"], [data-effect="hanging"], [data-effect="post"]) { margin-inline: 0; }
-    .qc:is([data-effect="billboard"], [data-effect="hanging"], [data-effect="post"]) .qc__body { margin-top: calc(var(--spacing-89) + var(--spacing-21)); padding: var(--spacing-55) var(--spacing-21) var(--spacing-34) calc(var(--spacing-8) + var(--spacing-21)); align-items: flex-start; text-align: left; }
+    .qc:is([data-effect="billboard"], [data-effect="hanging"], [data-effect="post"]) .qc__body { margin-top: calc(var(--spacing-55) + var(--spacing-21)); padding: var(--spacing-55) var(--spacing-21) var(--spacing-34) calc(var(--spacing-8) + var(--spacing-21)); align-items: flex-start; text-align: left; }
     .qc:is([data-effect="billboard"], [data-effect="hanging"], [data-effect="post"]) :is(.qc__form, .qc__ready) { align-items: flex-start; text-align: left; }
     .qc:is([data-effect="billboard"], [data-effect="hanging"], [data-effect="post"]) .qc__sign {
-      top: calc(-1 * (var(--spacing-89) + var(--spacing-21))); left: 50%; translate: -50% 0; width: var(--spacing-89); height: var(--spacing-89);
+      top: calc(-1 * (var(--spacing-55) + var(--spacing-21))); left: 50%; translate: -50% 0; width: var(--spacing-55); height: var(--spacing-55);
       border-radius: var(--spacing-13); background: var(--qc-bg); box-shadow: inset 0 0 0 var(--spacing-8) var(--frame); color: var(--qc-fg);
     }
-    .qc:is([data-effect="billboard"], [data-effect="hanging"], [data-effect="post"]) .qc__sign svg { width: var(--spacing-34); }
+    .qc:is([data-effect="billboard"], [data-effect="hanging"], [data-effect="post"]) .qc__sign svg { width: var(--spacing-21); }
     .qc:is([data-effect="billboard"], [data-effect="hanging"], [data-effect="post"]) .qc__sign::after { content: ""; position: absolute; top: 100%; left: 50%; translate: -50% 0; width: var(--spacing-34); height: var(--spacing-21); background: var(--frame); }
     .qc:is([data-effect="billboard"], [data-effect="hanging"], [data-effect="post"]) .qc__body::before { inset: calc(100% - var(--spacing-8)) auto auto 50%; translate: -50% 0; width: var(--spacing-13); height: calc(var(--post-h, var(--spacing-89)) + var(--spacing-8)); border-radius: 0; }
     .qc:is([data-effect="billboard"], [data-effect="hanging"], [data-effect="post"]) .qc__body::after { display: none; }
@@ -2079,8 +2116,8 @@
   .svc-hero__call { font-size: var(--text-body); text-decoration: underline; text-underline-offset: 4px; }
 
   /* The hang: an 8px Carbon rail, the band on two chains, the platforms on chains from the band */
-  .svc-hang { margin-top: var(--spacing-89); padding-inline: var(--grid-margin); }
-  .svc-hang__rail { height: var(--spacing-8); margin-inline: calc(-1 * var(--grid-margin)); background: var(--color-carbon); } /* full width (Nov 2026) */
+  .svc-hang { margin-top: var(--spacing-34); padding-inline: var(--grid-margin); } /* Nov 2026: pulled up under the copy (was 89), the rail and the signs read with the heading */
+  .svc-hang__rail { height: var(--spacing-8); margin-inline: calc(-1 * var(--grid-margin)); background: linear-gradient(180deg, color-mix(in srgb, var(--color-paper) 18%, var(--color-carbon)), var(--color-carbon) 60%); } /* full width, lit from above (Nov 2026) */
   .svc-band {
     --band-tile: color-mix(in srgb, var(--color-paper) 7%, var(--color-carbon));
     position: relative;
@@ -2093,11 +2130,11 @@
     border-radius: 2px;
     background: var(--color-carbon);
     color: var(--color-paper);
-    box-shadow: 0 21px 34px -21px color-mix(in srgb, var(--color-carbon) 60%, transparent), inset 0 0 0 1px var(--color-line-dark);
+    box-shadow: 0 2px 0 0 color-mix(in srgb, var(--color-carbon) 80%, var(--color-camel)), 0 21px 34px -21px color-mix(in srgb, var(--color-carbon) 55%, transparent), inset 0 0 0 1px var(--color-line-dark);
     transform-origin: 50% 0;
   }
   .svc-band::before, .svc-band::after,
-  .svc-door::before, .svc-door::after { content: ""; position: absolute; top: calc(-1 * var(--spacing-34)); height: var(--spacing-34); background: var(--color-carbon); }
+  .svc-door::before, .svc-door::after { content: ""; position: absolute; top: calc(-1 * var(--spacing-34)); height: var(--spacing-34); background: linear-gradient(90deg, color-mix(in srgb, var(--color-paper) 30%, var(--color-carbon)), var(--color-carbon) 60%); } /* lit from the left, as the posts */
   .svc-band::before, .svc-band::after { width: 4px; }
   .svc-band::before { left: var(--spacing-89); }
   .svc-band::after { right: var(--spacing-89); }
@@ -2120,7 +2157,7 @@
     border-radius: 2px;
     background: var(--face);
     color: var(--color-carbon);
-    box-shadow: inset 0 0 0 4px var(--color-carbon), 0 13px 21px -13px color-mix(in srgb, var(--color-carbon) 55%, transparent);
+    box-shadow: inset 0 0 0 4px var(--color-carbon), 0 2px 0 0 color-mix(in srgb, var(--color-carbon) 80%, var(--color-camel)), 0 13px 21px -13px color-mix(in srgb, var(--color-carbon) 50%, transparent);
     transform-origin: 50% 0;
     transition: translate 0.2s ease, transform 0.35s cubic-bezier(0.3, 0.7, 0.3, 1), background-color 0.2s, color 0.2s, box-shadow 0.2s;
   }
@@ -2141,6 +2178,19 @@
   .svc-door__name { font-size: var(--text-h2); line-height: 1; font-weight: 600; letter-spacing: -0.01em; white-space: nowrap; }
   /* up to two lines, so longer descriptions never push the page sideways */
   .svc-door__sub { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; font-size: var(--text-small); line-height: 1.4; color: color-mix(in srgb, currentColor 70%, transparent); }
+  /* Phones (Nov 2026): the description on one line, a ticker when it runs long: it holds at the start, slides to
+     show the end, holds, slides back (svchero.js sets --shift and --dur; under reduced motion it holds and ends in an
+     ellipsis). The name and the line sit as one tight block, centred in the platform. */
+  @media (width < 768px) {
+    .svc-doors { grid-template-columns: minmax(0, 1fr); } /* the one-line description never widens the platform */
+    .svc-door { min-width: 0; }
+    .svc-door__text { gap: 2px; }
+    .svc-door__sub { display: block; white-space: nowrap; text-overflow: ellipsis; }
+    .svc-door__sub.is-ticker { text-overflow: clip; mask-image: linear-gradient(90deg, var(--color-carbon) calc(100% - var(--spacing-21)), transparent); }
+    .svc-door__sub.is-ticker > span { display: inline-block; animation: door-tick var(--dur, 9s) cubic-bezier(0.45, 0, 0.55, 1) infinite alternate; }
+  }
+  @keyframes door-tick { 0%, 18% { transform: none; } 82%, 100% { transform: translateX(var(--shift, 0px)); } }
+  @media (prefers-reduced-motion: reduce) { .svc-door__sub.is-ticker > span { animation: none; } .svc-door__sub.is-ticker { text-overflow: ellipsis; mask-image: none; } }
   .svc-door__arrow { margin-left: auto; font-size: var(--text-h3); line-height: 1; }
   .svc-door:is(:hover, :focus-visible) {
     --face: var(--color-carbon);
@@ -2148,7 +2198,7 @@
     color: var(--color-paper);
     translate: 0 -3px;
     outline: 0;
-    box-shadow: inset 0 0 0 4px var(--color-carbon), 0 21px 26px -13px color-mix(in srgb, var(--color-carbon) 55%, transparent);
+    box-shadow: inset 0 0 0 4px var(--color-carbon), 0 2px 0 0 color-mix(in srgb, var(--color-carbon) 80%, var(--color-camel)), 0 21px 26px -13px color-mix(in srgb, var(--color-carbon) 55%, transparent);
   }
   .svc-door:focus-visible { box-shadow: 0 0 0 2px var(--color-paper), 0 0 0 4px var(--color-carbon); }
 
@@ -2267,6 +2317,7 @@
   /* ---------- What's included (WI-01b) ---------- */
   .incl { --mut: color-mix(in srgb, var(--color-carbon) 62%, transparent); position: relative; row-gap: var(--spacing-55); padding-block: var(--section-gap); }
   .incl::before { content: ""; position: absolute; inset: 0 var(--grid-margin) auto; border-top: 1px solid var(--color-line); }
+  .svc-hero + :is(.incl, .often)::before { content: none; } /* no rule under the service hero (Nov 2026): the hanging signs close it */
   .incl__title { font-size: var(--text-h2); line-height: 1; font-weight: 600; letter-spacing: -0.01em; }
   .incl__title small { display: block; margin-top: var(--spacing-8); font-size: var(--text-body); line-height: 1.5; font-weight: 400; letter-spacing: 0; color: var(--mut); }
   .incl__ctl { display: flex; flex-wrap: wrap; align-items: center; justify-content: flex-end; gap: var(--spacing-21); align-self: end; }
@@ -2779,7 +2830,8 @@
   .qs[data-height="440"] .qs__window { height: 440px; }
   .qs[data-height="340"] .qs__window { height: 340px; }
   .qs__window[hidden] { display: none; }
-  .qs__thread { flex: 1; min-height: 0; overflow-y: auto; overscroll-behavior: contain; scrollbar-width: thin; scrollbar-color: color-mix(in srgb, var(--color-carbon) 25%, transparent) transparent; }
+  .qs__thread { flex: 1; min-height: 0; overflow-y: auto; overscroll-behavior: auto; scrollbar-width: thin; scrollbar-color: color-mix(in srgb, var(--color-carbon) 25%, transparent) transparent; }
+  .qs__thread.is-overflowing { overscroll-behavior: contain; }
   .qs__thread.is-scrolled { mask-image: linear-gradient(transparent, var(--color-carbon) var(--spacing-34)); }
   .qs__inner { display: flex; flex-direction: column; justify-content: flex-end; gap: var(--spacing-21); min-height: 100%; padding: var(--spacing-34) var(--spacing-34) var(--spacing-21); }
   .qs__msg { animation: qp-up 0.4s ease both; }
@@ -2820,7 +2872,7 @@
   .qs__more a span { transition: transform 0.25s; }
   .qs__more a:hover span { transform: translateX(5px); }
   @media (width < 768px) {
-    .qs__window { height: 70svh; }
+    .qs__window { height: 42svh; min-height: calc(4 * var(--spacing-89)); } /* Nov 2026: was 70svh, which filled the screen */
     .qs__inner { padding: var(--spacing-21); }
     .qs__chips { flex-wrap: nowrap; overflow-x: auto; padding-inline: var(--spacing-21); }
     .qs__chips button { flex: none; }
@@ -2844,7 +2896,7 @@
   .ccta:is([data-style="board"], [data-style="band"], [data-style="pylon"]) .ccta__panel {
     --color-paper: var(--c); --color-carbon: var(--p);
     position: relative; isolation: isolate; overflow: visible; border-radius: var(--spacing-13); background: var(--face);
-    box-shadow: inset 0 0 0 var(--spacing-8) var(--frame), 0 34px 55px -34px color-mix(in srgb, var(--c) 50%, transparent);
+    box-shadow: inset 0 0 0 var(--spacing-8) var(--frame), 0 2px 0 0 var(--edge), 0 21px 34px -21px color-mix(in srgb, var(--c) 45%, transparent); /* the pylon's edge */
   }
   .ccta:is([data-style="board"], [data-style="band"], [data-style="pylon"]) .ccta__cta { color: var(--c); }
   .ccta:is([data-style="board"], [data-style="band"], [data-style="pylon"]) .ccta__w {
@@ -2947,8 +2999,8 @@
     .ccta[data-style="board"] .ccta__panel { margin-inline: calc((100% + var(--grid-gutter)) / 12); }
     .ccta[data-style="band"] .ccta__panel { margin-inline: calc((100% + var(--grid-gutter)) / 12 + var(--spacing-34)) calc((100% + var(--grid-gutter)) / 12); }
     .ccta[data-style="band"] .acta__road { margin-inline: calc(-1 * (var(--spacing-55) - var(--spacing-8))); }
-    .ccta:is([data-style="board"], [data-style="band"])[data-view="angled"] .ccta__panel { transform: perspective(2400px) rotateY(4deg); box-shadow: inset 0 0 0 var(--spacing-8) var(--frame), calc(-1 * var(--spacing-13)) 0 0 0 var(--edge), 34px 34px 55px -21px color-mix(in srgb, var(--c) 45%, transparent); }
-    .ccta:is([data-style="board"], [data-style="band"])[data-view="reverse"] .ccta__panel { transform: perspective(2400px) rotateY(-4deg); box-shadow: inset 0 0 0 var(--spacing-8) var(--frame), var(--spacing-13) 0 0 0 var(--edge), -34px 34px 55px -21px color-mix(in srgb, var(--c) 45%, transparent); }
+    .ccta:is([data-style="board"], [data-style="band"])[data-view="angled"] .ccta__panel { transform: perspective(2400px) rotateY(4deg); box-shadow: inset 0 0 0 var(--spacing-8) var(--frame), 0 2px 0 0 var(--edge), calc(-1 * var(--spacing-13)) 0 0 0 var(--edge), 34px 34px 55px -21px color-mix(in srgb, var(--c) 45%, transparent); }
+    .ccta:is([data-style="board"], [data-style="band"])[data-view="reverse"] .ccta__panel { transform: perspective(2400px) rotateY(-4deg); box-shadow: inset 0 0 0 var(--spacing-8) var(--frame), 0 2px 0 0 var(--edge), var(--spacing-13) 0 0 0 var(--edge), -34px 34px 55px -21px color-mix(in srgb, var(--c) 45%, transparent); }
     /* the pylon turns as a whole: its plates are the panel's pieces */
     .ccta[data-style="pylon"][data-view="angled"] .ccta__panel { transform: perspective(2400px) rotateY(4deg); }
     .ccta[data-style="pylon"][data-view="reverse"] .ccta__panel { transform: perspective(2400px) rotateY(-4deg); }
