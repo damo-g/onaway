@@ -35,8 +35,6 @@ export function init(el) {
       }
     });
   }
-  // the edge fade follows the text: the right edge while it waits at the start, the left edge at the end
-  subs.forEach((sub) => sub.firstElementChild.addEventListener('animationiteration', () => sub.classList.toggle('is-end')));
   document.fonts?.ready.then(tickers);
   new ResizeObserver(tickers).observe(el);
 

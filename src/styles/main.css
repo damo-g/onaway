@@ -2188,7 +2188,6 @@
     .svc-door__sub { display: block; white-space: nowrap; text-overflow: ellipsis; }
     .svc-door__sub.is-ticker { text-overflow: clip; mask-image: linear-gradient(90deg, var(--color-carbon) calc(100% - var(--spacing-21)), transparent); }
     .svc-door__sub.is-ticker > span { display: inline-block; animation: door-tick var(--dur, 9s) cubic-bezier(0.45, 0, 0.55, 1) infinite alternate; }
-    .svc-door__sub.is-ticker.is-end { mask-image: linear-gradient(90deg, transparent, var(--color-carbon) var(--spacing-21)); }
   }
   @keyframes door-tick { 0%, 18% { transform: none; } 82%, 100% { transform: translateX(var(--shift, 0px)); } }
   @media (prefers-reduced-motion: reduce) { .svc-door__sub.is-ticker > span { animation: none; } .svc-door__sub.is-ticker { text-overflow: ellipsis; mask-image: none; } }
