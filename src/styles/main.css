@@ -627,9 +627,12 @@
      · data-animation across (locked) | write | unroll. */
   /* About section gap + 89 between the R2-E board and the copy, counting the paper the board already
      leaves under itself (--services-tail, set by services.js); never less than 55 of its own */
-  .steps { --after: var(--spacing-89); padding-top: max(var(--spacing-55), calc(var(--section-gap) + var(--after) - var(--services-tail, 0px))); }
-  /* Services' "after" option (dev panel): the paper from the board to Steps' heading, desktop (233 locked) */
+  .steps { --after: var(--spacing-144); padding-top: max(var(--spacing-55), calc(var(--section-gap) + var(--after) - var(--services-tail, 0px))); }
+  /* Services' "after": the paper from the board to Steps' heading. 322 locked (Nov 2026): the section gap + 2 × 89 on
+     tablet and desktop; phones 89 + 144 = 233. Dev panel (desktop): 233 | 288 | 377 | 432. */
+  @media (width >= 768px) { .steps { --after: calc(2 * var(--spacing-89)); } }
   @media (width >= 1024px) {
+    main:has(.services[data-after="233"]) .steps { --after: var(--spacing-89); }
     main:has(.services[data-after="288"]) .steps { --after: var(--spacing-144); }
     main:has(.services[data-after="377"]) .steps { --after: calc(var(--spacing-144) + var(--spacing-89)); }
     main:has(.services[data-after="432"]) .steps { --after: calc(2 * var(--spacing-144)); }
@@ -643,7 +646,8 @@
 
   /* TS-02 on the scale: 500 tall body with a 55 stub, 144 tear-off, 89 stamp */
   .ticket {
-    --ticket-h: 500px;
+    --ticket-xl: 500px; /* xl, the footprint every size keeps */
+    --ticket-h: var(--ticket-xl);
     --tear-w: var(--spacing-144);
     --stub: var(--spacing-55);
     --stamp-size: var(--spacing-89);
@@ -793,6 +797,25 @@
     .steps[data-size="xs"] .ticket__num { margin-bottom: 0; font-size: var(--text-h3); font-weight: 600; }
     .steps[data-size="xs"] .ticket__field { gap: var(--spacing-8); }
     .steps[data-size="xs"] .ticket__stamp { right: var(--spacing-21); bottom: var(--spacing-21); }
+    /* xs6: m6's six columns and 42 numbers on xs's 288; the stamp goes small, in the third step's top corner */
+    .steps[data-size="xs6"] .ticket { grid-column: 7 / span 6; --ticket-h: calc(2 * var(--spacing-144)); --stamp-size: var(--spacing-55); }
+    .steps[data-size="xs6"] .ticket__field { padding: var(--spacing-34) var(--spacing-21); gap: var(--spacing-8); }
+    .steps[data-size="xs6"] .ticket__num { margin-bottom: var(--spacing-8); font-size: var(--text-h2); }
+    .steps[data-size="xs6"] .ticket__stamp { top: var(--spacing-34); bottom: auto; right: var(--spacing-21); font-size: 0; box-shadow: inset 0 0 0 1.5px var(--color-rust), inset 0 0 0 5px var(--ticket-face), inset 0 0 0 6px var(--color-rust); }
+    .steps[data-size="xs6"] .ticket__stamp::after { content: "Locked"; font-size: var(--text-label); letter-spacing: 0.04em; }
+    /* Whatever the size, the section keeps xl's footprint: the paper the smaller ticket leaves stays under it */
+    .ticket { margin-bottom: calc(var(--ticket-xl) - var(--ticket-h)); }
+
+    /* The step numbers (dev panel num · numsize). mono: Overpass Mono, muted, a hairline running after it.
+       ghost: light Carbon numerals, the step's watermark. numsize sets their size on the type scale. */
+    .steps[data-num="mono"] .ticket__num { display: flex; align-items: center; gap: var(--spacing-13); margin-bottom: var(--spacing-8); font-family: var(--font-mono); font-size: var(--text-label); font-weight: 500; font-stretch: normal; letter-spacing: var(--text-label--letter-spacing); color: color-mix(in srgb, var(--color-carbon) 62%, transparent); }
+    .steps[data-num="mono"] .ticket__num::after { content: ""; flex: 1; border-top: 1px solid var(--ticket-rule); }
+    .steps[data-num="ghost"] .ticket__num { font-weight: 300; letter-spacing: -0.03em; color: color-mix(in srgb, var(--color-carbon) 22%, transparent); }
+    .steps[data-numsize="12"] .ticket__num { font-size: var(--text-label); }
+    .steps[data-numsize="20"] .ticket__num { font-size: var(--text-lead); }
+    .steps[data-numsize="26"] .ticket__num { font-size: var(--text-h3); }
+    .steps[data-numsize="42"] .ticket__num { font-size: var(--text-h2); }
+    .steps[data-numsize="68"] .ticket__num { font-size: var(--text-h1); }
   }
 
   /* Phones: the ticket stands up. Stub along the top, steps stacked, tear-off below the seam. */
