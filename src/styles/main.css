@@ -2599,18 +2599,18 @@
   .hope[data-dropcap="off"] .hope__opener::first-letter { all: unset; }
   .hope[data-capcolor="rust"] .hope__opener::first-letter { color: var(--color-rust); }
   .hope[data-capfont="mono"] .hope__opener::first-letter { font-family: var(--font-mono); font-weight: 500; }
-  /* Logo letters (panel option hope.cap: logo (locked) · type): the O and W openers paint the wordmark's own letter
+  /* Logo letters (panel option hope.cap: type (locked Nov 2026: the letter in Instrument Sans) · logo): the O and W openers paint the wordmark's own letter
      (public/svg/cap-*.svg) over the drop cap; the text keeps its real letter for reading and search */
   /* Sized to the cap: where initial-letter works, the three-line cap (two line heights plus a cap height of the 20
      text) and the box widened so the round O fits; in the float fallback (Firefox) the letter's own cap height */
-  .hope:not([data-cap="type"], [data-capfont="mono"], [data-dropcap="off"]) .hope__opener::first-letter { padding-right: 0.12em; background: no-repeat left bottom 0.1em / auto 0.72em; }
+  .hope[data-cap="logo"]:not([data-capfont="mono"], [data-dropcap="off"]) .hope__opener::first-letter { padding-right: 0.12em; background: no-repeat left bottom 0.1em / auto 0.72em; }
   @supports (initial-letter: 3) or (-webkit-initial-letter: 3) {
-    .hope:not([data-cap="type"], [data-capfont="mono"], [data-dropcap="off"]) .hope__opener::first-letter { padding-right: 0.5em; background-position: left bottom; background-size: auto 3.7em; }
+    .hope[data-cap="logo"]:not([data-capfont="mono"], [data-dropcap="off"]) .hope__opener::first-letter { padding-right: 0.5em; background-position: left bottom; background-size: auto 3.7em; }
   }
-  .hope:not([data-cap="type"], [data-capfont="mono"], [data-dropcap="off"]) .hope__opener:is([data-v="once"], [data-v="only"])::first-letter { color: transparent; background-image: url("/svg/cap-o.svg"); }
-  .hope:not([data-cap="type"], [data-capfont="mono"], [data-dropcap="off"]) .hope__opener[data-v="when"]::first-letter { color: transparent; background-image: url("/svg/cap-w.svg"); }
-  .hope:not([data-cap="type"], [data-capfont="mono"], [data-dropcap="off"])[data-capcolor="rust"] .hope__opener:is([data-v="once"], [data-v="only"])::first-letter { background-image: url("/svg/cap-o-rust.svg"); }
-  .hope:not([data-cap="type"], [data-capfont="mono"], [data-dropcap="off"])[data-capcolor="rust"] .hope__opener[data-v="when"]::first-letter { background-image: url("/svg/cap-w-rust.svg"); }
+  .hope[data-cap="logo"]:not([data-capfont="mono"], [data-dropcap="off"]) .hope__opener:is([data-v="once"], [data-v="only"])::first-letter { color: transparent; background-image: url("/svg/cap-o.svg"); }
+  .hope[data-cap="logo"]:not([data-capfont="mono"], [data-dropcap="off"]) .hope__opener[data-v="when"]::first-letter { color: transparent; background-image: url("/svg/cap-w.svg"); }
+  .hope[data-cap="logo"]:not([data-capfont="mono"], [data-dropcap="off"])[data-capcolor="rust"] .hope__opener:is([data-v="once"], [data-v="only"])::first-letter { background-image: url("/svg/cap-o-rust.svg"); }
+  .hope[data-cap="logo"]:not([data-capfont="mono"], [data-dropcap="off"])[data-capcolor="rust"] .hope__opener[data-v="when"]::first-letter { background-image: url("/svg/cap-w-rust.svg"); }
   /* Ledger: the usual hope, struck in Rust, then the plan */
   .hope__ledger { border-top: 3px solid var(--color-carbon); }
   .hope__head { display: none; padding-block: var(--spacing-13); color: var(--mut); }
@@ -2880,38 +2880,50 @@
      (the tint, as first built) */
   .ccta[data-road="carbon"] .acta__road { --color-paper: var(--p); --color-carbon: var(--c); background: var(--c) !important; }
   .ccta[data-road="paper"] .acta__road { background: var(--face) !important; }
-  .ccta[data-style="pylon"][data-road="carbon"] .acta__road { box-shadow: inset 0 0 0 var(--spacing-8) var(--frame), 0 6px 0 0 var(--edge), 0 34px 55px -30px color-mix(in srgb, var(--c) 55%, transparent); }
-  /* pylon: two plates bolted to two posts (after the CSL wayfinding pylon). The question on the upper plate (the
-     panel), the job route on its own plate below it (the road, taken out of the panel's flow), both on the faces of
-     two turned posts that rise above the top plate with caps and run down to the ground. The posts belong to the
-     section, behind the plates; four bolts on each plate where it meets a post. */
+  /* pylon (Nov 2026, refined): two plates bolted to two posts (after the CSL wayfinding pylon). The question on the
+     upper plate (the panel); the job route on its own plate below it. The route keeps the live page's box exactly
+     (55 tall, its drawings untouched, so the crew, stops and labels land where the script puts them); its plate is
+     drawn around it (::before). Both plates sit on the faces of two turned posts that rise above the top plate with
+     round caps and run down to the ground; the posts belong to the section, behind the plates, a bolt at each plate
+     corner where it meets a post. Soft edges: the frame, a 2px cut edge and a soft shadow, no hard offset. */
   .ccta[data-style="pylon"] {
     --pm: var(--spacing-89); /* the plates' inset from the content edges */
     --post-x: calc(var(--grid-margin) + var(--pm) + (100% - 2 * var(--grid-margin) - 2 * var(--pm)) * 0.1);
-    isolation: isolate; padding-bottom: calc(var(--section-gap) + var(--spacing-89) + var(--spacing-55));
+    --plate-shadow: inset 0 0 0 var(--spacing-8) var(--frame), 0 2px 0 0 var(--edge), 0 21px 34px -21px color-mix(in srgb, var(--c) 45%, transparent);
+    --bolt: radial-gradient(circle 2.5px, color-mix(in srgb, var(--c) 50%, transparent) 75%, transparent 85%);
+    isolation: isolate; padding-bottom: calc(var(--section-gap) + var(--spacing-144));
   }
   .ccta[data-style="pylon"] .ccta__panel { margin-inline: var(--pm); padding-bottom: var(--spacing-55); }
   .ccta[data-style="pylon"] .ccta__panel::before { content: none; }
   .ccta[data-style="pylon"]::before,
   .ccta[data-style="pylon"]::after {
-    content: ""; position: absolute; z-index: -1; top: calc(var(--spacing-89) - var(--spacing-55)); bottom: 0; width: var(--spacing-21);
-    border-radius: var(--spacing-8) var(--spacing-8) 0 0;
-    background: linear-gradient(90deg, color-mix(in srgb, var(--p) 16%, var(--c)), var(--c) 40%, var(--c));
+    content: ""; position: absolute; z-index: -1; top: calc(var(--spacing-89) - var(--spacing-34)); bottom: 0; width: var(--spacing-21);
+    border-radius: var(--spacing-21) var(--spacing-21) 0 0;
+    background: linear-gradient(90deg, color-mix(in srgb, var(--p) 18%, var(--c)), var(--c) 45%);
   }
   .ccta[data-style="pylon"]::before { left: var(--post-x); }
   .ccta[data-style="pylon"]::after { right: var(--post-x); }
-  .ccta[data-style="pylon"] :is(.ccta__panel, .acta__road) {
-    --bolt: radial-gradient(circle 3px, color-mix(in srgb, var(--c) 55%, transparent) 70%, transparent 80%);
+  .ccta[data-style="pylon"] .ccta__panel,
+  .ccta[data-style="pylon"] .acta__road::before {
     background:
-      var(--bolt) calc(10% + 8px - 3px) var(--spacing-21) / 8px 8px no-repeat,
-      var(--bolt) calc(10% + 8px - 3px) calc(100% - var(--spacing-21)) / 8px 8px no-repeat,
-      var(--bolt) calc(90% - 8px + 3px) var(--spacing-21) / 8px 8px no-repeat,
-      var(--bolt) calc(90% - 8px + 3px) calc(100% - var(--spacing-21)) / 8px 8px no-repeat,
-      var(--face);
-    box-shadow: inset 0 0 0 var(--spacing-8) var(--frame), 0 6px 0 0 var(--edge), 0 34px 55px -30px color-mix(in srgb, var(--c) 55%, transparent);
+      var(--bolt) 10.6% var(--spacing-21) / 8px 8px no-repeat,
+      var(--bolt) 10.6% calc(100% - var(--spacing-21)) / 8px 8px no-repeat,
+      var(--bolt) 89.4% var(--spacing-21) / 8px 8px no-repeat,
+      var(--bolt) 89.4% calc(100% - var(--spacing-21)) / 8px 8px no-repeat,
+      var(--plate, var(--face));
+    box-shadow: var(--plate-shadow);
   }
-  .ccta[data-style="pylon"] .acta__road > svg { inset: var(--spacing-13) var(--spacing-21); width: calc(100% - 2 * var(--spacing-21)); height: calc(100% - 2 * var(--spacing-13)); }
-  .ccta[data-style="pylon"] .acta__road { position: absolute; grid-column: auto; left: 0; right: 0; top: calc(100% + var(--spacing-55)); height: var(--spacing-89); margin: 0 !important; border-top: 0; border-radius: var(--spacing-13); overflow: hidden; }
+  /* the route: the live box, inset in its plate (8 frame + 26 air each side, 17 above and below) */
+  .ccta[data-style="pylon"] .acta__road {
+    position: absolute; grid-column: auto; left: var(--spacing-34); right: var(--spacing-34); top: calc(100% + var(--spacing-55) + 17px);
+    height: var(--spacing-55); margin: 0 !important; border: 0; border-radius: 0; background: none !important;
+  }
+  .ccta[data-style="pylon"] .acta__road::before {
+    content: ""; position: absolute; z-index: -1; inset: -17px calc(-1 * var(--spacing-34)); border-radius: var(--spacing-13);
+    background-position: 10.6% var(--spacing-13), 10.6% calc(100% - var(--spacing-13)), 89.4% var(--spacing-13), 89.4% calc(100% - var(--spacing-13)), 0 0;
+  }
+  .ccta[data-style="pylon"][data-road="carbon"] .acta__road::before { --plate: var(--c); --bolt: radial-gradient(circle 2.5px, color-mix(in srgb, var(--p) 35%, transparent) 75%, transparent 85%); }
+  .ccta[data-style="pylon"][data-road="gray"] .acta__road::before { --plate: color-mix(in srgb, var(--c) 6%, var(--face)); }
   @media (width < 1024px) {
     .ccta[data-style="pylon"] { --pm: var(--spacing-34); }
   }
