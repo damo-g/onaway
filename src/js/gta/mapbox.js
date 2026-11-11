@@ -22,7 +22,6 @@ export const LOCKED = {
 };
 
 const STYLE = 'mapbox://styles/mapbox/standard';
-const TILE_CACHE = (import.meta.env.DEV && +new URLSearchParams(location.search).get('gta-cache')) || 24; // (dev: ?gta-cache=n to compare)
 const BUILDINGS = { featuresetId: 'buildings', importId: 'basemap' };
 const PLACE_LABELS = { featuresetId: 'place-labels', importId: 'basemap' };
 const k = ['number', ['feature-state', 'k'], 0]; // an area's highlight, 0–1 (overlays.js fades it)
@@ -312,10 +311,6 @@ export function createGtaMap(el, {
         maxPitch: 72,
         interactive: false, // no wheel, no drag, no touch: the page always scrolls
         pixelRatio: Math.min(devicePixelRatio || 1, 2), // a 3× phone draws at 2×: barely softer, far lighter on the GPU and battery
-        // Tiles kept after they leave the screen, per source (Mapbox sizes it from the viewport: about 60 on a laptop).
-        // The tour never goes back to a stop, so a smaller cache costs it nothing and keeps the page's memory down
-        // (phones close heavy tabs). What's on screen and the flight ahead are never affected.
-        maxTileCacheSize: TILE_CACHE,
         attributionControl: false,
         logoPosition: 'bottom-right',
         localFontFamily: fontFamily(opt('font')),

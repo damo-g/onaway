@@ -582,6 +582,7 @@
   .sign__housing, .sign__face, .sign__rule { display: none; }
   .sign__tile { display: grid; place-items: center; aspect-ratio: 1; background: var(--s-tile); color: var(--s-glyph); }
   .sign__tile svg { width: 68%; height: 68%; }
+  .services[data-tile="flush"] .sign__tile svg { width: 42%; height: 42%; } /* the flush panel is the card's height: the glyph keeps its size */
   .sign__name { font-size: var(--text-h3); line-height: 1; font-weight: 600; white-space: nowrap; }
   .sign__desc { grid-column: 2 / -1; font-size: var(--text-small); line-height: 1.5; color: var(--s-sub); }
   .sign__fact { grid-column: 2 / -1; color: var(--s-txt); }
