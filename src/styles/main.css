@@ -2665,6 +2665,15 @@
     .help-end__text { grid-column: 1 / span 7; }
     .help-point { grid-column: 9 / span 4; justify-self: end; }
   }
+  /* Desktop: the question and the card as one centred pair, a gap from the spacing scale between them (Nov 2026).
+     Panel option helpend.gap: 144 (locked) | 89 | 55 | spread (the question at the left edge, the card at the right). */
+  @media (width >= 1024px) {
+    .help-end:not([data-gap="spread"]) { display: flex !important; justify-content: center; column-gap: var(--he-gap, var(--spacing-144)) !important; } /* !important: beats the grid-site utility (display and gap) */
+    .help-end[data-gap="89"] { --he-gap: var(--spacing-89); }
+    .help-end[data-gap="55"] { --he-gap: var(--spacing-55); }
+    .help-end:not([data-gap="spread"]) .help-end__text { flex: 0 1 auto; max-width: calc(4 * var(--spacing-144) + var(--spacing-55)); }
+    .help-end:not([data-gap="spread"]) .help-point { flex: none; }
+  }
   /* Current page in the nav */
   .nav-links > a[aria-current="page"] { text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 5px; }
 

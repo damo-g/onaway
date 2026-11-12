@@ -6,7 +6,8 @@ import { registerOptions } from '../options.js';
 //   email: key (a second, smaller key on the card) | link (a link under the call key) | left (beside the question)
 //   lamp: on | off
 //   view: angled (the card turned 2°, the mock's best) | flat
-registerOptions('helpend', { email: ['key', 'link', 'left'], lamp: ['on', 'off'], view: ['angled', 'flat'] });
+//   gap (desktop): 144 | 89 | 55 (the question and the card centred as a pair, that far apart) | spread (left edge, right edge)
+registerOptions('helpend', { email: ['key', 'link', 'left'], lamp: ['on', 'off'], view: ['angled', 'flat'], gap: ['144', '89', '55', 'spread'] });
 
 export function init(el) {
   const lamp = el.querySelector('[data-help-lamp]');
