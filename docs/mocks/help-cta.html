@@ -1,0 +1,183 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Help CTA Options</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wdth,wght@75..100,400..700&family=Overpass+Mono:wght@400;500;600&display=swap">
+<link rel="stylesheet" href="shared.css">
+<style>
+/* HE-02 Help page closing CTA: six options in the language the other closing CTAs now speak (the homepage billboard,
+   the service boards on a rail, the About pylon, the arrival boards, the Steps ticket), against the kraft band as built.
+   Copy as on the page: "Still have a question?" · "Call us. A person answers, 8 AM – 8 PM, every day." · Call · Email
+   us · Get a free quote. Review tools: option, desk status (open / closed), device. */
+:root{--ink:#202521;--pap:#F7F2E7;--ye:#E4BB3F;--ru:#A9503E;--ca:#B49A78;--face:color-mix(in srgb,#202521 5%,#F7F2E7);--edge:color-mix(in srgb,#202521 80%,#B49A78);--line:rgba(32,37,33,.2)}
+.stage{height:860px;container-type:inline-size;position:relative}
+.dev-phone .wrap{max-width:390px}.dev-phone .stage{width:390px;height:900px}
+/* the page around it: the last questions above, the footer below */
+.faq{position:absolute;left:64px;right:64px;top:34px}
+.faq div{display:flex;justify-content:space-between;padding:21px 0;border-top:1px solid var(--line);font-size:20px;font-weight:600;font-stretch:87.5%}
+.foot{position:absolute;left:0;right:0;bottom:0;height:89px;background:var(--ink);color:var(--pap);display:flex;align-items:center;padding:0 64px;font-size:26px;font-weight:500;font-stretch:87.5%}
+@container (width < 600px){.faq{left:20px;right:20px}.faq div{font-size:16px}.foot{padding:0 20px;font-size:20px;height:55px}}
+.opt{position:absolute;left:0;right:0;top:200px;bottom:89px;display:none;padding:0 64px}
+@container (width < 600px){.opt{top:180px;bottom:55px;padding:0 20px}}
+[data-o="kraft"] .o-kraft,[data-o="pylon"] .o-pylon,[data-o="hang"] .o-hang,[data-o="board"] .o-board,[data-o="ticket"] .o-ticket,[data-o="billboard"] .o-billboard{display:block}
+/* shared */
+.t{font-size:42px;font-weight:650;line-height:1;letter-spacing:-.02em;font-stretch:87.5%;margin:0}
+.l{font-size:20px;line-height:1.45;font-stretch:87.5%;color:rgba(32,37,33,.75);margin:13px 0 0;max-width:36ch}
+.call{display:inline-flex;align-items:center;gap:21px;height:55px;padding:0 21px;background:var(--ink);color:var(--pap);font-size:20px;font-weight:600;font-stretch:87.5%;white-space:nowrap}
+.call.y{background:var(--ye);color:var(--ink)}
+.more{margin-top:13px;font-size:16px;font-stretch:87.5%}
+.more a{text-decoration:underline;text-underline-offset:4px}
+.st{display:inline-flex;align-items:center;gap:8px;font-family:var(--mono);font-size:12px;letter-spacing:.12em;text-transform:uppercase}
+.st i{width:8px;height:8px;border-radius:50%;background:var(--ye);box-shadow:0 0 0 3px rgba(228,187,63,.25)}
+[data-s="closed"] .st i{background:var(--ca);box-shadow:none}
+[data-s="open"] .closed,[data-s="closed"] .open{display:none}
+@container (width < 600px){.t{font-size:26px}.l{font-size:16px}.call{width:100%;justify-content:space-between;font-size:16px}}
+
+/* 1 · Kraft band (as built) */
+.kr{display:flex;align-items:center;justify-content:space-between;gap:55px;padding:55px;border-radius:2px;background:color-mix(in srgb,var(--ca) 22%,var(--pap))}
+@container (width < 600px){.kr{flex-direction:column;align-items:stretch;gap:21px;padding:34px 21px}}
+
+/* 2 · Pylon (the About pylon's plates and posts): the question above, the desk's status on its own plate */
+.o-pylon{padding-inline:144px}
+.py{position:relative;isolation:isolate}
+.py::before,.py::after{content:"";position:absolute;z-index:-1;top:-34px;bottom:-400px;width:21px;border-radius:21px 21px 0 0;background:linear-gradient(90deg,#4a4f48,var(--ink) 45%)}
+.py::before{left:12%}.py::after{right:12%}
+.pl{position:relative;border-radius:13px;background:var(--face);box-shadow:inset 0 0 0 8px var(--ink),0 2px 0 var(--edge),0 21px 34px -21px rgba(32,37,33,.45)}
+.pl-a{display:grid;grid-template-columns:1fr auto;gap:34px;align-items:end;padding:55px}
+.pl-a .w{position:absolute;left:0;top:0;width:55px;height:55px;display:grid;place-items:center;border-radius:13px 0 13px 0;background:var(--ink);color:var(--pap);font-family:var(--mono);font-size:26px;font-weight:600}
+.pl-b{margin-top:34px;display:flex;align-items:center;justify-content:space-between;padding:21px 55px;background:#1b1f1c;color:var(--ye);font-family:var(--mono);font-size:20px;letter-spacing:.08em;text-transform:uppercase}
+.pl-b small{color:rgba(247,242,231,.55);font-size:12px}
+@container (width < 600px){.o-pylon{padding-inline:20px}.pl-a{grid-template-columns:1fr;padding:55px 21px 21px}.pl-b{padding:13px 21px;font-size:12px}.py::before{left:50%;translate:-50% 0}.py::after{display:none}}
+
+/* 3 · Hanging desk (the service boards): a sign on two rods from a rail, a lamp that's lit while someone's in */
+.o-hang{padding-top:0}
+.hg-rail{position:absolute;left:0;right:0;top:-34px;height:8px;background:linear-gradient(180deg,#4a4f48,var(--ink) 60%)}
+.hg{position:relative;margin:89px 89px 0;display:grid;grid-template-columns:auto 1fr auto;gap:34px;align-items:center;padding:34px 55px 34px 34px;border-radius:13px;background:var(--face);box-shadow:inset 0 0 0 8px var(--ink),0 2px 0 var(--edge),0 21px 34px -21px rgba(32,37,33,.45)}
+.hg::before,.hg::after{content:"";position:absolute;bottom:calc(100% - 8px);width:4px;height:131px;background:linear-gradient(90deg,#6a6e66,var(--ink) 55%)}
+.hg::before{left:13%}.hg::after{right:13%}
+.hg-i{display:grid;place-items:center;width:89px;height:89px;border-radius:8px;background:var(--ink);color:var(--pap);font-size:42px;font-weight:650;font-family:Georgia,serif;font-style:italic}
+.lamp{position:absolute;right:34px;top:-21px;display:flex;align-items:center;gap:8px;padding:8px 13px;border-radius:2px;background:var(--ink);color:var(--pap)}
+@container (width < 600px){.hg{margin:89px 0 0;grid-template-columns:1fr;padding:34px 21px 21px}.hg-i{width:55px;height:55px;font-size:26px}}
+
+/* 4 · Help board (the arrival boards): three ways to reach us, with when each one answers */
+.bd{border-radius:8px;padding:34px 55px;background:#1b1f1c;color:var(--pap);box-shadow:inset 0 0 0 8px var(--ink),0 2px 0 var(--edge),0 34px 55px -30px rgba(32,37,33,.55)}
+.bd .t{color:var(--pap)}
+.bd-h{display:flex;justify-content:space-between;align-items:end;padding-bottom:21px;border-bottom:1px solid rgba(247,242,231,.14)}
+.bd-h .st{color:rgba(247,242,231,.65)}
+.bd-r{display:grid;grid-template-columns:160px 1fr 240px 34px;align-items:center;gap:21px;padding:21px 0;border-bottom:1px solid rgba(247,242,231,.1);font-family:var(--mono);text-transform:uppercase;letter-spacing:.08em}
+.bd-r>span:first-child{font-size:12px;color:rgba(247,242,231,.5)}
+.bd-r b{font-size:26px;font-weight:500}
+.bd-r em{font-style:normal;color:var(--ye);font-size:14px}
+.bd-r:hover{background:rgba(247,242,231,.04)}
+@container (width < 600px){.bd{padding:21px}.bd-r{grid-template-columns:1fr auto;gap:8px}.bd-r b{font-size:16px;grid-column:1/-1}.bd-r>span:last-child{display:none}.bd-h{flex-direction:column;align-items:flex-start;gap:13px}}
+
+/* 5 · Ticket (Steps): "Talk to a person", the tear-off calls */
+.tk{display:flex;max-width:1100px;margin:0 auto;filter:drop-shadow(0 21px 21px rgba(32,37,33,.16))}
+.tk-b{flex:1;display:grid;grid-template-columns:1.3fr 1fr 1fr;background:var(--face);-webkit-mask:radial-gradient(circle 3px at 50% 0,transparent 96%,#000 100%) top/10px 100% repeat-x,radial-gradient(circle 3px at 50% 100%,transparent 96%,#000 100%) bottom/10px 100% repeat-x;-webkit-mask-composite:source-in;mask-composite:intersect}
+.tk-b>div{padding:34px;border-left:1px solid rgba(32,37,33,.12);display:flex;flex-direction:column;gap:8px}
+.tk-b>div:first-child{border-left:0}
+.tk-b small{font-family:var(--mono);font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:rgba(32,37,33,.55)}
+.tk-b b{font-size:26px;font-weight:600;font-stretch:87.5%}
+.tk-t{width:200px;display:flex;flex-direction:column;justify-content:space-between;padding:34px 21px;background:var(--ye);font-size:26px;font-weight:600;line-height:1.05;font-stretch:87.5%;border-left:1.5px dashed rgba(32,37,33,.32);-webkit-mask:radial-gradient(circle 3px at 50% 0,transparent 96%,#000 100%) top/10px 100% repeat-x,radial-gradient(circle 3px at 50% 100%,transparent 96%,#000 100%) bottom/10px 100% repeat-x,radial-gradient(circle 3px at 100% 50%,transparent 96%,#000 100%) right/100% 10px repeat-y;-webkit-mask-composite:source-in;mask-composite:intersect}
+.tk-t small{font-family:var(--mono);font-size:12px;letter-spacing:.08em;font-weight:500}
+@container (width < 600px){.tk{flex-direction:column}.tk-b{grid-template-columns:1fr}.tk-b>div{border-left:0;border-top:1px solid rgba(32,37,33,.12);padding:21px}.tk-t{width:auto;flex-direction:row;align-items:center;padding:21px;font-size:20px}}
+
+/* 6 · Billboard (the homepage board, light, flat), on two posts to the footer */
+.bb{position:relative;margin:0 144px;padding:89px 89px 55px;border-radius:13px;background:var(--face);box-shadow:inset 0 0 0 8px var(--ink),0 2px 0 var(--edge),0 21px 34px -21px rgba(32,37,33,.45);display:grid;grid-template-columns:1fr auto;gap:55px;align-items:end}
+.bb::before,.bb::after{content:"";position:absolute;z-index:-1;top:calc(100% - 8px);width:13px;height:400px;background:linear-gradient(90deg,#4a4f48,var(--ink) 45%)}
+.bb::before{left:22%}.bb::after{right:22%}
+.bb .w{position:absolute;left:0;top:0;width:55px;height:55px;display:grid;place-items:center;border-radius:13px 0 13px 0;background:var(--ink)}
+.bb .w img{width:21px;filter:invert(1)}
+.bb .t{font-size:68px}
+@container (width < 600px){.bb{margin:0;padding:55px 21px 21px;grid-template-columns:1fr}.bb .t{font-size:42px}.bb::after{display:none}.bb::before{left:50%}}
+.legend{max-width:1512px;margin:13px auto 0;font-size:14px;line-height:1.5;color:var(--muted)}.legend b{color:var(--fg)}
+</style>
+</head>
+<body>
+<header class="top">
+  <div><div class="id">Review · HE-02</div><h1>Help page: the closing CTA</h1></div>
+  <div class="tools" data-g="o">
+    <button class="tbtn" data-v="kraft" aria-pressed="false">1 Kraft (built)</button>
+    <button class="tbtn" data-v="pylon" aria-pressed="true">2 Pylon</button>
+    <button class="tbtn" data-v="hang" aria-pressed="false">3 Hanging desk</button>
+    <button class="tbtn" data-v="board" aria-pressed="false">4 Help board</button>
+    <button class="tbtn" data-v="ticket" aria-pressed="false">5 Ticket</button>
+    <button class="tbtn" data-v="billboard" aria-pressed="false">6 Billboard</button>
+  </div>
+</header>
+<div class="top">
+  <div class="tools" data-g="s"><span class="id">Desk</span><button class="tbtn" data-v="open" aria-pressed="true">Open</button><button class="tbtn" data-v="closed" aria-pressed="false">Closed</button></div>
+  <div class="tools" data-g="d"><span class="id">Device</span><button class="tbtn" data-v="desktop" aria-pressed="true">Desktop</button><button class="tbtn" data-v="phone" aria-pressed="false">Phone</button></div>
+</div>
+
+<div class="wrap"><div class="stage" id="st" data-o="pylon" data-s="open">
+  <div class="faq"><div><span>Do you bring your own supplies?</span><span>+</span></div><div><span>Can I change my date?</span><span>+</span></div></div>
+
+  <!-- 1 -->
+  <section class="opt o-kraft"><div class="kr">
+    <div><h2 class="t">Still have a question?</h2><p class="l">Call us. A person answers, 8 AM – 8 PM, every day.</p></div>
+    <div><a class="call">Call +1 647 877 1411 <span>→</span></a><p class="more"><a>Email us</a> · <a>Get a free quote ↗</a></p></div>
+  </div></section>
+
+  <!-- 2 -->
+  <section class="opt o-pylon"><div class="py">
+    <div class="pl pl-a"><span class="w">?</span>
+      <div><h2 class="t">Still have a question?</h2><p class="l">Call us. A person answers, 8 AM – 8 PM, every day.</p></div>
+      <div><a class="call">Call +1 647 877 1411 <span>→</span></a><p class="more"><a>Email us</a> · <a>Get a free quote ↗</a></p></div>
+    </div>
+    <div class="pl pl-b"><span class="st"><i></i><span class="open">Help desk · open now</span><span class="closed">Help desk · opens 8 AM</span></span><small>A person answers · 8 AM – 8 PM · every day</small></div>
+  </div></section>
+
+  <!-- 3 -->
+  <section class="opt o-hang"><span class="hg-rail"></span><div class="hg">
+    <span class="hg-i">i</span>
+    <div><h2 class="t">Still have a question?</h2><p class="l">Call us. A person answers, 8 AM – 8 PM, every day.</p></div>
+    <div><a class="call y">Call +1 647 877 1411 <span>→</span></a><p class="more"><a>Email us</a> · <a>Get a free quote ↗</a></p></div>
+    <span class="lamp st"><i></i><span class="open">Open now</span><span class="closed">Opens 8 AM</span></span>
+  </div></section>
+
+  <!-- 4 -->
+  <section class="opt o-board"><div class="bd">
+    <div class="bd-h"><h2 class="t">Still have a question?</h2><span class="st"><i></i><span class="open">A person answers now · till 8 PM</span><span class="closed">Back at 8 AM · leave a message</span></span></div>
+    <a class="bd-r"><span>Call</span><b>+1 647 877 1411</b><em><span class="open">Answered now</span><span class="closed">From 8 AM</span></em><span>→</span></a>
+    <a class="bd-r"><span>Email</span><b>hello@onaway.ca</b><em>Reply within 2 hr</em><span>→</span></a>
+    <a class="bd-r"><span>Quote</span><b>Online</b><em>In writing · 2 hr</em><span>→</span></a>
+  </div></section>
+
+  <!-- 5 -->
+  <section class="opt o-ticket"><div class="tk">
+    <div class="tk-b"><div><small>Still have a question?</small><b>Talk to a person.</b></div><div><small>When</small><b>8 AM – 8 PM, every day</b></div><div><small>Or</small><b><a style="text-decoration:underline">Email us</a></b></div></div>
+    <a class="tk-t"><small><span class="open">Answered now</span><span class="closed">From 8 AM</span></small>Call us<span>→</span></a>
+  </div><p class="more" style="text-align:center">Rather do it online? <a>Get a free quote ↗</a></p></section>
+
+  <!-- 6 -->
+  <section class="opt o-billboard"><div class="bb">
+    <span class="w"><img src="assets/sym.png" alt=""></span>
+    <div><h2 class="t">Still have a question?</h2><p class="l">Call us. A person answers, 8 AM – 8 PM, every day.</p></div>
+    <div><a class="call y">Call +1 647 877 1411 <span>→</span></a><p class="more"><a>Email us</a> · <a>Get a free quote ↗</a></p></div>
+  </div></section>
+
+  <div class="foot">We’ll take it from here.</div>
+</div></div>
+
+<p class="legend"><b>1 Kraft</b> as built: a camel band, the call in Carbon, no yellow · <b>2 Pylon</b> the About pylon: the question on the top plate, the desk's live status on its own plate (open now / opens 8 AM) · <b>3 Hanging desk</b> the service boards: an information sign on a rail, a lamp lit while someone's in · <b>4 Help board</b> an arrival board of the three ways to reach us and when each answers · <b>5 Ticket</b> the Steps ticket, "Talk to a person", the tear-off calls · <b>6 Billboard</b> the homepage board, flat and light, on posts to the footer.</p>
+
+<script>
+(function () {
+  const st = document.getElementById('st');
+  const set = { o: (v) => (st.dataset.o = v), s: (v) => (st.dataset.s = v), d: (v) => document.body.classList.toggle('dev-phone', v === 'phone') };
+  document.querySelectorAll('[data-g]').forEach((g) => g.addEventListener('click', (e) => {
+    const b = e.target.closest('[data-v]'); if (!b) return;
+    g.querySelectorAll('[data-v]').forEach((x) => x.setAttribute('aria-pressed', String(x === b)));
+    set[g.dataset.g](b.dataset.v); fit();
+  }));
+  const wrap = document.querySelector('.wrap');
+  function fit() { const k = Math.min(1, wrap.clientWidth / st.offsetWidth); st.style.transform = `scale(${k})`; wrap.style.height = `${st.offsetHeight * k}px`; }
+  addEventListener('resize', fit); fit();
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,284 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Wrong Stop · 404 Concepts</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wdth,wght@75..100,400..700&family=Overpass+Mono:wght@400;500;600&display=swap">
+<link rel="stylesheet" href="shared.css">
+<style>
+/* NF-404 Wrong stop: six concepts in the brand's transit language, each in three layouts (split · centre · full),
+   on desktop (1512 × 860) and a phone (390 × 844). Review tools: concept, layout, device. Copy from the wireframe
+   (Copy Deck §10): "Wrong stop." · "This page has moved, or it was never here. Here's where to go next." Five links
+   and the quote, no dead end. */
+:root{--ink:#202521;--pap:#F7F2E7;--ye:#E4BB3F;--ru:#A9503E;--ca:#B49A78;--face:color-mix(in srgb,#202521 5%,#F7F2E7);--edge:color-mix(in srgb,#202521 80%,#B49A78);--line:rgba(32,37,33,.2)}
+.stage{height:860px}
+.dev-phone .wrap{max-width:390px}
+.dev-phone .stage{width:390px;height:844px}
+.stage{container-type:inline-size;position:relative}
+/* the site's bar */
+.bar{position:absolute;left:0;right:0;top:0;height:89px;z-index:20;display:flex;align-items:center;gap:34px;padding-left:20px;border-bottom:1px solid var(--line);background:var(--pap)}
+.bar img{height:34px}
+.bar nav{display:flex;gap:34px;margin:0 auto;font-size:16px;font-weight:500;font-stretch:87.5%}
+.bar .call{display:flex;align-items:center;height:100%;padding:0 34px;background:var(--ink);color:var(--pap);font-size:16px;font-weight:600;font-stretch:87.5%}
+.bar .q{display:flex;align-items:center;height:100%;padding:0 34px;background:var(--ye);font-size:16px;font-weight:600;font-stretch:87.5%}
+@container (width < 600px){.bar{height:55px;gap:0}.bar img{height:21px}.bar nav,.bar .call{display:none}.bar .q{margin-left:auto;padding:0 21px;font-size:14px}}
+.scene{position:absolute;inset:89px 0 0;display:none;padding:55px 64px;overflow:hidden}
+@container (width < 600px){.scene{inset:55px 0 0;padding:34px 20px}}
+[data-c="route"] .s-route,[data-c="board"] .s-board,[data-c="fell"] .s-fell,[data-c="void"] .s-void,[data-c="lake"] .s-lake,[data-c="pylon"] .s-pylon{display:grid}
+/* shared copy */
+.eb{font-family:var(--mono);font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:rgba(32,37,33,.6)}
+.h{font-family:var(--display);font-stretch:87.5%;font-weight:650;text-transform:uppercase;font-size:110px;line-height:.9;letter-spacing:-.012em;margin:13px 0 21px}
+.ld{font-size:20px;line-height:1.45;font-stretch:87.5%;max-width:34ch;color:rgba(32,37,33,.8);margin:0 0 34px}
+.btns{display:flex;gap:13px;flex-wrap:wrap}
+.btn{display:inline-flex;align-items:center;gap:21px;height:55px;padding:0 21px;background:var(--ye);font-size:20px;font-weight:600;font-stretch:87.5%}
+.btn.ghost{background:none;box-shadow:inset 0 0 0 1.5px var(--ink)}
+@container (width < 600px){.h{font-size:42px}.ld{font-size:16px}.btn{height:55px;font-size:16px;width:100%;justify-content:space-between}}
+/* layouts: split (copy left, picture right) · centre (stacked, centred) · full (the picture fills, the copy on a card) */
+.scene{grid-template-columns:5fr 7fr;gap:55px;align-items:center}
+[data-l="centre"] .scene{grid-template-columns:1fr;justify-items:center;text-align:center;align-content:center;gap:34px}
+[data-l="centre"] .scene .ld{margin-inline:auto}[data-l="centre"] .scene .btns{justify-content:center}
+[data-l="full"] .scene{grid-template-columns:1fr;padding:0}
+[data-l="full"] .scene .vis{position:absolute;inset:0}
+[data-l="full"] .scene .copy{position:relative;z-index:2;align-self:end;justify-self:start;margin:0 0 55px 64px;padding:34px;max-width:560px;background:var(--pap);box-shadow:inset 0 0 0 1px var(--line),0 21px 34px -21px rgba(32,37,33,.4)}
+[data-l="full"] .scene .copy .h{font-size:68px}
+@container (width < 600px){.scene,[data-l="centre"] .scene{grid-template-columns:1fr;align-content:start;gap:21px;text-align:left;justify-items:stretch}[data-l="centre"] .scene .btns{justify-content:flex-start}[data-l="full"] .scene .copy{margin:0 13px 21px;padding:21px}[data-l="full"] .scene .copy .h{font-size:42px}}
+.vis{position:relative;min-width:0}
+
+/* ---------- A · Route: the line runs past every page; this stop is a spur that ends at an X ---------- */
+.s-route .vis{display:grid;place-items:center}.s-route .vis svg{width:auto;height:560px;max-width:100%;overflow:visible}
+@container (width < 600px){.s-route .vis svg{height:420px}}
+.rt-line{stroke:var(--ink);stroke-width:8;fill:none;stroke-linecap:round}
+.rt-spur{stroke:var(--ru);stroke-width:8;fill:none;stroke-dasharray:2 16;stroke-linecap:round}
+.rt-stop{fill:var(--pap);stroke:var(--ink);stroke-width:4}
+.rt-lab{font-family:var(--display);font-stretch:87.5%;font-size:26px;font-weight:600;fill:var(--ink)}
+.rt-sub{font-family:var(--mono);font-size:12px;letter-spacing:.12em;fill:rgba(32,37,33,.55);text-transform:uppercase}
+.rt-x{stroke:var(--ru);stroke-width:8;stroke-linecap:round}
+.rt-you{font-family:var(--mono);font-size:12px;letter-spacing:.12em;fill:var(--ru)}
+.rt-crew{fill:var(--ye);stroke:var(--ink);stroke-width:2;animation:crew 6s cubic-bezier(.45,0,.55,1) infinite}
+@keyframes crew{0%,10%{transform:translate(0,0)}45%,55%{transform:translate(0,-360px)}90%,100%{transform:translate(0,0)}}
+.s-route a:hover .rt-stop{fill:var(--ye)}
+[data-l="full"] .s-route .vis{display:grid;place-items:center end;padding-right:89px}
+[data-l="full"] .s-route .vis svg{width:56%}
+
+/* ---------- B · Board: the page is a departures board; this stop isn't in service ---------- */
+.s-board .vis{background:#1b1f1c;border-radius:8px;padding:34px;box-shadow:inset 0 0 0 8px var(--ink),0 2px 0 var(--edge),0 34px 55px -30px rgba(32,37,33,.6);color:var(--pap);font-family:var(--mono);text-transform:uppercase;letter-spacing:.08em}
+.bd-head{display:flex;justify-content:space-between;font-size:12px;color:rgba(247,242,231,.55);padding-bottom:13px;border-bottom:1px solid rgba(247,242,231,.14)}
+.bd-alert{margin:21px 0;padding:13px 21px;border-radius:2px;background:rgba(228,187,63,.1);color:var(--ye);font-size:20px;display:flex;gap:21px;align-items:center}
+.bd-alert i{width:10px;height:10px;border-radius:50%;background:var(--ye);animation:blink 1.4s steps(2,jump-none) infinite}
+@keyframes blink{50%{opacity:.2}}
+.bd-row{display:grid;grid-template-columns:1fr 120px 140px 34px;gap:21px;align-items:center;padding:13px 0;border-bottom:1px solid rgba(247,242,231,.1);font-size:20px}
+.bd-row small{font-size:12px;color:rgba(247,242,231,.5)}
+.bd-row b{font-weight:500;color:var(--ye);font-size:14px}
+.bd-row:hover{background:rgba(247,242,231,.05)}
+.bd-row .ar{color:rgba(247,242,231,.6)}
+[data-l="full"] .s-board .vis{border-radius:0;box-shadow:none;padding:55px 64px 55px 700px}
+@container (width < 600px){.s-board .vis{padding:21px}.bd-row{grid-template-columns:1fr auto;font-size:16px}.bd-row small:not(.k),.bd-row .ar{display:none}.bd-alert{font-size:14px}[data-l="full"] .s-board .vis{padding:21px}}
+
+/* ---------- C · Fell: the services' hanging signs; this stop's sign hangs by one chain ---------- */
+.s-fell .vis{height:620px}
+.fl-rail{position:absolute;left:-64px;right:-64px;top:0;height:8px;background:linear-gradient(180deg,#3c413d,var(--ink) 60%)}
+.fl-sign{position:absolute;display:flex;align-items:center;gap:21px;height:89px;padding:0 21px 0 8px;border-radius:2px;background:var(--ink);color:var(--pap);box-shadow:inset 0 0 0 1px rgba(247,242,231,.14),0 2px 0 var(--edge),0 21px 34px -21px rgba(32,37,33,.55);transform-origin:var(--o,50%) 0;font-size:26px;font-weight:600;font-stretch:87.5%}
+.fl-sign::before,.fl-sign::after{content:"";position:absolute;bottom:100%;width:4px;height:var(--ch,55px);background:linear-gradient(90deg,#55594f,var(--ink) 60%)}
+.fl-sign::before{left:22%}.fl-sign::after{right:22%}
+.fl-sign .t{display:grid;place-items:center;width:72px;height:72px;background:#2c312d;font-family:var(--mono);font-size:14px}
+.fl-sign .ar{margin-left:auto;opacity:.7}
+.fl-sign:hover{background:var(--ye);color:var(--ink)}
+.fl-broken{--o:22%;background:var(--pap);color:var(--ink);box-shadow:inset 0 0 0 4px var(--ink),0 2px 0 var(--edge),0 34px 55px -21px rgba(32,37,33,.5);animation:swing 3.4s cubic-bezier(.45,0,.55,1) infinite alternate}
+.fl-broken::before,.fl-broken::after{display:none}
+.fl-chain{position:absolute;top:0;width:4px;background:linear-gradient(90deg,#55594f,var(--ink) 60%)}
+.fl-broken .t{background:var(--ru);color:var(--pap)}
+@keyframes swing{from{rotate:16deg}to{rotate:22deg}}
+[data-l="full"] .s-fell .vis{position:absolute;inset:0}
+@container (width < 600px){.s-fell .vis{height:420px}.fl-sign{height:55px;font-size:16px}.fl-sign .t{width:44px;height:44px;font-size:10px}}
+
+/* ---------- D · Void: the Steps ticket, stamped VOID ---------- */
+.s-void .vis{display:grid;place-items:center}
+.tk{position:relative;display:flex;width:min(100%,760px);filter:drop-shadow(0 21px 21px rgba(32,37,33,.18));rotate:-2deg}
+.tk-body{flex:1;display:grid;grid-template-columns:55px 1fr;min-height:340px;background:var(--face);
+  -webkit-mask:radial-gradient(circle 3px at 50% 0,transparent 96%,#000 100%) top/10px 100% repeat-x,radial-gradient(circle 3px at 50% 100%,transparent 96%,#000 100%) bottom/10px 100% repeat-x;-webkit-mask-composite:source-in;mask-composite:intersect}
+.tk-stub{background:color-mix(in srgb,var(--ink) 7%,var(--pap));display:grid;place-items:end center;padding-bottom:34px}
+.tk-stub img{width:21px;opacity:.6}
+.tk-f{display:grid;grid-template-columns:repeat(3,1fr)}
+.tk-f div{padding:34px 21px;border-left:1px solid rgba(32,37,33,.12);display:flex;flex-direction:column;gap:8px}
+.tk-f div:first-child{border-left:0}
+.tk-f small{font-family:var(--mono);font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:rgba(32,37,33,.55)}
+.tk-f b{font-size:26px;font-weight:600;font-stretch:87.5%}
+.tk-f s{color:rgba(32,37,33,.45)}
+.tk-stamp{position:absolute;right:190px;bottom:34px;display:grid;place-items:center;width:144px;height:144px;border-radius:50%;box-shadow:inset 0 0 0 3px var(--ru),inset 0 0 0 9px var(--face),inset 0 0 0 10px var(--ru);color:var(--ru);font-family:var(--mono);font-weight:700;letter-spacing:.12em;text-align:center;rotate:-14deg;line-height:1.1;animation:stamp .5s cubic-bezier(.3,.7,.3,1) .4s both}
+.tk-stamp b{font-size:34px;display:block}
+@keyframes stamp{from{scale:1.6;opacity:0}to{scale:1;opacity:.92}}
+.tk-tear{width:144px;display:flex;flex-direction:column;justify-content:space-between;padding:34px 21px;background:var(--ye);font-size:26px;font-weight:600;line-height:1.05;font-stretch:87.5%;-webkit-mask:radial-gradient(circle 3px at 50% 0,transparent 96%,#000 100%) top/10px 100% repeat-x,radial-gradient(circle 3px at 50% 100%,transparent 96%,#000 100%) bottom/10px 100% repeat-x,radial-gradient(circle 3px at 100% 50%,transparent 96%,#000 100%) right/100% 10px repeat-y;-webkit-mask-composite:source-in;mask-composite:intersect;border-left:1.5px dashed rgba(32,37,33,.32)}
+.tk-tear:hover{translate:2px 2px;rotate:2deg}
+.alt{display:flex;flex-wrap:wrap;gap:8px 21px;margin-top:34px;font-size:16px;font-stretch:87.5%}
+.alt a{text-decoration:underline;text-underline-offset:4px}
+@container (width < 600px){.tk{flex-direction:column;rotate:-1deg}.tk-body{grid-template-columns:1fr;min-height:0}.tk-stub{display:none}.tk-f{grid-template-columns:1fr}.tk-f div{border-left:0;border-top:1px solid rgba(32,37,33,.12);padding:13px 21px}.tk-f b{font-size:20px}.tk-tear{width:auto;flex-direction:row;padding:21px;font-size:20px}.tk-stamp{right:21px;bottom:89px;width:89px;height:89px;font-size:10px}.tk-stamp b{font-size:20px}}
+
+/* ---------- E · Lake: the GT-10 map, a pin in Lake Ontario ---------- */
+.s-lake .vis{height:100%;min-height:600px;border-radius:2px;overflow:hidden;background:url(assets/gta-map.jpg) 55% 40%/cover}
+.lk-pin{position:absolute;left:60%;top:86%;translate:-50% -100%;display:flex;flex-direction:column;align-items:center;animation:bob 2.6s ease-in-out infinite}
+.lk-pin span{padding:8px 13px;background:var(--pap);font-family:var(--mono);font-size:12px;letter-spacing:.12em;text-transform:uppercase;box-shadow:0 8px 21px -8px rgba(32,37,33,.4)}
+.lk-pin span::before{content:"";display:inline-block;width:8px;height:8px;margin-right:8px;background:var(--ru)}
+.lk-pin i{width:2px;height:34px;background:var(--ink)}
+.lk-ring{position:absolute;left:60%;top:86%;width:34px;height:13px;translate:-50% -50%;border-radius:50%;border:2px solid rgba(247,242,231,.8);animation:ripple 2.6s ease-out infinite}
+@keyframes bob{50%{translate:-50% calc(-100% - 6px)}}
+@keyframes ripple{from{scale:.4;opacity:1}to{scale:2.6;opacity:0}}
+.lk-sent{font-size:42px;font-weight:600;line-height:1.05;letter-spacing:-.02em;font-stretch:87.5%;margin:13px 0 21px}
+.lk-sent s{color:var(--ru);text-decoration-thickness:4px}
+.lk-check{display:flex;margin:21px 0 0;max-width:420px}
+.lk-check input{flex:1;height:55px;padding:0 13px;border:0;border-bottom:1.5px solid var(--ink);background:color-mix(in srgb,var(--ink) 5%,var(--pap));font:inherit;font-size:16px}
+.lk-check button{width:89px;border:0;background:var(--ink);color:var(--pap);font:inherit;font-weight:600}
+[data-l="full"] .s-lake .vis{border-radius:0}
+@container (width < 600px){.s-lake .vis{min-height:300px;order:-1}.lk-sent{font-size:26px}}
+
+/* ---------- F · Pylon: a wayfinding pylon; every plate points somewhere real ---------- */
+.s-pylon .vis{display:grid;place-items:center}
+.py{position:relative;display:flex;flex-direction:column;gap:13px;width:440px}
+.py::before,.py::after{content:"";position:absolute;z-index:-1;top:-34px;bottom:-200px;width:21px;border-radius:21px 21px 0 0;background:linear-gradient(90deg,#4a4f48,var(--ink) 45%)}
+.py::before{left:21%}.py::after{right:21%}
+.py-top{display:flex;align-items:center;gap:21px;padding:21px 34px;border-radius:13px;background:var(--ink);color:var(--pap);box-shadow:0 2px 0 var(--edge),0 21px 34px -21px rgba(32,37,33,.5)}
+.py-top b{font-family:var(--mono);font-size:42px;font-weight:600;color:var(--ye);letter-spacing:.04em}
+.py-top span{font-size:20px;font-weight:600;font-stretch:87.5%;line-height:1.15}
+.py-p{display:flex;align-items:center;justify-content:space-between;height:68px;padding:0 34px;border-radius:13px;background:var(--face);box-shadow:inset 0 0 0 8px var(--ink),0 2px 0 var(--edge),0 21px 34px -21px rgba(32,37,33,.4);font-size:26px;font-weight:600;font-stretch:87.5%}
+.py-p em{font-style:normal;font-size:26px}
+.py-p.l{flex-direction:row-reverse}
+.py-p:hover{background:var(--ye)}
+.py-p.q{background:var(--ye)}
+[data-l="full"] .s-pylon .vis{position:absolute;inset:0 64px 0 auto;width:52%}
+@container (width < 600px){.py{width:100%}.py-p{height:55px;font-size:20px;padding:0 21px}.py-top b{font-size:26px}.py-top span{font-size:16px}}
+
+/* the review chrome */
+.legend{max-width:1512px;margin:13px auto 0;font-size:14px;line-height:1.5;color:var(--muted)}
+.legend b{color:var(--fg)}
+</style>
+</head>
+<body>
+<header class="top">
+  <div><div class="id">Review · NF-404</div><h1>Wrong stop: 404 concepts</h1></div>
+  <div class="tools" data-g="c">
+    <button class="tbtn" data-v="route" aria-pressed="true">A Route</button>
+    <button class="tbtn" data-v="board" aria-pressed="false">B Board</button>
+    <button class="tbtn" data-v="fell" aria-pressed="false">C Fell</button>
+    <button class="tbtn" data-v="void" aria-pressed="false">D Void</button>
+    <button class="tbtn" data-v="lake" aria-pressed="false">E Lake</button>
+    <button class="tbtn" data-v="pylon" aria-pressed="false">F Pylon</button>
+  </div>
+</header>
+<div class="top">
+  <div class="tools" data-g="l"><span class="id">Layout</span>
+    <button class="tbtn" data-v="split" aria-pressed="true">Split</button>
+    <button class="tbtn" data-v="centre" aria-pressed="false">Centre</button>
+    <button class="tbtn" data-v="full" aria-pressed="false">Full</button>
+  </div>
+  <div class="tools" data-g="d"><span class="id">Device</span>
+    <button class="tbtn" data-v="desktop" aria-pressed="true">Desktop</button>
+    <button class="tbtn" data-v="phone" aria-pressed="false">Phone</button>
+  </div>
+</div>
+
+<div class="wrap"><div class="stage" id="st" data-c="route" data-l="split">
+  <header class="bar"><img src="assets/wordmark.svg" alt="ONAWAY"><nav><span>Services +</span><span>About</span><span>Help</span></nav><span class="call">+1 647 877 1411</span><span class="q">Get a free quote</span></header>
+
+  <!-- A · Route -->
+  <section class="scene s-route">
+    <div class="copy"><p class="eb">Error 404 · Off the route</p><h2 class="h">Wrong stop.</h2><p class="ld">This page has moved, or it was never here. Here’s where to go next.</p><div class="btns"><a class="btn">Get a free quote <span>→</span></a><a class="btn ghost">Call now</a></div></div>
+    <div class="vis"><svg viewBox="0 0 520 600" aria-label="Where to go next">
+      <path class="rt-line" d="M120 40 V560"/>
+      <path class="rt-spur" d="M120 365 H330 L370 345 H400"/>
+      <g class="rt-x" transform="translate(432 345)"><path d="M-16 -16 L16 16 M16 -16 L-16 16"/></g>
+      <text class="rt-you" x="300" y="392">YOU ARE HERE · 404</text>
+      <a><circle class="rt-stop" cx="120" cy="60" r="16"/><text class="rt-lab" x="160" y="58">Home</text><text class="rt-sub" x="160" y="80">Start again</text></a>
+      <a><circle class="rt-stop" cx="120" cy="180" r="16"/><text class="rt-lab" x="160" y="178">Cleaning</text><text class="rt-sub" x="160" y="200">Homes and workplaces</text></a>
+      <a><circle class="rt-stop" cx="120" cy="300" r="16"/><text class="rt-lab" x="160" y="298">Moving</text><text class="rt-sub" x="160" y="320">Condos to offices</text></a>
+      <a><circle class="rt-stop" cx="120" cy="420" r="16"/><text class="rt-lab" x="160" y="418">Delivery</text><text class="rt-sub" x="160" y="440">Same-day or scheduled</text></a>
+      <a><circle class="rt-stop" cx="120" cy="540" r="16"/><text class="rt-lab" x="160" y="538">Help</text><text class="rt-sub" x="160" y="560">Ask a person</text></a>
+      <rect class="rt-crew" x="112" y="512" width="16" height="16" rx="2"/>
+    </svg></div>
+  </section>
+
+  <!-- B · Board -->
+  <section class="scene s-board">
+    <div class="copy"><p class="eb">Error 404</p><h2 class="h">Wrong stop.</h2><p class="ld">This page has moved, or it was never here. Every other stop is running on time.</p><div class="btns"><a class="btn">Get a free quote <span>→</span></a></div></div>
+    <div class="vis">
+      <div class="bd-head"><span>Onaway · Departures</span><span>Toronto · 6:42 PM</span></div>
+      <div class="bd-alert"><i></i>This stop is not in service · 404</div>
+      <a class="bd-row"><span>Home</span><small>Platform 1</small><b>Boarding</b><span class="ar">→</span></a>
+      <a class="bd-row"><span>Cleaning</span><small>Platform 2</small><b>On time</b><span class="ar">→</span></a>
+      <a class="bd-row"><span>Moving</span><small>Platform 3</small><b>On time</b><span class="ar">→</span></a>
+      <a class="bd-row"><span>Delivery</span><small>Platform 4</small><b>Same day</b><span class="ar">→</span></a>
+      <a class="bd-row"><span>Help</span><small>Platform 5</small><b>Open till 8</b><span class="ar">→</span></a>
+      <a class="bd-row"><span>Get a free quote</span><small class="k">Express</small><b>2 hr</b><span class="ar">→</span></a>
+    </div>
+  </section>
+
+  <!-- C · Fell -->
+  <section class="scene s-fell">
+    <div class="copy"><p class="eb">Error 404</p><h2 class="h">Wrong stop.</h2><p class="ld">This page has moved, or it was never here. The other signs are still up.</p><div class="btns"><a class="btn">Get a free quote <span>→</span></a><a class="btn ghost">Call now</a></div></div>
+    <div class="vis">
+      <span class="fl-rail"></span>
+      <a class="fl-sign" style="left:0;top:89px;width:46%;--ch:89px"><span class="t">01</span>Home<span class="ar">→</span></a>
+      <a class="fl-sign" style="left:52%;top:89px;width:46%;--ch:89px"><span class="t">02</span>Cleaning<span class="ar">→</span></a>
+      <a class="fl-sign" style="left:0;top:233px;width:46%;--ch:233px"><span class="t">03</span>Moving<span class="ar">→</span></a>
+      <a class="fl-sign" style="left:52%;top:233px;width:46%;--ch:233px"><span class="t">04</span>Delivery<span class="ar">→</span></a>
+      <a class="fl-sign" style="left:0;top:377px;width:46%;--ch:377px"><span class="t">05</span>Help<span class="ar">→</span></a>
+      <span class="fl-chain" style="left:calc(52% + 46% * .22 - 2px);height:377px"></span><span class="fl-sign fl-broken" style="left:52%;top:377px;width:46%;--ch:377px"><span class="t">404</span>Wrong stop</span>
+    </div>
+  </section>
+
+  <!-- D · Void -->
+  <section class="scene s-void">
+    <div class="copy"><p class="eb">Error 404</p><h2 class="h">Wrong stop.</h2><p class="ld">This page has moved, or it was never here. Your ticket’s no good here, but every other route is.</p><div class="alt"><a>Home</a><a>Cleaning</a><a>Moving</a><a>Delivery</a><a>Help</a></div></div>
+    <div class="vis"><div class="tk">
+      <div class="tk-body"><div class="tk-stub"><img src="assets/sym.png" alt=""></div>
+        <div class="tk-f"><div><small>From</small><b>This page</b></div><div><small>To</small><b><s>Nowhere</s></b></div><div><small>Status</small><b>Wrong stop</b></div></div></div>
+      <a class="tk-tear">Back to the start<span>→</span></a>
+      <span class="tk-stamp"><span>Void<b>404</b></span></span>
+    </div></div>
+  </section>
+
+  <!-- E · Lake -->
+  <section class="scene s-lake">
+    <div class="copy"><p class="eb">Error 404</p><p class="lk-sent">We’ll be in <s>Lake Ontario</s> on your date.</p><h2 class="h" style="font-size:68px">Wrong stop.</h2><p class="ld">This page has moved, or it was never here. Tell us where you meant, or start again.</p>
+      <form class="lk-check" onsubmit="return false"><input placeholder="Postal code or town"><button>Check</button></form>
+      <div class="alt"><a>Home</a><a>Cleaning</a><a>Moving</a><a>Delivery</a><a>Help</a></div></div>
+    <div class="vis"><span class="lk-ring"></span><span class="lk-pin"><span>You are here</span><i></i></span></div>
+  </section>
+
+  <!-- F · Pylon -->
+  <section class="scene s-pylon">
+    <div class="copy"><p class="eb">Error 404</p><h2 class="h">Wrong stop.</h2><p class="ld">This page has moved, or it was never here. Follow the signs.</p><div class="btns"><a class="btn ghost">Call now</a></div></div>
+    <div class="vis"><div class="py">
+      <div class="py-top"><b>404</b><span>You are off the route.<br>All routes this way.</span></div>
+      <a class="py-p l"><span>Home</span><em>←</em></a>
+      <a class="py-p"><span>Cleaning</span><em>→</em></a>
+      <a class="py-p"><span>Moving</span><em>→</em></a>
+      <a class="py-p l"><span>Delivery</span><em>←</em></a>
+      <a class="py-p"><span>Help</span><em>↑</em></a>
+      <a class="py-p q"><span>Get a free quote</span><em>→</em></a>
+    </div></div>
+  </section>
+</div></div>
+
+<p class="legend"><b>A Route</b> every page is a stop on one line; this page is a dashed spur that ends at an X, the crew square runs the line · <b>B Board</b> a departures board: this stop isn't in service, every other one is on time (each row a link) · <b>C Fell</b> the Services signs on their rail; this stop's sign hangs by one chain, swinging · <b>D Void</b> the Steps ticket, stamped VOID, the tear-off takes you back · <b>E Lake</b> the GT-10 map with the pin in Lake Ontario, its sentence struck through, the postal check kept · <b>F Pylon</b> a wayfinding pylon, every plate points somewhere real.</p>
+
+<script>
+(function () {
+  const st = document.getElementById('st');
+  const set = { c: (v) => (st.dataset.c = v), l: (v) => (st.dataset.l = v), d: (v) => document.body.classList.toggle('dev-phone', v === 'phone') };
+  document.querySelectorAll('[data-g]').forEach((g) => g.addEventListener('click', (e) => {
+    const b = e.target.closest('[data-v]'); if (!b) return;
+    g.querySelectorAll('[data-v]').forEach((x) => x.setAttribute('aria-pressed', String(x === b)));
+    set[g.dataset.g](b.dataset.v); fit();
+  }));
+  const wrap = document.querySelector('.wrap');
+  function fit() {
+    const w = st.offsetWidth, h = st.offsetHeight;
+    const k = Math.min(1, wrap.clientWidth / w);
+    st.style.transform = `scale(${k})`; wrap.style.height = `${h * k}px`;
+  }
+  addEventListener('resize', fit); fit();
+})();
+</script>
+</body>
+</html>
