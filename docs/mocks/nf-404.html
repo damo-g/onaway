@@ -76,8 +76,7 @@ svg{flex:none}
 .py-head{position:relative;padding:55px 89px 34px;border-radius:13px;background:var(--sp);color:var(--si);--tile:var(--sp);box-shadow:var(--sf),0 2px 0 var(--edge),0 21px 34px -21px rgba(32,37,33,.55)}
 .py-head .w{position:absolute;left:0;top:0}
 .r404{display:none;position:absolute;right:0;top:0;height:55px;padding:0 21px;place-items:center;border-radius:0 13px 0 13px;background:var(--sw);color:var(--pap);font-family:var(--mono);font-weight:600;font-size:20px;letter-spacing:.08em}
-[data-rt="box"] .r404,[data-rt="rust"] .r404{display:grid}
-[data-rt="rust"] .r404{color:color-mix(in srgb,var(--ru) 55%,var(--pap))}
+[data-rt="box"] .r404{display:grid}
 .py-head .ld{color:var(--sm);margin-top:21px}
 .py-head .lk{margin-top:21px}
 .py-plates{display:grid;gap:8px;margin-top:13px}
@@ -99,12 +98,13 @@ svg{flex:none}
 .hsg{display:flex;gap:13px;width:1060px;padding:21px;border-radius:13px;background:var(--ink);box-shadow:inset 0 0 0 1px rgba(247,242,231,.1),0 2px 0 var(--edge),0 34px 55px -30px rgba(32,37,33,.55)}
 .hsg .dmf{flex:1;height:182px}
 .hsg .rt{display:none;flex:none;width:260px;height:182px;box-shadow:13px 0 0 -11px rgba(247,242,231,.14)}
-[data-rt="box"] .hsg .rt,[data-rt="rust"] .hsg .rt{display:block}
-[data-rt="box"] .hsg :is(.dmf,.rt),[data-rt="rust"] .hsg :is(.dmf,.rt){height:140px}
-[data-rt="rust"] .hsg .rt{color:color-mix(in srgb,var(--ru) 70%,var(--pap))}
+[data-rt="box"] .hsg .rt{display:block}
+[data-rt="box"] .hsg :is(.dmf,.rt){height:140px}
 /* the fields never push past the sign: they size to it, and their dots are drawn to that size */
 .hsg :is(.dmf,.rt){min-width:0;overflow:hidden}
-[data-dc="yellow"] .hsg{color:var(--ye)}[data-dc="rust"] .hsg{color:color-mix(in srgb,var(--ru) 70%,var(--pap))}[data-dc="paper"] .hsg{color:var(--pap)}
+[data-dc="yellow"] .hsg{color:var(--ye)}[data-dc="rust"] .hsg{color:color-mix(in srgb,var(--ru) 70%,var(--pap))}
+[data-dc="rustb"] .hsg{color:color-mix(in srgb,var(--ru) 55%,var(--pap))}
+[data-dc="rusta"] .hsg{color:var(--ru)}[data-dc="paper"] .hsg{color:var(--pap)}
 .hd-sub .ld{color:rgba(32,37,33,.8);text-align:center}
 .hd-stops{width:760px}
 .hd-stops .lnk{height:55px;font-size:26px;font-weight:600;font-stretch:87.5%;border-bottom:1px solid var(--line)}
@@ -249,8 +249,15 @@ svg{flex:none}
   .stamp{right:13px;top:13px;bottom:auto;width:89px;height:89px;font-size:8px}.stamp b{font-size:21px}
   .lb{width:100%;grid-template-columns:1fr}.lb .code{grid-row:auto;grid-column:auto;flex-direction:row;align-items:center}.lb .code b{font-size:42px}
   .lb .bar-c{display:none}.ret-row{flex-direction:column;align-items:stretch;gap:13px}
-  .hsg{flex-direction:column}.hsg .rt,[data-rt="box"] .hsg .rt{width:auto;height:55px;box-shadow:0 8px 0 -6px rgba(247,242,231,.14)}[data-rt="box"] .hsg .dmf{height:89px}
+  .hsg{flex-direction:column}.hsg :is(.dmf,.rt){flex:none}.hsg .dmf{height:89px}.hsg .rt,[data-rt="box"] .hsg .rt{width:auto;height:55px;box-shadow:0 8px 0 -6px rgba(247,242,231,.14)}[data-rt="box"] .hsg .dmf{height:89px}
   .hy-lead{flex-direction:column;align-items:flex-start;padding:21px}
+  .s-hyb .py{width:auto}
+  .s-hyb .hsg{padding:13px}
+  [data-rt] .s-hyb .hsg .rt{width:auto;height:55px}
+  [data-rt] .s-hyb .hsg .dmf{height:89px}
+  [data-pf] .s-head2 .hg2-row{width:100%!important}
+  [data-pf="fan"] .s-head2 .hc:nth-child(even){translate:34px 0}[data-pf="fan"] .s-head2 .hg2-row{padding-right:34px}
+  [data-pf] .s-head2 .hsg .rt{height:55px!important}[data-pf] .s-head2 .hsg .dmf{height:89px!important}
   .hg2{width:100%}.hg2-row{grid-template-columns:1fr 1fr;gap:34px 13px}.hc{height:55px;font-size:16px;padding:0 13px}
   .s-head2 .ld{text-align:left}
 }
@@ -271,10 +278,10 @@ svg{flex:none}
   <div class="tools" data-g="hx"><span class="id">Headline</span><button class="tbtn" data-v="ink" data-name="Headline in the sign's ink">Sign's ink</button><button class="tbtn" data-v="rust" data-name="Rust headline">Rust</button></div>
   <div class="tools" data-g="l"><span class="id">Layout</span><button class="tbtn" data-v="centre">Centre</button><button class="tbtn" data-v="split">Split</button></div>
   <div class="tools" data-g="pf"><span class="id">Plates</span><button class="tbtn" data-v="stack" data-name="Stacked plates">Stack</button><button class="tbtn" data-v="grid" data-name="Plates in a grid">Grid</button><button class="tbtn" data-v="fan" data-name="Fanned plates">Fan</button></div>
-  <div class="tools" data-g="rt"><span class="id">404</span><button class="tbtn" data-v="rust" data-name="404 in rust, in its box">Box, rust 404</button><button class="tbtn" data-v="box" data-name="404 in its box">Box</button><button class="tbtn" data-v="off" data-name="No 404">Off</button></div>
+  <div class="tools" data-g="rt"><span class="id">404</span><button class="tbtn" data-v="box" data-name="404 in its box">Box</button><button class="tbtn" data-v="off" data-name="No 404">Off</button></div>
   <div class="tools" data-g="hf"><span class="id">Stops hang from</span><button class="tbtn" data-v="bar" data-name="Stops hang from a bar">A bar</button><button class="tbtn" data-v="sign" data-name="Stops hang from the sign">The sign</button><button class="tbtn" data-v="pylon" data-name="Stops on a pylon of their own">Their own pylon</button></div>
   <div class="tools" data-g="dm"><span class="id">Dots</span><button class="tbtn" data-v="board" data-name="Board dots">Board</button><button class="tbtn" data-v="glow" data-name="Glowing dots">Glow</button></div>
-  <div class="tools" data-g="dc"><span class="id">Lit</span><button class="tbtn" data-v="yellow" data-name="Yellow">Yellow</button><button class="tbtn" data-v="rust" data-name="Rust, lifted">Rust (lifted)</button><button class="tbtn" data-v="paper" data-name="Paper">Paper</button></div>
+  <div class="tools" data-g="dc"><span class="id">Lit</span><button class="tbtn" data-v="yellow" data-name="Yellow">Yellow</button><button class="tbtn" data-v="rust" data-name="Rust, lifted">Rust, lifted</button><button class="tbtn" data-v="rustb" data-name="Rust, bright">Rust, bright</button><button class="tbtn" data-v="rusta" data-name="Rust, as is">Rust, as is</button><button class="tbtn" data-v="paper" data-name="Paper">Paper</button></div>
   <div class="tools" data-g="lb"><span class="id">Label</span><button class="tbtn" data-v="simple" data-name="Simple label">Simple</button><button class="tbtn" data-v="full" data-name="Full label">Full</button></div>
   <div class="tools" data-g="edge"><span class="id">Edge</span><button class="tbtn" data-v="perf" data-name="Perforated">Perforated</button><button class="tbtn" data-v="straight" data-name="Straight edge">Straight</button></div>
   <div class="tools" data-g="sg"><span class="id">Stop sign</span><button class="tbtn" data-v="lead" data-name="Picto + arrow">Picto + arrow</button><button class="tbtn" data-v="swap" data-name="Arrow → picto">Arrow → picto</button><button class="tbtn" data-v="picto" data-name="Picto only">Picto only</button></div>
@@ -285,7 +292,7 @@ svg{flex:none}
 </div>
 <section class="score" id="score" aria-label="Scores"></section>
 
-<div class="wrap"><div class="stage" id="st" data-c="pylon" data-col="paper" data-hx="rust" data-l="centre" data-pf="grid" data-dm="board" data-dc="yellow" data-rt="box" data-hf="bar" data-lb="simple" data-edge="perf" data-sg="lead" data-ar="right">
+<div class="wrap"><div class="stage" id="st" data-c="pylon" data-col="paper" data-hx="rust" data-l="centre" data-pf="grid" data-dm="board" data-dc="rust" data-rt="box" data-hf="bar" data-lb="simple" data-edge="perf" data-sg="lead" data-ar="right">
   <header class="bar"><img src="assets/wordmark.svg" alt="ONAWAY"><nav><span>Services +</span><span>About</span><span>Help</span></nav><span class="call">+1 647 877 1411</span><span class="q">Get a free quote</span></header>
 
   <!-- 1 · Pylon -->
@@ -427,7 +434,7 @@ svg{flex:none}
      (rust is the error's colour, best on the words rather than the hardware; rust on Carbon fails contrast at 2.5 : 1)
      and the message (no repeats, no actions a lost visitor doesn't need). */
   const headline = (st) => st.hx !== 'rust' ? 0 : ({ paper: 7, carbon: -9, rust: -20, camel: -10 })[st.col];
-  const dots = { dm: { board: 2, glow: 0 }, dc: { yellow: 3, rust: 1, paper: 0 }, rt: { rust: 5, box: 3, off: 0 } };
+  const dots = { dm: { board: 2, glow: 0 }, dc: { rust: 5, rustb: 4, yellow: 3, paper: 0, rusta: -3 }, rt: { box: 4, off: 0 } };
   Score({
     key: 'c', preferred: 'pylon',
     common: {
@@ -436,7 +443,7 @@ svg{flex:none}
       view: { flat: 0, angled: -1, reverse: -2 }, ang: { 2: 1, 4: -1, 8: -6 }, pf: { grid: 2, stack: 0, fan: 1 }, ...dots
     },
     styles: {
-      pylon: { name: '1 Pylon', base: 82, uses: ['col', 'hx', 'rt', 'l', 'pf', 'sg', 'ar', 'view', 'ang'], mods: { rt: { rust: 1, box: 1, off: 0 } }, pair: headline,
+      pylon: { name: '1 Pylon', base: 82, uses: ['col', 'hx', 'rt', 'l', 'pf', 'sg', 'ar', 'view', 'ang'], mods: { rt: { box: 1, off: 0 } }, pair: headline,
         note: 'Still the clearest: WRONG STOP set in type is the most legible headline any of these has, and the Paper plate with it in rust keeps the colour on the message. The 404 tile in the corner helps a little (the headline already says it).' },
       hyb: { name: '2 Pylon × headsign', base: 80, uses: ['dm', 'dc', 'rt', 'pf', 'sg', 'ar', 'view', 'ang'],
         note: 'The world where the headsign comes into play: the pylon\'s head plate becomes the sign, 404 in its route box, WRONG STOP lit. It keeps the pylon\'s order (sign, line, stops) and borrows the homepage\'s dots. It gives up a little legibility (dots against type) and puts the line on a plate of its own.' },
