@@ -47,17 +47,24 @@
       </div>
     </section>
 
-    {{!-- End band: the Cleaning closing panel shell (CC-02b), a person to call --}}
-    <section class="ccta help-end" data-section="helpend" aria-labelledby="help-end-title">
-      <div class="ccta__panel">
-        <div class="help-end__text">
-          <h2 id="help-end-title" class="help-end__title">Still have a question?</h2>
-          <p class="ccta__lead">Call us. A person answers, 8 AM – 8 PM, every day.</p>
+    {{!-- HE-02 N1 Help point (docs/mocks/help-cta.html): the question on the paper; everything you can do on the
+         intercom card: press to call, or the smaller key to email. The lamp is lit while someone's in (8 AM – 8 PM,
+         Toronto). Behaviour and panel options: src/js/sections/helpend.js --}}
+    <section class="help-end grid-site" data-section="helpend" aria-labelledby="help-end-title">
+      <div class="help-end__text">
+        <h2 id="help-end-title" class="help-end__title">Still have a question?</h2>
+        <p class="help-end__lead">Call us. A person answers, 8 AM – 8 PM, every day.</p>
+        <a class="help-end__mail" href="mailto:hello@onaway.ca">{{{icon "mail-01"}}}<span>Email us</span></a>
+      </div>
+      <div class="help-point">
+        <span class="help-point__w" aria-hidden="true"><svg viewBox="-2 -2 88 86"><path fill="currentColor" d="M0,80C.14,77.73-.02,11.64.03,9.23l11.67-1.12s.01,40.19-.1,55.51c20.63-10.95,25.77-37.76,25.47-59.5,2.65-.22,9.1-.87,11.81-1.15-.51,20.26,3.46,45.8,24.97,53.64.05-15.31.05-40.2.07-55.53l11.65-1.08v70.04c-17.66,4.6-35.16-10.2-42.26-25.54-7.02,17.45-23.22,35.59-43.32,35.5Z"/></svg></span>
+        <span class="help-point__lamp" role="img" aria-label="The help desk is open now" data-help-lamp></span>
+        <p class="help-point__name" aria-hidden="true">Help<br>point</p>
+        <div class="help-point__keys">
+          <a class="help-point__key" href="tel:+16478771411"><span class="help-point__btn" aria-hidden="true"><span>{{{icon "call-02"}}}</span></span><span class="help-point__label">Press to call<span class="help-point__sr"> +1 647 877 1411</span></span></a>
+          <a class="help-point__key help-point__key--sm" href="mailto:hello@onaway.ca"><span class="help-point__btn" aria-hidden="true"><span>{{{icon "mail-01"}}}</span></span><span class="help-point__label">Email us</span></a>
         </div>
-        <div class="help-end__acts">
-          <a class="ccta__cta" href="tel:+16478771411">Call +1 647 877 1411 <span aria-hidden="true">{{{icon "arrow-right-02"}}}</span></a>
-          <p class="help-end__links"><a class="ccta__call" href="mailto:hello@onaway.ca">Email us</a> <span aria-hidden="true">·</span> <a class="ccta__call" href="/quote/">Get a free quote <span aria-hidden="true">{{{icon "arrow-right-02"}}}</span></a></p>
-        </div>
+        <a class="help-point__link" href="mailto:hello@onaway.ca">{{{icon "mail-01"}}}<span>Email us</span></a>
       </div>
     </section>
   </main>

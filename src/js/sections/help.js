@@ -1,8 +1,4 @@
 import { prefersReducedMotion } from '../motion.js';
-import { registerOptions } from '../options.js';
-
-// The end band's panel (help.html): kraft (locked: camel at 22%, Carbon button) | light (a pale tint of Carbon) | line
-registerOptions('helpend', { tone: ['kraft', 'light', 'line'] });
 
 // Help page: CH-02b Ask in Place rows, grouped, with a sticky topic list (a chip row on phones).
 // Ask a question and its row opens in place: typing dots, then the answer types into a bubble from the W.

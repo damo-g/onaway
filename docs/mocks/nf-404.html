@@ -1,0 +1,463 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Wrong Stop · 404 Concepts</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wdth,wght@75..100,400..700&family=Overpass+Mono:wght@400;500;600&display=swap">
+<link rel="stylesheet" href="shared.css">
+<style>
+/* NF-404 Wrong stop, round 4 (Nov 2026). Hanging retired. Four concepts:
+   1 Pylon: the head plate is the headline; the stops flow under it.
+   2 Headsign: WRONG STOP in the homepage's dot matrix (the Services cards' 5 × 7 face, the whole field of unlit
+     dots), large; Board (as the homepage) or Glow (the lit dots bleed a little). 404 in a route box, in rust.
+   3 Label: the parcel label with the Steps ticket's perforated edge. Simple, or Full (round 2's grid, cut down: no
+     eyebrow, no service; Return to under the label, where the buttons were).
+   4 Board: the departures board, editorial.
+   No quote or call buttons on the page itself (the navbar carries both). Headline colour: the sign's own ink, or rust.
+   The score panel ranks every concept (0–100). */
+:root{--ink:#202521;--pap:#F7F2E7;--ye:#E4BB3F;--ru:#A9503E;--ca:#B49A78;--face:color-mix(in srgb,#202521 5%,#F7F2E7);--edge:color-mix(in srgb,#202521 80%,#B49A78);--line:rgba(32,37,33,.2);--tile:var(--face)}
+.stage{height:860px;container-type:inline-size;position:relative}
+.dev-phone .wrap{max-width:390px}.dev-phone .stage{width:390px;height:1100px}
+svg{flex:none}
+.top .tools{flex-wrap:wrap}
+/* sign colour: plate, ink, muted ink, hairline, the W's tile, its frame; --sc the label's rules and stamp */
+.stage{--sp:var(--ink);--si:var(--pap);--sm:rgba(247,242,231,.75);--sl:rgba(247,242,231,.14);--sw:#353a35;--sf:inset 0 0 0 1px rgba(247,242,231,.12);--sc:var(--ink)}
+[data-col="rust"]{--sp:var(--ru);--si:var(--pap);--sm:rgba(247,242,231,.86);--sl:rgba(247,242,231,.22);--sw:var(--ink);--sf:inset 0 0 0 8px var(--ink);--sc:var(--ru)}
+[data-col="paper"]{--sp:var(--face);--si:var(--ink);--sm:rgba(32,37,33,.75);--sl:rgba(32,37,33,.14);--sw:var(--ink);--sf:inset 0 0 0 8px var(--ink);--sc:var(--ink)}
+[data-col="camel"]{--sp:var(--ca);--si:var(--ink);--sm:rgba(32,37,33,.8);--sl:rgba(32,37,33,.18);--sw:var(--ink);--sf:inset 0 0 0 8px var(--ink);--sc:var(--ca)}
+/* headline colour: the sign's ink, or rust */
+[data-hx="rust"]{--hh:var(--ru)}
+/* the site's bar */
+.bar{position:absolute;left:0;right:0;top:0;height:89px;z-index:20;display:flex;align-items:center;gap:34px;padding-left:20px;border-bottom:1px solid var(--line);background:var(--pap)}
+.bar img{height:34px}
+.bar nav{display:flex;gap:34px;margin:0 auto;font-size:16px;font-weight:500;font-stretch:87.5%}
+.bar .call{display:flex;align-items:center;height:100%;padding:0 34px;background:var(--ink);color:var(--pap);font-size:16px;font-weight:600;font-stretch:87.5%}
+.bar .q{display:flex;align-items:center;height:100%;padding:0 34px;background:var(--ye);font-size:16px;font-weight:600;font-stretch:87.5%}
+.scene{position:absolute;inset:89px 0 0;display:none;padding:34px 64px;overflow:hidden}
+[data-c="pylon"] .s-pylon,[data-c="hyb"] .s-hyb,[data-c="head2"] .s-head2,[data-c="head"] .s-head,[data-c="label"] .s-label{display:block}
+.sign{transform:perspective(2400px) rotateY(var(--ang,0deg));transition:transform .6s cubic-bezier(.3,.7,.3,1)}
+
+/* shared copy */
+.h{font-family:var(--display);font-stretch:87.5%;font-weight:650;text-transform:uppercase;font-size:110px;line-height:.88;letter-spacing:-.012em;margin:0;color:var(--hh,inherit)}
+.ld{font-size:20px;line-height:1.4;font-stretch:87.5%;max-width:34ch;margin:0}
+.lab{font-family:var(--mono);font-size:12px;letter-spacing:.12em;text-transform:uppercase}
+.w{display:grid;place-items:center;width:55px;height:55px;border-radius:13px 0 13px 0;background:var(--sw);color:var(--pap)}
+.w svg{width:21px;height:auto}
+.lk{display:inline-flex;align-items:center;gap:8px;font-size:16px;text-decoration:underline;text-underline-offset:5px;color:inherit}
+.lk svg{width:18px;height:18px}
+
+/* a stop: its pictogram, its name, its sign */
+.lnk{display:flex;align-items:center;gap:13px;cursor:pointer}
+.lnk .pc,.lnk .sg{display:inline-grid;place-items:center;width:1.3em;height:1.3em;flex:none}
+.lnk .pc svg,.lnk .sg-p svg{width:1.3em;height:1.3em}
+.lnk .sg{margin-left:auto}
+.lnk .sg>span{grid-area:1/1;display:grid;place-items:center;transition:opacity .25s,transform .35s cubic-bezier(.3,.7,.3,1)}
+.lnk .sg-a svg{width:1.1em;height:1.1em;transition:transform .35s cubic-bezier(.3,.7,.3,1)}
+.lnk .sg-p{opacity:0;transform:scale(.4)}
+.lnk .a-d{display:none}
+[data-ar="diag"] .lnk .a-r{display:none}[data-ar="diag"] .lnk .a-d{display:block}
+[data-ar="way"] .lnk[data-dir="l"] .a-r{transform:rotate(180deg)}
+[data-ar="way"] .lnk[data-dir="u"] .a-r{transform:rotate(-90deg)}
+[data-ar="way"] .lnk[data-dir="l"]{flex-direction:row-reverse}
+[data-ar="way"] .lnk[data-dir="l"] .sg{margin-left:0;margin-right:auto}
+.lnk:hover .sg-a svg{transform:translateX(3px)}
+[data-sg="swap"] .lnk .pc{display:none}
+[data-sg="swap"] .lnk:hover .sg-a{opacity:0;transform:scale(.4)}
+[data-sg="swap"] .lnk:hover .sg-p{opacity:1;transform:none}
+[data-sg="picto"] .lnk .sg{display:none}
+.list .lnk{flex-direction:row!important}.list .lnk .a-r{transform:none!important}.list .lnk .sg{margin:0 0 0 auto!important}
+
+/* ---------- 1 · Pylon ---------- */
+.s-pylon .py{position:relative;isolation:isolate;width:900px;margin:0 auto}
+.py-post{position:absolute;z-index:-1;top:-21px;height:1000px;width:21px;border-radius:21px 21px 0 0;background:linear-gradient(90deg,#4a4f48,var(--ink) 45%)}
+.py-post.a{left:12%}.py-post.b{right:12%}
+.py-head{position:relative;padding:55px 89px 34px;border-radius:13px;background:var(--sp);color:var(--si);--tile:var(--sp);box-shadow:var(--sf),0 2px 0 var(--edge),0 21px 34px -21px rgba(32,37,33,.55)}
+.py-head .w{position:absolute;left:0;top:0}
+.r404{display:none;position:absolute;right:0;top:0;height:55px;padding:0 21px;place-items:center;border-radius:0 13px 0 13px;background:var(--sw);color:var(--pap);font-family:var(--mono);font-weight:600;font-size:20px;letter-spacing:.08em}
+[data-rt="box"] .r404{display:grid}
+.py-head .ld{color:var(--sm);margin-top:21px}
+.py-head .lk{margin-top:21px}
+.py-plates{display:grid;gap:8px;margin-top:13px}
+.py-p{display:flex;align-items:center;height:55px;padding:0 34px;border-radius:13px;background:var(--face);box-shadow:inset 0 0 0 6px var(--ink),0 2px 0 var(--edge),0 13px 21px -13px rgba(32,37,33,.4);font-size:26px;font-weight:600;font-stretch:87.5%;transition:background .2s}
+.py-p:hover{background:color-mix(in srgb,var(--ye) 35%,var(--face))}
+.py-p.q{background:var(--ye);--tile:var(--ye)}
+[data-pf="grid"] .py-plates{grid-template-columns:repeat(3,1fr)}
+[data-pf="grid"] .py-p{height:68px;font-size:20px;padding:0 21px}
+[data-pf="fan"] .py-plates{width:78%}
+[data-pf="fan"] .py-p:nth-child(even){translate:28.2% 0}
+[data-l="split"] .s-pylon .py{width:auto;display:grid;grid-template-columns:7fr 5fr;gap:34px;align-items:start;margin-top:34px}
+[data-l="split"] .s-pylon .py-plates{margin-top:0;width:auto}
+[data-l="split"] .s-pylon .py-p{translate:none!important}
+[data-l="split"][data-pf="grid"] .s-pylon .py-plates{grid-template-columns:1fr 1fr}
+[data-l="split"] .s-pylon .py-post.a{left:8%}[data-l="split"] .s-pylon .py-post.b{right:8%}
+
+/* ---------- 2 · Headsign ---------- */
+.s-head .in{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:34px;height:100%;padding-bottom:21px}
+.hsg{display:flex;gap:13px;width:1060px;padding:21px;border-radius:13px;background:var(--ink);box-shadow:inset 0 0 0 1px rgba(247,242,231,.1),0 2px 0 var(--edge),0 34px 55px -30px rgba(32,37,33,.55)}
+.hsg .dmf{flex:1;height:182px}
+.hsg .rt{display:none;flex:none;width:260px;height:182px;box-shadow:13px 0 0 -11px rgba(247,242,231,.14)}
+[data-rt="box"] .hsg .rt{display:block}
+[data-rt="box"] .hsg :is(.dmf,.rt){height:140px}
+/* the fields never push past the sign: they size to it, and their dots are drawn to that size */
+.hsg :is(.dmf,.rt){min-width:0;overflow:hidden}
+[data-dc="yellow"] .hsg{color:var(--ye)}[data-dc="rust"] .hsg{color:color-mix(in srgb,var(--ru) 70%,var(--pap))}
+[data-dc="rustb"] .hsg{color:color-mix(in srgb,var(--ru) 55%,var(--pap))}
+[data-dc="rusta"] .hsg{color:var(--ru)}[data-dc="paper"] .hsg{color:var(--pap)}
+.hd-sub .ld{color:rgba(32,37,33,.8);text-align:center}
+.hd-stops{width:760px}
+.hd-stops .lnk{height:55px;font-size:26px;font-weight:600;font-stretch:87.5%;border-bottom:1px solid var(--line)}
+.hd-stops .lnk:first-child{border-top:1px solid var(--line)}
+.hd-stops .lnk:hover{background:color-mix(in srgb,var(--ink) 4%,var(--pap))}
+.vh{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+
+/* ---------- Pylon × headsign ---------- */
+.s-hyb .py{position:relative;isolation:isolate;width:1000px;margin:0 auto}
+.s-hyb .hsg{width:auto;padding:21px}
+.s-hyb .hsg :is(.dmf,.rt),[data-rt] .s-hyb .hsg :is(.dmf,.rt){height:126px}
+.s-hyb .hsg .rt{width:220px}
+.hy-lead{display:flex;align-items:center;justify-content:space-between;gap:34px;margin-top:13px;padding:21px 34px;border-radius:13px;background:var(--face);box-shadow:inset 0 0 0 6px var(--ink),0 2px 0 var(--edge),0 13px 21px -13px rgba(32,37,33,.4)}
+.hy-lead .ld{font-size:16px;max-width:none}
+.hy-lead .lk{flex:none;white-space:nowrap}
+
+/* ---------- Headsign + hanging stops ---------- */
+.s-head2 .in{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:34px;height:100%;padding-bottom:34px}
+.s-head2 .ld{color:rgba(32,37,33,.8);text-align:center}
+.hg2{position:relative;isolation:isolate;width:1060px}
+.hg2-bar{display:block;height:13px;margin:0 -21px;border-radius:2px;background:linear-gradient(180deg,#4a4f48,var(--ink) 60%)}
+.hg2-post{display:none;position:absolute;z-index:-1;top:-13px;height:900px;width:21px;border-radius:21px 21px 0 0;background:linear-gradient(90deg,#4a4f48,var(--ink) 45%)}
+.hg2-post.a{left:6%}.hg2-post.b{right:6%}
+.hg2-row{display:grid;grid-template-columns:repeat(5,1fr);gap:13px;margin-top:34px}
+.hc{position:relative;display:flex;align-items:center;height:89px;padding:0 21px;border-radius:8px;background:var(--face);box-shadow:inset 0 0 0 4px var(--ink),0 2px 0 var(--edge),0 13px 21px -13px rgba(32,37,33,.5);font-size:20px;font-weight:600;font-stretch:87.5%;transform-origin:50% -34px;transition:rotate .5s cubic-bezier(.3,.7,.3,1),background .2s}
+.hc::before,.hc::after{content:"";position:absolute;bottom:100%;width:3px;height:34px;background:linear-gradient(90deg,#6a6e66,var(--ink) 60%)}
+.hc::before{left:22%}.hc::after{right:22%}
+.hc:hover{rotate:-2deg;background:color-mix(in srgb,var(--ye) 35%,var(--face))}
+.hc .lnk{width:100%}
+/* from the sign: no bar, the rods reach the sign's bottom edge, the line moves under the stops */
+[data-hf="sign"] .s-head2 .hg2{margin-top:-34px}
+[data-hf="sign"] .s-head2 .hg2-bar{display:none}
+[data-hf="sign"] .s-head2 .ld{order:3}
+/* their own pylon: the stops as plates on two posts of their own, the sign above standing apart */
+[data-hf="pylon"] .s-head2 .hg2-bar{display:none}
+[data-hf="pylon"] .s-head2 .hg2-post{display:block}
+[data-hf="pylon"] .s-head2 .hg2-row{margin-top:0;gap:8px}
+[data-hf="pylon"] .s-head2 .hc{height:68px;border-radius:13px;box-shadow:inset 0 0 0 6px var(--ink),0 2px 0 var(--edge),0 13px 21px -13px rgba(32,37,33,.4)}
+[data-hf="pylon"] .s-head2 .hc::before,[data-hf="pylon"] .s-head2 .hc::after{display:none}
+[data-hf="pylon"] .s-head2 .hc:hover{rotate:none}
+[data-pf="stack"] .s-head2 .hg2-row,[data-pf="fan"] .s-head2 .hg2-row{grid-template-columns:1fr;width:640px;margin-inline:auto;gap:13px}
+[data-pf="stack"] .s-head2 .hc,[data-pf="fan"] .s-head2 .hc{height:55px}
+[data-pf="stack"] .s-head2 .hc + .hc::before,[data-pf="stack"] .s-head2 .hc + .hc::after,[data-pf="fan"] .s-head2 .hc + .hc::before,[data-pf="fan"] .s-head2 .hc + .hc::after{height:13px}
+[data-pf="fan"] .s-head2 .hg2-row{width:520px}
+[data-pf="fan"] .s-head2 .hc:nth-child(even){translate:120px 0}
+[data-pf="fan"] .s-head2 .hc:nth-child(even)::before{left:calc(22% - 120px * 0)}
+[data-pf="stack"] .s-head2 .hsg :is(.dmf,.rt),[data-pf="fan"] .s-head2 .hsg :is(.dmf,.rt){height:110px}
+[data-pf="stack"] .s-head2 .in,[data-pf="fan"] .s-head2 .in{gap:21px}
+[data-pf="stack"][data-hf="pylon"] .s-head2 .hg2-post.a,[data-pf="fan"][data-hf="pylon"] .s-head2 .hg2-post.a{left:calc(50% - 260px)}
+[data-pf="stack"][data-hf="pylon"] .s-head2 .hg2-post.b,[data-pf="fan"][data-hf="pylon"] .s-head2 .hg2-post.b{right:calc(50% - 260px)}
+
+/* ---------- 3 · Label: the ticket's perforated edge (Steps, Stamp: a 3px bite every 10px, all round) ---------- */
+.s-label .in{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:34px;height:100%}
+.perf{--br:3px;--bp:10px;--cut:#000;
+  -webkit-mask:radial-gradient(circle var(--br) at 50% 0,transparent 96%,var(--cut) 100%) top/var(--bp) 100% repeat-x,radial-gradient(circle var(--br) at 50% 100%,transparent 96%,var(--cut) 100%) bottom/var(--bp) 100% repeat-x,radial-gradient(circle var(--br) at 0 50%,transparent 96%,var(--cut) 100%) left/100% var(--bp) repeat-y,radial-gradient(circle var(--br) at 100% 50%,transparent 96%,var(--cut) 100%) right/100% var(--bp) repeat-y;
+  -webkit-mask-composite:source-in;mask-composite:intersect}
+[data-edge="straight"] .perf{-webkit-mask:none;mask:none}
+.shadow{filter:drop-shadow(0 21px 21px rgba(32,37,33,.16))}
+.s-label .simple,.s-label .full{display:none}
+[data-lb="simple"] .s-label .simple,[data-lb="full"] .s-label .full{display:flex}
+/* simple */
+.lb2{position:relative;width:1120px;display:grid;grid-template-columns:1fr 380px;gap:89px;padding:89px 89px 55px;background:#fbf8f1;--tile:#fbf8f1;rotate:-.8deg}
+.lb2 .w{position:absolute;left:21px;top:21px;width:34px;height:34px;border-radius:4px;background:var(--sc)}
+.lb2 .w svg{width:14px}
+.lb2 .h{font-size:89px}
+.lb2 .ld{margin-top:21px;color:rgba(32,37,33,.8)}
+.lb2 .to{margin:21px 0 0;display:flex;gap:13px;align-items:baseline}
+.lb2 .to s{color:var(--sc);text-decoration-thickness:2px;font-family:var(--mono);font-size:16px}
+.lb2 .to .lab{color:rgba(32,37,33,.6)}
+.lb2-ret .lab{display:block;color:rgba(32,37,33,.6);padding-bottom:13px}
+.lb2-ret .lnk{height:55px;font-size:26px;font-weight:600;font-stretch:87.5%;border-top:1.5px dashed rgba(32,37,33,.25)}
+.lb2-ret .lnk:hover{color:var(--sc)}
+.stamp{position:absolute;right:500px;bottom:34px;display:grid;place-items:center;width:144px;height:144px;border-radius:50%;rotate:-14deg;color:var(--sc);text-align:center;font-family:var(--mono);font-weight:600;font-size:11px;letter-spacing:.12em;line-height:1.3;text-transform:uppercase;
+  box-shadow:inset 0 0 0 2px var(--sc),inset 0 0 0 7px #fbf8f1,inset 0 0 0 8px var(--sc);opacity:.9;animation:stamp .5s cubic-bezier(.3,.7,.3,1) .4s both}
+.stamp b{display:block;font-size:34px;letter-spacing:.02em;line-height:1}
+@keyframes stamp{from{scale:1.6;opacity:0}to{scale:1;opacity:.9}}
+/* full: round 2's grid, cut down */
+.lb{position:relative;width:1000px;display:grid;grid-template-columns:1fr 260px;background:#fbf8f1;--tile:#fbf8f1;border:2px solid var(--sc);rotate:-1deg}
+.lb>div{padding:13px 21px;border-right:2px solid var(--sc);border-bottom:2px solid var(--sc)}
+.lb>div.r{border-right:0}
+.lb small{display:block;margin-bottom:4px;font-family:var(--mono);font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:rgba(32,37,33,.6)}
+.lb b{font-size:20px;font-weight:600;font-stretch:87.5%}
+.lb s{color:var(--ru);text-decoration-thickness:2px;font-family:var(--mono);font-size:16px;font-weight:500}
+.lb .from{display:flex;align-items:center;gap:21px;padding:0}
+.lb .from .w{border-radius:0;background:var(--sc)}
+.lb .from div{display:flex;gap:13px;align-items:baseline}
+.lb .main{padding:34px}
+.lb .main .h{font-size:89px}
+.lb .main .ld{margin-top:13px;font-size:16px;max-width:52ch}
+.lb .code{grid-row:1/3;grid-column:2;display:flex;flex-direction:column;justify-content:space-between;background:var(--sc);color:var(--pap);border-bottom-color:var(--sc)}
+.lb .code small{color:rgba(247,242,231,.7)}
+.lb .code b{font-family:var(--mono);font-size:89px;font-weight:600;line-height:1;letter-spacing:-.02em}
+.lb .bar-c{grid-column:1/-1;display:flex;align-items:center;gap:34px;border-right:0;border-bottom:0}
+.lb .bars{flex:1;height:55px;background:repeating-linear-gradient(90deg,var(--ink) 0 2px,transparent 2px 4px,var(--ink) 4px 7px,transparent 7px 9px,var(--ink) 9px 10px,transparent 10px 13px,var(--ink) 13px 17px,transparent 17px 19px)}
+.ret-row{display:flex;align-items:center;gap:34px}
+.ret-row>.lab{color:rgba(32,37,33,.6)}
+.ret-row .lnk{font-size:20px;font-weight:600;font-stretch:87.5%;gap:8px}
+.ret-row .lnk .sg{margin-left:0!important}
+.ret-row .lnk:hover{color:var(--ru)}
+
+/* ---------- 4 · Board ---------- */
+.s-board .in{display:grid;grid-template-columns:5fr 7fr;gap:89px;align-items:center;height:100%}
+.s-board .copy .ld{margin:34px 0 0}
+.bd{border-radius:13px;padding:21px 34px 13px;background:var(--sp);color:var(--si);--tile:var(--sp);box-shadow:var(--sf),0 2px 0 var(--edge),0 34px 55px -30px rgba(32,37,33,.6)}
+.bd-h{display:flex;justify-content:space-between;align-items:center;padding-bottom:13px;color:var(--sm);border-bottom:1px solid var(--sl)}
+.bd .lnk{height:89px;border-bottom:1px solid var(--sl);font-size:42px;gap:21px}
+.bd .lnk:last-child{border-bottom:0}
+.bd .lnk .nm{font-family:var(--display);font-stretch:87.5%;font-weight:600;letter-spacing:-.01em}
+.bd .lnk .pc,.bd .lnk .pc svg{width:42px;height:42px}
+.bd .lnk .sg{width:34px;height:34px;font-size:34px}
+.bd .lnk em{font-style:normal;font-family:var(--mono);font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--sm);margin-left:auto}
+.bd .lnk em+.sg{margin-left:21px!important}
+[data-l="centre"] .s-board .in{grid-template-columns:1fr;justify-items:center;text-align:center;gap:34px;align-content:center}
+[data-l="centre"] .s-board .copy .ld{margin:21px auto 0}
+[data-l="centre"] .s-board .h{font-size:89px}
+[data-l="centre"] .s-board .bd{width:860px;text-align:left}
+[data-l="centre"] .s-board .bd .lnk{height:55px;font-size:26px}
+[data-l="centre"] .s-board .bd .lnk .pc,[data-l="centre"] .s-board .bd .lnk .pc svg{width:26px;height:26px}
+[data-l="centre"] .s-board .bd .lnk .sg{width:26px;height:26px;font-size:26px}
+
+/* ---------- phones ---------- */
+@container (width < 600px){
+  .bar{height:55px;gap:0}.bar img{height:21px}.bar nav,.bar .call{display:none}.bar .q{margin-left:auto;padding:0 21px;font-size:14px}
+  .scene{inset:55px 0 0;padding:34px 20px}
+  .sign{transform:none}
+  .h,.lb .main .h,.lb2 .h{font-size:55px}
+  .ld{font-size:16px}
+  .s-pylon .py,[data-l="split"] .s-pylon .py{width:auto;display:block;margin-top:0}
+  .py-head{padding:55px 21px 21px}
+  .py-post.b{display:none}.py-post.a{left:calc(50% - 10px)!important}
+  .py-plates,[data-pf] .py-plates{width:auto!important;grid-template-columns:1fr!important;margin-top:13px}
+  .py-p{translate:none!important;height:55px!important;font-size:20px!important;padding:0 21px!important}
+  .s-board .in,[data-l="centre"] .s-board .in{grid-template-columns:1fr;gap:34px;text-align:left;justify-items:stretch}
+  .bd,[data-l="centre"] .s-board .bd{width:auto;padding:13px 21px}
+  .bd .lnk,[data-l="centre"] .s-board .bd .lnk{height:55px;font-size:20px;gap:13px}
+  .bd .lnk .pc,.bd .lnk .pc svg{width:21px!important;height:21px!important}
+  .bd .lnk em{display:none}.bd .lnk .sg{width:21px!important;height:21px!important;font-size:21px!important}
+  .hsg,.hd-stops{width:100%!important}.hsg{padding:13px}.hsg .dmf{height:89px}
+  .s-head .in{align-items:stretch;justify-content:flex-start;gap:21px}
+  .hd-sub .ld{text-align:left}.hd-stops .lnk{font-size:20px}
+  .lb2{width:100%;grid-template-columns:1fr;gap:34px;padding:55px 21px 34px;rotate:-.5deg}
+  .stamp{right:13px;top:13px;bottom:auto;width:89px;height:89px;font-size:8px}.stamp b{font-size:21px}
+  .lb{width:100%;grid-template-columns:1fr}.lb .code{grid-row:auto;grid-column:auto;flex-direction:row;align-items:center}.lb .code b{font-size:42px}
+  .lb .bar-c{display:none}.ret-row{flex-direction:column;align-items:stretch;gap:13px}
+  .hsg{flex-direction:column}.hsg :is(.dmf,.rt){flex:none}.hsg .dmf{height:89px}.hsg .rt,[data-rt="box"] .hsg .rt{width:auto;height:55px;box-shadow:0 8px 0 -6px rgba(247,242,231,.14)}[data-rt="box"] .hsg .dmf{height:89px}
+  .hy-lead{flex-direction:column;align-items:flex-start;padding:21px}
+  .s-hyb .py{width:auto}
+  .s-hyb .hsg{padding:13px}
+  [data-rt] .s-hyb .hsg .rt{width:auto;height:55px}
+  [data-rt] .s-hyb .hsg .dmf{height:89px}
+  [data-pf] .s-head2 .hg2-row{width:100%!important}
+  [data-pf="fan"] .s-head2 .hc:nth-child(even){translate:34px 0}[data-pf="fan"] .s-head2 .hg2-row{padding-right:34px}
+  [data-pf] .s-head2 .hsg .rt{height:55px!important}[data-pf] .s-head2 .hsg .dmf{height:89px!important}
+  .hg2{width:100%}.hg2-row{grid-template-columns:1fr 1fr;gap:34px 13px}.hc{height:55px;font-size:16px;padding:0 13px}
+  .s-head2 .ld{text-align:left}
+}
+</style>
+</head>
+<body>
+<header class="top">
+  <div><div class="id">Review · NF-404 · round 4</div><h1>Wrong stop: 404 concepts</h1></div>
+  <div class="tools" data-g="c">
+    <button class="tbtn" data-v="pylon">1 Pylon</button>
+    <button class="tbtn" data-v="hyb">2 Pylon × headsign</button>
+    <button class="tbtn" data-v="head2">3 Headsign + hanging stops</button>
+    <button class="tbtn" data-v="label">4 Label</button>
+  </div>
+</header>
+<div class="top">
+  <div class="tools" data-g="col"><span class="id">Sign</span><button class="tbtn" data-v="carbon" data-name="Carbon sign">Carbon</button><button class="tbtn" data-v="rust" data-name="Rust sign">Rust</button><button class="tbtn" data-v="paper" data-name="Paper sign">Paper</button><button class="tbtn" data-v="camel" data-name="Camel sign">Camel</button></div>
+  <div class="tools" data-g="hx"><span class="id">Headline</span><button class="tbtn" data-v="ink" data-name="Headline in the sign's ink">Sign's ink</button><button class="tbtn" data-v="rust" data-name="Rust headline">Rust</button></div>
+  <div class="tools" data-g="l"><span class="id">Layout</span><button class="tbtn" data-v="centre">Centre</button><button class="tbtn" data-v="split">Split</button></div>
+  <div class="tools" data-g="pf"><span class="id">Plates</span><button class="tbtn" data-v="stack" data-name="Stacked plates">Stack</button><button class="tbtn" data-v="grid" data-name="Plates in a grid">Grid</button><button class="tbtn" data-v="fan" data-name="Fanned plates">Fan</button></div>
+  <div class="tools" data-g="rt"><span class="id">404</span><button class="tbtn" data-v="box" data-name="404 in its box">Box</button><button class="tbtn" data-v="off" data-name="No 404">Off</button></div>
+  <div class="tools" data-g="hf"><span class="id">Stops hang from</span><button class="tbtn" data-v="bar" data-name="Stops hang from a bar">A bar</button><button class="tbtn" data-v="sign" data-name="Stops hang from the sign">The sign</button><button class="tbtn" data-v="pylon" data-name="Stops on a pylon of their own">Their own pylon</button></div>
+  <div class="tools" data-g="dm"><span class="id">Dots</span><button class="tbtn" data-v="board" data-name="Board dots">Board</button><button class="tbtn" data-v="glow" data-name="Glowing dots">Glow</button></div>
+  <div class="tools" data-g="dc"><span class="id">Lit</span><button class="tbtn" data-v="yellow" data-name="Yellow">Yellow</button><button class="tbtn" data-v="rust" data-name="Rust, lifted">Rust, lifted</button><button class="tbtn" data-v="rustb" data-name="Rust, bright">Rust, bright</button><button class="tbtn" data-v="rusta" data-name="Rust, as is">Rust, as is</button><button class="tbtn" data-v="paper" data-name="Paper">Paper</button></div>
+  <div class="tools" data-g="lb"><span class="id">Label</span><button class="tbtn" data-v="simple" data-name="Simple label">Simple</button><button class="tbtn" data-v="full" data-name="Full label">Full</button></div>
+  <div class="tools" data-g="edge"><span class="id">Edge</span><button class="tbtn" data-v="perf" data-name="Perforated">Perforated</button><button class="tbtn" data-v="straight" data-name="Straight edge">Straight</button></div>
+  <div class="tools" data-g="sg"><span class="id">Stop sign</span><button class="tbtn" data-v="lead" data-name="Picto + arrow">Picto + arrow</button><button class="tbtn" data-v="swap" data-name="Arrow → picto">Arrow → picto</button><button class="tbtn" data-v="picto" data-name="Picto only">Picto only</button></div>
+  <div class="tools" data-g="ar"><span class="id">Arrow</span><button class="tbtn" data-v="right" data-name="Right arrow">Right</button><button class="tbtn" data-v="way" data-name="Wayfinding arrows">Wayfinding</button><button class="tbtn" data-v="diag" data-name="Diagonal arrow">Diagonal</button></div>
+  <div class="tools" data-g="view"><span class="id">View</span><button class="tbtn" data-v="flat">Flat</button><button class="tbtn" data-v="angled">Angled</button><button class="tbtn" data-v="reverse">Reverse</button></div>
+  <div class="tools" data-g="ang"><span class="id">Angle</span><button class="tbtn" data-v="2">2°</button><button class="tbtn" data-v="4">4°</button><button class="tbtn" data-v="8">8°</button></div>
+  <div class="tools" data-g="d"><span class="id">Device</span><button class="tbtn" data-v="desktop" aria-pressed="true">Desktop</button><button class="tbtn" data-v="phone">Phone</button></div>
+</div>
+<section class="score" id="score" aria-label="Scores"></section>
+
+<div class="wrap"><div class="stage" id="st" data-c="pylon" data-col="paper" data-hx="rust" data-l="centre" data-pf="grid" data-dm="board" data-dc="rust" data-rt="box" data-hf="bar" data-lb="simple" data-edge="perf" data-sg="lead" data-ar="right">
+  <header class="bar"><img src="assets/wordmark.svg" alt="ONAWAY"><nav><span>Services +</span><span>About</span><span>Help</span></nav><span class="call">+1 647 877 1411</span><span class="q">Get a free quote</span></header>
+
+  <!-- 1 · Pylon -->
+  <section class="scene s-pylon"><div class="py sign">
+    <span class="py-post a"></span><span class="py-post b"></span>
+    <div class="py-head"><span class="w"><i data-i="w"></i></span><span class="r404">404</span>
+      <h1 class="h">Wrong stop.</h1>
+      <p class="ld">This page has moved, or it was never here. Here’s where to go next.</p>
+      <a class="lk"><i data-i="call"></i>Or call +1 647 877 1411</a>
+    </div>
+    <div class="py-plates">
+      <a class="py-p lnk" data-k="home" data-dir="l">Home</a>
+      <a class="py-p lnk" data-k="cleaning" data-dir="r">Cleaning</a>
+      <a class="py-p lnk" data-k="moving" data-dir="r">Moving</a>
+      <a class="py-p lnk" data-k="delivery" data-dir="l">Delivery</a>
+      <a class="py-p lnk" data-k="help" data-dir="u">Help</a>
+      <a class="py-p lnk q" data-k="quote" data-dir="r">Get a free quote</a>
+    </div>
+  </div></section>
+
+  <!-- 2 · Pylon × headsign: the head plate is the headsign; the line on a plate under it; the stops' plates -->
+  <section class="scene s-hyb"><div class="py sign">
+    <span class="py-post a"></span><span class="py-post b"></span>
+    <h1 class="vh">Wrong stop. Error 404.</h1>
+    <div class="hsg" aria-hidden="true"><div class="rt"></div><div class="dmf"></div></div>
+    <div class="hy-lead"><p class="ld">This page has moved, or it was never here. Here’s where to go next.</p><a class="lk"><i data-i="call"></i>Or call +1 647 877 1411</a></div>
+    <div class="py-plates">
+      <a class="py-p lnk" data-k="home" data-dir="l">Home</a>
+      <a class="py-p lnk" data-k="cleaning" data-dir="r">Cleaning</a>
+      <a class="py-p lnk" data-k="moving" data-dir="r">Moving</a>
+      <a class="py-p lnk" data-k="delivery" data-dir="l">Delivery</a>
+      <a class="py-p lnk" data-k="help" data-dir="u">Help</a>
+      <a class="py-p lnk q" data-k="quote" data-dir="r">Get a free quote</a>
+    </div>
+  </div></section>
+
+  <!-- 3 · Headsign + hanging stops: a bar under the sign (or the sign itself, or a pylon of their own) and the stops hang from it -->
+  <section class="scene s-head2"><div class="in">
+    <h1 class="vh">Wrong stop. Error 404.</h1>
+    <div class="hsg sign" aria-hidden="true"><div class="rt"></div><div class="dmf"></div></div>
+    <p class="ld">This page has moved, or it was never here. Here’s where to go next.</p>
+    <div class="hg2"><span class="hg2-bar"></span><span class="hg2-post a"></span><span class="hg2-post b"></span><div class="hg2-row">
+      <a class="hc"><span class="lnk" data-k="home" data-dir="r">Home</span></a>
+      <a class="hc"><span class="lnk" data-k="cleaning" data-dir="r">Cleaning</span></a>
+      <a class="hc"><span class="lnk" data-k="moving" data-dir="r">Moving</span></a>
+      <a class="hc"><span class="lnk" data-k="delivery" data-dir="r">Delivery</span></a>
+      <a class="hc"><span class="lnk" data-k="help" data-dir="r">Help</span></a>
+    </div></div>
+  </div></section>
+
+
+  <!-- 3 · Label -->
+  <section class="scene s-label">
+    <div class="in simple"><div class="shadow sign"><div class="lb2 perf">
+      <span class="w"><i data-i="w"></i></span>
+      <div>
+        <h1 class="h">Wrong stop.</h1>
+        <p class="ld">Delivered to the wrong address. This page has moved, or it was never here.</p>
+        <p class="to"><span class="lab">To</span><s class="path">/this-page</s></p>
+      </div>
+      <div class="lb2-ret list"><span class="lab">Return to</span>
+        <a class="lnk" data-k="home" data-dir="r">Home</a>
+        <a class="lnk" data-k="cleaning" data-dir="r">Cleaning</a>
+        <a class="lnk" data-k="moving" data-dir="r">Moving</a>
+        <a class="lnk" data-k="delivery" data-dir="r">Delivery</a>
+        <a class="lnk" data-k="help" data-dir="r">Help</a>
+      </div>
+      <span class="stamp"><span>Return to sender<b>404</b>Wrong stop</span></span>
+    </div></div></div>
+    <div class="in full">
+      <div class="shadow sign"><div class="lb perf">
+        <div class="from"><span class="w"><i data-i="w"></i></span><div><small style="margin:0">From</small><b>onaway.ca</b></div></div>
+        <div class="code r"><small>Sort</small><b>404</b><small>Return to sender</small></div>
+        <div class="main"><h1 class="h">Wrong stop.</h1><p class="ld">Delivered to the wrong address. This page has moved, or it was never here.</p></div>
+        <div class="bar-c"><small style="margin:0">To</small><s class="path">/this-page</s><span class="bars"></span></div>
+      </div></div>
+      <div class="ret-row list"><span class="lab">Return to</span>
+        <a class="lnk" data-k="home" data-dir="r">Home</a>
+        <a class="lnk" data-k="cleaning" data-dir="r">Cleaning</a>
+        <a class="lnk" data-k="moving" data-dir="r">Moving</a>
+        <a class="lnk" data-k="delivery" data-dir="r">Delivery</a>
+        <a class="lnk" data-k="help" data-dir="r">Help</a>
+      </div>
+    </div>
+  </section>
+
+</div></div>
+
+<script src="dots.js"></script>
+<script src="score.js"></script>
+<script>
+(function () {
+  const PATH_R = '<path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M18.5 12H5m8 6s6-4.419 6-6s-6-6-6-6"/>';
+  const PATH_D = '<path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 6.65s6.938-.542 7.915.435S17.35 15 17.35 15m-.85-7.5l-10 10"/>';
+  const IC = {
+    call: '<svg viewBox="0 0 24 24" width="21" height="21"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-width="1.5" d="m9.159 5.712l-.403-.906c-.263-.592-.395-.888-.592-1.115a2 2 0 0 0-.928-.603C6.949 3 6.625 3 5.976 3c-.948 0-1.422 0-1.82.182a2.12 2.12 0 0 0-1.061 1.169c-.143.413-.102.838-.02 1.689q1.31 13.575 14.886 14.885c.85.082 1.275.123 1.689-.02a2.12 2.12 0 0 0 1.168-1.06c.182-.399.182-.873.182-1.821c0-.649 0-.973-.088-1.26a2 2 0 0 0-.603-.928c-.226-.197-.523-.328-1.115-.592l-.906-.402c-.642-.285-.962-.428-1.288-.459a2 2 0 0 0-.919.128c-.305.119-.574.343-1.114.793c-.537.447-.805.67-1.133.79a2.16 2.16 0 0 1-.981.101c-.346-.05-.61-.192-1.14-.475c-1.645-.88-2.553-1.787-3.433-3.433c-.283-.53-.424-.794-.475-1.14a2.16 2.16 0 0 1 .1-.98c.12-.329.344-.597.791-1.134c.45-.54.675-.809.793-1.114c.114-.292.158-.607.128-.919c-.03-.326-.173-.646-.459-1.288Z"/></svg>',
+    w: '<svg viewBox="-2 -2 88 86"><path fill="currentColor" d="M0,80C.14,77.73-.02,11.64.03,9.23l11.67-1.12s.01,40.19-.1,55.51c20.63-10.95,25.77-37.76,25.47-59.5,2.65-.22,9.1-.87,11.81-1.15-.51,20.26,3.46,45.8,24.97,53.64.05-15.31.05-40.2.07-55.53l11.65-1.08v70.04c-17.66,4.6-35.16-10.2-42.26-25.54-7.02,17.45-23.22,35.59-43.32,35.5Z"/></svg>'
+  };
+  const PICTO = {
+    home: '<path fill="currentColor" d="M48 10l40 31v9h-8v34a4 4 0 0 1-4 4H20a4 4 0 0 1-4-4V50H8v-9z"/><rect x="40" y="58" width="16" height="30" style="fill:var(--tile)"/>',
+    cleaning: '<g fill="currentColor"><path d="M30 14h34a8 8 0 0 1 8 8v4a4 4 0 0 1-4 4H54v8H40V30H30a4 4 0 0 1-4-4v-8a4 4 0 0 1 4-4z"/><path d="M72 16h8v8h-8z"/><path d="M40 30h10l-6 16h-6z"/><path d="M36 40h22v4c8 4 12 10 12 18v20a6 6 0 0 1-6 6H32a6 6 0 0 1-6-6V62c0-8 4-14 10-18z"/></g><rect x="34" y="60" width="28" height="14" rx="2" style="fill:var(--tile)"/>',
+    moving: '<g transform="translate(8 2) rotate(-14 40 80)"><g fill="currentColor"><path d="M22 8h20a5 5 0 0 1 5 5v4H40v-1h-6v48h44a5 5 0 0 1 5 5v5a5 5 0 0 1-5 5H31a6 6 0 0 1-6-6V16h-3a4 4 0 0 1 0-8z"/><path d="M40 16h7v8a4 4 0 0 1-4 4h-3z"/><circle cx="36" cy="82" r="11"/></g><circle cx="36" cy="82" r="4" style="fill:var(--tile)"/></g>',
+    delivery: '<g fill="currentColor"><path d="M14 18h68a3 3 0 0 1 3 3v9H11v-9a3 3 0 0 1 3-3z"/><path d="M16 34h64v44a5 5 0 0 1-5 5H21a5 5 0 0 1-5-5z"/></g><rect x="43" y="18" width="10" height="34" style="fill:var(--tile)"/><rect x="28" y="62" width="18" height="5" rx="1" style="fill:var(--tile)"/>',
+    help: '<circle cx="48" cy="48" r="40" fill="currentColor"/><path d="M36 38a12 12 0 1 1 18 10.4c-3.6 2.1-6 4.6-6 8.6v3" fill="none" stroke-width="9" stroke-linecap="round" style="stroke:var(--tile)"/><circle cx="48" cy="72" r="5.5" style="fill:var(--tile)"/>',
+    quote: '<path fill="currentColor" d="M14 22h68a4 4 0 0 1 4 4v12a10 10 0 0 0 0 20v12a4 4 0 0 1-4 4H14a4 4 0 0 1-4-4V58a10 10 0 0 0 0-20V26a4 4 0 0 1 4-4z"/><rect x="62" y="30" width="4" height="36" style="fill:var(--tile)"/><rect x="24" y="38" width="28" height="6" rx="1" style="fill:var(--tile)"/><rect x="24" y="52" width="20" height="6" rx="1" style="fill:var(--tile)"/>'
+  };
+  const pic = (k) => `<svg viewBox="0 0 96 96" aria-hidden="true">${PICTO[k]}</svg>`;
+  document.querySelectorAll('[data-i]').forEach((n) => { const t = document.createElement('template'); t.innerHTML = IC[n.dataset.i]; n.replaceWith(t.content.firstChild); });
+  document.querySelectorAll('.lnk[data-k]').forEach((a) => {
+    const k = a.dataset.k, name = a.textContent;
+    a.innerHTML = `<span class="pc" aria-hidden="true">${pic(k)}</span><span class="nm">${name}</span>${a.dataset.em ? `<em>${a.dataset.em}</em>` : ''}<span class="sg" aria-hidden="true"><span class="sg-a"><svg class="a-r" viewBox="0 0 24 24">${PATH_R}</svg><svg class="a-d" viewBox="0 0 24 24">${PATH_D}</svg></span><span class="sg-p">${pic(k)}</span></span>`;
+  });
+  const path = location.pathname.length > 1 && !location.pathname.includes('nf-404') ? location.pathname : '/cleaning-prices-2019';
+  document.querySelectorAll('.path').forEach((p) => (p.textContent = path));
+
+  const st = document.getElementById('st');
+  const sign = () => document.querySelectorAll('.hsg').forEach((h) => {
+    if (!h.offsetParent) return;
+    const f = h.querySelector('.dmf'), r = h.querySelector('.rt'), style = st.dataset.dm;
+    f.innerHTML = ''; r.innerHTML = '';
+    const box = r.offsetParent;
+    const p = Math.min(f.clientHeight / 9, f.clientWidth / (dotCount('WRONG STOP', style) + 4), box ? r.clientWidth / (dotCount('404', style) + 4) : 99, 13);
+    dotField(f, 'WRONG STOP', { pitch: p, style });
+    if (box) dotField(r, '404', { pitch: p, style }); else r.innerHTML = '';
+  });
+  let view = 'flat', ang = 4;
+  const angle = () => st.style.setProperty('--ang', `${view === 'flat' ? 0 : view === 'angled' ? ang : -ang}deg`);
+  const set = { view: (v) => { view = v; angle(); }, ang: (v) => { ang = +v; angle(); }, d: (v) => document.body.classList.toggle('dev-phone', v === 'phone') };
+  document.querySelectorAll('[data-g]').forEach((g) => g.addEventListener('click', (e) => {
+    const b = e.target.closest('[data-v]'); if (!b) return;
+    g.querySelectorAll('[data-v]').forEach((x) => x.setAttribute('aria-pressed', String(x === b)));
+    (set[g.dataset.g] || ((v) => (st.dataset[g.dataset.g] = v)))(b.dataset.v); fit(); sign();
+  }));
+  const wrap = document.querySelector('.wrap');
+  function fit() { const k = Math.min(1, wrap.clientWidth / st.offsetWidth); st.style.transform = `scale(${k})`; wrap.style.height = `${st.offsetHeight * k}px`; }
+  addEventListener('resize', () => { fit(); sign(); }); fit();
+
+  /* Scores (0–100). Read on the layout (does the page lead with WRONG STOP, then let you scan where to go?), the colour
+     (rust is the error's colour, best on the words rather than the hardware; rust on Carbon fails contrast at 2.5 : 1)
+     and the message (no repeats, no actions a lost visitor doesn't need). */
+  const headline = (st) => st.hx !== 'rust' ? 0 : ({ paper: 7, carbon: -9, rust: -20, camel: -10 })[st.col];
+  const dots = { dm: { board: 2, glow: 0 }, dc: { rust: 5, rustb: 4, yellow: 3, paper: 0, rusta: -3 }, rt: { box: 4, off: 0 } };
+  Score({
+    key: 'c', preferred: 'pylon',
+    common: {
+      col: { carbon: 0, rust: 3, paper: -1, camel: -6 }, l: { centre: 2, split: -2 },
+      sg: { lead: 2, swap: 1, picto: -4 }, ar: { right: 1, way: 0, diag: -3 },
+      view: { flat: 0, angled: -1, reverse: -2 }, ang: { 2: 1, 4: -1, 8: -6 }, pf: { grid: 2, stack: 0, fan: 1 }, ...dots
+    },
+    styles: {
+      pylon: { name: '1 Pylon', base: 82, uses: ['col', 'hx', 'rt', 'l', 'pf', 'sg', 'ar', 'view', 'ang'], mods: { rt: { box: 1, off: 0 } }, pair: headline,
+        note: 'Still the clearest: WRONG STOP set in type is the most legible headline any of these has, and the Paper plate with it in rust keeps the colour on the message. The 404 tile in the corner helps a little (the headline already says it).' },
+      hyb: { name: '2 Pylon × headsign', base: 80, uses: ['dm', 'dc', 'rt', 'pf', 'sg', 'ar', 'view', 'ang'],
+        note: 'The world where the headsign comes into play: the pylon\'s head plate becomes the sign, 404 in its route box, WRONG STOP lit. It keeps the pylon\'s order (sign, line, stops) and borrows the homepage\'s dots. It gives up a little legibility (dots against type) and puts the line on a plate of its own.' },
+      head2: { name: '3 Headsign + hanging stops', base: 79, uses: ['hf', 'pf', 'dm', 'dc', 'rt', 'sg', 'ar', 'view', 'ang'], skip: { ar: ['way'] },
+        mods: { hf: { bar: 2, sign: 0, pylon: 1 }, pf: { grid: 1, stack: 2, fan: 0 }, view: { angled: -3, reverse: -4 }, ang: { 2: 0, 4: -2, 8: -8 } },
+        note: 'The sign leads, the stops hang from a bar under it like the Services signs: connected and on brand. From the sign itself is tighter but the line then drops below the stops; their own pylon reads as two separate pieces.' },
+      label: { name: '4 Label', base: 79, uses: ['lb', 'edge', 'col', 'hx', 'sg', 'ar', 'view', 'ang'], skip: { ar: ['way'] },
+        mods: { lb: { simple: 5, full: 2 }, edge: { perf: 3, straight: 0 }, col: { rust: 3, carbon: 0, paper: -1, camel: -8 } },
+        pair: (st) => (st.hx === 'rust' ? (st.col === 'rust' ? -3 : 2) : 0),
+        note: 'The most its own: the perforated edge, the stamp, the struck address. The stops are a list on the label, so they point on (no wayfinding).' }
+    }
+  });
+  (document.fonts ? document.fonts.ready : Promise.resolve()).then(sign);
+})();
+</script>
+</body>
+</html>
