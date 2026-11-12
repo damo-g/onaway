@@ -46,3 +46,31 @@ export function renderDotMatrix(root = document) {
     el.setAttribute('aria-label', el.dataset.dm);
   });
 }
+
+// How many columns a text takes in the 5 × 7 face (a blank column between letters).
+export function dotCount(text) {
+  return [...text.toUpperCase()].reduce((n, ch, i) => n + (DM_FONT[ch] ?? DM_FONT[' ']).split(' ')[0].length + (i ? 1 : 0), 0);
+}
+
+// A whole board: fills el's box with dots at `pitch`, the text lit in the middle (currentColor), every other dot at
+// 12%, as the homepage cards' facts but edge to edge (the 404 headsign). Lit dots sit in .dm-lit (CSS adds the glow).
+export function dotField(el, text, pitch) {
+  const cols = [];
+  [...text.toUpperCase()].forEach((ch, i) => {
+    const g = (DM_FONT[ch] ?? DM_FONT[' ']).split(' ');
+    if (i) cols.push(null);
+    for (let c = 0; c < g[0].length; c++) cols.push(g.map((row) => row[c] === '1'));
+  });
+  const W = el.clientWidth, H = el.clientHeight;
+  const nx = Math.max(cols.length, Math.floor(W / pitch)), ny = Math.max(7, Math.floor(H / pitch));
+  const x0 = Math.floor((nx - cols.length) / 2), y0 = Math.floor((ny - 7) / 2);
+  const ox = (W - nx * pitch) / 2, oy = (H - ny * pitch) / 2, r = (pitch * 0.38).toFixed(2);
+  let off = '', on = '';
+  for (let x = 0; x < nx; x++) {
+    for (let y = 0; y < ny; y++) {
+      const dot = `<circle cx="${(ox + x * pitch + pitch / 2).toFixed(1)}" cy="${(oy + y * pitch + pitch / 2).toFixed(1)}" r="${r}"/>`;
+      if (cols[x - x0]?.[y - y0]) on += dot; else off += dot;
+    }
+  }
+  el.innerHTML = `<svg width="${W}" height="${H}" viewBox="0 0 ${W} ${H}" fill="currentColor" aria-hidden="true"><g opacity=".12">${off}</g><g class="dm-lit">${on}</g></svg>`;
+}

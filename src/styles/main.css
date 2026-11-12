@@ -1795,15 +1795,75 @@
   @media (prefers-reduced-motion: reduce) { .footer__signal { animation: none !important; } }
   html[data-motion="reduce"] .footer__signal { animation: none !important; }
 
-  /* ---------- 404 ---------- */
-  .notfound { padding-block: var(--section-gap); }
-  .notfound__title { margin-top: var(--spacing-21); }
-  .notfound__lead { max-width: 36ch; margin-top: var(--spacing-21); color: color-mix(in srgb, var(--color-carbon) 78%, transparent); }
-  .notfound__actions { display: flex; flex-wrap: wrap; gap: var(--spacing-13); margin-top: var(--spacing-55); }
-  .notfound__actions a { display: inline-flex; align-items: center; gap: var(--spacing-21); height: var(--spacing-55); padding-inline: var(--spacing-21); font-size: var(--text-body); font-weight: 600; }
-  .notfound__home { background: var(--color-carbon); color: var(--color-paper); }
-  .notfound__quote { background: var(--color-yellow); color: var(--color-carbon); }
-  .notfound__home:focus-visible { outline-color: var(--color-carbon); }
+  /* ---------- 404 (NF-404, Headsign + hanging stops, Nov 2026; docs/mocks/nf-404.html, concept 3) ----------
+     The bus's destination sign: a Carbon plate, 404 in its route box and WRONG STOP lit in the homepage's 5 × 7 dots
+     (rust lifted with Paper so it reads on Carbon, about 4.8 : 1; a faint glow on the lit dots). The line under it.
+     A bar the full width of the page, and the five stops hang from it one under the other, each card on two rods
+     from the one above: the footer's pictogram, the name, the arrow. No quote or call here: the navbar carries both.
+     Panel options (notfound): lit rust | yellow | paper · glow soft | off · plates stack | grid. */
+  .notfound {
+    --face: color-mix(in srgb, var(--color-carbon) 5%, var(--color-paper));
+    --edge: color-mix(in srgb, var(--color-carbon) 80%, var(--color-camel));
+    --lit: color-mix(in srgb, var(--color-rust) 70%, var(--color-paper));
+    --rod: linear-gradient(90deg, color-mix(in srgb, var(--color-paper) 30%, var(--color-carbon)), var(--color-carbon) 60%);
+    display: flex; flex-direction: column; align-items: center; gap: var(--spacing-34);
+    padding: var(--spacing-55) var(--grid-margin) var(--section-gap);
+  }
+  .notfound[data-lit="yellow"] { --lit: var(--color-yellow); }
+  .notfound[data-lit="paper"] { --lit: var(--color-paper); }
+  .notfound__h { position: absolute; width: 1px; height: 1px; margin: 0; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+  .notfound__sign {
+    display: flex; gap: var(--spacing-13); width: min(100%, calc(7 * var(--spacing-144) + var(--spacing-55)));
+    padding: var(--spacing-21); border-radius: var(--spacing-13); background: var(--color-carbon); color: var(--lit);
+    box-shadow: inset 0 0 0 1px var(--color-line-dark), 0 2px 0 0 var(--edge), 0 34px 55px -30px color-mix(in srgb, var(--color-carbon) 55%, transparent);
+  }
+  .notfound__sign > div { min-width: 0; height: var(--spacing-144); overflow: hidden; }
+  .notfound__route { flex: none; width: calc(2 * var(--spacing-144) - var(--spacing-21)); box-shadow: var(--spacing-13) 0 0 calc(-1 * (var(--spacing-13) - 2px)) var(--color-line-dark); }
+  .notfound__dest { flex: 1; }
+  .notfound__sign svg { display: block; }
+  /* the glow: soft, the lit dots only */
+  .notfound .dm-lit { filter: drop-shadow(0 0 3px color-mix(in srgb, var(--lit) 45%, transparent)); }
+  .notfound[data-glow="off"] .dm-lit { filter: none; }
+  .notfound__lead { max-width: 34ch; text-align: center; font-size: var(--text-lead); line-height: 1.4; color: color-mix(in srgb, var(--color-carbon) 80%, transparent); }
+  /* the stops: the bar across the page, the cards hanging one under the other */
+  .notfound__stops { align-self: stretch; margin-top: var(--spacing-21); margin-inline: calc(-1 * var(--grid-margin)); }
+  .notfound__bar { display: block; height: var(--spacing-13); background: linear-gradient(180deg, color-mix(in srgb, var(--color-paper) 18%, var(--color-carbon)), var(--color-carbon) 60%); }
+  .notfound__stops ul { display: grid; gap: var(--spacing-13); width: min(calc(100% - 2 * var(--grid-margin)), calc(4 * var(--spacing-144) + var(--spacing-55))); margin: var(--spacing-34) auto 0; }
+  .notfound__stop {
+    --tile: var(--face);
+    position: relative; display: flex; align-items: center; gap: var(--spacing-13); height: var(--spacing-55); padding-inline: var(--spacing-21);
+    border-radius: var(--spacing-8); background: var(--face); color: var(--color-carbon); font-size: var(--text-lead); font-weight: 600;
+    box-shadow: inset 0 0 0 4px var(--color-carbon), 0 2px 0 0 var(--edge), 0 13px 21px -13px color-mix(in srgb, var(--color-carbon) 50%, transparent);
+    transform-origin: 50% calc(-1 * var(--spacing-13)); transition: rotate 0.5s cubic-bezier(0.3, 0.7, 0.3, 1), background-color 0.2s;
+  }
+  /* the rods: from the bar for the first card, from the card above for the rest */
+  .notfound__stop::before, .notfound__stop::after { content: ""; position: absolute; bottom: 100%; width: 3px; height: var(--spacing-13); background: var(--rod); }
+  .notfound__stops li:first-child .notfound__stop::before, .notfound__stops li:first-child .notfound__stop::after { height: var(--spacing-34); }
+  .notfound__stop::before { left: 22%; } .notfound__stop::after { right: 22%; }
+  .notfound__stop:is(:hover, :focus-visible) { rotate: -0.6deg; background: color-mix(in srgb, var(--color-yellow) 35%, var(--face)); --tile: color-mix(in srgb, var(--color-yellow) 35%, var(--face)); }
+  .notfound__stop:focus-visible { outline: 2px solid var(--color-carbon); outline-offset: 4px; }
+  .notfound__picto { display: grid; place-items: center; width: var(--spacing-34); height: var(--spacing-34); }
+  .notfound__picto svg { width: var(--spacing-34); height: var(--spacing-34); }
+  .notfound__arrow { margin-left: auto; display: grid; place-items: center; }
+  .notfound__arrow .icon { width: var(--spacing-21); height: var(--spacing-21); transition: translate 0.35s cubic-bezier(0.3, 0.7, 0.3, 1); }
+  .notfound__stop:is(:hover, :focus-visible) .notfound__arrow .icon { translate: 3px 0; }
+  /* grid: one row of five, all hanging from the bar */
+  .notfound[data-plates="grid"] .notfound__stops ul { grid-template-columns: repeat(5, minmax(0, 1fr)); width: min(calc(100% - 2 * var(--grid-margin)), calc(7 * var(--spacing-144) + var(--spacing-55))); }
+  .notfound[data-plates="grid"] .notfound__stop { height: var(--spacing-89); }
+  .notfound[data-plates="grid"] .notfound__stop::before, .notfound[data-plates="grid"] .notfound__stop::after { height: var(--spacing-34); }
+  @media (width < 768px) {
+    .notfound { padding-top: var(--spacing-55); gap: var(--spacing-21); }
+    .notfound__sign { flex-direction: column; padding: var(--spacing-13); }
+    .notfound__route { flex: none; width: auto; height: var(--spacing-55) !important; box-shadow: 0 var(--spacing-8) 0 -6px var(--color-line-dark); }
+    .notfound__dest { flex: none; height: var(--spacing-89) !important; }
+    .notfound__lead { font-size: var(--text-body); }
+    .notfound[data-plates="grid"] .notfound__stops ul { grid-template-columns: 1fr 1fr; row-gap: var(--spacing-34); }
+    .notfound[data-plates="grid"] .notfound__stop { height: var(--spacing-55); }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .notfound__stop, .notfound__arrow .icon { transition: none; }
+    .notfound__stop:is(:hover, :focus-visible) { rotate: none; }
+  }
   /* ---------- Quote page (QP-01 The Ticket) ---------- */
   .qp {
     --qp-field: color-mix(in srgb, var(--color-carbon) 5%, var(--color-paper));
