@@ -657,7 +657,7 @@
     --ticket-h: var(--ticket-xl);
     --tear-w: var(--spacing-144);
     --stub: var(--spacing-55);
-    --stamp-size: var(--spacing-89);
+    --stamp-size: calc(var(--spacing-89) * 0.85); /* a touch under the 89 (Nov 2026) */
     --ticket-face: color-mix(in srgb, var(--color-carbon) 5%, var(--color-paper));
     --ticket-stub: color-mix(in srgb, var(--color-carbon) 7%, var(--color-paper));
     --ticket-rule: color-mix(in srgb, var(--color-carbon) 12%, transparent);
@@ -740,7 +740,7 @@
   /* Paper (panel steps.paper: worn (locked) · crumpled · folded · off): the print explorations' paper shader, rendered
      once (public/textures/), a grey around 50% laid with hard-light, so it shades the ticket without tinting it */
   .ticket__tear { position: relative; }
-  .ticket__paper { position: absolute; inset: 0; z-index: 2; pointer-events: none; background: url("/textures/ticket-worn.webp") left center / cover; mix-blend-mode: hard-light; opacity: calc(var(--opt-paperop, 22) / 100); }
+  .ticket__paper { position: absolute; inset: 0; z-index: 2; pointer-events: none; background: url("/textures/ticket-worn.webp") left center / cover; mix-blend-mode: hard-light; opacity: calc(var(--opt-paperop, 10) / 100); }
   .ticket__tear .ticket__paper { background-position: right center; }
   .steps[data-paper="crumpled"] .ticket__paper { background-image: url("/textures/ticket-crumpled.webp"); }
   .steps[data-paper="folded"] .ticket__paper { background-image: url("/textures/ticket-folded.webp"); }
@@ -2056,7 +2056,7 @@
   .qp:is([data-mark="day"]) .qticket__mark circle { stroke: color-mix(in srgb, var(--color-carbon) 20%, transparent); stroke-width: 2; }
   /* Paper on the ticket (panel request.paper: the full set, worn locked; request.paperop the strength), as on Steps' ticket */
   .qticket__body { position: relative; }
-  .qticket__paper { position: absolute; inset: 0; z-index: 2; pointer-events: none; background: url("/textures/qticket-worn.webp") center top / cover; mix-blend-mode: hard-light; opacity: calc(var(--opt-paperop, 22) / 100); }
+  .qticket__paper { position: absolute; inset: 0; z-index: 2; pointer-events: none; background: url("/textures/qticket-worn.webp") center top / cover; mix-blend-mode: hard-light; opacity: calc(var(--opt-paperop, 10) / 100); }
   .qticket__strip .qticket__paper { background-position: center top; }
   .qticket__body .qticket__paper { background-position: center 12%; }
   .qp[data-paper="crumpled"] .qticket__paper { background-image: url("/textures/qticket-crumpled.webp"); }

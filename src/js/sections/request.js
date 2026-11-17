@@ -3,10 +3,10 @@ import { lookupArea } from '../data/area.js';
 import { icon } from '../icons.js';
 import { registerOptions } from '../options.js';
 
-// The ticket's W in a soft-grain gradient (Nov 2026, from the print explorations' brand sheet): night (locked: a
-// Carbon disc, the W Paper into Camel) · dusk (Carbon into Rust, the W Paper) · day (Paper, the W Carbon into Rust) ·
-// sand (Paper into Camel, the W Rust into Carbon) · flat (as before). The ticket's paper: the full set (worn locked) and a strength slider.
-registerOptions('request', { mark: ['night', 'dusk', 'day', 'sand', 'flat'], paper: ['worn', 'crumpled', 'folded', 'tide', 'plate', 'map', 'taped', 'off'], paperop: { range: [0, 100], value: 22, unit: '%' } });
+// The ticket's W: flat (locked Nov 2026: the muted Carbon disc, low-key) or a soft-grain gradient from the print
+// explorations' brand sheet: night (a Carbon disc, the W Paper into Camel) · dusk (Carbon into Rust, the W Paper) · day (Paper, the W Carbon into Rust) ·
+// sand (Paper into Camel, the W Rust into Carbon). The ticket's paper: the full set (plate at 10% locked) and a strength slider.
+registerOptions('request', { mark: ['flat', 'night', 'dusk', 'day', 'sand'], paper: ['plate', 'worn', 'crumpled', 'folded', 'tide', 'map', 'taped', 'off'], paperop: { range: [0, 100], value: 10, unit: '%' } });
 
 // QP-01 The Ticket. Three steps that fold as you finish them (a "GOT IT" cue first), a live ticket that
 // mirrors every answer, and a background send to /api/quote.php (server/). Step 1 is the job (service, size,

@@ -14,16 +14,18 @@ registerOptions('steps', {
   size: ['xs', 'xl', 'l', 'm', 'm6', 's6', 'xs6'],
   // The step numbers: sans (as built, Carbon) · mono (Overpass Mono, muted, a hairline after it) · ghost (light
   // Carbon numerals, the step's watermark)
-  num: ['sans', 'mono', 'ghost'],
+  // ghost locked (Nov 2026)
+  num: ['ghost', 'sans', 'mono'],
   // Their size: auto (the size's own) · 12 · 20 · 26 · 42 · 68
   numsize: ['auto', '12', '20', '26', '42', '68'],
   // The paper (Nov 2026): the print explorations' full set, from the paper shader rendered once to public/textures/
   // (worn locked · crumpled · folded · tide · plate · map · taped · off), and how strongly it shows (a slider)
-  paper: ['worn', 'crumpled', 'folded', 'tide', 'plate', 'map', 'taped', 'off'],
-  paperop: { range: [0, 100], value: 22, unit: '%' },
-  // The date-locked stamp's ink, as on the invoice: two-tone (locked: Rust, the words printed back in Carbon) ·
-  // rust · carbon (one ink, the words cut out)
-  stamp: ['two', 'rust', 'carbon'],
+  // plate at 10% locked (Nov 2026)
+  paper: ['plate', 'worn', 'crumpled', 'folded', 'tide', 'map', 'taped', 'off'],
+  paperop: { range: [0, 100], value: 10, unit: '%' },
+  // The date-locked stamp's ink, as on the invoice: rust (locked Nov 2026: one ink, the words cut out) · two-tone
+  // (Rust, the words printed back in Carbon) · carbon
+  stamp: ['rust', 'two', 'carbon'],
 });
 
 export function init(el) {
