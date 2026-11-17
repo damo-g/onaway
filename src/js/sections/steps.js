@@ -17,10 +17,13 @@ registerOptions('steps', {
   num: ['sans', 'mono', 'ghost'],
   // Their size: auto (the size's own) · 12 · 20 · 26 · 42 · 68
   numsize: ['auto', '12', '20', '26', '42', '68'],
-  // The paper (Nov 2026, from the print explorations' shader, rendered once to public/textures/): worn (locked) ·
-  // crumpled · folded · off; and how strongly it shows
-  paper: ['worn', 'crumpled', 'folded', 'off'],
-  paperop: ['22', '12', '35'],
+  // The paper (Nov 2026): the print explorations' full set, from the paper shader rendered once to public/textures/
+  // (worn locked · crumpled · folded · tide · plate · map · taped · off), and how strongly it shows (a slider)
+  paper: ['worn', 'crumpled', 'folded', 'tide', 'plate', 'map', 'taped', 'off'],
+  paperop: { range: [0, 100], value: 22, unit: '%' },
+  // The date-locked stamp's ink, as on the invoice: two-tone (locked: Rust, the words printed back in Carbon) ·
+  // rust · carbon (one ink, the words cut out)
+  stamp: ['two', 'rust', 'carbon'],
 });
 
 export function init(el) {

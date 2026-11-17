@@ -740,13 +740,19 @@
   /* Paper (panel steps.paper: worn (locked) · crumpled · folded · off): the print explorations' paper shader, rendered
      once (public/textures/), a grey around 50% laid with hard-light, so it shades the ticket without tinting it */
   .ticket__tear { position: relative; }
-  .ticket__paper { position: absolute; inset: 0; z-index: 2; pointer-events: none; background: url("/textures/ticket-worn.webp") left center / cover; mix-blend-mode: hard-light; opacity: var(--paper-a, 0.22); }
+  .ticket__paper { position: absolute; inset: 0; z-index: 2; pointer-events: none; background: url("/textures/ticket-worn.webp") left center / cover; mix-blend-mode: hard-light; opacity: calc(var(--opt-paperop, 22) / 100); }
   .ticket__tear .ticket__paper { background-position: right center; }
   .steps[data-paper="crumpled"] .ticket__paper { background-image: url("/textures/ticket-crumpled.webp"); }
   .steps[data-paper="folded"] .ticket__paper { background-image: url("/textures/ticket-folded.webp"); }
+  .steps[data-paper="tide"] .ticket__paper { background-image: url("/textures/ticket-tide.webp"); }
+  .steps[data-paper="plate"] .ticket__paper { background-image: url("/textures/ticket-plate.webp"); }
+  .steps[data-paper="map"] .ticket__paper { background-image: url("/textures/ticket-map.webp"); }
+  .steps[data-paper="taped"] .ticket__paper { background-image: url("/textures/ticket-taped.webp"); }
   .steps[data-paper="off"] .ticket__paper { display: none; }
-  .steps[data-paperop="12"] { --paper-a: 0.12; }
-  .steps[data-paperop="35"] { --paper-a: 0.35; }
+  /* The date-locked stamp's ink (panel steps.stamp): two-tone (locked) · rust · carbon; one ink cuts the words out */
+  .ticket__stamp { --ts-ink: color-mix(in srgb, var(--color-rust) 82%, var(--color-carbon)); }
+  .steps[data-stamp="carbon"] .ticket__stamp { --ts-ink: var(--color-carbon); }
+  .steps:is([data-stamp="rust"], [data-stamp="carbon"]) .ts-print { display: none; }
 
   /* Edge styles */
   /* Tear (locked): stamps on the outer edges; the seam is straight on both sides (body and tear-off) with the notch option's dashed line */
@@ -2048,12 +2054,17 @@
   .qp[data-mark="flat"] { --mk-d1: color-mix(in srgb, var(--color-carbon) 60%, transparent); --mk-d2: var(--mk-d1); --mk-w1: var(--qt-face); --mk-w2: var(--qt-face); }
   .qp[data-mark="flat"] .qticket__mark g { filter: none; }
   .qp:is([data-mark="day"]) .qticket__mark circle { stroke: color-mix(in srgb, var(--color-carbon) 20%, transparent); stroke-width: 2; }
-  /* Paper on the ticket (panel request.paper: worn (locked) · crumpled · off), as on Steps' ticket */
+  /* Paper on the ticket (panel request.paper: the full set, worn locked; request.paperop the strength), as on Steps' ticket */
   .qticket__body { position: relative; }
-  .qticket__paper { position: absolute; inset: 0; z-index: 2; pointer-events: none; background: url("/textures/qticket-worn.webp") center top / cover; mix-blend-mode: hard-light; opacity: 0.22; }
+  .qticket__paper { position: absolute; inset: 0; z-index: 2; pointer-events: none; background: url("/textures/qticket-worn.webp") center top / cover; mix-blend-mode: hard-light; opacity: calc(var(--opt-paperop, 22) / 100); }
   .qticket__strip .qticket__paper { background-position: center top; }
   .qticket__body .qticket__paper { background-position: center 12%; }
   .qp[data-paper="crumpled"] .qticket__paper { background-image: url("/textures/qticket-crumpled.webp"); }
+  .qp[data-paper="folded"] .qticket__paper { background-image: url("/textures/qticket-folded.webp"); }
+  .qp[data-paper="tide"] .qticket__paper { background-image: url("/textures/qticket-tide.webp"); }
+  .qp[data-paper="plate"] .qticket__paper { background-image: url("/textures/qticket-plate.webp"); }
+  .qp[data-paper="map"] .qticket__paper { background-image: url("/textures/qticket-map.webp"); }
+  .qp[data-paper="taped"] .qticket__paper { background-image: url("/textures/qticket-taped.webp"); }
   .qp[data-paper="off"] .qticket__paper { display: none; }
   .qticket__strip .label { line-height: 1; }
   .qticket__title { color: var(--color-carbon); }
