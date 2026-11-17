@@ -1,6 +1,12 @@
 import { areaSearch } from '../area-search.js';
 import { lookupArea } from '../data/area.js';
 import { icon } from '../icons.js';
+import { registerOptions } from '../options.js';
+
+// The ticket's W in a soft-grain gradient (Nov 2026, from the print explorations' brand sheet): night (locked: a
+// Carbon disc, the W Paper into Camel) · dusk (Carbon into Rust, the W Paper) · day (Paper, the W Carbon into Rust) ·
+// sand (Paper into Camel, the W Rust into Carbon) · flat (as before). The ticket's paper: worn (locked) · crumpled · off.
+registerOptions('request', { mark: ['night', 'dusk', 'day', 'sand', 'flat'], paper: ['worn', 'crumpled', 'off'] });
 
 // QP-01 The Ticket. Three steps that fold as you finish them (a "GOT IT" cue first), a live ticket that
 // mirrors every answer, and a background send to /api/quote.php (server/). Step 1 is the job (service, size,
