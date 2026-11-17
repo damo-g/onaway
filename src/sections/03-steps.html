@@ -1,5 +1,5 @@
-{{!-- 03 Steps · TS-02 Journey Ticket. Markup is the end state; src/js/sections/steps.js plays the write-in once on entry. --}}
-{{#> section id="steps" class="steps" label="How it works" attrs='data-size="xs"'}}
+{{!-- 03 Steps · TS-02 Journey Ticket. The stamp is the print explorations' Token (Two-tone, Glossy ink, no logo): a stamp-pad Rust disc, the words cut out and printed back in Carbon a hair off register. Markup is the end state; src/js/sections/steps.js plays the write-in once on entry. --}}
+{{#> section id="steps" class="steps" label="How it works" attrs='data-size="xs" data-num="ghost" data-paper="plate" data-stamp="rust"'}}
   <div class="steps__intro col-span-full lg:col-span-4">
     <h2 class="text-h2 md:text-h1 uppercase">Three steps.<br>No surprises.</h2>
     <p class="steps__lead text-lead">From first message to a locked date. You always know what happens next, and what it costs.</p>
@@ -28,12 +28,41 @@
             <p class="ticket__copy">We confirm your crew and arrival window.</p>
           </li>
         </ol>
+        <span class="ticket__paper" aria-hidden="true"></span>
         <span class="ticket__seam" aria-hidden="true"></span>
-        <span class="ticket__stamp" aria-hidden="true">Your<br>date<br>locked</span>
+        <span class="ticket__stamp" aria-hidden="true"><svg viewBox="0 0 136 136" width="136" height="136">
+          <defs>
+            <filter id="ts-gloss" x="-10%" y="-10%" width="120%" height="120%" color-interpolation-filters="sRGB">
+              <feTurbulence type="fractalNoise" baseFrequency=".7" numOctaves="2" seed="4" result="r"/>
+              <feDisplacementMap in="SourceGraphic" in2="r" scale=".9" xChannelSelector="R" yChannelSelector="G" result="e"/>
+              <feGaussianBlur in="e" stdDeviation=".55" result="eb"/>
+              <feColorMatrix in="eb" type="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 2.2 -.55" result="ink"/>
+              <feMorphology in="ink" operator="erode" radius=".75" result="inner"/>
+              <feComposite in="ink" in2="inner" operator="out" result="rim"/>
+              <feColorMatrix in="inner" type="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 .84 0" result="body"/>
+              <feColorMatrix in="rim" type="matrix" values=".72 0 0 0 0  0 .72 0 0 0  0 0 .72 0 0  0 0 0 1 0" result="rimD"/>
+              <feMerge result="wet"><feMergeNode in="body"/><feMergeNode in="rimD"/></feMerge>
+              <feTurbulence type="fractalNoise" baseFrequency=".035" numOctaves="2" seed="11" result="b"/>
+              <feColorMatrix in="b" type="matrix" values="0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  .7 0 0 0 .62" result="ba"/>
+              <feTurbulence type="fractalNoise" baseFrequency="1.1" numOctaves="1" seed="7" result="t"/>
+              <feColorMatrix in="t" type="matrix" values="0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  -14 0 0 0 10.6" result="ta"/>
+              <feComposite in="wet" in2="ba" operator="in" result="w2"/>
+              <feComposite in="w2" in2="ta" operator="in" result="w3"/>
+              <feGaussianBlur in="ink" stdDeviation="1.8" result="hb"/>
+              <feSpecularLighting in="hb" surfaceScale="1.4" specularConstant=".6" specularExponent="30" style="lighting-color:var(--color-paper)" result="spec"><feDistantLight azimuth="225" elevation="52"/></feSpecularLighting>
+              <feComposite in="spec" in2="ink" operator="in" result="specIn"/>
+              <feComposite in="w3" in2="specIn" operator="arithmetic" k1="0" k2="1" k3=".1" k4="0"/>
+            </filter>
+            <mask id="ts-cut"><rect width="136" height="136" fill="white"/><circle cx="68" cy="68" r="57" fill="none" stroke="black" stroke-width="1.6"/><g class="ts-full" font-family="Overpass Mono, ui-monospace, monospace" font-weight="700" text-anchor="middle" font-size="17" letter-spacing="1.6" fill="black"><text x="68" y="54">YOUR</text><text x="68" y="75">DATE</text><text x="68" y="96">LOCKED</text></g><g class="ts-short" font-family="Overpass Mono, ui-monospace, monospace" font-weight="700" text-anchor="middle" font-size="18" letter-spacing=".4" fill="black"><text x="68" y="74" textLength="88" lengthAdjust="spacingAndGlyphs">LOCKED</text></g></mask>
+          </defs>
+          <g filter="url(#ts-gloss)"><circle cx="68" cy="68" r="66" style="fill:var(--ts-ink)" mask="url(#ts-cut)"/></g>
+          <g class="ts-print" filter="url(#ts-gloss)" transform="translate(.8 -.6)"><g class="ts-full" font-family="Overpass Mono, ui-monospace, monospace" font-weight="700" text-anchor="middle" font-size="17" letter-spacing="1.6" style="fill:var(--color-carbon)"><text x="68" y="54">YOUR</text><text x="68" y="75">DATE</text><text x="68" y="96">LOCKED</text></g><g class="ts-short" font-family="Overpass Mono, ui-monospace, monospace" font-weight="700" text-anchor="middle" font-size="18" letter-spacing=".4" style="fill:var(--color-carbon)"><text x="68" y="74" textLength="88" lengthAdjust="spacingAndGlyphs">LOCKED</text></g></g>
+        </svg></span>
       </div>
       <a class="ticket__tear" href="/quote/">
         <span class="ticket__tear-label">Get a<br> free<br> quote</span>
         <span class="ticket__arrow" aria-hidden="true">{{{icon "arrow-right-02"}}}</span>
+        <span class="ticket__paper" aria-hidden="true"></span>
       </a>
     </div>
     <span class="ticket__head" aria-hidden="true"></span>

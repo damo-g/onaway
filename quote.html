@@ -19,7 +19,7 @@
 
   <main id="main">
     {{!-- QP-01 The Ticket. src/js/sections/request.js sends it to /api/quote.php (the kitchen is server/). --}}
-    <section class="qp" data-section="request" aria-labelledby="qp-title">
+    <section class="qp" data-section="request" data-mark="flat" data-paper="plate" aria-labelledby="qp-title">
       <header class="qp__head grid-site">
         <h1 id="qp-title" class="qp__title col-span-full lg:col-span-8 text-h2 md:text-h1 uppercase">Get a free quote.</h1>
         <p class="qp__lead col-span-full lg:col-span-7 text-lead">Tell us what you need. Your quote arrives in writing <b data-q="by">within 2 hours</b>.</p>
@@ -250,13 +250,27 @@
                  Phones: a sticky summary at the foot of the screen; the toggle opens the full ticket. --}}
             <div class="qticket" role="group" aria-label="Your request so far">
               <div class="qticket__strip">
-                <svg viewBox="0 0 100 100" aria-hidden="true"><circle cx="50" cy="50" r="50" fill="currentColor"/><path transform="translate(28.6 30) scale(.5)" style="fill:var(--qt-face)" d="M0,80C.14,77.73-.02,11.64.03,9.23l11.67-1.12s.01,40.19-.1,55.51c20.63-10.95,25.77-37.76,25.47-59.5,2.65-.22,9.1-.87,11.81-1.15-.51,20.26,3.46,45.8,24.97,53.64.05-15.31.05-40.2.07-55.53l11.65-1.08v70.04c-17.66,4.6-35.16-10.2-42.26-25.54-7.02,17.45-23.22,35.59-43.32,35.5Z"/></svg>
+                <svg class="qticket__mark" viewBox="0 0 100 100" aria-hidden="true">
+                  <defs>
+                    <linearGradient id="qm-d" x1="0" y1="0" x2="0" y2="1"><stop offset="0" style="stop-color:var(--mk-d1)"/><stop offset="1" style="stop-color:var(--mk-d2)"/></linearGradient>
+                    <linearGradient id="qm-w" x1="0" y1="0" x2="0" y2="1"><stop offset="0" style="stop-color:var(--mk-w1)"/><stop offset="1" style="stop-color:var(--mk-w2)"/></linearGradient>
+                    <filter id="qm-grain" x="0" y="0" width="100%" height="100%" color-interpolation-filters="sRGB">
+                      <feTurbulence type="fractalNoise" baseFrequency=".55" numOctaves="2" seed="9" result="n"/>
+                      <feColorMatrix in="n" type="matrix" values="1.7 0 0 0 -.35  1.7 0 0 0 -.35  1.7 0 0 0 -.35  0 0 0 0 1" result="g"/>
+                      <feBlend in="g" in2="SourceGraphic" mode="soft-light" result="b"/>
+                      <feComposite in="b" in2="SourceGraphic" operator="in"/>
+                    </filter>
+                  </defs>
+                  <g filter="url(#qm-grain)"><circle cx="50" cy="50" r="50" fill="url(#qm-d)"/><path transform="translate(28.6 30) scale(.5)" fill="url(#qm-w)" d="M0,80C.14,77.73-.02,11.64.03,9.23l11.67-1.12s.01,40.19-.1,55.51c20.63-10.95,25.77-37.76,25.47-59.5,2.65-.22,9.1-.87,11.81-1.15-.51,20.26,3.46,45.8,24.97,53.64.05-15.31.05-40.2.07-55.53l11.65-1.08v70.04c-17.66,4.6-35.16-10.2-42.26-25.54-7.02,17.45-23.22,35.59-43.32,35.5Z"/></g>
+                </svg>
                 <span class="qticket__title label">Quote request</span>
                 <span class="qticket__count label" data-t="pct">0 of 5 answered</span>
                 <span class="qticket__ref"><span class="label">Ref</span> {{> refchip}}</span>
+                <span class="qticket__paper" aria-hidden="true"></span>
                 <button type="button" class="qticket__toggle" aria-expanded="false" aria-controls="qticket-rows"><span class="sr-only">Show your request</span>{{{icon "arrow-down-02"}}}</button>
               </div>
               <div class="qticket__body" id="qticket-rows">
+                <span class="qticket__paper" aria-hidden="true"></span>
                 <dl>
                   <div class="qticket__row" data-step="job"><dt class="label">Service</dt><dd data-t="svc">—</dd></div>
                   <div class="qticket__row" data-step="job"><dt class="label">For a</dt><dd data-t="kind">—</dd></div>

@@ -1,11 +1,23 @@
 // Dev review panel. Loaded only under import.meta.env.DEV (see main.js), so nothing here ships.
 // Section options come from registerOptions() (src/js/options.js); the first value is the locked default.
 // State precedence: URL (?hero=scroll or ?hero.mode=scroll) > localStorage > locked default.
+// An option can also be a range: { range: [min, max], value: locked, step, unit } renders a slider; the section gets
+// it as data-<opt> and as the CSS custom property --opt-<opt> (unitless), so CSS can calc() with it.
 import { ScrollTrigger, replaySection } from '../motion.js';
 
 const OPTIONS_KEY = 'onaway:options';
 const MOTION_KEY = 'onaway:motion';
 const GRID_KEY = 'onaway:grid';
+const SIDE_KEY = 'onaway:panel-side';
+
+// options are a list of values (the first locked) or a range
+const isRange = (values) => !Array.isArray(values);
+const lockedOf = (values) => (isRange(values) ? values.value : values[0]);
+const validOf = (values, v) => {
+  if (v == null || v === '') return null;
+  if (!isRange(values)) return values.includes(v) ? v : null;
+  const n = Number(v); return Number.isFinite(n) ? Math.min(values.range[1], Math.max(values.range[0], n)) : null;
+};
 
 const store = {
   get(key, fallback) {
@@ -52,9 +64,9 @@ function resolveState(params) {
   for (const [id, options] of registry) {
     next[id] = {};
     for (const [opt, values] of Object.entries(options)) {
-      const fromUrl = params.get(`${id}.${opt}`) ?? (values.includes(params.get(id)) ? params.get(id) : null);
-      const fromStore = saved[id]?.[opt];
-      next[id][opt] = [fromUrl, fromStore].find((v) => values.includes(v)) ?? values[0];
+      const fromUrl = validOf(values, params.get(`${id}.${opt}`)) ?? (isRange(values) ? null : validOf(values, params.get(id)));
+      const fromStore = validOf(values, saved[id]?.[opt]);
+      next[id][opt] = fromUrl ?? fromStore ?? lockedOf(values);
     }
   }
   return next;
@@ -67,12 +79,16 @@ const globalIds = () => [...registry.keys()].filter((id) => optionTarget(id)?.ma
 function applySection(id) {
   const el = optionTarget(id);
   if (!el) return;
-  for (const [opt, value] of Object.entries(state[id])) el.dataset[opt] = value;
+  for (const [opt, value] of Object.entries(state[id])) {
+    el.dataset[opt] = value;
+    if (isRange(registry.get(id)[opt])) el.style.setProperty(`--opt-${opt}`, value);
+  }
   el.dispatchEvent(new CustomEvent('section:options', { bubbles: true, detail: { ...state[id] } }));
 }
 
-function setOption(id, opt, value) {
+function setOption(id, opt, value, quiet = false) {
   state[id][opt] = value;
+  if (quiet) { applySection(id); store.set(OPTIONS_KEY, state); return; } // a slider mid-drag: no re-render
   applySection(id);
   store.set(OPTIONS_KEY, state);
   syncUrl();
@@ -86,7 +102,7 @@ function syncUrl() {
   for (const [id, options] of registry) {
     params.delete(id);
     for (const opt of Object.keys(options)) params.delete(`${id}.${opt}`);
-    const changed = Object.entries(options).filter(([opt, values]) => state[id][opt] !== values[0]);
+    const changed = Object.entries(options).filter(([opt, values]) => String(state[id][opt]) !== String(lockedOf(values)));
     if (changed.length === 1 && Object.keys(options).length === 1) params.set(id, state[id][changed[0][0]]);
     else for (const [opt] of changed) params.set(`${id}.${opt}`, state[id][opt]);
   }
@@ -96,7 +112,7 @@ function syncUrl() {
 
 function resetOptions() {
   for (const [id, options] of registry) {
-    for (const [opt, values] of Object.entries(options)) state[id][opt] = values[0];
+    for (const [opt, values] of Object.entries(options)) state[id][opt] = lockedOf(values);
     applySection(id);
   }
   store.set(OPTIONS_KEY, state);
@@ -173,6 +189,13 @@ const CSS = `
   button.chip[aria-pressed="true"] { background: var(--color-carbon); color: var(--color-paper); }
   .lock { font-family: var(--font-mono); font-size: 10px; letter-spacing: .06em; opacity: .7; margin-left: 4px; }
   kbd { font-family: var(--font-mono); font-size: 11px; border: 1px solid currentColor; padding: 0 4px; margin-left: 4px; }
+  .fab { touch-action: none; transition: left .25s, right .25s; }
+  .fab.is-drag { cursor: grabbing; transition: none; opacity: .85; }
+  :host([data-side="left"]) .fab { right: auto; left: 21px; }
+  :host([data-side="left"]) .pop { inset: auto auto 76px 21px; }
+  .slide { align-items: center; flex-wrap: nowrap; }
+  .slide input { flex: 1; accent-color: var(--color-carbon); }
+  .slide output { min-width: 5ch; padding: 3px 6px; font: 600 12px/1 var(--font-mono); background: var(--color-carbon); color: var(--color-paper); text-align: center; }
   .overlay {
     position: fixed; inset: 0; z-index: 1; pointer-events: none;
     display: grid; grid-template-columns: repeat(var(--grid-cols), minmax(0, 1fr));
@@ -221,6 +244,36 @@ function mount() {
     if (e.newState === 'open') ui.pop.querySelector('button')?.focus();
   });
   ui.pop.addEventListener('click', onPanelClick);
+  // sliders: live while dragging (no re-render, so the drag isn't lost), saved to the URL on release
+  ui.pop.addEventListener('input', (e) => {
+    const r = e.target.closest('input[data-act="range"]'); if (!r) return;
+    const values = registry.get(r.dataset.id)[r.dataset.opt];
+    setOption(r.dataset.id, r.dataset.opt, Number(r.value), true);
+    r.nextElementSibling.textContent = r.value + (values.unit ?? '');
+  });
+  ui.pop.addEventListener('change', (e) => { if (e.target.closest('input[data-act="range"]')) { syncUrl(); ScrollTrigger.refresh(); } });
+
+  // drag the button between the bottom corners (it snaps to the nearer side, the panel opens above it)
+  host.dataset.side = store.get(SIDE_KEY, 'right');
+  let drag = null, dragged = false;
+  fab.addEventListener('pointerdown', (e) => { drag = { x: e.clientX, y: e.clientY }; dragged = false; fab.setPointerCapture(e.pointerId); });
+  fab.addEventListener('pointermove', (e) => {
+    if (!drag) return;
+    const dx = e.clientX - drag.x, dy = e.clientY - drag.y;
+    if (!dragged && Math.hypot(dx, dy) < 6) return;
+    dragged = true; fab.classList.add('is-drag'); fab.style.translate = `${dx}px ${dy}px`;
+  });
+  const drop = (e) => {
+    if (!drag) return;
+    drag = null; fab.classList.remove('is-drag'); fab.style.translate = '';
+    if (!dragged) return;
+    host.dataset.side = e.clientX < innerWidth / 2 ? 'left' : 'right';
+    store.set(SIDE_KEY, host.dataset.side);
+  };
+  fab.addEventListener('pointerup', drop);
+  fab.addEventListener('pointercancel', drop);
+  // a drag isn't a click: don't toggle the panel when it ends
+  fab.addEventListener('click', (e) => { if (dragged) { e.preventDefault(); e.stopImmediatePropagation(); dragged = false; } }, true);
 
   window.addEventListener('keydown', (e) => {
     if (e.key.toLowerCase() !== 'g' || e.metaKey || e.ctrlKey || e.altKey) return;
@@ -239,7 +292,14 @@ function render(force = false) {
   const systemReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' })[c]);
 
-  const optionGroups = (gid) => Object.entries(registry.get(gid)).map(([opt, values]) => `
+  const optionGroups = (gid) => Object.entries(registry.get(gid)).map(([opt, values]) => isRange(values) ? `
+        <div class="opt" role="group" aria-label="${esc(`${gid} ${opt}`)}">
+          <div class="opt-name">${esc(opt)} <span class="lock">LOCKED ${esc(values.value)}${esc(values.unit ?? '')}</span></div>
+          <div class="row slide">
+            <input type="range" data-act="range" data-id="${esc(gid)}" data-opt="${esc(opt)}" min="${values.range[0]}" max="${values.range[1]}" step="${values.step ?? 1}" value="${esc(state[gid][opt])}" aria-label="${esc(opt)}">
+            <output>${esc(state[gid][opt])}${esc(values.unit ?? '')}</output>
+          </div>
+        </div>` : `
         <div class="opt" role="group" aria-label="${esc(`${gid} ${opt}`)}">
           <div class="opt-name">${esc(opt)}</div>
           <div class="row">${values.map((v, i) => `
