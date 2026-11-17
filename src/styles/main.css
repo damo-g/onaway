@@ -707,21 +707,12 @@
     bottom: var(--spacing-34);
     width: var(--stamp-size);
     height: var(--stamp-size);
-    display: grid;
-    place-items: center;
-    border-radius: 50%;
-    box-shadow: inset 0 0 0 2px var(--color-rust), inset 0 0 0 7px var(--ticket-face), inset 0 0 0 8px var(--color-rust);
-    color: var(--color-rust);
-    text-align: center;
+    display: block;
     rotate: -10deg;
-    font-family: var(--font-mono);
-    font-size: var(--text-label);
-    line-height: 1.3;
-    letter-spacing: var(--text-label--letter-spacing);
-    font-weight: 600;
-    font-stretch: normal;
-    text-transform: uppercase;
+    mix-blend-mode: multiply; /* ink on the ticket: the face shows through */
   }
+  .ticket__stamp svg { display: block; width: 100%; height: 100%; overflow: visible; }
+  .ticket__stamp .ts-short { display: none; }
   .ticket__tear {
     width: var(--tear-w);
     flex: none;
@@ -746,6 +737,16 @@
   .ticket__tear:hover .ticket__arrow { transform: translateX(5px); }
   .ticket__tear:focus-visible .ticket__tear-label { text-decoration: underline; text-underline-offset: 4px; }
   .ticket__head { display: none; }
+  /* Paper (panel steps.paper: worn (locked) · crumpled · folded · off): the print explorations' paper shader, rendered
+     once (public/textures/), a grey around 50% laid with hard-light, so it shades the ticket without tinting it */
+  .ticket__tear { position: relative; }
+  .ticket__paper { position: absolute; inset: 0; z-index: 2; pointer-events: none; background: url("/textures/ticket-worn.webp") left center / cover; mix-blend-mode: hard-light; opacity: var(--paper-a, 0.22); }
+  .ticket__tear .ticket__paper { background-position: right center; }
+  .steps[data-paper="crumpled"] .ticket__paper { background-image: url("/textures/ticket-crumpled.webp"); }
+  .steps[data-paper="folded"] .ticket__paper { background-image: url("/textures/ticket-folded.webp"); }
+  .steps[data-paper="off"] .ticket__paper { display: none; }
+  .steps[data-paperop="12"] { --paper-a: 0.12; }
+  .steps[data-paperop="35"] { --paper-a: 0.35; }
 
   /* Edge styles */
   /* Tear (locked): stamps on the outer edges; the seam is straight on both sides (body and tear-off) with the notch option's dashed line */
@@ -808,8 +809,9 @@
     .steps[data-size="xs6"] .ticket { grid-column: 7 / span 6; --ticket-h: calc(2 * var(--spacing-144)); --stamp-size: var(--spacing-55); }
     .steps[data-size="xs6"] .ticket__field { padding: var(--spacing-34) var(--spacing-21); gap: var(--spacing-8); }
     .steps[data-size="xs6"] .ticket__num { margin-bottom: var(--spacing-8); font-size: var(--text-h2); }
-    .steps[data-size="xs6"] .ticket__stamp { top: var(--spacing-34); bottom: auto; right: var(--spacing-21); font-size: 0; box-shadow: inset 0 0 0 1.5px var(--color-rust), inset 0 0 0 5px var(--ticket-face), inset 0 0 0 6px var(--color-rust); }
-    .steps[data-size="xs6"] .ticket__stamp::after { content: "Locked"; font-size: var(--text-label); letter-spacing: 0.04em; }
+    .steps[data-size="xs6"] .ticket__stamp { top: var(--spacing-34); bottom: auto; right: var(--spacing-21); }
+    .steps[data-size="xs6"] .ticket__stamp .ts-full { display: none; } .steps[data-size="xs6"] .ticket__stamp .ts-short { display: inline; }
+    
     /* Whatever the size, the section keeps xl's footprint: the paper the smaller ticket leaves stays under it */
     .ticket { margin-bottom: calc(var(--ticket-xl) - var(--ticket-h)); }
 
@@ -872,8 +874,8 @@
     .ticket__num { margin-bottom: 0; font-size: var(--text-lead); font-weight: 600; }
     .ticket__title { font-size: var(--text-lead); }
     .ticket__copy { font-size: var(--text-small); }
-    .ticket__stamp { font-size: 0; box-shadow: inset 0 0 0 1.5px var(--color-rust), inset 0 0 0 5px var(--ticket-face), inset 0 0 0 6px var(--color-rust); }
-    .ticket__stamp::after { content: "Locked"; font-size: var(--text-label); letter-spacing: 0; }
+    .ticket__stamp .ts-full { display: none; } .ticket__stamp .ts-short { display: inline; } /* small: the one word */
+    
     .ticket__tear-label { font-size: var(--text-lead); }
     .steps__lead { font-size: var(--text-body) !important; } /* (over the text-lead utility) */
     .ticket__seam { display: none; }
@@ -1550,6 +1552,9 @@
     padding-block: var(--spacing-55) var(--grid-margin);
     background: var(--color-carbon);
     color: var(--ft-fg);
+    /* above the page: the billboard posts run on past the board and stop at the footer's top edge (Nov 2026) */
+    position: relative;
+    z-index: 1;
   }
   .footer__top { align-items: start; row-gap: var(--spacing-21); }
   .footer__tag { max-width: 22ch; font-size: var(--text-h3); line-height: 1.1; font-weight: 500; letter-spacing: -0.01em; }
@@ -2035,6 +2040,21 @@
   /* The strip: tears away (Keep · Ref) once it's sent */
   .qticket__strip { position: relative; display: flex; align-items: center; gap: var(--spacing-13); padding: var(--spacing-21) var(--spacing-34); border-bottom: 1.5px dashed color-mix(in srgb, var(--color-carbon) 35%, transparent); background: var(--qt-face); color: color-mix(in srgb, var(--color-carbon) 60%, transparent); -webkit-mask: var(--qt-top); mask: var(--qt-top); transition: transform 0.7s cubic-bezier(0.2, 0.8, 0.2, 1) 0.25s; }
   .qticket__strip svg { width: var(--spacing-21); height: var(--spacing-21); flex: none; }
+  /* The W (panel request.mark): a soft-grain gradient, night locked; flat is the old Carbon disc */
+  .qp { --mk-d1: var(--color-carbon); --mk-d2: var(--color-carbon); --mk-w1: var(--color-paper); --mk-w2: var(--color-camel); }
+  .qp[data-mark="dusk"] { --mk-d1: var(--color-carbon); --mk-d2: var(--color-rust); --mk-w1: var(--color-paper); --mk-w2: var(--color-paper); }
+  .qp[data-mark="day"] { --mk-d1: var(--color-paper); --mk-d2: var(--color-paper); --mk-w1: var(--color-carbon); --mk-w2: var(--color-rust); }
+  .qp[data-mark="sand"] { --mk-d1: var(--color-paper); --mk-d2: var(--color-camel); --mk-w1: var(--color-rust); --mk-w2: var(--color-carbon); }
+  .qp[data-mark="flat"] { --mk-d1: color-mix(in srgb, var(--color-carbon) 60%, transparent); --mk-d2: var(--mk-d1); --mk-w1: var(--qt-face); --mk-w2: var(--qt-face); }
+  .qp[data-mark="flat"] .qticket__mark g { filter: none; }
+  .qp:is([data-mark="day"]) .qticket__mark circle { stroke: color-mix(in srgb, var(--color-carbon) 20%, transparent); stroke-width: 2; }
+  /* Paper on the ticket (panel request.paper: worn (locked) · crumpled · off), as on Steps' ticket */
+  .qticket__body { position: relative; }
+  .qticket__paper { position: absolute; inset: 0; z-index: 2; pointer-events: none; background: url("/textures/qticket-worn.webp") center top / cover; mix-blend-mode: hard-light; opacity: 0.22; }
+  .qticket__strip .qticket__paper { background-position: center top; }
+  .qticket__body .qticket__paper { background-position: center 12%; }
+  .qp[data-paper="crumpled"] .qticket__paper { background-image: url("/textures/qticket-crumpled.webp"); }
+  .qp[data-paper="off"] .qticket__paper { display: none; }
   .qticket__strip .label { line-height: 1; }
   .qticket__title { color: var(--color-carbon); }
   .qticket__count { margin-left: auto; color: var(--qp-mut); }
@@ -2780,12 +2800,13 @@
   .hope__opener:not([data-v="once"]), .hope:is([data-copy="only"], [data-copy="when"], [data-copy="most"]) .hope__opener[data-v="once"] { display: none; }
   .hope[data-copy="only"] .hope__opener[data-v="only"], .hope[data-copy="when"] .hope__opener[data-v="when"], .hope[data-copy="most"] .hope__opener[data-v="most"] { display: block; }
   .hope__essay p { max-width: 58ch; font-size: var(--text-lead); line-height: 1.45; color: color-mix(in srgb, var(--color-carbon) 86%, transparent); }
-  /* Drop cap (locked: three lines · Carbon · Display 600). Options: data-dropcap 3 | 2 | raised | off,
+  /* Drop cap (locked: two lines, Nov 2026 · Carbon · Display 600). Options: data-dropcap 2 | 3 | raised | off,
      data-capcolor carbon | rust, data-capfont display | mono. initial-letter where supported, a float otherwise. */
-  .hope__opener::first-letter { float: left; margin: 0.04em var(--spacing-8) 0 -0.02em; font-size: 5.1em; line-height: 0.76; font-weight: 600; letter-spacing: 0; color: var(--color-carbon); } /* the float fallback (Firefox): sized so the cap spans the three lines */
+  .hope__opener::first-letter { float: left; margin: 0.04em var(--spacing-8) 0 -0.02em; font-size: 3.4em; line-height: 0.76; font-weight: 600; letter-spacing: 0; color: var(--color-carbon); } /* the float fallback (Firefox): sized so the cap spans the two lines */
+  .hope[data-dropcap="3"] .hope__opener::first-letter { font-size: 5.1em; }
   @supports (initial-letter: 3) or (-webkit-initial-letter: 3) {
-    .hope__opener::first-letter { float: none; margin: 0 var(--spacing-8) 0 0; font-size: inherit; line-height: inherit; -webkit-initial-letter: 3; initial-letter: 3; }
-    .hope[data-dropcap="2"] .hope__opener::first-letter { -webkit-initial-letter: 2; initial-letter: 2; }
+    .hope__opener::first-letter { float: none; margin: 0 var(--spacing-8) 0 0; font-size: inherit; line-height: inherit; -webkit-initial-letter: 2; initial-letter: 2; }
+    .hope[data-dropcap="3"] .hope__opener::first-letter { -webkit-initial-letter: 3; initial-letter: 3; }
     .hope[data-dropcap="raised"] .hope__opener::first-letter { -webkit-initial-letter: 3 1; initial-letter: 3 1; }
   }
   .hope[data-dropcap="off"] .hope__opener::first-letter { all: unset; }

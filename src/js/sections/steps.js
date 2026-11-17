@@ -17,6 +17,10 @@ registerOptions('steps', {
   num: ['sans', 'mono', 'ghost'],
   // Their size: auto (the size's own) · 12 · 20 · 26 · 42 · 68
   numsize: ['auto', '12', '20', '26', '42', '68'],
+  // The paper (Nov 2026, from the print explorations' shader, rendered once to public/textures/): worn (locked) ·
+  // crumpled · folded · off; and how strongly it shows
+  paper: ['worn', 'crumpled', 'folded', 'off'],
+  paperop: ['22', '12', '35'],
 });
 
 export function init(el) {
